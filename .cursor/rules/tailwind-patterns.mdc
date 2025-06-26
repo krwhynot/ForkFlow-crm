@@ -1,0 +1,27 @@
+---
+description: Tailwind CSS patterns for ForkFlow-CRM globs:
+globs: 
+alwaysApply: false
+---
+---
+description: Tailwind CSS patterns for ForkFlow-CRM
+globs:
+  - "src/**/*.tsx"
+alwaysApply: false
+---
+
+# Tailwind CSS Guidelines
+
+## Design System
+- Use consistent spacing: space-2, space-4, space-6, space-8
+- Stick to color palette: primary-500, gray-600, etc.
+- Follow typography scale: text-sm, text-base, text-lg, text-xl
+## Mobile-First Classes
+- Start with mobile styles, add responsive variants
+- Use flex and grid for layouts
+- Implement proper form styling with focus states
+
+## Component Patterns
+- Card: "bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+- Button: "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg"
+- Input: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"

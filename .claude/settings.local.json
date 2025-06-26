@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__supabase__list_projects",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase",
+    "exa",
+    "filesystem",
+    "sequential-thinking",
+    "Context7",
+    "knowledge",
+    "perplexity"
+  ]
+}

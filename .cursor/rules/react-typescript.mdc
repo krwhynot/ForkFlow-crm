@@ -1,0 +1,70 @@
+---
+description: React and TypeScript guidelines for ForkFlow-CRM
+globs: 
+alwaysApply: false
+---
+---
+description: React and TypeScript guidelines for ForkFlow-CRM
+globs:
+  - "src/**/*.tsx"
+  - "src/**/*.ts"
+alwaysApply: false
+---
+React + TypeScript Guidelines
+Component Structure
+Use functional components with TypeScript interfaces
+
+Prefer interface over type for component props
+
+Always export components with proper TypeScript typing
+
+Structure your files in this order:
+
+Imports
+
+Interfaces/Types
+
+Component Definition
+
+Export
+
+Naming Conventions
+Components: PascalCase (e.g., CustomerCard, VisitForm)
+
+Variables/functions: camelCase (e.g., isLoading, handleSubmit)
+
+Files: kebab-case (e.g., customer-card.tsx, visit-form.tsx)
+
+Directories: kebab-case (e.g., customer-management/, visit-tracking/)
+
+React Best Practices
+Use React.memo() to optimize performance when appropriate
+
+Create custom hooks for reusable logic (useFetchCustomers, etc.)
+
+Always include a dependency array in useEffect
+
+Use error boundaries for robust error handling
+
+✅ Example Component
+tsx
+Copy
+Edit
+interface CustomerCardProps {
+  customer: Customer;
+  onEdit: (id: string) => void;
+}
+
+export const CustomerCard: React.FC<CustomerCardProps> = ({
+  customer,
+  onEdit
+}) => {
+  // Component logic here
+  return (
+    <div>
+      {/* JSX goes here */}
+      <h3>{customer.name}</h3>
+      <button onClick={() => onEdit(customer.id)}>Edit</button>
+    </div>
+  );
+};

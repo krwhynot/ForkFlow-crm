@@ -1,0 +1,37 @@
+---
+description: Supabase database and API patterns
+globs: 
+alwaysApply: false
+---
+---
+description: Supabase database and API patterns
+globs:
+  - "src/lib/supabase/**/*.ts"
+  - "src/hooks/**/*.ts"
+alwaysApply: false
+---
+
+# Supabase Development Patterns
+
+## Database Access
+- Always use TypeScript types generated from Supabase schema
+- Implement proper error handling for all database operations
+- Use Row Level Security (RLS) policies for data isolation
+- Always handle loading and error states
+
+## Authentication
+- Use Supabase Auth for all user management
+- Implement proper session handling
+- Always check authentication status before database operations
+
+## Real-time Features
+- Use Supabase real-time subscriptions for live updates
+- Properly clean up subscriptions in useEffect cleanup
+## Example Database Hook:
+export const useCustomers = () => {
+const [customers, setCustomers] = useState<Customer[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState<string | null>(null);
+
+// Implementation with proper error handling
+};

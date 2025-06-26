@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Mobile-first UI development guidelines
+globs:
+  - "src/components/**/*.tsx"
+  - "src/styles/**/*.css"
+alwaysApply: false
+---
+
+# Mobile-First UI Guidelines
+
+## Touch Targets
+- Minimum 44px height/width for all interactive elements
+- 12px spacing between touch targets
+- Use proper focus states for accessibility
+## Responsive Design
+- Mobile-first approach with Tailwind CSS
+- Test breakpoints: 320px (mobile), 768px (tablet), 1024px (desktop)
+- Use responsive Tailwind classes (sm:, md:, lg:)
+
+## React-Admin Customization
+- Override Material-UI components with Tailwind classes
+- Ensure all forms work well on mobile keyboards
+- Implement proper loading states and error messages
+
+## Example Mobile Component:
+<button className=" bg-primary-500 hover:bg-primary-600 text-white font-medium px-6 py-4 rounded-lg min-h-[44px] min-w-[44px] transition-all duration-200 ">
+Log Visit
+</button>

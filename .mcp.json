@@ -1,5 +1,14 @@
 {
     "mcpServers": {
+        "supabase": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@supabase/mcp-server-supabase@latest",
+                "--access-token",
+                "sbp_2a3de2376bb3e89144b61867295b2ff97e782243"
+            ]
+        },
         "exa": {
             "command": "npx",
             "args": [
@@ -16,7 +25,7 @@
             "args": [
                 "-y",
                 "@modelcontextprotocol/server-filesystem@latest",
-                "/mnt/c/Projects",
+                "/mnt/r/Projects/ForkFlow-crm",
                 "/mnt/c/Users/revadmin/Documents"
             ],
             "env": {
@@ -47,7 +56,7 @@
                 "mcp-knowledge-graph"
             ],
             "env": {
-                "STORAGE_PATH": "/mnt/r/Projects/PantryCRM-Freshy/.knowledge",
+                "STORAGE_PATH": "/mnt/r/Projects/ForkFlow-crm/.knowledge",
                 "MCP_LOG_LEVEL": "info"
             }
         },
@@ -59,7 +68,7 @@
             ],
             "env": {
                 "PERPLEXITY_API_KEY": "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",
-				"PERPLEXITY_MODEL": "sonar-reasoning-pro"
+                "PERPLEXITY_MODEL": "sonar-reasoning-pro"
             }
         }
     }
