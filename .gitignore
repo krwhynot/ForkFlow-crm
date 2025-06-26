@@ -84,6 +84,7 @@ jspm_packages/
 .env.production.local
 .env
 .env.*
+.env.development
 
 
 # parcel-bundler cache (https://parceljs.org/)
