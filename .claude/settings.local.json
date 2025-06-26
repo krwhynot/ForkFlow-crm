@@ -3,7 +3,20 @@
     "allow": [
       "mcp__supabase__list_projects",
       "mcp__supabase__list_tables",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql",
+      "mcp__filesystem__list_directory",
+      "mcp__Context7__resolve-library-id",
+      "mcp__Context7__get-library-docs",
+      "mcp__supabase__apply_migration",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(npm cache clean:*)",
+      "Bash(node:*)",
+      "Bash(npm --version)",
+      "Bash(./node_modules/.bin/vite:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -9,18 +9,18 @@ import {
     withLifecycleCallbacks,
 } from 'react-admin';
 import {
-    Contact,
-    ContactNote,
-    Deal,
-    DealNote,
+    Broker,
+    BrokerFormData,
+    Customer,
+    Visit,
+    Reminder,
+    Product,
+    Order,
     RAFile,
-    Sale,
-    SalesFormData,
     SignUpData,
+    GPSCoordinates,
+    BrokerDashboardStats,
 } from '../../types';
-import { getActivityLog } from '../commons/activity';
-import { getCompanyAvatar } from '../commons/getCompanyAvatar';
-import { getContactAvatar } from '../commons/getContactAvatar';
 import { getIsInitialized } from './authProvider';
 import { supabase } from './supabase';
 
@@ -40,65 +40,72 @@ const baseDataProvider = supabaseDataProvider({
     sortOrder: 'asc,desc.nullslast' as any,
 });
 
-const processCompanyLogo = async (params: any) => {
-    let logo = params.data.logo;
+// GPS Utilities for Food Broker CRM
+const getCurrentLocation = (): Promise<GPSCoordinates> => {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error('Geolocation is not supported by this browser.'));
+            return;
+        }
 
-    if (typeof logo !== 'object' || logo === null || !logo.src) {
-        logo = await getCompanyAvatar(params.data);
-    } else if (logo.rawFile instanceof File) {
-        await uploadToBucket(logo);
-    }
-
-    return {
-        ...params,
-        data: {
-            ...params.data,
-            logo,
-        },
-    };
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    timestamp: new Date().toISOString(),
+                });
+            },
+            (error) => {
+                reject(new Error(`Geolocation error: ${error.message}`));
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000, // Cache for 1 minute
+            }
+        );
+    });
 };
 
-async function processContactAvatar(
-    params: UpdateParams<Contact>
-): Promise<UpdateParams<Contact>>;
-
-async function processContactAvatar(
-    params: CreateParams<Contact>
-): Promise<CreateParams<Contact>>;
-
-async function processContactAvatar(
-    params: CreateParams<Contact> | UpdateParams<Contact>
-): Promise<CreateParams<Contact> | UpdateParams<Contact>> {
+// Process visit data to auto-capture GPS if needed
+const processVisitLocation = async (params: CreateParams<Visit> | UpdateParams<Visit>) => {
     const { data } = params;
-    if (data.avatar?.src || !data.email_jsonb || !data.email_jsonb.length) {
-        return params;
+    
+    // Auto-capture GPS coordinates if not provided
+    if (!data.latitude || !data.longitude) {
+        try {
+            const location = await getCurrentLocation();
+            return {
+                ...params,
+                data: {
+                    ...data,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                },
+            };
+        } catch (error) {
+            console.warn('Could not get GPS location:', error);
+            // Continue without GPS coordinates
+        }
     }
-    const avatarUrl = await getContactAvatar(data);
-
-    // Clone the data and modify the clone
-    const newData = { ...data, avatar: { src: avatarUrl || undefined } };
-
-    return { ...params, data: newData };
-}
+    
+    return params;
+};
 
 const dataProviderWithCustomMethods = {
     ...baseDataProvider,
     async getList(resource: string, params: GetListParams) {
-        if (resource === 'companies') {
-            return baseDataProvider.getList('companies_summary', params);
-        }
-        if (resource === 'contacts') {
-            return baseDataProvider.getList('contacts_summary', params);
+        if (resource === 'customers') {
+            return baseDataProvider.getList('customer_summary', params);
         }
 
         return baseDataProvider.getList(resource, params);
     },
     async getOne(resource: string, params: any) {
-        if (resource === 'companies') {
-            return baseDataProvider.getOne('companies_summary', params);
-        }
-        if (resource === 'contacts') {
-            return baseDataProvider.getOne('contacts_summary', params);
+        if (resource === 'customers') {
+            return baseDataProvider.getOne('customer_summary', params);
         }
 
         return baseDataProvider.getOne(resource, params);
@@ -130,22 +137,22 @@ const dataProviderWithCustomMethods = {
             password,
         };
     },
-    async salesCreate(body: SalesFormData) {
-        const { data, error } = await supabase.functions.invoke<Sale>('users', {
+    async brokerCreate(body: BrokerFormData) {
+        const { data, error } = await supabase.functions.invoke<Broker>('users', {
             method: 'POST',
             body,
         });
 
         if (!data || error) {
-            console.error('salesCreate.error', error);
-            throw new Error('Failed to create account manager');
+            console.error('brokerCreate.error', error);
+            throw new Error('Failed to create broker account');
         }
 
         return data;
     },
-    async salesUpdate(
+    async brokerUpdate(
         id: Identifier,
-        data: Partial<Omit<SalesFormData, 'password'>>
+        data: Partial<Omit<BrokerFormData, 'password'>>
     ) {
         const {
             email,
@@ -156,12 +163,12 @@ const dataProviderWithCustomMethods = {
             disabled,
         } = data;
 
-        const { data: sale, error } = await supabase.functions.invoke<Sale>(
+        const { data: broker, error } = await supabase.functions.invoke<Broker>(
             'users',
             {
                 method: 'PATCH',
                 body: {
-                    sales_id: id,
+                    broker_id: id,
                     email,
                     first_name,
                     last_name,
@@ -172,9 +179,9 @@ const dataProviderWithCustomMethods = {
             }
         );
 
-        if (!sale || error) {
-            console.error('salesCreate.error', error);
-            throw new Error('Failed to update account manager');
+        if (!broker || error) {
+            console.error('brokerUpdate.error', error);
+            throw new Error('Failed to update broker account');
         }
 
         return data;
@@ -184,7 +191,7 @@ const dataProviderWithCustomMethods = {
             await supabase.functions.invoke<boolean>('updatePassword', {
                 method: 'PATCH',
                 body: {
-                    sales_id: id,
+                    broker_id: id,
                 },
             });
 
@@ -195,33 +202,70 @@ const dataProviderWithCustomMethods = {
 
         return passwordUpdated;
     },
-    async unarchiveDeal(deal: Deal) {
-        // get all deals where stage is the same as the deal to unarchive
-        const { data: deals } = await baseDataProvider.getList<Deal>('deals', {
-            filter: { stage: deal.stage },
-            pagination: { page: 1, perPage: 1000 },
-            sort: { field: 'index', order: 'ASC' },
+    async getDashboardStats(): Promise<BrokerDashboardStats> {
+        const { data: user } = await supabase.auth.getUser();
+        if (!user?.user?.id) {
+            throw new Error('User not authenticated');
+        }
+
+        const { data, error } = await supabase.rpc('get_broker_dashboard_stats', {
+            broker_uuid: user.user.id
         });
 
-        // set index for each deal starting from 1, if the deal to unarchive is found, set its index to the last one
-        const updatedDeals = deals.map((d, index) => ({
-            ...d,
-            index: d.id === deal.id ? 0 : index + 1,
-            archived_at: d.id === deal.id ? null : d.archived_at,
-        }));
+        if (error) {
+            console.error('getDashboardStats.error', error);
+            throw new Error('Failed to get dashboard statistics');
+        }
 
-        return await Promise.all(
-            updatedDeals.map(updatedDeal =>
-                baseDataProvider.update('deals', {
-                    id: updatedDeal.id,
-                    data: updatedDeal,
-                    previousData: deals.find(d => d.id === updatedDeal.id),
-                })
-            )
-        );
+        return data[0] || {
+            total_customers: 0,
+            customers_this_month: 0,
+            total_visits: 0,
+            visits_this_week: 0,
+            visits_this_month: 0,
+            pending_reminders: 0,
+            overdue_reminders: 0,
+            customers_needing_attention: 0,
+        };
     },
-    async getActivityLog(companyId?: Identifier) {
-        return getActivityLog(baseDataProvider, companyId);
+    async findNearbyCustomers(latitude: number, longitude: number, radiusKm: number = 10) {
+        const { data: user } = await supabase.auth.getUser();
+        if (!user?.user?.id) {
+            throw new Error('User not authenticated');
+        }
+
+        const { data, error } = await supabase.rpc('customers_near_location', {
+            broker_uuid: user.user.id,
+            center_lat: latitude,
+            center_lon: longitude,
+            radius_km: radiusKm
+        });
+
+        if (error) {
+            console.error('findNearbyCustomers.error', error);
+            throw new Error('Failed to find nearby customers');
+        }
+
+        return data || [];
+    },
+    async completeReminder(reminderId: Identifier) {
+        return baseDataProvider.update('reminders', {
+            id: reminderId,
+            data: { is_completed: true },
+            previousData: {} as any,
+        });
+    },
+    async snoozeReminder(reminderId: Identifier, snoozeUntil: string) {
+        const { data: reminder } = await baseDataProvider.getOne('reminders', { id: reminderId });
+        
+        return baseDataProvider.update('reminders', {
+            id: reminderId,
+            data: { 
+                snoozed_until: snoozeUntil,
+                snooze_count: (reminder.snooze_count || 0) + 1 
+            },
+            previousData: reminder,
+        });
     },
     async isInitialized() {
         return getIsInitialized();
@@ -234,95 +278,102 @@ export const dataProvider = withLifecycleCallbacks(
     dataProviderWithCustomMethods,
     [
         {
-            resource: 'contactNotes',
-            beforeSave: async (data: ContactNote, _, __) => {
-                if (data.attachments) {
-                    for (const fi of data.attachments) {
-                        await uploadToBucket(fi);
-                    }
-                }
-                return data;
-            },
-        },
-        {
-            resource: 'dealNotes',
-            beforeSave: async (data: DealNote, _, __) => {
-                if (data.attachments) {
-                    for (const fi of data.attachments) {
-                        await uploadToBucket(fi);
-                    }
-                }
-                return data;
-            },
-        },
-        {
-            resource: 'sales',
-            beforeSave: async (data: Sale, _, __) => {
-                if (data.avatar) {
-                    await uploadToBucket(data.avatar);
-                }
-                return data;
-            },
-        },
-        {
-            resource: 'contacts',
-            beforeCreate: async params => {
-                return processContactAvatar(params);
-            },
-            beforeUpdate: async params => {
-                return processContactAvatar(params);
-            },
+            resource: 'customers',
             beforeGetList: async params => {
                 return applyFullTextSearch([
-                    'first_name',
-                    'last_name',
-                    'company_name',
-                    'title',
+                    'business_name',
+                    'contact_person',
                     'email',
                     'phone',
-                    'background',
-                ])(params);
-            },
-        },
-        {
-            resource: 'companies',
-            beforeGetList: async params => {
-                return applyFullTextSearch([
-                    'name',
-                    'phone_number',
-                    'website',
-                    'zipcode',
-                    'city',
-                    'stateAbbr',
+                    'address',
+                    'notes',
                 ])(params);
             },
             beforeCreate: async params => {
-                const createParams = await processCompanyLogo(params);
-
+                const { data: user } = await supabase.auth.getUser();
                 return {
-                    ...createParams,
+                    ...params,
                     data: {
-                        ...createParams.data,
+                        ...params.data,
+                        broker_id: user?.user?.id,
                         created_at: new Date().toISOString(),
                     },
                 };
             },
+        },
+        {
+            resource: 'customer_summary',
+            beforeGetList: async params => {
+                return applyFullTextSearch(['business_name', 'contact_person'])(params);
+            },
+        },
+        {
+            resource: 'visits',
+            beforeCreate: async params => {
+                const processedParams = await processVisitLocation(params);
+                const { data: user } = await supabase.auth.getUser();
+                
+                return {
+                    ...processedParams,
+                    data: {
+                        ...processedParams.data,
+                        broker_id: user?.user?.id,
+                        visit_date: processedParams.data.visit_date || new Date().toISOString(),
+                    },
+                };
+            },
             beforeUpdate: async params => {
-                return await processCompanyLogo(params);
+                return processVisitLocation(params);
+            },
+            beforeGetList: async params => {
+                return applyFullTextSearch(['notes', 'visit_type'])(params);
             },
         },
         {
-            resource: 'contacts_summary',
+            resource: 'reminders',
+            beforeCreate: async params => {
+                const { data: user } = await supabase.auth.getUser();
+                
+                return {
+                    ...params,
+                    data: {
+                        ...params.data,
+                        broker_id: user?.user?.id,
+                    },
+                };
+            },
             beforeGetList: async params => {
-                return applyFullTextSearch(['first_name', 'last_name'])(params);
+                return applyFullTextSearch(['title', 'notes'])(params);
             },
         },
         {
-            resource: 'deals',
+            resource: 'products',
             beforeGetList: async params => {
-                return applyFullTextSearch(['name', 'type', 'description'])(
-                    params
-                );
+                return applyFullTextSearch([
+                    'name',
+                    'category',
+                    'subcategory',
+                    'description',
+                    'sku',
+                ])(params);
+            },
+        },
+        {
+            resource: 'orders',
+            beforeCreate: async params => {
+                const { data: user } = await supabase.auth.getUser();
+                
+                return {
+                    ...params,
+                    data: {
+                        ...params.data,
+                        broker_id: user?.user?.id,
+                        order_date: params.data.order_date || new Date().toISOString(),
+                    },
+                };
+            },
+            beforeGetList: async params => {
+                return applyFullTextSearch(['notes', 'internal_notes'])(params);
             },
         },
     ]
@@ -338,21 +389,10 @@ const applyFullTextSearch = (columns: string[]) => (params: GetListParams) => {
         filter: {
             ...filter,
             '@or': columns.reduce((acc, column) => {
-                if (column === 'email')
-                    return {
-                        ...acc,
-                        [`email_fts@ilike`]: q,
-                    };
-                if (column === 'phone')
-                    return {
-                        ...acc,
-                        [`phone_fts@ilike`]: q,
-                    };
-                else
-                    return {
-                        ...acc,
-                        [`${column}@ilike`]: q,
-                    };
+                return {
+                    ...acc,
+                    [`${column}@ilike`]: `%${q}%`,
+                };
             }, {}),
         },
     };
