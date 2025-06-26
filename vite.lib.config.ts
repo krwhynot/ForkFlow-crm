@@ -14,7 +14,7 @@ export default defineConfig({
         dts({ include: ['.'], entryRoot: '.', outDir: '../lib/types' }),
     ],
     define: {
-        'process.env': process.env,
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
     build: {
         sourcemap: true,
