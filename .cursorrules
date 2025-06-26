@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "rules": {
+    "general": {
+      "language": "typescript",
+      "formatOnSave": true,
+      "defaultPromptContext": "You are working with a React + react-admin + Supabase CRM application for food brokers. Focus on mobile-friendly UI, customer management, visit tracking, and GPS integration."
+    },
+    "typescript": {
+      "strict": true,
+      "completions": {
+        "imports": {
+          "preferNamed": true,
+          "preferConst": true
+        },
+        "types": {
+          "inferFromUsage": true,
+          "preferInterface": true
+        }
+      }
+    },
+    "react": {
+      "completions": {
+        "preferArrowFunctions": true,
+        "preferFunctionComponents": true,
+        "hooks": {
+          "suggestDependencyArray": true,
+          "suggestCustomHooks": true
+        }
+      }
+    },
+    "reactAdmin": {
+      "completions": {
+        "preferResourcePatterns": true,
+        "suggestDataProvider": true,
+        "suggestAuthProvider": true
+      }
+    },
+    "supabase": {
+      "completions": {
+        "preferRowLevelSecurity": true,
+        "suggestPolicies": true,
+        "suggestTypes": true
+      }
+    }
+  }
+}
