@@ -14,11 +14,11 @@ import {
     required,
     useRecordContext,
 } from 'react-admin';
+import ImageEditorField from '../misc/ImageEditorField';
 import { isLinkedinUrl } from '../misc/isLinkedInUrl';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { Company, Sale } from '../types';
 import { sizes } from './sizes';
-import ImageEditorField from '../misc/ImageEditorField';
 
 const isUrl = (url: string) => {
     if (!url) return;
@@ -65,7 +65,7 @@ const CompanyDisplayInputs = () => {
                 type="avatar"
                 width={60}
                 height={60}
-                emptyText={record?.name.charAt(0)}
+                emptyText={record?.name ? record.name.charAt(0) : ''}
                 linkPosition="bottom"
             />
             <TextInput
@@ -159,7 +159,7 @@ const CompanyAccountManagerInput = () => {
         <Stack>
             <Typography variant="h6">Account manager</Typography>
             <ReferenceInput
-                source="sales_id"
+                source="salesId"
                 reference="sales"
                 filter={{
                     'disabled@neq': true,

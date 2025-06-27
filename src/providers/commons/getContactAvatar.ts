@@ -1,5 +1,5 @@
-import { DOMAINS_NOT_SUPPORTING_FAVICON } from '../../misc/unsupportedDomains.const';
 import { fetchWithTimeout } from '../../misc/fetchWithTimeout';
+import { DOMAINS_NOT_SUPPORTING_FAVICON } from '../../misc/unsupportedDomains.const';
 import { Contact } from '../../types';
 
 export async function hash(string: string) {
@@ -40,31 +40,31 @@ async function getFaviconUrl(domain: string): Promise<string | null> {
 export async function getContactAvatar(
     record: Partial<Contact>
 ): Promise<string | null> {
-    if (!record.email_jsonb || !record.email_jsonb.length) {
+    if (!record.email || record.email.trim() === '') {
         return null;
     }
 
-    for (const { email } of record.email_jsonb) {
-        // Step 1: Try to get Gravatar image
-        const gravatarUrl = await getGravatarUrl(email);
-        try {
-            const gravatarResponse = await fetch(gravatarUrl);
-            if (gravatarResponse.ok) {
-                return gravatarUrl;
-            }
-        } catch (error) {
-            // Gravatar not found
+    const emailAddr = record.email;
+    
+    // Step 1: Try to get Gravatar image
+    const gravatarUrl = await getGravatarUrl(emailAddr);
+    try {
+        const gravatarResponse = await fetch(gravatarUrl);
+        if (gravatarResponse.ok) {
+            return gravatarUrl;
         }
-
-        // Step 2: Try to get favicon from email domain
-        const domain = email.split('@')[1];
-        const faviconUrl = await getFaviconUrl(domain);
-        if (faviconUrl) {
-            return faviconUrl;
-        }
-
-        // TODO: Step 3: Try to get image from LinkedIn.
+    } catch (error) {
+        // Gravatar not found
     }
+
+    // Step 2: Try to get favicon from email domain
+    const domain = emailAddr.split('@')[1];
+    const faviconUrl = await getFaviconUrl(domain);
+    if (faviconUrl) {
+        return faviconUrl;
+    }
+
+    // TODO: Step 3: Try to get image from LinkedIn.
 
     return null;
 }

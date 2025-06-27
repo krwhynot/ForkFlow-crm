@@ -19,8 +19,8 @@ import {
     useGetIdentity,
     useNotify,
 } from 'react-admin';
-import { useConfigurationContext } from '../root/ConfigurationContext';
 import { contactInputText, contactOptionText } from '../misc/ContactOption';
+import { useConfigurationContext } from '../root/ConfigurationContext';
 
 const validateRequired = required();
 
@@ -75,7 +75,7 @@ const DealLinkedToInputs = () => {
                 {
                     data: {
                         name,
-                        sales_id: identity?.id,
+                        salesId: identity?.id,
                         created_at: new Date().toISOString(),
                     },
                 },
@@ -91,7 +91,7 @@ const DealLinkedToInputs = () => {
     return (
         <Stack gap={1} flex={1}>
             <Typography variant="subtitle1">Linked to</Typography>
-            <ReferenceInput source="company_id" reference="companies">
+            <ReferenceInput source="organizationId" reference="companies">
                 <AutocompleteInput
                     optionText="name"
                     onCreate={handleCreateCompany}
@@ -137,7 +137,7 @@ const DealMiscInputs = () => {
                 helperText={false}
             />
             <DateInput
-                source="expected_closing_date"
+                source="expectedClosingDate"
                 fullWidth
                 validate={[validateRequired]}
                 helperText={false}

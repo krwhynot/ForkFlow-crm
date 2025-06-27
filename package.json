@@ -11,6 +11,7 @@
         "src"
     ],
     "dependencies": {
+        "@faker-js/faker": "^9.8.0",
         "@googlemaps/react-wrapper": "^1.2.0",
         "@hello-pangea/dnd": "^18.0.1",
         "@mui/icons-material": "^5.17.1",
@@ -75,6 +76,7 @@
         "lint-staged": "^15.5.0",
         "pg": "^8.11.3",
         "prettier": "~3.5.3",
+        "replace-in-file": "^8.3.0",
         "rollup-plugin-visualizer": "^5.12.0",
         "storybook": "^8.6.7",
         "supabase": "^2.19.7",

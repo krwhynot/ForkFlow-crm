@@ -86,7 +86,7 @@ create table "public"."deals" (
     "description" text,
     "amount" bigint,
     "created_at" timestamp with time zone not null default now(),
-    "updated_at" timestamp with time zone not null default now(),
+    "updatedAt" timestamp with time zone not null default now(),
     "archived_at" timestamp with time zone default null,
     "expected_closing_date" timestamp with time zone default null,
     "sales_id" bigint,

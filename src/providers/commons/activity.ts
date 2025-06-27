@@ -19,21 +19,21 @@ import {
 // Replace with a server-side view or a custom API endpoint.
 export async function getActivityLog(
     dataProvider: DataProvider,
-    companyId?: Identifier,
-    salesId?: Identifier
+    organizationId?: Identifier,
+    brokerId?: Identifier
 ) {
     let companyFilter = {} as any;
-    if (companyId) {
-        companyFilter.id = companyId;
-    } else if (salesId) {
-        companyFilter['sales_id@in'] = `(${salesId})`;
+    if (organizationId) {
+        companyFilter.id = organizationId;
+    } else if (brokerId) {
+        companyFilter['createdBy@in'] = `(${brokerId})`;
     }
 
     let filter = {} as any;
-    if (companyId) {
-        filter.company_id = companyId;
-    } else if (salesId) {
-        filter['sales_id@in'] = `(${salesId})`;
+    if (organizationId) {
+        filter.organizationId = organizationId;
+    } else if (brokerId) {
+        filter['createdBy@in'] = `(${brokerId})`;
     }
 
     const [newCompanies, newContactsAndNotes, newDealsAndNotes] =
@@ -62,16 +62,26 @@ const getNewCompanies = async (
         {
             filter,
             pagination: { page: 1, perPage: 250 },
-            sort: { field: 'created_at', order: 'DESC' },
+            sort: { field: 'createdAt', order: 'DESC' },
         }
     );
     return companies.map(company => ({
-        id: `company.${company.id}.created`,
+        id: `organization.${company.id}.created`,
         type: COMPANY_CREATED,
-        company_id: company.id,
-        company,
-        sales_id: company.sales_id,
-        date: company.created_at,
+        organizationId: typeof company.id === 'number' ? company.id : Number(company.id),
+        organization: {
+            id: typeof company.id === 'number' ? company.id : Number(company.id),
+            name: company.name ?? '',
+            phone: company.phone,
+            website: company.website,
+            address: company.address,
+            city: company.city,
+            zipcode: company.zipcode,
+            createdAt: company.createdAt,
+            updatedAt: company.updatedAt,
+        },
+        brokerId: 0,
+        date: company.createdAt,
     }));
 };
 
@@ -82,15 +92,15 @@ async function getNewContactsAndNotes(
     const { data: contacts } = await dataProvider.getList<Contact>('contacts', {
         filter,
         pagination: { page: 1, perPage: 250 },
-        sort: { field: 'first_seen', order: 'DESC' },
+        sort: { field: 'createdAt', order: 'DESC' },
     });
 
     let recentContactNotesFilter = {} as any;
-    if (filter.sales_id) {
-        recentContactNotesFilter.sales_id = filter.sales_id;
+    if (filter.createdBy) {
+        recentContactNotesFilter.createdBy = filter.createdBy;
     }
-    if (filter.company_id) {
-        // No company_id field in contactNote, filtering by related contacts instead.
+    if (filter.organizationId) {
+        // No organizationId field in contactNote, filtering by related contacts instead.
         // This filter is only valid if a company has less than 250 contact.
         const contactIds = contacts.map(contact => contact.id).join(',');
         recentContactNotesFilter['contact_id@in'] = `(${contactIds})`;
@@ -108,18 +118,31 @@ async function getNewContactsAndNotes(
     const newContacts = contacts.map(contact => ({
         id: `contact.${contact.id}.created`,
         type: CONTACT_CREATED,
-        company_id: contact.company_id,
-        sales_id: contact.sales_id,
+        organizationId: contact.organizationId,
+        contactId: contact.id,
         contact,
-        date: contact.first_seen,
+        brokerId: 0,
+        date: contact.createdAt,
     }));
 
     const newContactNotes = contactNotes.map(contactNote => ({
         id: `contactNote.${contactNote.id}.created`,
         type: CONTACT_NOTE_CREATED,
-        sales_id: contactNote.sales_id,
-        contactNote,
-        date: contactNote.date,
+        organizationId: contactNote.organizationId,
+        contactId: contactNote.contactId,
+        contactNote: {
+            id: contactNote.id,
+            contactId: contactNote.contactId,
+            organizationId: contactNote.organizationId,
+            content: contactNote.content,
+            subject: contactNote.subject,
+            status: contactNote.status,
+            createdAt: contactNote.createdAt,
+            updatedAt: contactNote.updatedAt,
+            createdBy: contactNote.createdBy,
+        },
+        brokerId: 0,
+        date: contactNote.createdAt,
     }));
 
     return [...newContacts, ...newContactNotes];
@@ -132,15 +155,15 @@ async function getNewDealsAndNotes(
     const { data: deals } = await dataProvider.getList<Deal>('deals', {
         filter,
         pagination: { page: 1, perPage: 250 },
-        sort: { field: 'created_at', order: 'DESC' },
+        sort: { field: 'createdAt', order: 'DESC' },
     });
 
     let recentDealNotesFilter = {} as any;
-    if (filter.sales_id) {
-        recentDealNotesFilter.sales_id = filter.sales_id;
+    if (filter.createdBy) {
+        recentDealNotesFilter.createdBy = filter.createdBy;
     }
-    if (filter.company_id) {
-        // No company_id field in dealNote, filtering by related deals instead.
+    if (filter.organizationId) {
+        // No organizationId field in dealNote, filtering by related deals instead.
         // This filter is only valid if a deal has less than 250 notes.
         const dealIds = deals.map(deal => deal.id).join(',');
         recentDealNotesFilter['deal_id@in'] = `(${dealIds})`;
@@ -158,18 +181,32 @@ async function getNewDealsAndNotes(
     const newDeals = deals.map(deal => ({
         id: `deal.${deal.id}.created`,
         type: DEAL_CREATED,
-        company_id: deal.company_id,
-        sales_id: deal.sales_id,
+        organizationId: deal.organizationId,
+        contactId: deal.contactId,
+        dealId: deal.id,
         deal,
-        date: deal.created_at,
+        brokerId: 0,
+        date: deal.createdAt,
     }));
 
     const newDealNotes = dealNotes.map(dealNote => ({
         id: `dealNote.${dealNote.id}.created`,
         type: DEAL_NOTE_CREATED,
-        sales_id: dealNote.sales_id,
-        dealNote,
-        date: dealNote.date,
+        organizationId: dealNote.organizationId,
+        dealId: dealNote.dealId,
+        dealNote: {
+            id: dealNote.id,
+            dealId: dealNote.dealId,
+            organizationId: dealNote.organizationId,
+            content: dealNote.content,
+            subject: dealNote.subject,
+            status: dealNote.status,
+            createdAt: dealNote.createdAt,
+            updatedAt: dealNote.updatedAt,
+            createdBy: dealNote.createdBy,
+        },
+        brokerId: 0,
+        date: dealNote.createdAt,
     }));
 
     return [...newDeals, ...newDealNotes];

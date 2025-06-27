@@ -30,7 +30,6 @@ import { ActivityLog } from '../activity/ActivityLog';
 import { Avatar } from '../contacts/Avatar';
 import { TagsList } from '../contacts/TagsList';
 import { findDealLabel } from '../deals/deal';
-import { Status } from '../misc/Status';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { Company, Contact, Deal } from '../types';
 import { CompanyAside } from './CompanyAside';
@@ -75,14 +74,14 @@ const CompanyShowContent = () => {
                                     !record.nb_contacts
                                         ? 'No Contacts'
                                         : record.nb_contacts === 1
-                                          ? '1 Contact'
-                                          : `${record.nb_contacts} Contacts`
+                                            ? '1 Contact'
+                                            : `${record.nb_contacts} Contacts`
                                 }
                                 path="contacts"
                             >
                                 <ReferenceManyField
                                     reference="contacts_summary"
-                                    target="company_id"
+                                    target="organizationId"
                                     sort={{ field: 'last_name', order: 'ASC' }}
                                 >
                                     <Stack
@@ -116,7 +115,7 @@ const CompanyShowContent = () => {
                                 >
                                     <ReferenceManyField
                                         reference="deals"
-                                        target="company_id"
+                                        target="organizationId"
                                         sort={{ field: 'name', order: 'ASC' }}
                                     >
                                         <DealsIterator />
@@ -158,11 +157,10 @@ const ContactsIterator = () => {
                                     <>
                                         {contact.title}
                                         {contact.nb_tasks
-                                            ? ` - ${contact.nb_tasks} task${
-                                                  contact.nb_tasks > 1
-                                                      ? 's'
-                                                      : ''
-                                              }`
+                                            ? ` - ${contact.nb_tasks} task${contact.nb_tasks > 1
+                                                ? 's'
+                                                : ''
+                                            }`
                                             : ''}
                                         &nbsp; &nbsp;
                                         <TagsList />
@@ -178,7 +176,7 @@ const ContactsIterator = () => {
                                     >
                                         last activity{' '}
                                         {formatDistance(contact.last_seen, now)}{' '}
-                                        ago <Status status={contact.status} />
+                                        ago
                                     </Typography>
                                 </ListItemSecondaryAction>
                             )}
@@ -196,7 +194,7 @@ const CreateRelatedContactButton = () => {
         <Button
             component={RouterLink}
             to="/contacts/create"
-            state={company ? { record: { company_id: company.id } } : undefined}
+            state={company ? { record: { organizationId: company.id } } : undefined}
             color="primary"
             size="small"
             startIcon={<PersonAddIcon />}
@@ -233,9 +231,6 @@ const DealsIterator = () => {
                                             currencyDisplay: 'narrowSymbol',
                                             minimumSignificantDigits: 3,
                                         })}
-                                        {deal.category
-                                            ? `, ${deal.category}`
-                                            : ''}
                                     </>
                                 }
                             />
@@ -246,7 +241,7 @@ const DealsIterator = () => {
                                     component="span"
                                 >
                                     last activity{' '}
-                                    {formatDistance(deal.updated_at, now)}{' '}
+                                    {formatDistance(deal.updatedAt, now)}{' '}
                                     ago{' '}
                                 </Typography>
                             </ListItemSecondaryAction>

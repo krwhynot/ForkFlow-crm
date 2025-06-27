@@ -32,7 +32,7 @@ const DealList = () => {
         <ListBase
             perPage={100}
             filter={{
-                'archived_at@is': null,
+                'archivedAt@is': null,
             }}
             sort={{ field: 'index', order: 'DESC' }}
         >
@@ -51,13 +51,13 @@ const DealLayout = () => {
 
     const dealFilters = [
         <SearchInput source="q" alwaysOn />,
-        <ReferenceInput source="company_id" reference="companies" />,
+        <ReferenceInput source="organizationId" reference="companies" />,
         <SelectInput
             source="category"
             label="Category"
             choices={dealCategories.map(type => ({ id: type, name: type }))}
         />,
-        <OnlyMineInput source="sales_id" alwaysOn />,
+        <OnlyMineInput source="salesId" alwaysOn />
     ];
 
     const { data, isPending, filterValues } = useListContext();

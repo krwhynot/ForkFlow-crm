@@ -1,3 +1,4 @@
+import { Link, Stack, Typography } from '@mui/material';
 import {
     ListContextProvider,
     ResourceContextProvider,
@@ -5,7 +6,6 @@ import {
     useGetList,
     useList,
 } from 'react-admin';
-import { Link, Stack, Typography } from '@mui/material';
 
 import { TasksIterator } from '../tasks/TasksIterator';
 
@@ -29,7 +29,7 @@ export const TasksListFilter = ({
             sort: { field: 'due_date', order: 'ASC' },
             filter: {
                 ...filter,
-                sales_id: identity?.id,
+                salesId: identity?.id,
             },
         },
         { enabled: !!identity }

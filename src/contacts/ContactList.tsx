@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import { Card, Stack } from '@mui/material';
 import jsonExport from 'jsonexport/dist';
 import type { Exporter } from 'react-admin';
@@ -17,9 +16,15 @@ import {
     TopToolbar,
     useGetIdentity,
     useListContext,
+    Button,
+    useUpdateMany,
+    useNotify,
+    useRefresh,
+    useUnselectAll,
 } from 'react-admin';
+import { Star as StarIcon } from '@mui/icons-material';
 
-import { Company, Contact, Sale, Tag } from '../types';
+import { Organization, Contact, Setting } from '../types';
 import { ContactEmpty } from './ContactEmpty';
 import { ContactImportButton } from './ContactImportButton';
 import { ContactListContent } from './ContactListContent';
@@ -33,7 +38,7 @@ export const ContactList = () => {
     return (
         <ListBase
             perPage={25}
-            sort={{ field: 'last_seen', order: 'DESC' }}
+            sort={{ field: 'firstName', order: 'ASC' }}
             exporter={exporter}
         >
             <ContactListLayout />
@@ -58,6 +63,7 @@ const ContactListLayout = () => {
                 <Title title={'Contacts'} />
                 <ListToolbar actions={<ContactListActions />} />
                 <BulkActionsToolbar>
+                    <BulkSetPrimaryButton />
                     <BulkExportButton />
                     <BulkDeleteButton />
                 </BulkActionsToolbar>
@@ -72,65 +78,130 @@ const ContactListLayout = () => {
 
 const ContactListActions = () => (
     <TopToolbar>
-        <SortButton fields={['last_name', 'first_name', 'last_seen']} />
+        <SortButton
+            fields={['firstName', 'lastName', 'organizationId', 'isPrimary']}
+        />
         <ContactImportButton />
         <ExportButton />
         <CreateButton
             variant="contained"
             label="New Contact"
-            sx={{ marginLeft: 2 }}
+            sx={{
+                marginLeft: 2,
+                minHeight: 44,
+                px: 3,
+            }}
         />
     </TopToolbar>
 );
 
 const exporter: Exporter<Contact> = async (records, fetchRelatedRecords) => {
-    const companies = await fetchRelatedRecords<Company>(
+    const organizations = await fetchRelatedRecords<Organization>(
         records,
-        'company_id',
-        'companies'
+        'organizationId',
+        'organizations'
     );
-    const sales = await fetchRelatedRecords<Sale>(records, 'sales_id', 'sales');
-    const tags = await fetchRelatedRecords<Tag>(records, 'tags', 'tags');
+    const roleSettings = await fetchRelatedRecords<Setting>(
+        records,
+        'roleId',
+        'settings'
+    );
+    const influenceSettings = await fetchRelatedRecords<Setting>(
+        records,
+        'influenceLevelId',
+        'settings'
+    );
+    const decisionSettings = await fetchRelatedRecords<Setting>(
+        records,
+        'decisionRoleId',
+        'settings'
+    );
 
     const contacts = records.map(contact => {
         const exportedContact = {
             ...contact,
-            company:
-                contact.company_id != null
-                    ? companies[contact.company_id].name
-                    : undefined,
-            sales: `${sales[contact.sales_id].first_name} ${
-                sales[contact.sales_id].last_name
-            }`,
-            tags: contact.tags.map(tagId => tags[tagId].name).join(', '),
-            email_work: contact.email_jsonb?.find(
-                email => email.type === 'Work'
-            )?.email,
-            email_home: contact.email_jsonb?.find(
-                email => email.type === 'Home'
-            )?.email,
-            email_other: contact.email_jsonb?.find(
-                email => email.type === 'Other'
-            )?.email,
-            email_jsonb: JSON.stringify(contact.email_jsonb),
-            email_fts: undefined,
-            phone_work: contact.phone_jsonb?.find(
-                phone => phone.type === 'Work'
-            )?.number,
-            phone_home: contact.phone_jsonb?.find(
-                phone => phone.type === 'Home'
-            )?.number,
-            phone_other: contact.phone_jsonb?.find(
-                phone => phone.type === 'Other'
-            )?.number,
-            phone_jsonb: JSON.stringify(contact.phone_jsonb),
-            phone_fts: undefined,
+            organization: contact.organizationId
+                ? organizations[contact.organizationId]?.name
+                : undefined,
+            role: contact.roleId
+                ? roleSettings[contact.roleId]?.label
+                : undefined,
+            influenceLevel: contact.influenceLevelId
+                ? influenceSettings[contact.influenceLevelId]?.label
+                : undefined,
+            decisionRole: contact.decisionRoleId
+                ? decisionSettings[contact.decisionRoleId]?.label
+                : undefined,
+            fullName: `${contact.firstName} ${contact.lastName}`,
+            primaryContact: contact.isPrimary ? 'Yes' : 'No',
         };
-        delete exportedContact.email_fts;
-        delete exportedContact.phone_fts;
         return exportedContact;
     });
+
     return jsonExport(contacts, {}, (_err: any, csv: string) => {
         downloadCSV(csv, 'contacts');
     });
+};
+
+const BulkSetPrimaryButton = () => {
+    const [updateMany] = useUpdateMany();
+    const { selectedIds, data } = useListContext();
+    const notify = useNotify();
+    const refresh = useRefresh();
+    const unselectAll = useUnselectAll('contacts');
+
+    const handleSetPrimary = async () => {
+        if (selectedIds.length === 0) return;
+
+        try {
+            // Group contacts by organization
+            const contactsByOrg = new Map<number, Contact[]>();
+            selectedIds.forEach(id => {
+                const contact = data?.find(c => c.id === id);
+                if (contact?.organizationId) {
+                    const orgContacts =
+                        contactsByOrg.get(contact.organizationId) || [];
+                    orgContacts.push(contact);
+                    contactsByOrg.set(contact.organizationId, orgContacts);
+                }
+            });
+
+            // Validate: only one contact per organization should be selected
+            const invalidOrgs = Array.from(contactsByOrg.entries()).filter(
+                ([, contacts]) => contacts.length > 1
+            );
+            if (invalidOrgs.length > 0) {
+                notify(
+                    'Please select only one contact per organization to set as primary',
+                    { type: 'warning' }
+                );
+                return;
+            }
+
+            // Set selected contacts as primary
+            await updateMany('contacts', {
+                ids: selectedIds,
+                data: { isPrimary: true },
+            });
+
+            notify(
+                `Successfully set ${selectedIds.length} contact(s) as primary`,
+                { type: 'success' }
+            );
+            refresh();
+            unselectAll();
+        } catch (error) {
+            notify('Error updating contacts', { type: 'error' });
+        }
+    };
+
+    return (
+        <Button
+            onClick={handleSetPrimary}
+            startIcon={<StarIcon />}
+            disabled={selectedIds.length === 0}
+        >
+            Set as Primary
+        </Button>
+    );
 };

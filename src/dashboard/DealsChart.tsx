@@ -22,18 +22,18 @@ export const DealsChart = () => {
     const { data, isPending } = useGetList<Deal>('deals', {
         pagination: { perPage: 100, page: 1 },
         sort: {
-            field: 'created_at',
+            field: 'createdAt',
             order: 'ASC',
         },
         filter: {
-            'created_at@gte': threeMonthsAgo,
+            'createdAt@gte': threeMonthsAgo,
         },
     });
     const months = useMemo(() => {
         if (!data) return [];
         const dealsByMonth = data.reduce((acc, deal) => {
             const month = startOfMonth(
-                deal.created_at ?? new Date()
+                deal.createdAt ?? new Date()
             ).toISOString();
             if (!acc[month]) {
                 acc[month] = [];

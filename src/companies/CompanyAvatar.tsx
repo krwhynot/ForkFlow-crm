@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Avatar } from '@mui/material';
 import { useRecordContext } from 'react-admin';
 
@@ -14,7 +13,7 @@ export const CompanyAvatar = (props: {
     if (!record) return null;
     return (
         <Avatar
-            src={record.logo?.src}
+            src={record.logo}
             alt={record.name}
             sx={{
                 '& img': { objectFit: 'contain' },
@@ -26,7 +25,7 @@ export const CompanyAvatar = (props: {
                 },
             }}
         >
-            {record.name.charAt(0)}
+            {record.name ? record.name.charAt(0) : '?'}
         </Avatar>
     );
 };

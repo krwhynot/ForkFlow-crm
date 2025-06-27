@@ -9,9 +9,9 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useGetIdentity, useGetList } from 'react-admin';
-import { DealCardContent } from './DealCard';
-import { Deal } from '../types';
 import { DialogCloseButton } from '../misc/DialogCloseButton';
+import { Deal } from '../types';
+import { DealCardContent } from './DealCard';
 
 export const DealArchivedList = () => {
     const { identity } = useGetIdentity();
@@ -21,8 +21,8 @@ export const DealArchivedList = () => {
         isPending,
     } = useGetList('deals', {
         pagination: { page: 1, perPage: 1000 },
-        sort: { field: 'archived_at', order: 'DESC' },
-        filter: { 'archived_at@not.is': null },
+        sort: { field: 'archivedAt', order: 'DESC' },
+        filter: { 'archivedAt@not.is': null },
     });
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -42,7 +42,7 @@ export const DealArchivedList = () => {
     const archivedListsByDate: { [date: string]: Deal[] } =
         archivedLists.reduce(
             (acc, deal) => {
-                const date = new Date(deal.archived_at).toDateString();
+                const date = new Date(deal.archivedAt).toDateString();
                 if (!acc[date]) {
                     acc[date] = [];
                 }

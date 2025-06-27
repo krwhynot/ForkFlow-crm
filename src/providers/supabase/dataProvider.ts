@@ -10,17 +10,14 @@ import {
 } from 'react-admin';
 import {
     Broker,
+    BrokerDashboardStats,
     BrokerFormData,
-    Customer,
-    Visit,
-    Reminder,
-    Product,
-    Order,
+    GPSCoordinates,
     RAFile,
     SignUpData,
-    GPSCoordinates,
-    BrokerDashboardStats,
+    Visit
 } from '../../types';
+import { getActivityLog } from '../commons/activity';
 import { getIsInitialized } from './authProvider';
 import { supabase } from './supabase';
 
@@ -49,7 +46,7 @@ const getCurrentLocation = (): Promise<GPSCoordinates> => {
         }
 
         navigator.geolocation.getCurrentPosition(
-            (position) => {
+            position => {
                 resolve({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
@@ -57,7 +54,7 @@ const getCurrentLocation = (): Promise<GPSCoordinates> => {
                     timestamp: new Date().toISOString(),
                 });
             },
-            (error) => {
+            error => {
                 reject(new Error(`Geolocation error: ${error.message}`));
             },
             {
@@ -70,9 +67,13 @@ const getCurrentLocation = (): Promise<GPSCoordinates> => {
 };
 
 // Process visit data to auto-capture GPS if needed
-const processVisitLocation = async (params: CreateParams<Visit> | UpdateParams<Visit>) => {
+async function processVisitLocation(params: CreateParams<Visit>): Promise<CreateParams<Visit>>;
+async function processVisitLocation(params: UpdateParams<Visit>): Promise<UpdateParams<Visit>>;
+async function processVisitLocation(
+    params: CreateParams<Visit> | UpdateParams<Visit>
+): Promise<CreateParams<Visit> | UpdateParams<Visit>> {
     const { data } = params;
-    
+
     // Auto-capture GPS coordinates if not provided
     if (!data.latitude || !data.longitude) {
         try {
@@ -90,9 +91,9 @@ const processVisitLocation = async (params: CreateParams<Visit> | UpdateParams<V
             // Continue without GPS coordinates
         }
     }
-    
+
     return params;
-};
+}
 
 const dataProviderWithCustomMethods = {
     ...baseDataProvider,
@@ -138,10 +139,13 @@ const dataProviderWithCustomMethods = {
         };
     },
     async brokerCreate(body: BrokerFormData) {
-        const { data, error } = await supabase.functions.invoke<Broker>('users', {
-            method: 'POST',
-            body,
-        });
+        const { data, error } = await supabase.functions.invoke<Broker>(
+            'users',
+            {
+                method: 'POST',
+                body,
+            }
+        );
 
         if (!data || error) {
             console.error('brokerCreate.error', error);
@@ -208,27 +212,36 @@ const dataProviderWithCustomMethods = {
             throw new Error('User not authenticated');
         }
 
-        const { data, error } = await supabase.rpc('get_broker_dashboard_stats', {
-            broker_uuid: user.user.id
-        });
+        const { data, error } = await supabase.rpc(
+            'get_broker_dashboard_stats',
+            {
+                broker_uuid: user.user.id,
+            }
+        );
 
         if (error) {
             console.error('getDashboardStats.error', error);
             throw new Error('Failed to get dashboard statistics');
         }
 
-        return data[0] || {
-            total_customers: 0,
-            customers_this_month: 0,
-            total_visits: 0,
-            visits_this_week: 0,
-            visits_this_month: 0,
-            pending_reminders: 0,
-            overdue_reminders: 0,
-            customers_needing_attention: 0,
-        };
+        return (
+            data[0] || {
+                total_customers: 0,
+                customers_this_month: 0,
+                total_visits: 0,
+                visits_this_week: 0,
+                visits_this_month: 0,
+                pending_reminders: 0,
+                overdue_reminders: 0,
+                customers_needing_attention: 0,
+            }
+        );
     },
-    async findNearbyCustomers(latitude: number, longitude: number, radiusKm: number = 10) {
+    async findNearbyCustomers(
+        latitude: number,
+        longitude: number,
+        radiusKm: number = 10
+    ) {
         const { data: user } = await supabase.auth.getUser();
         if (!user?.user?.id) {
             throw new Error('User not authenticated');
@@ -238,7 +251,7 @@ const dataProviderWithCustomMethods = {
             broker_uuid: user.user.id,
             center_lat: latitude,
             center_lon: longitude,
-            radius_km: radiusKm
+            radius_km: radiusKm,
         });
 
         if (error) {
@@ -256,19 +269,25 @@ const dataProviderWithCustomMethods = {
         });
     },
     async snoozeReminder(reminderId: Identifier, snoozeUntil: string) {
-        const { data: reminder } = await baseDataProvider.getOne('reminders', { id: reminderId });
-        
+        const { data: reminder } = await baseDataProvider.getOne('reminders', {
+            id: reminderId,
+        });
+
         return baseDataProvider.update('reminders', {
             id: reminderId,
-            data: { 
+            data: {
                 snoozed_until: snoozeUntil,
-                snooze_count: (reminder.snooze_count || 0) + 1 
+                snooze_count: (reminder.snooze_count || 0) + 1,
             },
             previousData: reminder,
         });
     },
     async isInitialized() {
         return getIsInitialized();
+    },
+    // We simulate a remote endpoint that is in charge of returning activity log
+    getActivityLog: async (companyId?: Identifier) => {
+        return getActivityLog(dataProviderWithCustomMethods, companyId);
     },
 } satisfies DataProvider;
 
@@ -304,7 +323,91 @@ export const dataProvider = withLifecycleCallbacks(
         {
             resource: 'customer_summary',
             beforeGetList: async params => {
-                return applyFullTextSearch(['business_name', 'contact_person'])(params);
+                return applyFullTextSearch(['business_name', 'contact_person'])(
+                    params
+                );
+            },
+        },
+        {
+            resource: 'organizations',
+            beforeGetList: async params => {
+                return applyFullTextSearch([
+                    'name',
+                    'accountManager',
+                    'address',
+                    'city',
+                    'state',
+                    'phone',
+                    'website',
+                    'notes',
+                ])(params);
+            },
+            beforeCreate: async params => {
+                const { data: user } = await supabase.auth.getUser();
+                return {
+                    ...params,
+                    data: {
+                        ...params.data,
+                        createdBy: user?.user?.id,
+                        createdAt: new Date().toISOString(),
+                    },
+                };
+            },
+        },
+        {
+            resource: 'contacts',
+            beforeGetList: async params => {
+                return applyFullTextSearch([
+                    'firstName',
+                    'lastName',
+                    'email',
+                    'phone',
+                    'notes',
+                ])(params);
+            },
+            beforeCreate: async params => {
+                const { data: user } = await supabase.auth.getUser();
+
+                // Handle primary contact designation
+                if (params.data.isPrimary && params.data.organizationId) {
+                    // Unset any existing primary contact for this organization
+                    await supabase
+                        .from('contacts')
+                        .update({ isPrimary: false })
+                        .eq('organizationId', params.data.organizationId)
+                        .eq('isPrimary', true);
+                }
+
+                return {
+                    ...params,
+                    data: {
+                        ...params.data,
+                        createdBy: user?.user?.id,
+                        createdAt: new Date().toISOString(),
+                    },
+                };
+            },
+            beforeUpdate: async params => {
+                // Handle primary contact designation
+                if (params.data.isPrimary && params.data.organizationId) {
+                    // Unset any existing primary contact for this organization (except current record)
+                    await supabase
+                        .from('contacts')
+                        .update({ isPrimary: false })
+                        .eq('organizationId', params.data.organizationId)
+                        .eq('isPrimary', true)
+                        .neq('id', params.id);
+                }
+
+                return params;
+            },
+        },
+        {
+            resource: 'settings',
+            beforeGetList: async params => {
+                return applyFullTextSearch(['label', 'key', 'category'])(
+                    params
+                );
             },
         },
         {
@@ -312,18 +415,20 @@ export const dataProvider = withLifecycleCallbacks(
             beforeCreate: async params => {
                 const processedParams = await processVisitLocation(params);
                 const { data: user } = await supabase.auth.getUser();
-                
+
                 return {
                     ...processedParams,
                     data: {
                         ...processedParams.data,
                         broker_id: user?.user?.id,
-                        visit_date: processedParams.data.visit_date || new Date().toISOString(),
+                        visit_date:
+                            processedParams.data.visit_date ||
+                            new Date().toISOString(),
                     },
                 };
             },
             beforeUpdate: async params => {
-                return processVisitLocation(params);
+                return (await processVisitLocation(params)) as UpdateParams<Visit>;
             },
             beforeGetList: async params => {
                 return applyFullTextSearch(['notes', 'visit_type'])(params);
@@ -333,7 +438,7 @@ export const dataProvider = withLifecycleCallbacks(
             resource: 'reminders',
             beforeCreate: async params => {
                 const { data: user } = await supabase.auth.getUser();
-                
+
                 return {
                     ...params,
                     data: {
@@ -362,13 +467,14 @@ export const dataProvider = withLifecycleCallbacks(
             resource: 'orders',
             beforeCreate: async params => {
                 const { data: user } = await supabase.auth.getUser();
-                
+
                 return {
                     ...params,
                     data: {
                         ...params.data,
                         broker_id: user?.user?.id,
-                        order_date: params.data.order_date || new Date().toISOString(),
+                        order_date:
+                            params.data.order_date || new Date().toISOString(),
                     },
                 };
             },

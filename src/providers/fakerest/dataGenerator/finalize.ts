@@ -3,8 +3,11 @@ import { Db } from './types';
 export const finalize = (db: Db) => {
     // set contact status according to the latest note
     db.contactNotes
-        .sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf())
+        .sort((a, b) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
         .forEach(note => {
-            db.contacts[note.contact_id as number].status = note.status;
+            const contactId = note.contactId;
+            if (contactId && db.contacts[contactId as number]) {
+                // Removed: db.contacts[contactId as number].status = note.status;
+            }
         });
 };

@@ -2,11 +2,11 @@ import { Typography } from '@mui/material';
 import { ReferenceField } from 'react-admin';
 
 import { Avatar } from '../contacts/Avatar';
-import type { ActivityContactNoteCreated } from '../types';
-import { SaleName } from '../sales/SaleName';
-import { ActivityLogNote } from './ActivityLogNote';
 import { RelativeDate } from '../misc/RelativeDate';
+import { SaleName } from '../sales/SaleName';
+import type { ActivityContactNoteCreated } from '../types';
 import { useActivityLogContext } from './ActivityLogContext';
+import { ActivityLogNote } from './ActivityLogNote';
 
 type ActivityLogContactNoteCreatedProps = {
     activity: ActivityContactNoteCreated;
@@ -22,7 +22,7 @@ export function ActivityLogContactNoteCreated({
             header={
                 <>
                     <ReferenceField
-                        source="contact_id"
+                        source="contactId"
                         reference="contacts"
                         record={contactNote}
                         link={false}
@@ -36,7 +36,7 @@ export function ActivityLogContactNoteCreated({
                         flexGrow={1}
                     >
                         <ReferenceField
-                            source="sales_id"
+                            source="salesId"
                             reference="sales"
                             record={activity}
                             link={false}
@@ -45,7 +45,7 @@ export function ActivityLogContactNoteCreated({
                         </ReferenceField>{' '}
                         added a note about{' '}
                         <ReferenceField
-                            source="contact_id"
+                            source="contactId"
                             reference="contacts"
                             record={contactNote}
                         />
@@ -53,13 +53,13 @@ export function ActivityLogContactNoteCreated({
                             <>
                                 {' from '}
                                 <ReferenceField
-                                    source="contact_id"
+                                    source="contactId"
                                     reference="contacts"
                                     record={contactNote}
                                     link={false}
                                 >
                                     <ReferenceField
-                                        source="company_id"
+                                        source="organizationId"
                                         reference="companies"
                                         link="show"
                                     />
@@ -79,7 +79,7 @@ export function ActivityLogContactNoteCreated({
                     )}
                 </>
             }
-            text={contactNote.text}
+            text={contactNote.content}
         />
     );
 }

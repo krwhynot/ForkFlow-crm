@@ -1,19 +1,18 @@
-import * as React from 'react';
-import {
-    Card,
-    Box,
-    Stack,
-    Typography,
-    IconButton,
-    Tooltip,
-} from '@mui/material';
 import ContactsIcon from '@mui/icons-material/Contacts';
-import { useGetList, SimpleList, useGetIdentity } from 'react-admin';
+import {
+    Box,
+    Card,
+    IconButton,
+    Stack,
+    Tooltip,
+    Typography,
+} from '@mui/material';
+import { SimpleList, useGetIdentity, useGetList } from 'react-admin';
 
-import { Avatar } from '../contacts/Avatar';
-import { Contact } from '../types';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { Link } from 'react-router-dom';
+import { Avatar } from '../contacts/Avatar';
+import { Contact } from '../types';
 
 export const HotContacts = () => {
     const { identity } = useGetIdentity();
@@ -26,7 +25,7 @@ export const HotContacts = () => {
         {
             pagination: { page: 1, perPage: 10 },
             sort: { field: 'last_seen', order: 'DESC' },
-            filter: { status: 'hot', sales_id: identity?.id },
+            filter: { status: 'hot', salesId: identity?.id },
         },
         { enabled: Number.isInteger(identity?.id) }
     );
@@ -72,7 +71,7 @@ export const HotContacts = () => {
                     }
                     secondaryText={contact => (
                         <>
-                            {contact.title} at {contact.company_name}
+                            {contact.title} at {contact.organization?.name}
                         </>
                     )}
                     leftAvatar={contact => <Avatar record={contact} />}

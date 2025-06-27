@@ -4,29 +4,22 @@ import Woman2Icon from '@mui/icons-material/Woman2';
 
 export const defaultLogo = './logos/logo_atomic_crm.svg';
 
-export const defaultTitle = 'Atomic CRM';
+export const defaultTitle = 'ForkFlow CRM';
 
 export const defaultCompanySectors = [
-    'Communication Services',
-    'Consumer Discretionary',
-    'Consumer Staples',
-    'Energy',
-    'Financials',
-    'Health Care',
-    'Industrials',
-    'Information Technology',
-    'Materials',
-    'Real Estate',
-    'Utilities',
+    'Fine Dining',
+    'Fast Food',
+    'Healthcare',
+    'Catering',
+    'Institutional',
 ];
 
 export const defaultDealStages = [
-    { value: 'opportunity', label: 'Opportunity' },
-    { value: 'proposal-sent', label: 'Proposal Sent' },
-    { value: 'in-negociation', label: 'In Negotiation' },
-    { value: 'won', label: 'Won' },
-    { value: 'lost', label: 'Lost' },
-    { value: 'delayed', label: 'Delayed' },
+    { value: 'lead_discovery', label: 'Lead Discovery' },
+    { value: 'contacted', label: 'Contacted' },
+    { value: 'sampled_visited', label: 'Sampled/Visited' },
+    { value: 'follow_up', label: 'Follow-up' },
+    { value: 'close', label: 'Close' },
 ];
 
 export const defaultDealPipelineStatuses = ['won'];
@@ -47,15 +40,12 @@ export const defaultNoteStatuses = [
 ];
 
 export const defaultTaskTypes = [
-    'None',
     'Email',
-    'Demo',
-    'Lunch',
-    'Meeting',
-    'Follow-up',
-    'Thank you',
-    'Ship',
     'Call',
+    'In Person',
+    'Demo',
+    'Quote',
+    'Follow-up',
 ];
 
 export const defaultContactGender = [

@@ -2,9 +2,9 @@ import { ListItem, Stack, Typography } from '@mui/material';
 import { Link, ReferenceField } from 'react-admin';
 
 import { Avatar } from '../contacts/Avatar';
-import type { ActivityContactCreated } from '../types';
-import { SaleName } from '../sales/SaleName';
 import { RelativeDate } from '../misc/RelativeDate';
+import { SaleName } from '../sales/SaleName';
+import type { ActivityContactCreated } from '../types';
 import { useActivityLogContext } from './ActivityLogContext';
 
 type ActivityLogContactCreatedProps = {
@@ -27,7 +27,7 @@ export function ActivityLogContactCreated({
                     flexGrow={1}
                 >
                     <ReferenceField
-                        source="sales_id"
+                        source="salesId"
                         reference="sales"
                         record={activity}
                         link={false}
@@ -42,7 +42,7 @@ export function ActivityLogContactCreated({
                         <>
                             to{' '}
                             <ReferenceField
-                                source="company_id"
+                                source="organizationId"
                                 reference="companies"
                                 record={activity}
                                 link="show"

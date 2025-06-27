@@ -106,7 +106,7 @@ export const AddTask = ({
                     type: 'None',
                     contact_id: contact?.id,
                     due_date: new Date().toISOString().slice(0, 10),
-                    sales_id: identity.id,
+                    salesId: identity.id,
                 }}
                 transform={data => {
                     const dueDate = new Date(data.due_date);

@@ -1,5 +1,5 @@
-import { useGetIdentity, useGetList } from 'react-admin';
 import { Typography } from '@mui/material';
+import { useGetIdentity, useGetList } from 'react-admin';
 
 export const TasksListEmpty = () => {
     const { identity } = useGetIdentity();
@@ -9,7 +9,7 @@ export const TasksListEmpty = () => {
         {
             pagination: { page: 1, perPage: 1 },
             filter: {
-                sales_id: identity?.id,
+                salesId: identity?.id,
             },
         },
         { enabled: !!identity }

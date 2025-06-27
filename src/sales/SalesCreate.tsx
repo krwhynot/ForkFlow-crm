@@ -19,7 +19,7 @@ export function SalesCreate() {
     const { mutate } = useMutation({
         mutationKey: ['signup'],
         mutationFn: async (data: SalesFormData) => {
-            return dataProvider.salesCreate(data);
+            return dataProvider.brokerCreate(data);
         },
         onSuccess: () => {
             notify(

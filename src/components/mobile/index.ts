@@ -1,14 +1,14 @@
 // Mobile utility components for ForkFlow-CRM
-export { 
-    LocationProvider, 
-    useLocation, 
-    useLocationOnDemand 
+export {
+    LocationProvider,
+    useLocation,
+    useLocationOnDemand,
 } from './LocationProvider';
 
-export { 
-    MobileButton, 
-    MobileIconButton, 
+export {
+    MobileButton,
+    MobileIconButton,
     TouchTargetWrapper,
     useMobileViewport,
-    MobileSpacing 
+    MobileSpacing,
 } from './TouchOptimized';

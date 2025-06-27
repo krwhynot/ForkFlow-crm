@@ -7,6 +7,8 @@ import {
     Sale,
     Tag,
     Task,
+    Organization,
+    Setting,
 } from '../../../types';
 
 export interface Db {
@@ -18,4 +20,7 @@ export interface Db {
     sales: Sale[];
     tags: Tag[];
     tasks: Task[];
+    // B2B resources
+    organizations?: Organization[];
+    settings?: Setting[];
 }

@@ -1,4 +1,7 @@
+import { deepmerge } from '@mui/utils';
+import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 import { useEffect } from 'react';
+import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
 import {
     Admin,
     CustomRoutes,
@@ -8,34 +11,50 @@ import {
     defaultTheme,
     localStorageStore,
 } from 'react-admin';
-import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
-import { deepmerge } from '@mui/utils';
 import { Route } from 'react-router';
-import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 
+import companies from '../companies';
+import { LocationProvider } from '../components/mobile';
+import {
+    ContactCreate,
+    ContactEdit,
+    ContactList,
+    ContactShow,
+} from '../contacts';
+import { CustomerList } from '../customers';
+import { FoodBrokerDashboard } from '../dashboard/FoodBrokerDashboard';
 import { Layout } from '../layout/Layout';
-import { i18nProvider } from './i18nProvider';
-import { Dashboard } from '../dashboard/Dashboard';
 import { LoginPage } from '../login/LoginPage';
 import { SignupPage } from '../login/SignupPage';
+import {
+    OrganizationCreate,
+    OrganizationEdit,
+    OrganizationList,
+    OrganizationShow,
+} from '../organizations';
 import {
     authProvider as defaultAuthProvider,
     dataProvider as defaultDataProvider,
 } from '../providers/supabase';
+import { ReminderCreate, ReminderList, ReminderShow } from '../reminders';
 import { SettingsPage } from '../settings/SettingsPage';
-import { LocationProvider } from '../components/mobile';
+import { VisitCreate, VisitList, VisitShow } from '../visits';
 import {
     ConfigurationContextValue,
     ConfigurationProvider,
 } from './ConfigurationContext';
-import {
-    defaultLogo,
-    defaultTitle,
-} from './defaultConfiguration';
+import { defaultLogo } from './defaultConfiguration';
+import { i18nProvider } from './i18nProvider';
 
 // Food Broker CRM specific defaults
 const defaultBusinessTypes = ['restaurant', 'grocery', 'distributor', 'other'];
-const defaultVisitTypes = ['sales_call', 'follow_up', 'delivery', 'service_call', 'other'];
+const defaultVisitTypes = [
+    'sales_call',
+    'follow_up',
+    'delivery',
+    'service_call',
+    'other',
+];
 const defaultReminderPriorities = ['low', 'medium', 'high', 'urgent'];
 
 // Define the interface for the Food Broker CRM component props
@@ -48,7 +67,13 @@ export type CRMProps = {
     visitTypes?: string[];
     reminderPriorities?: string[];
     enableGPS?: boolean;
-} & Partial<Omit<ConfigurationContextValue, 'contactGender' | 'dealCategories' | 'dealStages'>> &
+    requireAuth?: boolean;
+} & Partial<
+    Omit<
+        ConfigurationContextValue,
+        'contactGender' | 'dealCategories' | 'dealStages'
+    >
+> &
     Partial<AdminProps>;
 
 const defaultLightTheme = deepmerge(defaultTheme, {
@@ -57,7 +82,7 @@ const defaultLightTheme = deepmerge(defaultTheme, {
             default: '#fafafb',
         },
         primary: {
-            main: '#2F68AC',
+            main: '#9bbb59',
         },
     },
     components: {
@@ -76,7 +101,7 @@ const defaultLightTheme = deepmerge(defaultTheme, {
 /**
  * Food Broker CRM Component
  *
- * This component sets up and renders the food broker CRM application using `react-admin`. 
+ * This component sets up and renders the food broker CRM application using `react-admin`.
  * It's specifically designed for food brokers who visit restaurants and stores, with mobile-first
  * design, GPS integration, and food business management features.
  *
@@ -109,13 +134,14 @@ export const CRM = ({
     darkTheme,
     lightTheme = defaultLightTheme,
     logo = defaultLogo,
-    title = "ForkFlow Food Broker CRM",
+    title = 'ForkFlow Food Broker CRM',
     businessTypes = defaultBusinessTypes,
     visitTypes = defaultVisitTypes,
     reminderPriorities = defaultReminderPriorities,
     enableGPS = true,
     dataProvider = defaultDataProvider,
     authProvider = defaultAuthProvider,
+    requireAuth = true,
     disableTelemetry,
     ...rest
 }: CRMProps) => {
@@ -140,11 +166,11 @@ export const CRM = ({
             store={localStorageStore(undefined, 'ForkFlowCRM')}
             layout={Layout}
             loginPage={LoginPage}
-            dashboard={Dashboard}
+            dashboard={FoodBrokerDashboard}
             theme={lightTheme}
             darkTheme={darkTheme || null}
             i18nProvider={i18nProvider}
-            requireAuth
+            requireAuth={requireAuth}
             disableTelemetry
             {...rest}
         >
@@ -161,16 +187,45 @@ export const CRM = ({
             </CustomRoutes>
 
             <CustomRoutes>
-                <Route
-                    path={SettingsPage.path}
-                    element={<SettingsPage />}
-                />
+                <Route path={SettingsPage.path} element={<SettingsPage />} />
             </CustomRoutes>
-            
+
             {/* Food Broker CRM Resources */}
-            <Resource name="customers" list={ListGuesser} />
-            <Resource name="visits" list={ListGuesser} />
-            <Resource name="reminders" list={ListGuesser} />
+            <Resource
+                name="companies"
+                list={companies.list}
+                create={companies.create}
+                edit={companies.edit}
+                show={companies.show}
+                options={{ label: 'Organizations' }}
+            />
+            <Resource
+                name="organizations"
+                list={OrganizationList}
+                create={OrganizationCreate}
+                edit={OrganizationEdit}
+                show={OrganizationShow}
+            />
+            <Resource
+                name="contacts"
+                list={ContactList}
+                create={ContactCreate}
+                edit={ContactEdit}
+                show={ContactShow}
+            />
+            <Resource name="customers" list={CustomerList} />
+            <Resource
+                name="visits"
+                list={VisitList}
+                create={VisitCreate}
+                show={VisitShow}
+            />
+            <Resource
+                name="reminders"
+                list={ReminderList}
+                create={ReminderCreate}
+                show={ReminderShow}
+            />
             <Resource name="products" list={ListGuesser} />
             <Resource name="orders" list={ListGuesser} />
             <Resource name="territories" list={ListGuesser} />
@@ -181,7 +236,37 @@ export const CRM = ({
         <ConfigurationProvider
             logo={logo}
             title={title}
-            // Food broker specific configuration can be added here
+            // Food broker specific configuration
+            companySectors={[
+                'food_service',
+                'retail',
+                'distribution',
+                'manufacturing',
+            ]}
+            dealCategories={[
+                'new_business',
+                'existing_account',
+                'upsell',
+                'renewal',
+            ]}
+            dealPipelineStatuses={[
+                'lead',
+                'qualified',
+                'proposal',
+                'negotiation',
+                'closed_won',
+                'closed_lost',
+            ]}
+            dealStages={[
+                { value: 'lead_discovery', label: 'Lead Discovery' },
+                { value: 'contacted', label: 'Contacted' },
+                { value: 'sampled_visited', label: 'Sampled/Visited' },
+                { value: 'follow_up', label: 'Follow Up' },
+                { value: 'close', label: 'Close' },
+            ]}
+            noteStatuses={['draft', 'published']}
+            taskTypes={['call', 'email', 'meeting', 'follow_up', 'demo']}
+            contactGender={['male', 'female', 'other']}
         >
             {enableGPS ? (
                 <LocationProvider autoRequest={false}>

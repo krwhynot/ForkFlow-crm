@@ -1,6 +1,5 @@
-import * as React from 'react';
-import { useListFilterContext, useGetIdentity } from 'react-admin';
-import { Box, Switch, FormControlLabel } from '@mui/material';
+import { Box, FormControlLabel, Switch } from '@mui/material';
+import { useGetIdentity, useListFilterContext } from 'react-admin';
 
 export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
     const { filterValues, displayedFilters, setFilters } =
@@ -9,10 +8,10 @@ export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
 
     const handleChange = () => {
         const newFilterValues = { ...filterValues };
-        if (typeof filterValues.sales_id !== 'undefined') {
-            delete newFilterValues.sales_id;
+        if (typeof filterValues.salesId !== 'undefined') {
+            delete newFilterValues.salesId;
         } else {
-            newFilterValues.sales_id = identity && identity?.id;
+            newFilterValues.salesId = identity && identity?.id;
         }
         setFilters(newFilterValues, displayedFilters);
     };
@@ -21,7 +20,7 @@ export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
             <FormControlLabel
                 control={
                     <Switch
-                        checked={typeof filterValues.sales_id !== 'undefined'}
+                        checked={typeof filterValues.salesId !== 'undefined'}
                         onChange={handleChange}
                         color="primary"
                         name="checkedC"

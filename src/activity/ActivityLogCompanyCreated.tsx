@@ -2,24 +2,24 @@ import { ListItem, Stack, Typography } from '@mui/material';
 import { Link, ReferenceField } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';
-import { SaleName } from '../sales/SaleName';
-import type { ActivityCompanyCreated } from '../types';
 import { RelativeDate } from '../misc/RelativeDate';
+import { SaleName } from '../sales/SaleName';
+import type { ActivityOrganizationCreated } from '../types';
 import { useActivityLogContext } from './ActivityLogContext';
 
 type ActivityLogCompanyCreatedProps = {
-    activity: ActivityCompanyCreated;
+    activity: ActivityOrganizationCreated;
 };
 
 export function ActivityLogCompanyCreated({
     activity,
 }: ActivityLogCompanyCreatedProps) {
     const context = useActivityLogContext();
-    const { company } = activity;
+    const { organization } = activity;
     return (
         <ListItem disableGutters>
             <Stack direction="row" spacing={1} alignItems="center" width="100%">
-                <CompanyAvatar width={20} height={20} record={company} />
+                <CompanyAvatar width={20} height={20} record={organization as any} />
                 <Typography
                     component="p"
                     variant="body2"
@@ -27,7 +27,7 @@ export function ActivityLogCompanyCreated({
                     flexGrow={1}
                 >
                     <ReferenceField
-                        source="sales_id"
+                        source="salesId"
                         reference="sales"
                         record={activity}
                         link={false}
@@ -35,8 +35,8 @@ export function ActivityLogCompanyCreated({
                         <SaleName />
                     </ReferenceField>{' '}
                     added company{' '}
-                    <Link to={`/companies/${company.id}/show`}>
-                        {company.name}
+                    <Link to={`/companies/${organization.id}/show`}>
+                        {organization.name}
                     </Link>
                     {context === 'all' && (
                         <>

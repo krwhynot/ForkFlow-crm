@@ -12,13 +12,13 @@ export const Avatar = (props: {
     const record = useRecordContext<Contact>(props);
     // If we come from company page, the record is defined (to pass the company as a prop),
     // but neither of those fields are and this lead to an error when creating contact.
-    if (!record?.avatar && !record?.first_name && !record?.last_name) {
+    if (!record?.firstName && !record?.lastName) {
         return null;
     }
 
     return (
         <MuiAvatar
-            src={record.avatar?.src ?? undefined}
+            src={undefined}
             sx={{
                 width: props.width,
                 height: props.height,
@@ -26,8 +26,8 @@ export const Avatar = (props: {
             }}
             title={props.title}
         >
-            {record.first_name?.charAt(0).toUpperCase()}
-            {record.last_name?.charAt(0).toUpperCase()}
+            {record.firstName?.charAt(0).toUpperCase()}
+            {record.lastName?.charAt(0).toUpperCase()}
         </MuiAvatar>
     );
 };

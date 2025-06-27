@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { useDataProvider, useGetIdentity } from 'react-admin';
 import type { DataProvider } from 'react-admin';
+import { useDataProvider, useGetIdentity } from 'react-admin';
 import type { Company, Tag } from '../types';
 
 export type ContactImportSchema = {
@@ -45,8 +45,8 @@ export function useContactImport() {
                 names,
                 name => ({
                     name,
-                    created_at: new Date().toISOString(),
-                    sales_id: user?.identity?.id,
+                    createdAt: new Date().toISOString(),
+                    salesId: user?.identity?.id,
                 }),
                 dataProvider
             ),
@@ -110,7 +110,7 @@ export function useContactImport() {
                             { email: email_home, type: 'Home' },
                             { email: email_other, type: 'Other' },
                         ].filter(({ email }) => email);
-                        const phone_jsonb = [
+                        const phone = [
                             { number: phone_work, type: 'Work' },
                             { number: phone_home, type: 'Home' },
                             { number: phone_other, type: 'Other' },
@@ -129,7 +129,7 @@ export function useContactImport() {
                                 gender,
                                 title,
                                 email_jsonb,
-                                phone_jsonb,
+                                phone,
                                 background,
                                 first_seen: first_seen
                                     ? new Date(first_seen).toISOString()
@@ -139,9 +139,9 @@ export function useContactImport() {
                                     : today,
                                 has_newsletter,
                                 status,
-                                company_id: company?.id,
+                                organizationId: company?.id,
                                 tags: tagList.map(tag => tag.id),
-                                sales_id: user?.identity?.id,
+                                salesId: user?.identity?.id,
                                 linkedin_url,
                             },
                         });

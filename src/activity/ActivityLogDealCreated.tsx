@@ -2,9 +2,9 @@ import { ListItem, Stack, Typography } from '@mui/material';
 import { Link, ReferenceField } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';
-import type { ActivityDealCreated } from '../types';
-import { SaleName } from '../sales/SaleName';
 import { RelativeDate } from '../misc/RelativeDate';
+import { SaleName } from '../sales/SaleName';
+import type { ActivityDealCreated } from '../types';
 import { useActivityLogContext } from './ActivityLogContext';
 
 type ActivityLogDealCreatedProps = {
@@ -20,7 +20,7 @@ export function ActivityLogDealCreated({
         <ListItem disableGutters>
             <Stack direction="row" spacing={1} alignItems="center" width="100%">
                 <ReferenceField
-                    source="company_id"
+                    source="organizationId"
                     reference="companies"
                     record={activity}
                     link={false}
@@ -34,7 +34,7 @@ export function ActivityLogDealCreated({
                     flexGrow={1}
                 >
                     <ReferenceField
-                        source="sales_id"
+                        source="salesId"
                         reference="sales"
                         record={activity}
                         link={false}
@@ -47,7 +47,7 @@ export function ActivityLogDealCreated({
                         <>
                             to company{' '}
                             <ReferenceField
-                                source="company_id"
+                                source="organizationId"
                                 reference="companies"
                                 record={activity}
                                 link="show"

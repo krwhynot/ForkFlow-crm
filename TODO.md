@@ -1,308 +1,450 @@
-# ForkFlow-CRM Development TODO List for Cursor AI
+# 🚧 Field Renaming Migration Progress (2024-07-13)
 
-Now that your ForkFlow-CRM project is correctly set up with Supabase, here's a comprehensive, detailed TODO list that Cursor AI can follow to transform the Atomic CRM into your food broker CRM system. This list follows best practices for AI-driven development and includes clear success criteria for each task.
+## Batch Migration: Legacy → New Schema Field Names
 
-## Project Overview for Cursor AI
+### ✅ Completed
+- [x] All usages of `company_id` → `organizationId` (data providers, generators, React-admin, utilities, activities, etc.)
+- [x] All usages of `company_name` → `organization?.name`
+- [x] All usages of `archived_at` → `archivedAt`
+- [x] All usages of `expected_closing_date` → `expectedClosingDate`
+- [x] All usages of `contact_ids` → `contactIds`
+- [x] All usages of `email_jsonb` → `email`
+- [x] All usages of `phone_jsonb` → `phone`
+- [x] All usages of `sales_id` → `salesId`
+- [x] All usages of `created_at` → `createdAt`
+
+### ✅ Completed
+- [x] `updated_at` → `updatedAt`
+
+### 🔄 In Progress / Next Up
+
+---
+
+# ForkFlow-CRM Development TODO List - B2B Food Service CRM
+
+Now that your ForkFlow-CRM project is correctly set up with Supabase, here's a comprehensive, detailed TODO list to transform the Atomic CRM into a complete B2B food service CRM system. This follows the proper Organization/Contact/Product/Opportunity/Interaction schema with phased development and UI testing at each milestone.
+
+## Project Overview
 
 **Project Name:** ForkFlow-CRM  
-**Purpose:** Website-first, mobile UI friendly CRM for food brokers visiting restaurants and stores  
-**Tech Stack:** React + react-admin + TypeScript + Tailwind CSS + Supabase (cloud)  
-**Foundation:** Atomic CRM customization  
-**Development Approach:** AI-assisted development using Cursor with Supabase MCP integration  
+**Purpose:** B2B Food Service Sales CRM for field representatives managing restaurant relationships  
+**Tech Stack:** React + react-admin + TypeScript + Material-UI + Supabase (cloud)  
+**Schema:** Organization → Contact → Opportunity → Interaction with Principal/Product integration  
+**Development Approach:** Phased implementation with UI testing at each milestone  
 
-## Phase 1: Database Schema & Foundation Setup (Week 1)
+## Phase 1: Organizations & Contacts Foundation (Week 1-2)
 
-### 🔧 **Task 1.1: Configure Environment Variables**
-**Priority:** Critical | **Effort:** 0.5 days
-- [✅] Update `.env` file with Supabase cloud credentials
-- [✅] Remove any Docker/local Supabase references
-- [✅] Add Google Maps API key placeholder
-- [✅] Verify Supabase connection works with frontend
-- **Success Criteria:** Frontend connects to cloud Supabase, no Docker dependencies remain
-
-### 🗄️ **Task 1.2: Transform Database Schema for Food Brokers**
+### 🏢 **Task 1.1: Implement Settings Management System**
 **Priority:** Critical | **Effort:** 1 day
-- [ ] Use Supabase MCP to rename `contacts` table to `customers`
-- [ ] Add food broker specific fields to customers:
-  - [ ] `business_type` (restaurant, grocery, distributor, other)
-  - [ ] `latitude` and `longitude` for GPS coordinates  
-  - [ ] `notes` field (500 character limit)
-- [ ] Create `visits` table with broker visit tracking:
-  - [ ] `customer_id` (foreign key to customers)
-  - [ ] `broker_id` (foreign key to auth.users)
-  - [ ] `visit_date` (timestamp)
-  - [ ] `notes` (1000 character limit)
-  - [ ] `latitude` and `longitude` (GPS coordinates)
-- [ ] Create `reminders` table for follow-ups:
-  - [ ] `customer_id` (foreign key to customers) 
-  - [ ] `broker_id` (foreign key to auth.users)
-  - [ ] `reminder_date` (timestamp)
-  - [ ] `notes` (500 character limit)
-  - [ ] `is_completed` (boolean)
-- **Success Criteria:** All new tables created, foreign key relationships established, data types match PRD specifications
+- [ ] Create Settings table in Supabase:
+  - [ ] `id` (Primary Key)
+  - [ ] `category` (string: priority, segment, distributor, role, influence, decision, principal, stage, interaction_type)
+  - [ ] `key` (string: unique identifier)
+  - [ ] `label` (string: display name)
+  - [ ] `color` (string: hex color for UI)
+  - [ ] `sortOrder` (int: display order)
+  - [ ] `active` (boolean)
+  - [ ] `createdAt`, `updatedAt` (timestamps)
+- [ ] Populate default settings data:
+  - [ ] Priorities: A (Green), B (Yellow), C (Orange), D (Red)
+  - [ ] Segments: Fine Dining, Fast Food, Healthcare, Catering, Institutional
+  - [ ] Distributors: Sysco, USF, PFG, Direct, Other
+  - [ ] Contact Roles: Chef, Manager, Owner, Purchasing, Other
+  - [ ] Influence Levels: High, Medium, Low
+  - [ ] Decision Roles: Decision Maker, Influencer, Gatekeeper, User
+- [ ] Create SettingsManager component for admin configuration
+- **Success Criteria:** Settings table created, default data populated, admin interface functional
 
-### 🔐 **Task 1.3: Set Up Row Level Security (RLS)**
-**Priority:** Critical | **Effort:** 0.5 days
-- [ ] Enable RLS on all custom tables (customers, visits, reminders)
-- [ ] Create policies for brokers to only see their own data:
-  - [ ] Customers: brokers see only customers they created
-  - [ ] Visits: brokers see only their own visits
-  - [ ] Reminders: brokers see only their own reminders
-- [ ] Test RLS policies with multiple user accounts
-- **Success Criteria:** Data isolation verified, brokers cannot access other brokers' data
-
-### 📱 **Task 1.4: Update UI Dependencies**
-**Priority:** High | **Effort:** 0.5 days
-- [ ] Install mobile-friendly components:
-  - [ ] `@googlemaps/react-wrapper` for map integration
-  - [ ] Additional Tailwind CSS utilities if needed
-- [ ] Verify all react-admin dependencies are current
-- [ ] Test responsive design framework
-- **Success Criteria:** All dependencies installed, no conflicts, responsive framework operational
-
-## Phase 2: Core Food Broker Features (Week 2)
-
-### 👥 **Task 2.1: Customize Customer Management**
-**Priority:** Critical | **Effort:** 2 days
-- [ ] Transform ContactList component to CustomerList:
-  - [ ] Update to show business names instead of person names
-  - [ ] Add business type filter and display
-  - [ ] Include "last visit" information
-  - [ ] Add click-to-call functionality for phone numbers
-- [ ] Modify customer detail/edit forms:
-  - [ ] Add business type dropdown (restaurant, grocery, distributor, other)
-  - [ ] Include GPS coordinate fields (auto-populated)
-  - [ ] Expand notes section for business details
-  - [ ] Add touch-friendly form controls (44px+ targets)
-- [ ] Implement customer search and filtering:
-  - [ ] Search by business name, contact person, phone
-  - [ ] Filter by business type
-  - [ ] Filter by "needs visit" (no visit in 30+ days)
-- **Success Criteria:** Customer management fully functional, mobile-optimized, business-focused fields working
-
-### 📍 **Task 2.2: Implement Visit Logging System**
-**Priority:** Critical | **Effort:** 2 days
-- [ ] Create VisitCreate component:
-  - [ ] Auto-capture GPS coordinates on component load
-  - [ ] Large textarea for visit notes (1000 char limit)
-  - [ ] Customer selection/reference
-  - [ ] Auto-populate visit date/time
-  - [ ] Mobile-optimized layout
-- [ ] Add "Log Visit" buttons throughout app:
-  - [ ] Prominent button on customer detail page
-  - [ ] Quick access from customer list
-  - [ ] Integration with main navigation
-- [ ] Create visit history display:
-  - [ ] Chronological list of visits per customer
-  - [ ] Visit summary information
-  - [ ] Edit/update existing visits
-- [ ] Implement GPS integration:
-  - [ ] Request location permissions
-  - [ ] Auto-capture coordinates
-  - [ ] Fallback for manual location entry
-- **Success Criteria:** Visit logging works on mobile, GPS capture functional, visit history displays correctly
-
-### ⏰ **Task 2.3: Build Follow-up Reminder System**
-**Priority:** High | **Effort:** 1.5 days
-- [ ] Create reminder creation interface:
-  - [ ] Date/time picker for follow-up scheduling
-  - [ ] Link to specific customers
-  - [ ] Reminder notes/description
-  - [ ] Priority levels
-- [ ] Build reminder dashboard/list:
-  - [ ] Today's reminders prominently displayed
-  - [ ] Overdue reminders highlighted
-  - [ ] Mark as completed functionality
-  - [ ] Snooze/reschedule options
-- [ ] Integrate reminders with visit logging:
-  - [ ] Option to set follow-up during visit logging
-  - [ ] Auto-suggest follow-up based on visit notes
-- **Success Criteria:** Reminders can be created, viewed, and managed; integration with visit system works
-
-### 📊 **Task 2.4: Create Broker Dashboard**
-**Priority:** High | **Effort:** 1 day
-- [ ] Design dashboard layout for mobile and desktop
-- [ ] Implement KPI cards:
-  - [ ] Visits this week/month
-  - [ ] Total customers
-  - [ ] Overdue follow-ups
-  - [ ] New customers this month
-- [ ] Add quick action buttons:
-  - [ ] "Log Visit" prominent placement
-  - [ ] "Add Customer" quick access
-  - [ ] "View Map" navigation
-- [ ] Create activity feed:
-  - [ ] Recent visits
-  - [ ] Upcoming reminders
-  - [ ] New customer additions
-- **Success Criteria:** Dashboard displays relevant broker KPIs, quick actions work, responsive design
-
-## Phase 3: Maps & Advanced Features (Week 3)
-
-### 🗺️ **Task 3.1: Integrate Google Maps**
-**Priority:** High | **Effort:** 2 days
-- [ ] Set up Google Maps API integration:
-  - [ ] Configure API key and permissions
-  - [ ] Install and configure @googlemaps/react-wrapper
-  - [ ] Create base map component
-- [ ] Display customer locations:
-  - [ ] Show customer pins on map
-  - [ ] Customer info popup on pin click
-  - [ ] Different pin colors for business types
-- [ ] Add map navigation features:
-  - [ ] "Get Directions" buttons
-  - [ ] "Near Me" view with GPS
-  - [ ] Route planning between customers
-- [ ] Mobile optimization:
-  - [ ] Touch-friendly map controls
-  - [ ] Responsive map sizing
-  - [ ] GPS location accuracy handling
-- **Success Criteria:** Map displays customer locations, directions work, mobile interaction smooth
-
-### 📱 **Task 3.2: Mobile UI Optimization**
-**Priority:** High | **Effort:** 1.5 days
-- [ ] Implement mobile navigation:
-  - [ ] Bottom tab bar for primary navigation
-  - [ ] Touch-friendly menu items
-  - [ ] Swipe gestures where appropriate
-- [ ] Optimize form interactions:
-  - [ ] Large touch targets (44px minimum)
-  - [ ] Appropriate keyboard types (tel, email, url)
-  - [ ] Clear error states and validation
-- [ ] Add mobile-specific features:
-  - [ ] Pull-to-refresh on lists
-  - [ ] Loading states for slow connections
-  - [ ] Offline indicators
-- [ ] Test across devices:
-  - [ ] iOS Safari compatibility
-  - [ ] Android Chrome compatibility
-  - [ ] Tablet layout optimization
-- **Success Criteria:** All interactions work smoothly on mobile, touch targets appropriate size, responsive across devices
-
-### 📈 **Task 3.3: Implement Reporting Features**
-**Priority:** Medium | **Effort:** 1.5 days
-- [ ] Create visit frequency reports:
-  - [ ] Charts showing visits per day/week/month
-  - [ ] Customer visit frequency analysis
-  - [ ] Broker performance metrics
-- [ ] Build "needs attention" reports:
-  - [ ] Customers not visited in 30+ days
-  - [ ] Overdue follow-ups
-  - [ ] Inactive customers
-- [ ] Add data export functionality:
-  - [ ] CSV export for customers
-  - [ ] CSV export for visits
-  - [ ] Custom date range selection
-- [ ] Implement mobile-friendly charts:
-  - [ ] Use Tremor or similar mobile-optimized library
-  - [ ] Responsive chart sizing
-  - [ ] Touch-friendly interactions
-- **Success Criteria:** Reports display correctly, exports work, charts responsive on mobile
-
-## Phase 4: Testing & Deployment (Week 4)
-
-### 🧪 **Task 4.1: Comprehensive Testing**
+### 🏢 **Task 1.2: Create Organizations Entity**
 **Priority:** Critical | **Effort:** 1.5 days
-- [ ] Functional testing:
-  - [ ] All CRUD operations work for customers, visits, reminders
-  - [ ] GPS capture and maps integration functional
-  - [ ] User authentication and data isolation
-  - [ ] Mobile responsiveness across devices
-- [ ] Performance testing:
-  - [ ] Page load times under 3 seconds
-  - [ ] Smooth scrolling and interactions
-  - [ ] GPS and maps performance
-- [ ] Browser compatibility testing:
-  - [ ] iOS Safari 14+
-  - [ ] Android Chrome 90+
-  - [ ] Desktop browsers (Chrome, Firefox, Edge)
-- [ ] User acceptance testing:
-  - [ ] Test with actual broker workflows
-  - [ ] Gather feedback on usability
-  - [ ] Verify all PRD requirements met
-- **Success Criteria:** All features work reliably, performance meets targets, cross-browser compatibility confirmed
+- [ ] Create Organizations table in Supabase:
+  - [ ] `id` (Primary Key)
+  - [ ] `name` (string: restaurant/business name)
+  - [ ] `priorityId` (Foreign Key → Setting)
+  - [ ] `segmentId` (Foreign Key → Setting)
+  - [ ] `distributorId` (Foreign Key → Setting)
+  - [ ] `accountManager` (string: assigned sales rep)
+  - [ ] `address`, `city`, `state`, `zipCode` (location fields)
+  - [ ] `phone`, `website` (contact information)
+  - [ ] `notes` (text: business details)
+  - [ ] `createdAt`, `updatedAt`, `createdBy` (audit fields)
+- [ ] Set up Row Level Security (RLS) for Organizations
+- [ ] Create database relationships with Settings
+- **Success Criteria:** Organizations table created with proper relationships and RLS policies
 
-### 🚀 **Task 4.2: Production Deployment**
+### 👥 **Task 1.3: Create Contacts Entity**
+**Priority:** Critical | **Effort:** 1.5 days
+- [ ] Create Contacts table in Supabase:
+  - [ ] `id` (Primary Key)
+  - [ ] `organizationId` (Foreign Key → Organization)
+  - [ ] `firstName`, `lastName` (person's name)
+  - [ ] `email`, `phone` (contact information)
+  - [ ] `roleId` (Foreign Key → Setting: Chef, Manager, Owner, etc.)
+  - [ ] `influenceLevelId` (Foreign Key → Setting: High, Medium, Low)
+  - [ ] `decisionRoleId` (Foreign Key → Setting: Decision Maker, Influencer, etc.)
+  - [ ] `linkedInUrl` (string: professional profile)
+  - [ ] `isPrimary` (boolean: primary contact for organization)
+  - [ ] `notes` (text: relationship notes)
+  - [ ] `createdAt`, `updatedAt`, `createdBy` (audit fields)
+- [ ] Set up Row Level Security (RLS) for Contacts
+- [ ] Create database relationships with Organizations and Settings
+- **Success Criteria:** Contacts table created with proper relationships and RLS policies
+
+### 🎨 **Task 1.4: Build Organizations UI Components**
+**Priority:** Critical | **Effort:** 2 days
+- [ ] Create OrganizationList component:
+  - [ ] Mobile-first responsive design
+  - [ ] Display organization name, segment, priority (color-coded)
+  - [ ] Filter by priority, segment, distributor
+  - [ ] Search by organization name
+  - [ ] Touch-friendly list items (44px+ height)
+- [ ] Create OrganizationCreate/Edit components:
+  - [ ] Form with all organization fields
+  - [ ] Settings-based dropdowns for priority, segment, distributor
+  - [ ] Address validation and formatting
+  - [ ] Mobile-optimized form layout
+  - [ ] GPS coordinate capture for address
+- [ ] Create OrganizationShow component:
+  - [ ] Complete organization details
+  - [ ] Related contacts list
+  - [ ] Quick actions (call, email, directions)
+  - [ ] Edit and delete functionality
+- **Success Criteria:** Full CRUD operations for Organizations work on mobile and desktop
+
+### 👤 **Task 1.5: Build Contacts UI Components**
+**Priority:** Critical | **Effort:** 2 days
+- [ ] Create ContactList component:
+  - [ ] Display within organization context
+  - [ ] Show contact role, influence level, decision role
+  - [ ] Primary contact highlighting
+  - [ ] Mobile-optimized contact cards
+  - [ ] Filter by role, influence level
+- [ ] Create ContactCreate/Edit components:
+  - [ ] Form linked to parent organization
+  - [ ] Settings-based dropdowns for role, influence, decision
+  - [ ] Contact information validation
+  - [ ] LinkedIn profile integration
+  - [ ] Mobile-friendly form controls
+- [ ] Create ContactShow component:
+  - [ ] Complete contact details
+  - [ ] Organization context
+  - [ ] Communication history placeholder
+  - [ ] Quick actions (call, email, LinkedIn)
+- **Success Criteria:** Full CRUD operations for Contacts work with Organization relationships
+
+### 🔗 **Task 1.6: Implement Organization-Contact Relationships**
 **Priority:** Critical | **Effort:** 1 day
-- [ ] Prepare production environment:
-  - [ ] Configure production Supabase instance
-  - [ ] Set up production environment variables
-  - [ ] Configure domain and SSL certificates
-- [ ] Deploy application:
-  - [ ] Deploy to Vercel/Netlify or similar platform
-  - [ ] Configure custom domain
-  - [ ] Set up automated deployments from Git
-- [ ] Post-deployment verification:
-  - [ ] Verify all features work in production
-  - [ ] Test with production data
-  - [ ] Monitor for errors and performance
-- **Success Criteria:** Application deployed successfully, all features functional in production environment
+- [ ] Create Organization detail page with embedded contacts:
+  - [ ] Organization header with key details
+  - [ ] Contacts tab with full contact management
+  - [ ] Add new contact functionality
+  - [ ] Primary contact designation
+- [ ] Implement contact selection flows:
+  - [ ] Organization selection when creating contacts
+  - [ ] Contact transfer between organizations
+  - [ ] Duplicate contact detection
+- [ ] Add relationship management features:
+  - [ ] Set primary contact per organization
+  - [ ] Contact role hierarchy display
+  - [ ] Influence mapping visualization
+- **Success Criteria:** Organizations and Contacts work together seamlessly, relationships properly managed
 
-### 📚 **Task 4.3: Documentation & Training**
-**Priority:** Medium | **Effort:** 1 day
-- [ ] Create user documentation:
-  - [ ] Getting started guide for brokers
-  - [ ] Feature documentation with screenshots
-  - [ ] Troubleshooting guide
-  - [ ] Mobile usage best practices
-- [ ] Prepare training materials:
-  - [ ] Video walkthrough of key features
-  - [ ] Step-by-step user guides
-  - [ ] FAQ document
-- [ ] Set up support systems:
-  - [ ] Error monitoring and logging
-  - [ ] User feedback collection
-  - [ ] Support contact methods
-- **Success Criteria:** Complete documentation available, training materials ready, support systems operational
+### 📱 **Task 1.7: Mobile Optimization for Organizations & Contacts**
+**Priority:** High | **Effort:** 1 day
+- [ ] Optimize touch interactions:
+  - [ ] 44px+ minimum touch targets
+  - [ ] Swipe gestures for actions
+  - [ ] Pull-to-refresh functionality
+- [ ] Implement mobile navigation:
+  - [ ] Bottom tab bar navigation
+  - [ ] Breadcrumb navigation for relationships
+  - [ ] Back button functionality
+- [ ] Add mobile-specific features:
+  - [ ] Click-to-call phone numbers
+  - [ ] Email integration
+  - [ ] GPS directions to organizations
+- **Success Criteria:** All Organization and Contact features work smoothly on mobile devices
 
-## Phase 5: Launch & Post-Launch Support (Ongoing)
+### ✅ **Phase 1 Testing Milestone**
+**Priority:** Critical | **Effort:** 0.5 days
+- [ ] Test Organization management:
+  - [ ] Create, read, update, delete organizations
+  - [ ] Settings-based dropdowns work correctly
+  - [ ] Search and filtering functional
+  - [ ] Mobile responsiveness verified
+- [ ] Test Contact management:
+  - [ ] Create, read, update, delete contacts
+  - [ ] Organization relationships work
+  - [ ] Role and influence settings functional
+  - [ ] Primary contact designation works
+- [ ] Test data integrity:
+  - [ ] RLS policies enforce data isolation
+  - [ ] Foreign key constraints working
+  - [ ] Settings relationships maintained
+- **Success Criteria:** Phase 1 features fully functional, UI tested and approved before proceeding
 
-### 📊 **Task 5.1: Monitor & Optimize**
-**Priority:** Medium | **Effort:** Ongoing
-- [ ] Set up monitoring:
-  - [ ] Application performance monitoring
-  - [ ] User activity analytics
-  - [ ] Error tracking and alerting
-- [ ] Gather user feedback:
-  - [ ] Usage patterns analysis
-  - [ ] Feature adoption metrics
-  - [ ] User satisfaction surveys
-- [ ] Performance optimization:
-  - [ ] Database query optimization
-  - [ ] Frontend performance tuning
-  - [ ] Mobile experience improvements
-- **Success Criteria:** Monitoring systems operational, regular feedback collection, performance maintained
+---
 
-### 🔮 **Task 5.2: Plan Future Enhancements**
-**Priority:** Low | **Effort:** 0.5 days
-- [ ] Document enhancement roadmap:
-  - [ ] Territory management features
-  - [ ] Product catalog integration
-  - [ ] Advanced reporting and analytics
-  - [ ] Multi-tenant support planning
-- [ ] Technical debt assessment:
-  - [ ] Code quality review
-  - [ ] Security audit planning
-  - [ ] Scalability considerations
-- **Success Criteria:** Clear roadmap for future development, technical foundation assessed
+## Phase 2: Principals & Products (Week 3)
 
-## Using This TODO List with Cursor AI
+### 🏭 **Task 2.1: Set Up Principals in Settings**
+**Priority:** Critical | **Effort:** 0.5 days
+- [ ] Add 11 food service principals to Settings:
+  - [ ] Category: 'principal'
+  - [ ] Include major food service brands
+  - [ ] Assign brand colors for UI consistency
+  - [ ] Set display order by importance
+- [ ] Create PrincipalManager component for admin
+- **Success Criteria:** 11 principals configured in Settings system
 
-### **Cursor AI Instructions:**
+### 📦 **Task 2.2: Create Products Entity**
+**Priority:** Critical | **Effort:** 1 day
+- [ ] Create Products table in Supabase:
+  - [ ] `id` (Primary Key)
+  - [ ] `name` (string: product name)
+  - [ ] `principalId` (Foreign Key → Setting)
+  - [ ] `category` (string: product category)
+  - [ ] `description` (text: product details)
+  - [ ] `price` (decimal: current price)
+  - [ ] `sku` (string: product SKU)
+  - [ ] `active` (boolean: available for sale)
+  - [ ] `createdAt`, `updatedAt`, `createdBy` (audit fields)
+- [ ] Set up Row Level Security (RLS) for Products
+- [ ] Create database relationships with Settings (principals)
+- **Success Criteria:** Products table created with principal relationships
 
-1. **Start with Task 1.1** and work through tasks sequentially
-2. **Use Supabase MCP** for all database operations - ask Cursor to generate SQL using natural language
-3. **Focus on mobile-first design** - ensure all components work well on mobile devices
-4. **Test after each task** - verify functionality before moving to next task
-5. **Update this TODO list** - mark completed tasks with `[x]` and add any new tasks discovered during development
-6. **Ask for confirmation** before moving to the next major phase
+### 🛍️ **Task 2.3: Build Products UI Components**
+**Priority:** Critical | **Effort:** 2 days
+- [ ] Create ProductList component:
+  - [ ] Display products with principal branding
+  - [ ] Filter by principal, category, active status
+  - [ ] Search by product name, SKU
+  - [ ] Price display and sorting
+  - [ ] Mobile-optimized product cards
+- [ ] Create ProductCreate/Edit components:
+  - [ ] Form with all product fields
+  - [ ] Principal selection from Settings
+  - [ ] Price formatting and validation
+  - [ ] Product image upload (future enhancement)
+  - [ ] Mobile-friendly form layout
+- [ ] Create ProductShow component:
+  - [ ] Complete product details
+  - [ ] Principal branding display
+  - [ ] Related opportunities (placeholder)
+  - [ ] Price history (placeholder)
+- **Success Criteria:** Full CRUD operations for Products work with Principal relationships
 
-### **Success Metrics for MVP:**
-- ✅ 5 brokers can use the system simultaneously
-- ✅ 500-1,000 customer records supported
-- ✅ 10-25 daily visits logged
-- ✅ Page load times under 3 seconds on mobile
-- ✅ GPS capture accuracy within 10 meters
-- ✅ 95% uptime during business hours
+### 🔗 **Task 2.4: Integrate Principals with Products**
+**Priority:** High | **Effort:** 1 day
+- [ ] Create Principal-based product views:
+  - [ ] Products grouped by principal (Principal → Product relationship)
+  - [ ] Principal branding throughout UI
+  - [ ] Principal performance metrics
+- [ ] Add product search and filtering:
+  - [ ] Filter by specific principals
+  - [ ] Category-based filtering
+  - [ ] Active/inactive product toggle
+- [ ] Implement product catalog features:
+  - [ ] Product comparison functionality
+  - [ ] Bulk product operations
+  - [ ] Product import/export tools
+- **Success Criteria:** Principal → Product relationships working correctly, filtering and search functional
 
-This comprehensive TODO list provides Cursor AI with clear, actionable tasks to transform the Atomic CRM into your ForkFlow-CRM system. Each task includes priority levels, effort estimates, and specific success criteria to ensure systematic progress toward your food broker CRM objectives[1][2][3][4][5].
+### ✅ **Phase 2 Testing Milestone**
+**Priority:** Critical | **Effort:** 0.5 days
+- [ ] Test Product management:
+  - [ ] Create, read, update, delete products
+  - [ ] Principal relationships work correctly
+  - [ ] Search and filtering functional
+  - [ ] Mobile responsiveness verified
+- [ ] Test Principal integration:
+  - [ ] Principal branding displays correctly
+  - [ ] Product grouping by principal works
+  - [ ] Settings-based principal selection functional
+- **Success Criteria:** Phase 2 features fully functional, UI tested and approved before proceeding
+
+---
+
+## Phase 3: Opportunities & Interactions (Week 4-5)
+
+### 💼 **Task 3.1: Create Opportunities Entity**
+**Priority:** Critical | **Effort:** 1.5 days
+- [ ] Create Opportunities table in Supabase:
+  - [ ] `id` (Primary Key)
+  - [ ] `organizationId` (Foreign Key → Organization)
+  - [ ] `contactId` (Foreign Key → Contact)
+  - [ ] `productId` (Foreign Key → Product)
+  - [ ] `stageId` (Foreign Key → Setting: pipeline stages)
+  - [ ] `status` (string: active, won, lost, on-hold)
+  - [ ] `probability` (int: 0-100% chance of closing)
+  - [ ] `estimatedValue` (decimal: potential revenue)
+  - [ ] `expectedCloseDate` (datetime: target close date)
+  - [ ] `notes` (text: opportunity details)
+  - [ ] `createdAt`, `updatedAt`, `createdBy` (audit fields)
+- [ ] Set up Row Level Security (RLS) for Opportunities
+- [ ] Create database relationships with Organizations, Contacts, Products, Settings
+- **Success Criteria:** Opportunities table created with all relationships
+
+### 📞 **Task 3.2: Create Interactions Entity**
+**Priority:** Critical | **Effort:** 1.5 days
+- [ ] Create Interactions table in Supabase:
+  - [ ] `id` (Primary Key)
+  - [ ] `organizationId` (Foreign Key → Organization)
+  - [ ] `contactId` (Foreign Key → Contact)
+  - [ ] `opportunityId` (Foreign Key → Opportunity)
+  - [ ] `typeId` (Foreign Key → Setting: Email, Call, In Person, Demo, Quote, Follow-up)
+  - [ ] `subject` (string: interaction title)
+  - [ ] `notes` (text: detailed notes)
+  - [ ] `scheduledDate` (datetime: planned date/time)
+  - [ ] `completedDate` (datetime: actual completion)
+  - [ ] `isCompleted` (boolean: completion status)
+  - [ ] `latitude`, `longitude` (GPS coordinates for in-person interactions)
+  - [ ] `createdAt`, `updatedAt`, `createdBy` (audit fields)
+- [ ] Set up Row Level Security (RLS) for Interactions
+- [ ] Create database relationships with all related entities
+- **Success Criteria:** Interactions table created with full relationship model
+
+### 🎯 **Task 3.3: Build Opportunities UI Components**
+**Priority:** Critical | **Effort:** 2.5 days
+- [ ] Create OpportunityList component:
+  - [ ] Pipeline view with drag-and-drop stage progression
+  - [ ] Filter by stage, probability, close date
+  - [ ] Organization and contact context
+  - [ ] Mobile-optimized opportunity cards
+  - [ ] Revenue totals and forecasting
+- [ ] Create OpportunityCreate/Edit components:
+  - [ ] Linked to organization and contact
+  - [ ] Product selection with principal context
+  - [ ] Pipeline stage selection
+  - [ ] Probability and value estimation
+  - [ ] Expected close date picker
+- [ ] Create OpportunityShow component:
+  - [ ] Complete opportunity details
+  - [ ] Related interactions timeline
+  - [ ] Stage progression history
+  - [ ] Quick action buttons
+- **Success Criteria:** Full opportunity management with pipeline visualization
+
+### 📱 **Task 3.4: Build Interactions UI Components**
+**Priority:** Critical | **Effort:** 2.5 days
+- [ ] Create InteractionList component:
+  - [ ] Timeline view of all interactions
+  - [ ] Filter by type, date, completion status
+  - [ ] Organization and opportunity context
+  - [ ] Mobile-optimized interaction cards
+- [ ] Create InteractionCreate/Edit components:
+  - [ ] 6 interaction types (Email, Call, In Person, Demo, Quote, Follow-up)
+  - [ ] Link to organization, contact, opportunity
+  - [ ] GPS capture for in-person interactions
+  - [ ] Scheduling and completion tracking
+  - [ ] Mobile-first form design
+- [ ] Create InteractionShow component:
+  - [ ] Complete interaction details
+  - [ ] Organization and opportunity context
+  - [ ] GPS location for in-person meetings
+  - [ ] Follow-up scheduling
+- **Success Criteria:** Full interaction tracking with 6 types and GPS integration
+
+### 🔄 **Task 3.5: Implement Sales Pipeline Management**
+**Priority:** Critical | **Effort:** 2 days
+- [ ] Create Pipeline Dashboard:
+  - [ ] Visual pipeline with opportunities by stage
+  - [ ] Drag-and-drop stage progression
+  - [ ] Revenue forecasting by stage
+  - [ ] Pipeline velocity metrics
+- [ ] Add Pipeline stages to Settings:
+  - [ ] Lead Discovery, Contacted, Sampled/Visited, Follow-up, Close
+  - [ ] Stage-specific probability defaults
+  - [ ] Color coding for pipeline visualization
+- [ ] Implement stage progression logic:
+  - [ ] Automatic interaction logging on stage changes
+  - [ ] Required fields by stage
+  - [ ] Stage-specific notifications
+- **Success Criteria:** Complete pipeline management with stage progression and forecasting
+
+### 🔗 **Task 3.6: Integrate Complete Relationship Model**
+**Priority:** Critical | **Effort:** 2 days
+- [ ] Create unified dashboard showing:
+  - [ ] Organizations with contact counts
+  - [ ] Opportunities by stage and value
+  - [ ] Recent interactions by type
+  - [ ] Upcoming scheduled interactions
+- [ ] Implement cross-entity navigation:
+  - [ ] Organization → Contacts → Opportunities → Interactions
+  - [ ] Principal → Products → Opportunities using that product
+  - [ ] Contact → Opportunities → Interactions
+- [ ] Add relationship-based reporting:
+  - [ ] Interaction frequency by organization
+  - [ ] Opportunity conversion rates
+  - [ ] Principal performance metrics
+- **Success Criteria:** All entities work together seamlessly with proper navigation
+
+### 📱 **Task 3.7: Mobile Optimization for Complete System**
+**Priority:** High | **Effort:** 1.5 days
+- [ ] Optimize mobile workflows:
+  - [ ] Quick interaction logging from any screen
+  - [ ] GPS auto-capture for in-person interactions
+  - [ ] Offline interaction storage
+- [ ] Implement mobile-specific features:
+  - [ ] One-tap calling and emailing
+  - [ ] Camera integration for interaction notes
+  - [ ] Voice-to-text for note taking
+- [ ] Add mobile dashboard:
+  - [ ] Today's scheduled interactions
+  - [ ] Quick opportunity updates
+  - [ ] GPS-based "near me" organizations
+- **Success Criteria:** Complete mobile workflow optimized for field sales
+
+### ✅ **Phase 3 Testing Milestone**
+**Priority:** Critical | **Effort:** 1 day
+- [ ] Test complete sales workflow:
+  - [ ] Organization → Contact → Opportunity → Interaction flow
+  - [ ] Pipeline stage progression
+  - [ ] All 6 interaction types functional
+  - [ ] GPS capture for in-person interactions
+- [ ] Test mobile usability:
+  - [ ] All features work on mobile devices
+  - [ ] Touch targets appropriate size
+  - [ ] Performance acceptable on mobile networks
+- [ ] Test data integrity:
+  - [ ] All relationships maintained
+  - [ ] RLS policies working across all entities
+  - [ ] Settings properly driving all dropdowns
+- **Success Criteria:** Complete B2B food service CRM functional and tested
+
+---
+
+## Phase 4: Advanced Features & Polish (Week 6)
+
+### 🗺️ **Task 4.1: Advanced GPS and Mapping**
+**Priority:** High | **Effort:** 1.5 days
+- [ ] Integrate Google Maps for organizations
+- [ ] Route planning between organizations
+- [ ] GPS tracking for field rep routes
+- [ ] "Near me" organization discovery
+
+### 📊 **Task 4.2: Reporting and Analytics**
+**Priority:** High | **Effort:** 2 days
+- [ ] Pipeline reporting and forecasting
+- [ ] Interaction frequency analysis
+- [ ] Principal performance metrics
+- [ ] Territory management reporting
+
+### 🧪 **Task 4.3: Testing and Deployment**
+**Priority:** Critical | **Effort:** 2 days
+- [ ] Comprehensive testing across all features
+- [ ] Performance optimization
+- [ ] Production deployment
+- [ ] User training materials
+
+## Success Metrics for Complete B2B CRM
+
+- ✅ 10+ organizations with multiple contacts each
+- ✅ 50+ opportunities across pipeline stages  
+- ✅ 200+ interactions logged (all 6 types)
+- ✅ Pipeline conversion tracking functional
+- ✅ Mobile workflow optimized for field sales
+- ✅ GPS tracking accurate for in-person interactions
+- ✅ Settings-driven configuration throughout
+
+This comprehensive plan transforms the CRM into a complete B2B food service sales platform with proper entity relationships, mobile optimization, and full sales pipeline management.

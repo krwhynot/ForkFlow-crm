@@ -1,11 +1,13 @@
+import { MenuItem, TextField } from '@mui/material';
 import * as React from 'react';
-import { TextField, MenuItem } from '@mui/material';
 
 import { Status } from '../misc/Status';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 
 export const StatusSelector = ({ status, setStatus, sx }: any) => {
     const { noteStatuses } = useConfigurationContext();
+    const noteStatusesTyped: (string | { value: string; label: string })[] = noteStatuses ?? [];
+
     return (
         <TextField
             select
@@ -19,11 +21,20 @@ export const StatusSelector = ({ status, setStatus, sx }: any) => {
             size="small"
             sx={sx}
         >
-            {noteStatuses.map(status => (
-                <MenuItem key={status.value} value={status.value}>
-                    {status.label} <Status status={status.value} />
-                </MenuItem>
-            ))}
+            {noteStatusesTyped.map(status => {
+                if (typeof status === 'object' && status && 'value' in status && 'label' in status) {
+                    return (
+                        <MenuItem key={status.value} value={status.value}>
+                            {status.label} <Status status={status.value} />
+                        </MenuItem>
+                    );
+                }
+                return (
+                    <MenuItem key={String(status)} value={String(status)}>
+                        {String(status)} <Status status={String(status)} />
+                    </MenuItem>
+                );
+            })}
         </TextField>
     );
 };

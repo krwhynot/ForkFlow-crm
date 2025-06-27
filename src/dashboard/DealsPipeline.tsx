@@ -3,21 +3,20 @@
  * It's currently not used in the application but can be added to the dashboard.
  */
 
-import * as React from 'react';
-import { Card, Box } from '@mui/material';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import { Box, Card } from '@mui/material';
 import {
-    useGetList,
-    SimpleList,
-    useGetIdentity,
     Link,
     ReferenceField,
+    SimpleList,
+    useGetIdentity,
+    useGetList
 } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';
-import { Deal } from '../types';
-import { useConfigurationContext } from '../root/ConfigurationContext';
 import { findDealLabel } from '../deals/deal';
+import { useConfigurationContext } from '../root/ConfigurationContext';
+import { Deal } from '../types';
 
 export const DealsPipeline = () => {
     const { identity } = useGetIdentity();
@@ -27,7 +26,7 @@ export const DealsPipeline = () => {
         {
             pagination: { page: 1, perPage: 10 },
             sort: { field: 'last_seen', order: 'DESC' },
-            filter: { 'stage@neq': 'lost', sales_id: identity?.id },
+            filter: { 'stage@neq': 'lost', salesId: identity?.id },
         },
         { enabled: Number.isInteger(identity?.id) }
     );
@@ -81,7 +80,7 @@ export const DealsPipeline = () => {
                     }
                     leftAvatar={deal => (
                         <ReferenceField
-                            source="company_id"
+                            source="organizationId"
                             record={deal}
                             reference="companies"
                             resource="deals"

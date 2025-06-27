@@ -1,14 +1,13 @@
-import * as React from 'react';
-import { Card, CardContent, Typography, Box } from '@mui/material';
 import NoteIcon from '@mui/icons-material/Note';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { formatDistance } from 'date-fns';
 import {
-    useGetList,
-    useGetIdentity,
+    FunctionField,
     ReferenceField,
     TextField,
-    FunctionField,
+    useGetIdentity,
+    useGetList,
 } from 'react-admin';
-import { formatDistance } from 'date-fns';
 
 import { Contact as ContactType } from '../types';
 
@@ -20,7 +19,7 @@ export const LatestNotes = () => {
             {
                 pagination: { page: 1, perPage: 5 },
                 sort: { field: 'date', order: 'DESC' },
-                filter: { sales_id: identity?.id },
+                filter: { salesId: identity?.id },
             },
             { enabled: Number.isInteger(identity?.id) }
         );
@@ -29,7 +28,7 @@ export const LatestNotes = () => {
         {
             pagination: { page: 1, perPage: 5 },
             sort: { field: 'date', order: 'DESC' },
-            filter: { sales_id: identity?.id },
+            filter: { salesId: identity?.id },
         },
         { enabled: Number.isInteger(identity?.id) }
     );

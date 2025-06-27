@@ -93,7 +93,7 @@ export const Note = ({
                     <Avatar width={20} height={20} />
                 ) : (
                     <ReferenceField
-                        source="company_id"
+                        source="organizationId"
                         reference="companies"
                         link="show"
                     >
@@ -104,8 +104,8 @@ export const Note = ({
                     <ReferenceField
                         record={note}
                         resource={resource}
-                        source="sales_id"
-                        reference="sales"
+                        source="organizationId"
+                        reference="companies"
                         link={false}
                     >
                         <WithRecord
@@ -144,7 +144,7 @@ export const Note = ({
                     variant="body2"
                     component="span"
                 >
-                    <RelativeDate date={note.date} />
+                    <RelativeDate date={note.createdAt} />
                 </Typography>
             </Stack>
             {isEditing ? (
@@ -179,19 +179,7 @@ export const Note = ({
                         },
                     }}
                 >
-                    {note.text
-                        ?.split('\n')
-                        .map((paragraph: string, index: number) => (
-                            <Typography
-                                component="p"
-                                variant="body2"
-                                lineHeight={1.5}
-                                margin={0}
-                                key={index}
-                            >
-                                {paragraph}
-                            </Typography>
-                        ))}
+                    {note.content}
 
                     {note.attachments && <NoteAttachments note={note} />}
                 </Stack>

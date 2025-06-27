@@ -1,20 +1,19 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { AvatarGroup, Paper, Typography, Box } from '@mui/material';
 import DealIcon from '@mui/icons-material/MonetizationOn';
+import { AvatarGroup, Box, Paper, Typography } from '@mui/material';
+import { useState } from 'react';
 import {
-    useCreatePath,
-    SelectField,
-    useRecordContext,
     Link,
     ReferenceManyField,
+    SelectField,
+    useCreatePath,
     useListContext,
+    useRecordContext,
 } from 'react-admin';
 
-import { CompanyAvatar } from './CompanyAvatar';
-import { Company } from '../types';
-import { useConfigurationContext } from '../root/ConfigurationContext';
 import { Avatar } from '../contacts/Avatar';
+import { useConfigurationContext } from '../root/ConfigurationContext';
+import { Company } from '../types';
+import { CompanyAvatar } from './CompanyAvatar';
 
 export const CompanyCard = (props: { record?: Company }) => {
     const { companySectors } = useConfigurationContext();
@@ -65,7 +64,7 @@ export const CompanyCard = (props: { record?: Company }) => {
                         {record.nb_contacts ? (
                             <ReferenceManyField
                                 reference="contacts"
-                                target="company_id"
+                                target="organizationId"
                             >
                                 <AvatarGroupIterator />
                             </ReferenceManyField>

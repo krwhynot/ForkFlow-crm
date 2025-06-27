@@ -53,7 +53,7 @@ export const DealCardContent = ({
             >
                 <Box padding={1} display="flex">
                     <ReferenceField
-                        source="company_id"
+                        source="organizationId"
                         record={deal}
                         reference="companies"
                         link={false}
@@ -65,14 +65,13 @@ export const DealCardContent = ({
                             {deal.name}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                            {deal.amount.toLocaleString('en-US', {
+                            {(deal.amount ?? 0).toLocaleString('en-US', {
                                 notation: 'compact',
                                 style: 'currency',
                                 currency: 'USD',
                                 currencyDisplay: 'narrowSymbol',
                                 minimumSignificantDigits: 3,
                             })}
-                            {deal.category ? `, ${deal.category}` : ''}
                         </Typography>
                     </Box>
                 </Box>

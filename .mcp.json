@@ -44,17 +44,11 @@
         },
         "Context7": {
             "command": "npx",
-            "args": [
-                "-y",
-                "@upstash/context7-mcp"
-            ]
+            "args": ["-y", "@upstash/context7-mcp"]
         },
         "knowledge": {
             "command": "npx",
-            "args": [
-                "-y",
-                "mcp-knowledge-graph"
-            ],
+            "args": ["-y", "mcp-knowledge-graph"],
             "env": {
                 "STORAGE_PATH": "/mnt/r/Projects/ForkFlow-crm/.knowledge",
                 "MCP_LOG_LEVEL": "info"
@@ -62,10 +56,7 @@
         },
         "perplexity": {
             "command": "npx",
-            "args": [
-                "-y",
-                "server-perplexity-ask"
-            ],
+            "args": ["-y", "server-perplexity-ask"],
             "env": {
                 "PERPLEXITY_API_KEY": "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",
                 "PERPLEXITY_MODEL": "sonar-reasoning-pro"

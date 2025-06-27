@@ -14,10 +14,10 @@ import {
     useRedirect,
 } from 'react-admin';
 import { Link } from 'react-router-dom';
+import { CompanyAvatar } from '../companies/CompanyAvatar';
 import { DialogCloseButton } from '../misc/DialogCloseButton';
 import { Deal } from '../types';
 import { DealInputs } from './DealInputs';
-import { CompanyAvatar } from '../companies/CompanyAvatar';
 
 export const DealEdit = ({ open, id }: { open: boolean; id?: string }) => {
     const redirect = useRedirect();
@@ -94,7 +94,7 @@ function EditHeader() {
             >
                 <Stack direction="row" alignItems="center" gap={2}>
                     <ReferenceField
-                        source="company_id"
+                        source="organizationId"
                         reference="companies"
                         link="show"
                     >

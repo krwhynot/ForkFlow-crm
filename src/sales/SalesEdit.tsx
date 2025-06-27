@@ -36,7 +36,7 @@ export function SalesEdit() {
             if (!record) {
                 throw new Error('Record not found');
             }
-            return dataProvider.salesUpdate(record.id, data);
+            return dataProvider.brokerUpdate(record.id, data);
         },
         onSuccess: () => {
             redirect('/sales');

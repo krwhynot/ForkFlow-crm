@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext } from 'react';
+import { ContactGender, DealStage, NoteStatus } from '../types';
 import {
     defaultCompanySectors,
     defaultContactGender,
@@ -10,7 +11,6 @@ import {
     defaultTaskTypes,
     defaultTitle,
 } from './defaultConfiguration';
-import { ContactGender, DealStage, NoteStatus } from '../types';
 
 // Define types for the context value
 export interface ConfigurationContextValue {
@@ -35,11 +35,11 @@ export const ConfigurationContext = createContext<ConfigurationContextValue>({
     dealCategories: defaultDealCategories,
     dealPipelineStatuses: defaultDealPipelineStatuses,
     dealStages: defaultDealStages,
-    noteStatuses: defaultNoteStatuses,
+    noteStatuses: defaultNoteStatuses.map(ns => ns.value as NoteStatus),
     taskTypes: defaultTaskTypes,
     title: defaultTitle,
     logo: defaultLogo,
-    contactGender: defaultContactGender,
+    contactGender: defaultContactGender.map(g => g.value as ContactGender),
 });
 
 export const ConfigurationProvider = ({

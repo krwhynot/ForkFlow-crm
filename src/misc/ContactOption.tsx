@@ -13,8 +13,8 @@ const ContactOptionRender = () => {
                 {record.first_name} {record.last_name}
                 <Typography variant="caption" color="text.secondary">
                     {record.title}
-                    {record.title && record.company_name && ' at '}
-                    {record.company_name}
+                    {record.title && record.organization?.name && ' at '}
+                    {record.organization?.name}
                 </Typography>
             </Stack>
         </Stack>

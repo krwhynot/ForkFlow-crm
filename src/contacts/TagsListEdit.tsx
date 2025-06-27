@@ -8,7 +8,7 @@ import {
     useGetList,
     useGetMany,
     useRecordContext,
-    useUpdate,
+    useUpdate
 } from 'react-admin';
 
 import { TagChip } from '../tags/TagChip';
@@ -27,17 +27,18 @@ export const TagsListEdit = () => {
             sort: { field: 'name', order: 'ASC' },
         }
     );
-    const { data: tags, isPending: isPendingRecordTags } = useGetMany<Tag>(
-        'tags',
-        { ids: record?.tags },
-        { enabled: record && record.tags && record.tags.length > 0 }
-    );
-    const [update] = useUpdate<Contact>();
-
+    const tagsArray = record?.tags ?? [];
     const unselectedTags =
         allTags &&
         record &&
-        allTags.filter(tag => !record.tags.includes(tag.id));
+        allTags.filter(tag => !(tagsArray as string[]).includes(tag.id.toString()));
+    const [update] = useUpdate<Contact>();
+
+    const { data: tags = [], isPending: isPendingRecordTags = false } = useGetMany<Tag>(
+        'tags',
+        { ids: tagsArray },
+        { enabled: record && tagsArray.length > 0 }
+    );
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget);
@@ -51,7 +52,7 @@ export const TagsListEdit = () => {
         if (!record) {
             throw new Error('No contact record found');
         }
-        const tags = [...record.tags, id];
+        const tags = [...(record.tags ?? []), id.toString()];
         update('contacts', {
             id: record.id,
             data: { tags },
@@ -60,16 +61,17 @@ export const TagsListEdit = () => {
         setAnchorEl(null);
     };
 
-    const handleTagDelete = async (id: Identifier) => {
+    const handleTagRemove = async (id: Identifier) => {
         if (!record) {
             throw new Error('No contact record found');
         }
-        const tags = record.tags.filter(tagId => tagId !== id);
+        const tags = (record.tags ?? []).filter(tagId => tagId !== id.toString());
         await update('contacts', {
             id: record.id,
             data: { tags },
             previousData: record,
         });
+        setAnchorEl(null);
     };
 
     const openTagCreateDialog = () => {
@@ -91,7 +93,7 @@ export const TagsListEdit = () => {
                 'contacts',
                 {
                     id: record.id,
-                    data: { tags: [...record.tags, tag.id] },
+                    data: { tags: [...tagsArray, tag.id.toString()] },
                     previousData: record,
                 },
                 {
@@ -101,17 +103,18 @@ export const TagsListEdit = () => {
                 }
             );
         },
-        [update, record]
+        [update, record, tagsArray]
     );
 
     if (isPendingRecordTags || isPendingAllTags) return null;
+    const tagList = tags;
     return (
         <>
-            {tags?.map(tag => (
+            {tagList.map((tag: Tag) => (
                 <Box mt={1} mb={1} key={tag.id}>
                     <TagChip
                         tag={tag}
-                        onUnlink={() => handleTagDelete(tag.id)}
+                        onUnlink={() => handleTagRemove(tag.id)}
                         key={tag.id}
                     />
                 </Box>

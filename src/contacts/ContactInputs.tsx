@@ -1,238 +1,312 @@
-import * as React from 'react';
 import {
     Divider,
     Stack,
     Typography,
     useMediaQuery,
-    useTheme,
+    useTheme
 } from '@mui/material';
+import * as React from 'react';
 import {
-    ArrayInput,
     AutocompleteInput,
     BooleanInput,
-    RadioButtonGroupInput,
     ReferenceInput,
     SelectInput,
-    SimpleFormIterator,
     TextInput,
-    email,
-    required,
     useCreate,
     useGetIdentity,
+    useGetList,
     useNotify,
+    useRecordContext
 } from 'react-admin';
 import { useFormContext } from 'react-hook-form';
-
 import { isLinkedinUrl } from '../misc/isLinkedInUrl';
-import { useConfigurationContext } from '../root/ConfigurationContext';
-import { Sale } from '../types';
-import { Avatar } from './Avatar';
+import { Contact, Setting } from '../types';
 
-export const ContactInputs = () => {
+const isEmail = (email: string) => {
+    if (!email) return;
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(email)) {
+        return 'Must be a valid email address';
+    }
+};
+
+const isPhoneNumber = (phone: string) => {
+    if (!phone) return;
+    const phoneRegex = /^[\d\s\-\.\(\)\+]+$/;
+    if (!phoneRegex.test(phone)) {
+        return 'Must be a valid phone number';
+    }
+};
+
+interface ContactInputsProps {
+    defaultOrganizationId?: number;
+}
+
+export const ContactInputs: React.FC<ContactInputsProps> = ({
+    defaultOrganizationId,
+}) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <Stack gap={2} p={1}>
-            <Avatar />
-            <Stack gap={3} direction={isMobile ? 'column' : 'row'}>
-                <Stack gap={4} flex={4}>
+        <Stack gap={4} p={1}>
+            <ContactDisplayInputs
+                defaultOrganizationId={defaultOrganizationId}
+            />
+            <Stack gap={4} direction={isMobile ? 'column' : 'row'}>
+                <Stack gap={4} flex={1}>
                     <ContactIdentityInputs />
-                    <ContactPositionInputs />
+                    <ContactOrganizationInputs
+                        defaultOrganizationId={defaultOrganizationId}
+                    />
                 </Stack>
                 <Divider
                     orientation={isMobile ? 'horizontal' : 'vertical'}
                     flexItem
                 />
-                <Stack gap={4} flex={5}>
-                    <ContactPersonalInformationInputs />
-                    <ContactMiscInputs />
+                <Stack gap={4} flex={1}>
+                    <ContactInfoInputs />
+                    <ContactRoleInputs />
+                    <ContactNotesInputs />
                 </Stack>
             </Stack>
         </Stack>
     );
 };
 
+interface ContactDisplayInputsProps {
+    defaultOrganizationId?: number;
+}
+
+const ContactDisplayInputs: React.FC<ContactDisplayInputsProps> = ({
+    defaultOrganizationId,
+}) => {
+    const record = useRecordContext<Contact>();
+    return (
+        <Stack gap={2} flex={1}>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+                Contact Information
+            </Typography>
+        </Stack>
+    );
+};
+
 const ContactIdentityInputs = () => {
-    const { contactGender } = useConfigurationContext();
+    const { setValue, watch } = useFormContext();
+    const firstName = watch('firstName');
+    const lastName = watch('lastName');
+
     return (
         <Stack>
-            <Typography variant="h6">Identity</Typography>
-            <RadioButtonGroupInput
-                label={false}
-                source="gender"
-                choices={contactGender}
+            <Typography variant="h6">Personal Details</Typography>
+            <TextInput
+                source="firstName"
+                label="First Name"
                 helperText={false}
-                optionText="label"
-                optionValue="value"
-                sx={{ '& .MuiRadio-root': { paddingY: 0 } }}
-                defaultValue={contactGender[0].value}
+                fullWidth
             />
             <TextInput
-                source="first_name"
-                validate={required()}
+                source="lastName"
+                label="Last Name"
                 helperText={false}
-            />
-            <TextInput
-                source="last_name"
-                validate={required()}
-                helperText={false}
+                fullWidth
             />
         </Stack>
     );
 };
 
-const ContactPositionInputs = () => {
+interface ContactOrganizationInputsProps {
+    defaultOrganizationId?: number;
+}
+
+const ContactOrganizationInputs: React.FC<ContactOrganizationInputsProps> = ({
+    defaultOrganizationId,
+}) => {
     const [create] = useCreate();
     const { identity } = useGetIdentity();
     const notify = useNotify();
-    const handleCreateCompany = async (name?: string) => {
+    const { setValue } = useFormContext();
+
+    // Set default organization if provided
+    React.useEffect(() => {
+        if (defaultOrganizationId) {
+            setValue('organizationId', defaultOrganizationId);
+        }
+    }, [defaultOrganizationId, setValue]);
+
+    const handleCreateOrganization = async (name?: string) => {
         if (!name) return;
         try {
-            const newCompany = await create(
-                'companies',
+            const newOrganization = await create(
+                'organizations',
                 {
                     data: {
                         name,
-                        sales_id: identity?.id,
-                        created_at: new Date().toISOString(),
+                        createdBy: identity?.id,
+                        createdAt: new Date().toISOString(),
                     },
                 },
                 { returnPromise: true }
             );
-            return newCompany;
+            return newOrganization;
         } catch (error) {
-            notify('An error occurred while creating the company', {
+            notify('An error occurred while creating the organization', {
                 type: 'error',
             });
         }
     };
+
     return (
         <Stack>
-            <Typography variant="h6">Position</Typography>
-            <TextInput source="title" helperText={false} />
-            <ReferenceInput source="company_id" reference="companies">
+            <Typography variant="h6">Organization</Typography>
+            <ReferenceInput
+                source="organizationId"
+                reference="organizations"
+            >
                 <AutocompleteInput
                     optionText="name"
-                    onCreate={handleCreateCompany}
+                    onCreate={handleCreateOrganization}
                     helperText={false}
+                    fullWidth
+                    label="Organization"
+                    disabled={!!defaultOrganizationId}
                 />
             </ReferenceInput>
-        </Stack>
-    );
-};
 
-const ContactPersonalInformationInputs = () => {
-    const { getValues, setValue } = useFormContext();
-
-    // set first and last name based on email
-    const handleEmailChange = (email: string) => {
-        const { first_name, last_name } = getValues();
-        if (first_name || last_name || !email) return;
-        const [first, last] = email.split('@')[0].split('.');
-        setValue('first_name', first.charAt(0).toUpperCase() + first.slice(1));
-        setValue(
-            'last_name',
-            last ? last.charAt(0).toUpperCase() + last.slice(1) : ''
-        );
-    };
-
-    const handleEmailPaste: React.ClipboardEventHandler<HTMLDivElement> = e => {
-        const email = e.clipboardData?.getData('text/plain');
-        handleEmailChange(email);
-    };
-
-    const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const email = e.target.value;
-        handleEmailChange(email);
-    };
-
-    return (
-        <Stack>
-            <Typography variant="h6">Personal info</Typography>
-            <ArrayInput
-                source="email_jsonb"
-                label="Email addresses"
-                helperText={false}
-            >
-                <SimpleFormIterator inline disableReordering>
-                    <TextInput
-                        source="email"
-                        helperText={false}
-                        validate={email()}
-                        onPaste={handleEmailPaste}
-                        onBlur={handleEmailBlur}
-                    />
-                    <SelectInput
-                        source="type"
-                        helperText={false}
-                        optionText="id"
-                        choices={personalInfoTypes}
-                        defaultValue="Work"
-                        fullWidth={false}
-                        sx={{ width: 100, minWidth: 100 }}
-                    />
-                </SimpleFormIterator>
-            </ArrayInput>
-            <ArrayInput
-                source="phone_jsonb"
-                label="Phone numbers"
-                helperText={false}
-            >
-                <SimpleFormIterator inline disableReordering>
-                    <TextInput source="number" helperText={false} />
-                    <SelectInput
-                        source="type"
-                        helperText={false}
-                        optionText="id"
-                        choices={personalInfoTypes}
-                        defaultValue="Work"
-                        fullWidth={false}
-                        sx={{ width: 100, minWidth: 100 }}
-                    />
-                </SimpleFormIterator>
-            </ArrayInput>
-            <TextInput
-                source="linkedin_url"
-                label="Linkedin URL"
-                helperText={false}
-                validate={isLinkedinUrl}
+            <BooleanInput
+                source="isPrimary"
+                label="Primary Contact"
+                helperText="Mark as the primary contact for this organization"
+                defaultValue={false}
             />
         </Stack>
     );
 };
 
-const personalInfoTypes = [{ id: 'Work' }, { id: 'Home' }, { id: 'Other' }];
-
-const ContactMiscInputs = () => {
+const ContactInfoInputs = () => {
     return (
         <Stack>
-            <Typography variant="h6">Misc</Typography>
+            <Typography variant="h6">Contact Information</Typography>
             <TextInput
-                source="background"
-                label="Background info (bio, how you met, etc)"
+                source="email"
+                label="Email Address"
+                validate={isEmail}
+                helperText={false}
+                fullWidth
+            />
+            <TextInput
+                source="phone"
+                label="Phone Number"
+                validate={isPhoneNumber}
+                helperText={false}
+                fullWidth
+            />
+            <TextInput
+                source="linkedInUrl"
+                label="LinkedIn URL"
+                validate={isLinkedinUrl}
+                helperText={false}
+                fullWidth
+            />
+        </Stack>
+    );
+};
+
+const ContactRoleInputs = () => {
+    const { data: roleSettings } = useGetList<Setting>('settings', {
+        filter: { category: 'role', active: true },
+        sort: { field: 'sortOrder', order: 'ASC' },
+        pagination: { page: 1, perPage: 100 },
+    });
+
+    const { data: influenceSettings } = useGetList<Setting>('settings', {
+        filter: { category: 'influence', active: true },
+        sort: { field: 'sortOrder', order: 'ASC' },
+        pagination: { page: 1, perPage: 100 },
+    });
+
+    const { data: decisionSettings } = useGetList<Setting>('settings', {
+        filter: { category: 'decision', active: true },
+        sort: { field: 'sortOrder', order: 'ASC' },
+        pagination: { page: 1, perPage: 100 },
+    });
+
+    return (
+        <Stack>
+            <Typography variant="h6">Business Role</Typography>
+
+            <SelectInput
+                source="roleId"
+                label="Position/Role"
+                choices={
+                    roleSettings?.map(setting => ({
+                        id: setting.id,
+                        name: setting.label,
+                        color: setting.color,
+                    })) || []
+                }
+                helperText={false}
+                optionText={(choice: any) => (
+                    <span style={{ color: choice.color || 'inherit' }}>
+                        {choice.name}
+                    </span>
+                )}
+                fullWidth
+            />
+
+            <SelectInput
+                source="influenceLevelId"
+                label="Influence Level"
+                choices={
+                    influenceSettings?.map(setting => ({
+                        id: setting.id,
+                        name: setting.label,
+                        color: setting.color,
+                    })) || []
+                }
+                helperText={false}
+                optionText={(choice: any) => (
+                    <span style={{ color: choice.color || 'inherit' }}>
+                        {choice.name}
+                    </span>
+                )}
+                fullWidth
+            />
+
+            <SelectInput
+                source="decisionRoleId"
+                label="Decision Role"
+                choices={
+                    decisionSettings?.map(setting => ({
+                        id: setting.id,
+                        name: setting.label,
+                        color: setting.color,
+                    })) || []
+                }
+                helperText={false}
+                optionText={(choice: any) => (
+                    <span style={{ color: choice.color || 'inherit' }}>
+                        {choice.name}
+                    </span>
+                )}
+                fullWidth
+            />
+        </Stack>
+    );
+};
+
+const ContactNotesInputs = () => {
+    return (
+        <Stack>
+            <Typography variant="h6">Notes</Typography>
+            <TextInput
+                source="notes"
+                label="Contact Notes"
                 multiline
                 helperText={false}
+                minRows={3}
+                fullWidth
             />
-            <BooleanInput source="has_newsletter" helperText={false} />
-            <ReferenceInput
-                reference="sales"
-                source="sales_id"
-                sort={{ field: 'last_name', order: 'ASC' }}
-                filter={{
-                    'disabled@neq': true,
-                }}
-            >
-                <SelectInput
-                    helperText={false}
-                    label="Account manager"
-                    optionText={saleOptionRenderer}
-                    validate={required()}
-                />
-            </ReferenceInput>
         </Stack>
     );
 };
-
-const saleOptionRenderer = (choice: Sale) =>
-    `${choice.first_name} ${choice.last_name}`;

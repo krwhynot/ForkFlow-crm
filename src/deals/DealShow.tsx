@@ -9,11 +9,9 @@ import {
     Typography,
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { format, isValid } from 'date-fns';
 import {
     DeleteButton,
     EditButton,
-    ReferenceArrayField,
     ReferenceField,
     ReferenceManyField,
     ShowBase,
@@ -22,7 +20,7 @@ import {
     useRecordContext,
     useRedirect,
     useRefresh,
-    useUpdate,
+    useUpdate
 } from 'react-admin';
 
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -74,12 +72,12 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
         <>
             <DialogCloseButton
                 onClose={handleClose}
-                top={record.archived_at ? CLOSE_TOP_WITH_ARCHIVED : 16}
+                top={16}
                 right={10}
-                color={record.archived_at ? 'white' : undefined}
+                color={undefined}
             />
             <Stack gap={1}>
-                {record.archived_at ? <ArchivedTitle /> : null}
+                {record.archivedAt ? <ArchivedTitle /> : null}
                 <Box display="flex" p={2}>
                     <Box flex="1">
                         <Stack
@@ -89,7 +87,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                         >
                             <Stack direction="row" alignItems="center" gap={2}>
                                 <ReferenceField
-                                    source="company_id"
+                                    source="organizationId"
                                     reference="companies"
                                     link="show"
                                     sx={{ '& a': { textDecoration: 'none' } }}
@@ -103,9 +101,9 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                             <Stack
                                 gap={1}
                                 direction="row"
-                                pr={record.archived_at ? 0 : 6}
+                                pr={6}
                             >
-                                {record.archived_at ? (
+                                {record.archivedAt ? (
                                     <>
                                         <UnarchiveButton record={record} />
                                         <DeleteButton />
@@ -133,21 +131,9 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     gap={1}
                                 >
                                     <Typography variant="body2">
-                                        {isValid(
-                                            new Date(
-                                                record.expected_closing_date
-                                            )
-                                        )
-                                            ? format(
-                                                  new Date(
-                                                      record.expected_closing_date
-                                                  ),
-                                                  'PP'
-                                              )
-                                            : 'Invalid date'}
+                                        {record.expectedClosingDate ? new Date(record.expectedClosingDate).toLocaleDateString() : ''}
                                     </Typography>
-                                    {new Date(record.expected_closing_date) <
-                                    new Date() ? (
+                                    {record.expectedClosingDate ? new Date(record.expectedClosingDate) < new Date() : false ? (
                                         <Chip
                                             label="Past"
                                             color="error"
@@ -165,7 +151,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     Budget
                                 </Typography>
                                 <Typography variant="body2">
-                                    {record.amount.toLocaleString('en-US', {
+                                    {(record.amount ?? 0).toLocaleString('en-US', {
                                         notation: 'compact',
                                         style: 'currency',
                                         currency: 'USD',
@@ -174,24 +160,6 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     })}
                                 </Typography>
                             </Box>
-
-                            {record.category && (
-                                <Box
-                                    display="flex"
-                                    mr={5}
-                                    flexDirection="column"
-                                >
-                                    <Typography
-                                        color="textSecondary"
-                                        variant="caption"
-                                    >
-                                        Category
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        {record.category}
-                                    </Typography>
-                                </Box>
-                            )}
 
                             <Box display="flex" mr={5} flexDirection="column">
                                 <Typography
@@ -206,7 +174,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                             </Box>
                         </Box>
 
-                        {!!record.contact_ids?.length && (
+                        {record.contactId && (
                             <Box m={2}>
                                 <Box
                                     display="flex"
@@ -218,14 +186,14 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                         color="textSecondary"
                                         variant="caption"
                                     >
-                                        Contacts
+                                        Contact
                                     </Typography>
-                                    <ReferenceArrayField
-                                        source="contact_ids"
-                                        reference="contacts_summary"
+                                    <ReferenceField
+                                        source="contactId"
+                                        reference="contacts"
                                     >
                                         <ContactList />
-                                    </ReferenceArrayField>
+                                    </ReferenceField>
                                 </Box>
                             </Box>
                         )}
@@ -291,7 +259,7 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
             'deals',
             {
                 id: record.id,
-                data: { archived_at: new Date().toISOString() },
+                data: { archivedAt: new Date().toISOString() },
                 previousData: record,
             },
             {

@@ -11,18 +11,21 @@ interface LocationContextType {
     setWatchPosition: (watch: boolean) => void;
 }
 
-const LocationContext = createContext<LocationContextType | undefined>(undefined);
+const LocationContext = createContext<LocationContextType | undefined>(
+    undefined
+);
 
 interface LocationProviderProps {
     children: React.ReactNode;
     autoRequest?: boolean;
 }
 
-export const LocationProvider: React.FC<LocationProviderProps> = ({ 
-    children, 
-    autoRequest = false 
+export const LocationProvider: React.FC<LocationProviderProps> = ({
+    children,
+    autoRequest = false,
 }) => {
-    const [currentLocation, setCurrentLocation] = useState<GPSCoordinates | null>(null);
+    const [currentLocation, setCurrentLocation] =
+        useState<GPSCoordinates | null>(null);
     const [permission, setPermission] = useState<LocationPermission>('prompt');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -40,17 +43,15 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         setError(null);
 
         try {
-            const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    resolve,
-                    reject,
-                    {
+            const position = await new Promise<GeolocationPosition>(
+                (resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
                         enableHighAccuracy: true,
                         timeout: 10000,
                         maximumAge: 60000, // Cache for 1 minute
-                    }
-                );
-            });
+                    });
+                }
+            );
 
             const coordinates: GPSCoordinates = {
                 latitude: position.coords.latitude,
@@ -83,7 +84,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         }
 
         const id = navigator.geolocation.watchPosition(
-            (position) => {
+            position => {
                 const coordinates: GPSCoordinates = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
@@ -93,7 +94,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
                 setCurrentLocation(coordinates);
                 setPermission('granted');
             },
-            (err) => {
+            err => {
                 setError(`Watch position error: ${err.message}`);
                 setPermission('denied');
             },
@@ -145,8 +146,9 @@ export const useLocation = (): LocationContextType => {
 
 // Hook for components that need location on demand
 export const useLocationOnDemand = () => {
-    const { requestLocation, currentLocation, isLoading, error } = useLocation();
-    
+    const { requestLocation, currentLocation, isLoading, error } =
+        useLocation();
+
     return {
         getLocation: requestLocation,
         currentLocation,

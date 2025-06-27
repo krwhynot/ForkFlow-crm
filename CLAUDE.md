@@ -113,3 +113,33 @@ npm run storybook            # Start Storybook dev server
 
 ## Testing
 Unit tests use Vitest and are located alongside source files with `.test.ts` or `.test.tsx` extensions. Always run `make test` before committing changes.
+
+## Error Management
+
+### Error Logging Strategy
+- Create a log of all errors and their final fix note if they have not been fixed yet
+
+### Problem-Solving Strategies
+- Do not be so positive that a fix will work; always confirm with a test or search with Exa, Perplexity, or Context7
+
+### Confidence Levels
+- Always state the confidence level of a task
+- For any confidence an 8 or below, do more research with Exa and Perplexity or Context7
+
+## Development Wisdom
+- MCP tools are your best friend and should be use as often as possible
+
+## Schema and Type Management
+
+### Field Name and Type Guidelines
+- **Rule: Always Use the New Schema Field Names and Types**
+  - Scope: Applies to all TypeScript, React, and Supabase-related files in the project.
+  - Guidelines:
+    - Always use the latest schema field names as defined in your Supabase/Postgres database and TypeScript types.
+    - Do not use legacy/old field names (e.g., use organizationId not company_id, createdAt not created_at, linkedInUrl not linkedin_url, etc.).
+    - When updating or creating components, hooks, or data providers, reference the TypeScript types generated from the Supabase schema.
+    - If you encounter a field that is not present in the new schema, refactor the code to use the correct new field or remove the usage.
+    - When mapping or transforming data, always convert legacy field names to the new schema before using them in the application.
+    - Update all test data, mock data, and stories to use the new schema field names and types.
+    - Document any schema-related changes in the code comments and update relevant documentation.
+  - Rationale: This ensures type safety, reduces bugs, and keeps the codebase aligned with the current database structure. It also makes onboarding and future migrations easier.

@@ -1,3 +1,4 @@
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
@@ -10,6 +11,7 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
     Form,
@@ -26,8 +28,6 @@ import { useFormState } from 'react-hook-form';
 import ImageEditorField from '../misc/ImageEditorField';
 import { CrmDataProvider } from '../providers/types';
 import { Sale, SalesFormData } from '../types';
-import { useMutation } from '@tanstack/react-query';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 export const SettingsPage = () => {
     const [isEditMode, setEditMode] = useState(false);
@@ -44,7 +44,7 @@ export const SettingsPage = () => {
             if (!identity) {
                 throw new Error('Record not found');
             }
-            return dataProvider.salesUpdate(identity.id, data);
+            return dataProvider.brokerUpdate(identity.id, data);
         },
         onSuccess: () => {
             refetchIdentity();
@@ -116,7 +116,11 @@ const SettingsForm = ({
             if (!record) {
                 throw new Error('Record not found');
             }
-            return dataProvider.salesUpdate(record.id, data);
+            return dataProvider.update('sales', {
+                id: record.id,
+                data,
+                previousData: record,
+            });
         },
         onSuccess: () => {
             refetch();

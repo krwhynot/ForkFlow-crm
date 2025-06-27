@@ -23,10 +23,10 @@ import { AddTask } from '../tasks/AddTask';
 import { TasksIterator } from '../tasks/TasksIterator';
 import { TagsListEdit } from './TagsListEdit';
 
+import { ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { Contact, Sale } from '../types';
-import { ReactNode } from 'react';
 
 export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
     const location = useLocation();
@@ -44,7 +44,7 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
             </Box>
             <Typography variant="subtitle2">Personal info</Typography>
             <Divider sx={{ mb: 2 }} />
-            <ArrayField source="email_jsonb">
+            <ArrayField source="email">
                 <SingleFieldList linkType={false} gap={0} direction="column">
                     <PersonalInfoRow
                         icon={<EmailIcon color="disabled" fontSize="small" />}
@@ -53,18 +53,12 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
                     />
                 </SingleFieldList>
             </ArrayField>
-            {record.has_newsletter && (
-                <Typography variant="body2" color="textSecondary" pl={3.5}>
-                    Subscribed to newsletter
-                </Typography>
-            )}
-
-            {record.linkedin_url && (
+            {record.linkedInUrl && (
                 <PersonalInfoRow
                     icon={<LinkedInIcon color="disabled" fontSize="small" />}
                     primary={
                         <UrlField
-                            source="linkedin_url"
+                            source="linkedInUrl"
                             content="LinkedIn profile"
                             target="_blank"
                             rel="noopener"
@@ -72,7 +66,7 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
                     }
                 />
             )}
-            <ArrayField source="phone_jsonb">
+            <ArrayField source="phone">
                 <SingleFieldList linkType={false} gap={0} direction="column">
                     <PersonalInfoRow
                         icon={<PhoneIcon color="disabled" fontSize="small" />}
@@ -103,7 +97,7 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
             </Typography>
             <Divider />
             <Typography variant="body2" mt={2}>
-                {record && record.background}
+                {record && record.notes}
             </Typography>
             <Box mt={1} mb={3}>
                 <Typography
@@ -114,7 +108,7 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
                     Added on
                 </Typography>{' '}
                 <DateField
-                    source="first_seen"
+                    source="createdAt"
                     options={{ year: 'numeric', month: 'long', day: 'numeric' }}
                     color="textSecondary"
                 />
@@ -127,7 +121,7 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
                     Last activity on
                 </Typography>{' '}
                 <DateField
-                    source="last_seen"
+                    source="updatedAt"
                     options={{ year: 'numeric', month: 'long', day: 'numeric' }}
                     color="textSecondary"
                 />
@@ -139,7 +133,7 @@ export const ContactAside = ({ link = 'edit' }: { link?: 'edit' | 'show' }) => {
                 >
                     Followed by
                 </Typography>{' '}
-                <ReferenceField source="sales_id" reference="sales">
+                <ReferenceField source="createdBy" reference="sales">
                     <FunctionField<Sale>
                         source="last_name"
                         render={record =>

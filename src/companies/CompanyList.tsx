@@ -1,20 +1,20 @@
 import {
-    TopToolbar,
-    ExportButton,
     CreateButton,
-    Pagination,
-    useGetIdentity,
+    ExportButton,
     ListBase,
-    Title,
     ListToolbar,
-    useListContext,
+    Pagination,
     SortButton,
+    Title,
+    TopToolbar,
+    useGetIdentity,
+    useListContext,
 } from 'react-admin';
 
-import { ImageList } from './GridList';
-import { CompanyListFilter } from './CompanyListFilter';
 import { Stack } from '@mui/material';
 import { CompanyEmpty } from './CompanyEmpty';
+import { CompanyListFilter } from './CompanyListFilter';
+import { ImageList } from './GridList';
 
 export const CompanyList = () => {
     const { identity } = useGetIdentity();
@@ -37,7 +37,7 @@ const CompanyListLayout = () => {
         <Stack direction="row" component="div">
             <CompanyListFilter />
             <Stack sx={{ width: '100%' }}>
-                <Title title={'Companies'} />
+                <Title title={'Organizations'} />
                 <ListToolbar actions={<CompanyListActions />} />
                 <ImageList />
                 <Pagination rowsPerPageOptions={[10, 25, 50, 100]} />
@@ -53,7 +53,7 @@ const CompanyListActions = () => {
             <ExportButton />
             <CreateButton
                 variant="contained"
-                label="New Company"
+                label="New Organization"
                 sx={{ marginLeft: 2 }}
             />
         </TopToolbar>

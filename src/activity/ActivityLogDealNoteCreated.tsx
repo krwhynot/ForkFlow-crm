@@ -2,11 +2,11 @@ import Typography from '@mui/material/Typography';
 import { ReferenceField } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';
-import type { ActivityDealNoteCreated } from '../types';
-import { SaleName } from '../sales/SaleName';
 import { RelativeDate } from '../misc/RelativeDate';
-import { ActivityLogNote } from './ActivityLogNote';
+import { SaleName } from '../sales/SaleName';
+import type { ActivityDealNoteCreated } from '../types';
 import { useActivityLogContext } from './ActivityLogContext';
+import { ActivityLogNote } from './ActivityLogNote';
 
 type ActivityLogDealNoteCreatedProps = {
     activity: ActivityDealNoteCreated;
@@ -22,13 +22,13 @@ export function ActivityLogDealNoteCreated({
             header={
                 <>
                     <ReferenceField
-                        source="deal_id"
+                        source="dealId"
                         reference="deals"
                         record={dealNote}
                         link={false}
                     >
                         <ReferenceField
-                            source="company_id"
+                            source="organizationId"
                             reference="companies"
                             link={false}
                         >
@@ -42,7 +42,7 @@ export function ActivityLogDealNoteCreated({
                         flexGrow={1}
                     >
                         <ReferenceField
-                            source="sales_id"
+                            source="salesId"
                             reference="sales"
                             record={activity}
                             link={false}
@@ -51,7 +51,7 @@ export function ActivityLogDealNoteCreated({
                         </ReferenceField>{' '}
                         added a note about deal{' '}
                         <ReferenceField
-                            source="deal_id"
+                            source="dealId"
                             reference="deals"
                             record={dealNote}
                             link="show"
@@ -60,13 +60,13 @@ export function ActivityLogDealNoteCreated({
                             <>
                                 {' at '}
                                 <ReferenceField
-                                    source="deal_id"
+                                    source="dealId"
                                     reference="deals"
                                     record={dealNote}
                                     link={false}
                                 >
                                     <ReferenceField
-                                        source="company_id"
+                                        source="organizationId"
                                         reference="companies"
                                         link="show"
                                     />
@@ -86,7 +86,7 @@ export function ActivityLogDealNoteCreated({
                     )}
                 </>
             }
-            text={dealNote.text}
+            text={dealNote.content}
         />
     );
 }

@@ -8,13 +8,17 @@ import {
     withLifecycleCallbacks,
 } from 'react-admin';
 import {
+    BrokerDashboardStats,
+    BrokerFormData,
     Company,
     Contact,
     Deal,
+    GPSCoordinates,
     Sale,
     SalesFormData,
     SignUpData,
     Task,
+    Visit,
 } from '../../types';
 import { getActivityLog } from '../commons/activity';
 import { getCompanyAvatar } from '../commons/getCompanyAvatar';
@@ -62,7 +66,7 @@ async function processContactAvatar(
     params: CreateParams<Contact> | UpdateParams<Contact>
 ): Promise<CreateParams<Contact> | UpdateParams<Contact>> {
     const { data } = params;
-    if (data.avatar?.src || !data.email_jsonb || !data.email_jsonb.length) {
+    if ((data as any).avatar?.src || !data.email || data.email.trim() === '') {
         return params;
     }
     const avatarUrl = await getContactAvatar(data);
@@ -90,48 +94,35 @@ async function fetchAndUpdateCompanyData(
     const { data } = params;
     const newData = { ...data };
 
-    if (!newData.company_id) {
+    if (!newData.organizationId) {
         return params;
     }
 
     const { data: company } = await dataProvider.getOne('companies', {
-        id: newData.company_id,
+        id: newData.organizationId,
     });
 
     if (!company) {
         return params;
     }
 
-    newData.company_name = company.name;
+    newData.organization = { ...company };
     return { ...params, data: newData };
 }
 
 const dataProviderWithCustomMethod: CrmDataProvider = {
     ...baseDataProvider,
-    unarchiveDeal: async (deal: Deal) => {
-        // get all deals where stage is the same as the deal to unarchive
-        const { data: deals } = await baseDataProvider.getList<Deal>('deals', {
-            filter: { stage: deal.stage },
-            pagination: { page: 1, perPage: 1000 },
-            sort: { field: 'index', order: 'ASC' },
-        });
-
-        // set index for each deal starting from 1, if the deal to unarchive is found, set its index to the last one
-        const updatedDeals = deals.map((d, index) => ({
-            ...d,
-            index: d.id === deal.id ? 0 : index + 1,
-            archived_at: d.id === deal.id ? null : d.archived_at,
-        }));
-
-        return await Promise.all(
-            updatedDeals.map(updatedDeal =>
-                dataProvider.update('deals', {
-                    id: updatedDeal.id,
-                    data: updatedDeal,
-                    previousData: deals.find(d => d.id === updatedDeal.id),
-                })
-            )
-        );
+    async getList(resource: string, params: any) {
+        if (resource === 'customers') {
+            return baseDataProvider.getList('customer_summary', params);
+        }
+        return baseDataProvider.getList(resource, params);
+    },
+    async getOne(resource: string, params: any) {
+        if (resource === 'customers') {
+            return baseDataProvider.getOne('customer_summary', params);
+        }
+        return baseDataProvider.getOne(resource, params);
     },
     // We simulate a remote endpoint that is in charge of returning activity log
     getActivityLog: async (companyId?: Identifier) => {
@@ -155,40 +146,6 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
             ...user.data,
             password,
         };
-    },
-    async salesCreate({ ...data }: SalesFormData): Promise<Sale> {
-        const user = await dataProvider.create('sales', {
-            data: {
-                ...data,
-                password: 'new_password',
-            },
-        });
-
-        return {
-            ...user.data,
-        };
-    },
-    async salesUpdate(
-        id: Identifier,
-        data: Partial<Omit<SalesFormData, 'password'>>
-    ): Promise<Partial<Omit<SalesFormData, 'password'>>> {
-        const { data: previousData } = await dataProvider.getOne<Sale>(
-            'sales',
-            {
-                id,
-            }
-        );
-
-        if (!previousData) {
-            throw new Error('User not found');
-        }
-
-        const { data: sale } = await dataProvider.update('sales', {
-            id,
-            data,
-            previousData,
-        });
-        return sale;
     },
     async isInitialized(): Promise<boolean> {
         const sales = await dataProvider.getList<Sale>('sales', {
@@ -227,6 +184,71 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
 
         return true;
     },
+    async brokerCreate(body: BrokerFormData) {
+        // Mock implementation for fakerest
+        const id = Date.now().toString();
+        const newBroker = {
+            id,
+            user_id: id,
+            ...body,
+        };
+        
+        const result = await dataProvider.create('sales', { data: newBroker });
+        return result.data;
+    },
+    async brokerUpdate(id: Identifier, data: Partial<Omit<BrokerFormData, 'password'>>) {
+        const { data: previousData } = await dataProvider.getOne<Sale>('sales', { id });
+        const result = await dataProvider.update('sales', {
+            id,
+            data,
+            previousData,
+        });
+        return result.data;
+    },
+    async getDashboardStats(): Promise<BrokerDashboardStats> {
+        // Mock dashboard stats for fakerest
+        return {
+            total_customers: 150,
+            customers_this_month: 12,
+            total_visits: 75,
+            visits_this_week: 8,
+            visits_this_month: 32,
+            pending_reminders: 5,
+            overdue_reminders: 2,
+            customers_needing_attention: 8,
+        };
+    },
+    async findNearbyCustomers(latitude: number, longitude: number, radiusKm: number = 5) {
+        // Mock implementation - return some random customers
+        const { data: customers } = await dataProvider.getList('customers', {
+            filter: {},
+            pagination: { page: 1, perPage: 10 },
+            sort: { field: 'id', order: 'ASC' },
+        });
+        return customers.slice(0, 3); // Return first 3 as "nearby"
+    },
+    async completeReminder(id: Identifier) {
+        const { data: previousData } = await dataProvider.getOne('reminders', { id });
+        return dataProvider.update('reminders', {
+            id,
+            data: {
+                is_completed: true,
+                completed_at: new Date().toISOString(),
+            },
+            previousData,
+        });
+    },
+    async snoozeReminder(id: Identifier, snoozedUntil: string) {
+        const { data: previousData } = await dataProvider.getOne('reminders', { id });
+        return dataProvider.update('reminders', {
+            id,
+            data: {
+                snoozed_until: snoozedUntil,
+                snooze_count: (previousData.snooze_count || 0) + 1,
+            },
+            previousData,
+        });
+    },
 };
 
 async function updateCompany(
@@ -245,6 +267,16 @@ async function updateCompany(
         previousData: company,
     });
 }
+
+// Defensive: Ensure all required resources are initialized
+const requiredResources = ['organizations', 'contacts', 'settings', 'companies', 'tasks', 'deals', 'dealNotes', 'contactNotes'];
+export const ensureDbResources = (db: any) => {
+    requiredResources.forEach((res) => {
+        if (!db[res]) {
+            db[res] = [];
+        }
+    });
+};
 
 export const dataProvider = withLifecycleCallbacks(
     withSupabaseFilterAdapter(dataProviderWithCustomMethod),
@@ -281,7 +313,7 @@ export const dataProvider = withLifecycleCallbacks(
                 const [companies, contacts, contactNotes, deals] =
                     await Promise.all([
                         dataProvider.getList('companies', {
-                            filter: { sales_id: params.id },
+                            filter: { salesId: params.id },
                             pagination: {
                                 page: 1,
                                 perPage: 10_000,
@@ -289,7 +321,7 @@ export const dataProvider = withLifecycleCallbacks(
                             sort: { field: 'id', order: 'ASC' },
                         }),
                         dataProvider.getList('contacts', {
-                            filter: { sales_id: params.id },
+                            filter: { salesId: params.id },
                             pagination: {
                                 page: 1,
                                 perPage: 10_000,
@@ -297,7 +329,7 @@ export const dataProvider = withLifecycleCallbacks(
                             sort: { field: 'id', order: 'ASC' },
                         }),
                         dataProvider.getList('contactNotes', {
-                            filter: { sales_id: params.id },
+                            filter: { salesId: params.id },
                             pagination: {
                                 page: 1,
                                 perPage: 10_000,
@@ -305,7 +337,7 @@ export const dataProvider = withLifecycleCallbacks(
                             sort: { field: 'id', order: 'ASC' },
                         }),
                         dataProvider.getList('deals', {
-                            filter: { sales_id: params.id },
+                            filter: { salesId: params.id },
                             pagination: {
                                 page: 1,
                                 perPage: 10_000,
@@ -318,25 +350,25 @@ export const dataProvider = withLifecycleCallbacks(
                     dataProvider.updateMany('companies', {
                         ids: companies.data.map(company => company.id),
                         data: {
-                            sales_id: newSaleId,
+                            salesId: newSaleId,
                         },
                     }),
                     dataProvider.updateMany('contacts', {
                         ids: contacts.data.map(company => company.id),
                         data: {
-                            sales_id: newSaleId,
+                            salesId: newSaleId,
                         },
                     }),
                     dataProvider.updateMany('contactNotes', {
                         ids: contactNotes.data.map(company => company.id),
                         data: {
-                            sales_id: newSaleId,
+                            salesId: newSaleId,
                         },
                     }),
                     dataProvider.updateMany('deals', {
                         ids: deals.data.map(company => company.id),
                         data: {
-                            sales_id: newSaleId,
+                            salesId: newSaleId,
                         },
                     }),
                 ]);
@@ -351,8 +383,8 @@ export const dataProvider = withLifecycleCallbacks(
                 return fetchAndUpdateCompanyData(newParams, dataProvider);
             },
             afterCreate: async result => {
-                if (result.data.company_id != null) {
-                    await updateCompany(result.data.company_id, company => ({
+                if (result.data.organizationId != null) {
+                    await updateCompany(result.data.organizationId, company => ({
                         nb_contacts: (company.nb_contacts ?? 0) + 1,
                     }));
                 }
@@ -364,8 +396,8 @@ export const dataProvider = withLifecycleCallbacks(
                 return fetchAndUpdateCompanyData(newParams, dataProvider);
             },
             afterDelete: async result => {
-                if (result.data.company_id != null) {
-                    await updateCompany(result.data.company_id, company => ({
+                if (result.data.organizationId != null) {
+                    await updateCompany(result.data.organizationId, company => ({
                         nb_contacts: (company.nb_contacts ?? 1) - 1,
                     }));
                 }
@@ -393,8 +425,8 @@ export const dataProvider = withLifecycleCallbacks(
             },
             beforeUpdate: async params => {
                 const { data, previousData } = params;
-                if (previousData.done_date !== data.done_date) {
-                    taskUpdateType = data.done_date
+                if (previousData.completed_at !== data.completed_at) {
+                    taskUpdateType = data.completed_at
                         ? TASK_MARKED_AS_DONE
                         : TASK_MARKED_AS_UNDONE;
                 } else {
@@ -462,7 +494,7 @@ export const dataProvider = withLifecycleCallbacks(
                 const { data: contacts } = await dataProvider.getList(
                     'contacts',
                     {
-                        filter: { company_id: id },
+                        filter: { organizationId: id },
                         pagination: { page: 1, perPage: 1000 },
                         sort: { field: 'id', order: 'ASC' },
                     }
@@ -471,7 +503,7 @@ export const dataProvider = withLifecycleCallbacks(
                 const contactIds = contacts.map(contact => contact.id);
                 await dataProvider.updateMany('contacts', {
                     ids: contactIds,
-                    data: { company_name: name },
+                    data: { organization: { name } },
                 });
                 return result;
             },
@@ -484,12 +516,12 @@ export const dataProvider = withLifecycleCallbacks(
                     data: {
                         ...params.data,
                         created_at: new Date().toISOString(),
-                        updated_at: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
                     },
                 };
             },
             afterCreate: async result => {
-                await updateCompany(result.data.company_id, company => ({
+                await updateCompany(result.data.organizationId, company => ({
                     nb_deals: (company.nb_deals ?? 0) + 1,
                 }));
 
@@ -500,12 +532,12 @@ export const dataProvider = withLifecycleCallbacks(
                     ...params,
                     data: {
                         ...params.data,
-                        updated_at: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
                     },
                 };
             },
             afterDelete: async result => {
-                await updateCompany(result.data.company_id, company => ({
+                await updateCompany(result.data.organizationId, company => ({
                     nb_deals: (company.nb_deals ?? 1) - 1,
                 }));
 

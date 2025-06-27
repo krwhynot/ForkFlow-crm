@@ -5,11 +5,15 @@ import { ContactEdit } from './ContactEdit';
 import { ContactCreate } from './ContactCreate';
 import { Contact } from '../types';
 
+// Export individual components
+export { ContactList, ContactShow, ContactEdit, ContactCreate };
+
+// Default export for backwards compatibility
 export default {
     list: ContactList,
     show: ContactShow,
     edit: ContactEdit,
     create: ContactCreate,
     recordRepresentation: (record: Contact) =>
-        record?.first_name + ' ' + record?.last_name,
+        record?.firstName + ' ' + record?.lastName,
 };

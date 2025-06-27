@@ -1,5 +1,5 @@
 import { ImageList, ImageListItem, Stack } from '@mui/material';
-import { AttachmentNote, ContactNote, DealNote } from '../types';
+import { ContactNote, DealNote, RAFile } from '../types';
 import { FileField } from 'react-admin';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
@@ -9,10 +9,10 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
     }
 
     const imageAttachments = note.attachments.filter(
-        (attachment: AttachmentNote) => isImageMimeType(attachment.type)
+        (attachment: RAFile) => isImageMimeType(attachment.type)
     );
     const otherAttachments = note.attachments.filter(
-        (attachment: AttachmentNote) => !isImageMimeType(attachment.type)
+        (attachment: RAFile) => !isImageMimeType(attachment.type)
     );
 
     return (
@@ -20,7 +20,7 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
             {imageAttachments.length > 0 && (
                 <ImageList cols={4} gap={8}>
                     {imageAttachments.map(
-                        (attachment: AttachmentNote, index: number) => (
+                        (attachment: RAFile, index: number) => (
                             <ImageListItem key={index}>
                                 <img
                                     src={attachment.src}
@@ -44,7 +44,7 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
             )}
             {otherAttachments.length > 0 &&
                 otherAttachments.map(
-                    (attachment: AttachmentNote, index: number) => (
+                    (attachment: RAFile, index: number) => (
                         <Stack key={index} direction="row" alignItems="center">
                             <AttachFileIcon fontSize="small" />
                             <FileField

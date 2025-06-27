@@ -1,5 +1,10 @@
 import React from 'react';
-import { Button, ButtonProps, IconButton, IconButtonProps } from '@mui/material';
+import {
+    Button,
+    ButtonProps,
+    IconButton,
+    IconButtonProps,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { TouchTarget } from '../../types';
 
@@ -15,14 +20,14 @@ const TouchOptimizedButton = styled(Button)(({ theme }) => ({
     minWidth: MOBILE_TOUCH_TARGET.minWidth,
     padding: theme.spacing(1.5, 2),
     fontSize: '1rem',
-    
+
     // Enhanced touch feedback
     transition: 'all 0.15s ease-in-out',
     '&:active': {
         transform: 'scale(0.98)',
         backgroundColor: theme.palette.action.selected,
     },
-    
+
     // Better spacing for mobile
     '& + &': {
         marginLeft: theme.spacing(1),
@@ -34,14 +39,14 @@ const TouchOptimizedIconButton = styled(IconButton)(({ theme }) => ({
     minHeight: MOBILE_TOUCH_TARGET.minHeight,
     minWidth: MOBILE_TOUCH_TARGET.minWidth,
     padding: theme.spacing(1),
-    
+
     // Enhanced touch feedback
     transition: 'all 0.15s ease-in-out',
     '&:active': {
         transform: 'scale(0.95)',
         backgroundColor: theme.palette.action.selected,
     },
-    
+
     // Ensure icon is properly sized
     '& .MuiSvgIcon-root': {
         fontSize: '1.5rem',
@@ -53,17 +58,17 @@ interface MobileButtonProps extends Omit<ButtonProps, 'size'> {
     touchSize?: 'small' | 'medium' | 'large';
 }
 
-export const MobileButton: React.FC<MobileButtonProps> = ({ 
-    touchSize = 'medium', 
+export const MobileButton: React.FC<MobileButtonProps> = ({
+    touchSize = 'medium',
     children,
-    ...props 
+    ...props
 }) => {
     const sizeStyles = {
         small: { minHeight: 36, minWidth: 36, fontSize: '0.875rem' },
         medium: { minHeight: 44, minWidth: 44, fontSize: '1rem' },
         large: { minHeight: 52, minWidth: 52, fontSize: '1.125rem' },
     };
-    
+
     return (
         <TouchOptimizedButton
             {...props}
@@ -82,17 +87,17 @@ interface MobileIconButtonProps extends Omit<IconButtonProps, 'size'> {
     touchSize?: 'small' | 'medium' | 'large';
 }
 
-export const MobileIconButton: React.FC<MobileIconButtonProps> = ({ 
-    touchSize = 'medium', 
+export const MobileIconButton: React.FC<MobileIconButtonProps> = ({
+    touchSize = 'medium',
     children,
-    ...props 
+    ...props
 }) => {
     const sizeStyles = {
         small: { minHeight: 36, minWidth: 36 },
         medium: { minHeight: 44, minWidth: 44 },
         large: { minHeight: 52, minWidth: 52 },
     };
-    
+
     return (
         <TouchOptimizedIconButton
             {...props}
@@ -112,12 +117,12 @@ interface TouchTargetWrapperProps {
     className?: string;
 }
 
-export const TouchTargetWrapper: React.FC<TouchTargetWrapperProps> = ({ 
-    children, 
-    className 
+export const TouchTargetWrapper: React.FC<TouchTargetWrapperProps> = ({
+    children,
+    className,
 }) => {
     return (
-        <div 
+        <div
             className={className}
             style={{
                 minHeight: MOBILE_TOUCH_TARGET.minHeight,
@@ -144,7 +149,7 @@ export const useMobileViewport = () => {
         const handleResize = () => {
             const width = window.innerWidth;
             const height = window.innerHeight;
-            
+
             setViewport({
                 width,
                 height,
@@ -154,10 +159,10 @@ export const useMobileViewport = () => {
         };
 
         window.addEventListener('resize', handleResize);
-        
+
         // Set initial state
         handleResize();
-        
+
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
@@ -172,19 +177,15 @@ interface MobileSpacingProps {
     desktop?: number;
 }
 
-export const MobileSpacing: React.FC<MobileSpacingProps> = ({ 
-    children, 
-    mobile = 1, 
-    tablet = 2, 
-    desktop = 3 
+export const MobileSpacing: React.FC<MobileSpacingProps> = ({
+    children,
+    mobile = 1,
+    tablet = 2,
+    desktop = 3,
 }) => {
     const { isMobile, isTablet } = useMobileViewport();
-    
+
     const spacing = isMobile ? mobile : isTablet ? tablet : desktop;
-    
-    return (
-        <div style={{ padding: `${spacing * 8}px` }}>
-            {children}
-        </div>
-    );
+
+    return <div style={{ padding: `${spacing * 8}px` }}>{children}</div>;
 };

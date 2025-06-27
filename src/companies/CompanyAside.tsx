@@ -192,8 +192,8 @@ const AddressInfo = ({ record }: { record: Company }) => {
 
 const AdditionalInfo = ({ record }: { record: Company }) => {
     if (
-        !record.created_at &&
-        !record.sales_id &&
+        !record.createdAt &&
+        !record.salesId &&
         !record.description &&
         !record.context_links
     ) {
@@ -234,21 +234,21 @@ const AdditionalInfo = ({ record }: { record: Company }) => {
                     )}
                 </Stack>
             )}
-            {record.sales_id !== null && (
+            {record.salesId !== null && (
                 <Typography variant="body2" color="textSecondary" gutterBottom>
                     Followed by{' '}
                     <ReferenceField
-                        source="sales_id"
+                        source="salesId"
                         reference="sales"
                         record={record}
                     />
                 </Typography>
             )}
-            {record.created_at && (
+            {record.createdAt && (
                 <Typography variant="body2" color="textSecondary" gutterBottom>
                     Added on{' '}
                     <DateField
-                        source="created_at"
+                        source="createdAt"
                         record={record}
                         color="textPrimary"
                         options={{

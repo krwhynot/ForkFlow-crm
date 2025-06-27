@@ -1,18 +1,17 @@
 /* eslint-disable import/no-anonymous-default-export */
-import * as React from 'react';
-import {
-    FilterList,
-    FilterLiveSearch,
-    FilterListItem,
-    useGetIdentity,
-} from 'react-admin';
-import { Box } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import { Box } from '@mui/material';
+import {
+    FilterList,
+    FilterListItem,
+    FilterLiveSearch,
+    useGetIdentity,
+} from 'react-admin';
 
-import { sizes } from './sizes';
 import { useConfigurationContext } from '../root/ConfigurationContext';
+import { sizes } from './sizes';
 
 export const CompanyListFilter = () => {
     const { identity } = useGetIdentity();
@@ -52,7 +51,7 @@ export const CompanyListFilter = () => {
                 <FilterListItem
                     label="Me"
                     value={{
-                        sales_id: identity?.id,
+                        salesId: identity?.id,
                     }}
                 />
             </FilterList>

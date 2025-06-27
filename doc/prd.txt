@@ -222,7 +222,7 @@ A mobile-friendly web-based CRM system designed specifically for food brokers wh
 - last_name (string)
 - role (enum: broker, admin)
 - created_at (timestamp)
-- updated_at (timestamp)
+- updatedAt (timestamp)
 - is_active (boolean)
 
 ```
@@ -245,7 +245,7 @@ A mobile-friendly web-based CRM system designed specifically for food brokers wh
 - longitude (decimal)
 - created_by (UUID, foreign key to users)
 - created_at (timestamp)
-- updated_at (timestamp)
+- updatedAt (timestamp)
 
 ```
 
@@ -260,7 +260,7 @@ A mobile-friendly web-based CRM system designed specifically for food brokers wh
 - latitude (decimal)
 - longitude (decimal)
 - created_at (timestamp)
-- updated_at (timestamp)
+- updatedAt (timestamp)
 
 ```
 
