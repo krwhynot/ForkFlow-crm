@@ -7,6 +7,7 @@ import { generateDealNotes } from './dealNotes';
 import { generateDeals } from './deals';
 import { finalize } from './finalize';
 import { generateOrganizations } from './organizations';
+import { generateProducts } from './products';
 import { generateSales } from './sales';
 import { generateSettings } from './settings';
 import { generateTags } from './tags';
@@ -23,6 +24,7 @@ export default (): Db => {
     db.settings = generateSettings(db);
     db.organizations = generateOrganizations(db);
     db.contacts = generateB2BContacts(db) as Required<Contact>[]; // Override old contacts with B2B schema
+    db.products = generateProducts(db);
 
     // Generate legacy resources
     db.contactNotes = generateContactNotes(db);

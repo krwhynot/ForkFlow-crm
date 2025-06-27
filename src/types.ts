@@ -94,6 +94,32 @@ export type Contact = {
     nb_tasks?: number;   // For compatibility
 } & Pick<RaRecord, 'id'>;
 
+// Products - Food Service Catalog Entity
+export type Product = {
+    id: number;
+    name: string;
+    principalId: number;
+    category?: string;
+    description?: string;
+    sku: string;
+    unitOfMeasure?: string;
+    packageSize?: string;
+    price: number;
+    active: boolean;
+    createdAt: string;
+    updatedAt: string;
+    createdBy?: string;
+
+    // Computed fields with Settings relationships
+    principal?: Setting;
+    
+    // Additional computed fields
+    displayPrice?: string;
+    fullDescription?: string;
+    categoryDisplay?: string;
+    isAvailable?: boolean;
+} & Pick<RaRecord, 'id'>;
+
 export type SignUpData = {
     email: string;
     password: string;

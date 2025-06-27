@@ -1,5 +1,7 @@
+import { faker } from '@faker-js/faker';
 import { Contact } from '../../../types';
 import { Db } from './types';
+import { weightedBoolean } from './utils';
 
 // Utility to safely convert a value to ISO string, fallback to now if invalid
 const safeDate = (value: any) => {
@@ -10,26 +12,62 @@ const safeDate = (value: any) => {
 export const generateB2BContacts = (db: Db): Contact[] => {
     const b2bContacts: Contact[] = [];
 
+    // Get settings for relationships (with safety checks)
+    const roleSettings = db.settings?.filter(s => s.category === 'role' && s.active) || [];
+    const influenceSettings = db.settings?.filter(s => s.category === 'influence' && s.active) || [];
+    const decisionSettings = db.settings?.filter(s => s.category === 'decision' && s.active) || [];
+
     // Create contacts for each organization
     db.organizations?.forEach((org, orgIndex) => {
-        // Create 1-3 contacts per organization
-        const contactCount = Math.floor(Math.random() * 3) + 1;
+        // Create 1-4 contacts per organization (more realistic for B2B)
+        const contactCount = Math.floor(Math.random() * 4) + 1;
 
         for (let i = 0; i < contactCount; i++) {
             const contactId = orgIndex * 10 + i + 1;
             const isPrimary = i === 0; // First contact is primary
 
-            // Get a random role, influence, and decision setting
-            const roleId = Math.floor(Math.random() * 6) + 13; // Role IDs 13-18
-            const influenceLevelId = Math.floor(Math.random() * 3) + 19; // Influence IDs 19-21
-            const decisionRoleId = Math.floor(Math.random() * 4) + 22; // Decision IDs 22-25
+            // Get random settings with safety checks
+            const roleId = roleSettings.length > 0 ? faker.helpers.arrayElement(roleSettings).id : undefined;
+            const influenceLevelId = weightedBoolean(0.8) && influenceSettings.length > 0 ? faker.helpers.arrayElement(influenceSettings).id : undefined;
+            const decisionRoleId = weightedBoolean(0.7) && decisionSettings.length > 0 ? faker.helpers.arrayElement(decisionSettings).id : undefined;
 
-            const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Lisa', 'Robert', 'Emily', 'James', 'Maria'];
-            const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+            // Use more business-appropriate names for food service contacts
+            const firstName = faker.person.firstName();
+            const lastName = faker.person.lastName();
+            const emailDomain = org.website ? 
+                org.website.replace(/^https?:\/\//, '').replace(/^www\./, '') : 
+                `${org.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+            const email = weightedBoolean(0.9) ? 
+                `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${emailDomain}` : 
+                undefined;
 
-            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-            const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${org.name.toLowerCase().replace(/\s+/g, '')}.com`;
+            // Generate realistic contact details
+            const phone = weightedBoolean(0.8) ? faker.phone.number() : undefined;
+            const linkedInUrl = weightedBoolean(0.6) ? 
+                `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}` : 
+                undefined;
+
+            // Create role-appropriate notes
+            const role = roleSettings.find(r => r.id === roleId);
+            const influence = influenceSettings.find(i => i.id === influenceLevelId);
+            const decision = decisionSettings.find(d => d.id === decisionRoleId);
+            
+            const noteElements = [
+                `${firstName} ${lastName} is a ${role?.label || 'contact'} at ${org.name}.`,
+                isPrimary ? 'Primary contact for this organization.' : '',
+                influence ? `Has ${influence.label.toLowerCase()} influence in decision making.` : '',
+                decision ? `Serves as ${decision.label.toLowerCase()} in the buying process.` : '',
+                faker.helpers.arrayElement([
+                    'Responsive to communications.',
+                    'Prefers email communication.',
+                    'Best reached by phone.',
+                    'Available during business hours.',
+                    'Interested in new product offerings.',
+                    'Budget conscious decision maker.',
+                    'Values long-term partnerships.',
+                    'Focuses on quality over price.'
+                ])
+            ].filter(Boolean);
 
             b2bContacts.push({
                 id: contactId,
@@ -37,16 +75,21 @@ export const generateB2BContacts = (db: Db): Contact[] => {
                 firstName,
                 lastName,
                 email,
-                phone: `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                phone,
                 roleId,
                 influenceLevelId,
                 decisionRoleId,
-                linkedInUrl: `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}`,
+                linkedInUrl,
                 isPrimary,
-                notes: `${firstName} is a key contact at ${org.name}. ${isPrimary ? 'Primary contact for this organization.' : 'Secondary contact.'}`,
-                createdAt: safeDate(new Date()),
-                updatedAt: safeDate(new Date()),
-                createdBy: 'demo-user',
+                notes: noteElements.join(' '),
+                createdAt: safeDate(new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000)), // Random date within last year
+                updatedAt: safeDate(new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)), // Random date within last month
+                createdBy: faker.helpers.arrayElement([
+                    'john.smith@forkflow.com',
+                    'sarah.johnson@forkflow.com',
+                    'mike.davis@forkflow.com',
+                    'lisa.wilson@forkflow.com'
+                ]),
             });
         }
     });

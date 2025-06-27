@@ -21,22 +21,19 @@ import {
     ContactList,
     ContactShow,
 } from '../contacts';
+import organizations from '../organizations';
+import products from '../products';
 import { CustomerList } from '../customers';
 import { FoodBrokerDashboard } from '../dashboard/FoodBrokerDashboard';
 import { Layout } from '../layout/Layout';
 import { LoginPage } from '../login/LoginPage';
 import { SignupPage } from '../login/SignupPage';
 import {
-    OrganizationCreate,
-    OrganizationEdit,
-    OrganizationList,
-    OrganizationShow,
-} from '../organizations';
-import {
     authProvider as defaultAuthProvider,
     dataProvider as defaultDataProvider,
 } from '../providers/supabase';
 import { ReminderCreate, ReminderList, ReminderShow } from '../reminders';
+import settings from '../settings';
 import { SettingsPage } from '../settings/SettingsPage';
 import { VisitCreate, VisitList, VisitShow } from '../visits';
 import {
@@ -192,19 +189,28 @@ export const CRM = ({
 
             {/* Food Broker CRM Resources */}
             <Resource
+                name="settings"
+                list={settings.list}
+                create={settings.create}
+                edit={settings.edit}
+                show={settings.show}
+                options={{ label: 'Settings' }}
+            />
+            <Resource
+                name="organizations"
+                list={organizations.list}
+                create={organizations.create}
+                edit={organizations.edit}
+                show={organizations.show}
+                options={{ label: 'Organizations' }}
+            />
+            <Resource
                 name="companies"
                 list={companies.list}
                 create={companies.create}
                 edit={companies.edit}
                 show={companies.show}
-                options={{ label: 'Organizations' }}
-            />
-            <Resource
-                name="organizations"
-                list={OrganizationList}
-                create={OrganizationCreate}
-                edit={OrganizationEdit}
-                show={OrganizationShow}
+                options={{ label: 'Companies (Legacy)' }}
             />
             <Resource
                 name="contacts"
@@ -226,7 +232,14 @@ export const CRM = ({
                 create={ReminderCreate}
                 show={ReminderShow}
             />
-            <Resource name="products" list={ListGuesser} />
+            <Resource
+                name="products"
+                list={products.list}
+                create={products.create}
+                edit={products.edit}
+                show={products.show}
+                options={{ label: 'Products' }}
+            />
             <Resource name="orders" list={ListGuesser} />
             <Resource name="territories" list={ListGuesser} />
         </Admin>

@@ -48,7 +48,8 @@
       "Bash(ss:*)",
       "Bash(curl:*)",
       "Bash(timeout 10s npm run dev:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(make:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -143,5 +143,34 @@ export const generateSettings = (db: Db): Setting[] => {
         });
     });
 
+    // Principal settings (Food service brand principals)
+    const principals = [
+        { label: 'Sysco Corporation', key: 'sysco', color: '#1F5281', sortOrder: 1 },
+        { label: 'US Foods', key: 'us_foods', color: '#CC0000', sortOrder: 2 },
+        { label: 'Performance Food Group', key: 'pfg', color: '#F4AE1A', sortOrder: 3 },
+        { label: 'McLane Company', key: 'mclane', color: '#004B87', sortOrder: 4 },
+        { label: 'United Natural Foods Inc.', key: 'unfi', color: '#1E8A36', sortOrder: 5 },
+        { label: 'C&S Wholesale Grocers', key: 'cs_wholesale', color: '#E2231A', sortOrder: 6 },
+        { label: 'Gordon Food Service', key: 'gordon_food', color: '#003B73', sortOrder: 7 },
+        { label: 'Tyson Foods', key: 'tyson', color: '#FF0000', sortOrder: 8 },
+        { label: 'Maines Paper & Food Service', key: 'maines', color: '#1E90FF', sortOrder: 9 },
+        { label: 'Reinhart Foodservice', key: 'reinhart', color: '#FF8C00', sortOrder: 10 },
+        { label: 'Reyes Holdings', key: 'reyes', color: '#FF0000', sortOrder: 11 },
+    ];
+
+    principals.forEach((principal, index) => {
+        settings.push({
+            id: index + 26,
+            category: 'principal',
+            key: principal.key,
+            label: principal.label,
+            color: principal.color,
+            sortOrder: principal.sortOrder,
+            active: true,
+            createdAt: safeDate(new Date()),
+            updatedAt: safeDate(new Date()),
+        });
+    });
+
     return settings;
 };

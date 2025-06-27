@@ -9,6 +9,7 @@ import {
     Task,
     Organization,
     Setting,
+    Product,
 } from '../../../types';
 
 export interface Db {
@@ -23,4 +24,5 @@ export interface Db {
     // B2B resources
     organizations?: Organization[];
     settings?: Setting[];
+    products?: Product[];
 }
