@@ -23,8 +23,10 @@ import {
 } from '../contacts';
 import organizations from '../organizations';
 import products from '../products';
+import opportunities from '../opportunities';
+import interactions from '../interactions';
 import { CustomerList } from '../customers';
-import { FoodBrokerDashboard } from '../dashboard/FoodBrokerDashboard';
+import { FoodServiceDashboard } from '../dashboard/FoodServiceDashboard';
 import { Layout } from '../layout/Layout';
 import { LoginPage } from '../login/LoginPage';
 import { SignupPage } from '../login/SignupPage';
@@ -32,6 +34,10 @@ import {
     authProvider as defaultAuthProvider,
     dataProvider as defaultDataProvider,
 } from '../providers/supabase';
+import {
+    authProvider as fakeAuthProvider,
+    dataProvider as fakeDataProvider,
+} from '../providers/fakerest';
 import { ReminderCreate, ReminderList, ReminderShow } from '../reminders';
 import settings from '../settings';
 import { SettingsPage } from '../settings/SettingsPage';
@@ -136,12 +142,28 @@ export const CRM = ({
     visitTypes = defaultVisitTypes,
     reminderPriorities = defaultReminderPriorities,
     enableGPS = true,
-    dataProvider = defaultDataProvider,
-    authProvider = defaultAuthProvider,
+    dataProvider,
+    authProvider,
     requireAuth = true,
     disableTelemetry,
     ...rest
 }: CRMProps) => {
+    // Detect test mode and configure providers accordingly
+    const isTestMode = typeof window !== 'undefined' && (
+        window.location.search.includes('test=true') ||
+        localStorage.getItem('test-mode') === 'true' ||
+        localStorage.getItem('data-provider') === 'fakerest' ||
+        process.env.NODE_ENV === 'test' ||
+        process.env.VITE_TEST_MODE === 'true'
+    );
+
+    const effectiveDataProvider = dataProvider || (isTestMode ? fakeDataProvider : defaultDataProvider);
+    const effectiveAuthProvider = authProvider || (isTestMode ? fakeAuthProvider : defaultAuthProvider);
+    const effectiveRequireAuth = isTestMode ? false : requireAuth;
+
+    if (isTestMode) {
+        console.log('🎭 Test mode detected - using fakerest data provider');
+    }
     useEffect(() => {
         if (
             disableTelemetry ||
@@ -158,16 +180,16 @@ export const CRM = ({
 
     const AdminComponent = (
         <Admin
-            dataProvider={dataProvider}
-            authProvider={authProvider}
+            dataProvider={effectiveDataProvider}
+            authProvider={effectiveAuthProvider}
             store={localStorageStore(undefined, 'ForkFlowCRM')}
             layout={Layout}
             loginPage={LoginPage}
-            dashboard={FoodBrokerDashboard}
+            dashboard={FoodServiceDashboard}
             theme={lightTheme}
             darkTheme={darkTheme || null}
             i18nProvider={i18nProvider}
-            requireAuth={requireAuth}
+            requireAuth={effectiveRequireAuth}
             disableTelemetry
             {...rest}
         >
@@ -240,6 +262,23 @@ export const CRM = ({
                 show={products.show}
                 options={{ label: 'Products' }}
             />
+            <Resource
+                name="opportunities"
+                list={opportunities.list}
+                create={opportunities.create}
+                edit={opportunities.edit}
+                show={opportunities.show}
+                options={{ label: 'Opportunities' }}
+            />
+            <Resource
+                name="interactions"
+                list={interactions.list}
+                create={interactions.create}
+                edit={interactions.edit}
+                show={interactions.show}
+                options={{ label: 'Interactions' }}
+            />
+            <Resource name="deals" />
             <Resource name="orders" list={ListGuesser} />
             <Resource name="territories" list={ListGuesser} />
         </Admin>

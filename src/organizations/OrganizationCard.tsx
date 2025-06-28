@@ -17,7 +17,7 @@ import {
     LocationOn as LocationIcon,
     Edit as EditIcon,
 } from '@mui/icons-material';
-import { useRecordContext, useGetOne } from 'react-admin';
+import { useRecordContext, useGetOne, Link } from 'react-admin';
 import { Organization, Setting } from '../types';
 
 export const OrganizationCard = () => {
@@ -84,6 +84,17 @@ export const OrganizationCard = () => {
 
     return (
         <Card
+            component="article"
+            role="button"
+            tabIndex={0}
+            aria-label={`Organization: ${record.name}${record.address ? `, located at ${record.address}` : ''}${priority ? `, priority: ${priority.label}` : ''}`}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    // Navigate to organization detail page
+                    window.location.href = `/organizations/${record.id}/show`;
+                }
+            }}
             sx={{
                 height: '100%',
                 display: 'flex',
@@ -91,6 +102,11 @@ export const OrganizationCard = () => {
                 cursor: 'pointer',
                 '&:hover': {
                     boxShadow: theme.shadows[4],
+                },
+                '&:focus': {
+                    outline: '2px solid',
+                    outlineColor: 'primary.main',
+                    outlineOffset: '2px',
                 },
                 minHeight: isMobile ? '200px' : '250px',
             }}
@@ -251,6 +267,8 @@ export const OrganizationCard = () => {
                     )}
                 </Box>
                 <IconButton
+                    component={Link}
+                    to={`/organizations/${record.id}/edit`}
                     size="small"
                     sx={{
                         minWidth: 44,
