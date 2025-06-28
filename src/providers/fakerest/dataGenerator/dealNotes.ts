@@ -18,7 +18,9 @@ export const generateDealNotes = (db: Db): DealNote[] => {
             id,
             dealId: deal.id,
             organizationId: deal.organizationId,
-            content: faker.lorem.paragraphs(faker.number.int({ min: 1, max: 4 })),
+            content: faker.lorem.paragraphs(
+                faker.number.int({ min: 1, max: 4 })
+            ),
             subject: `Deal Note ${id}`,
             status: 'published',
             createdAt: safeDate(date),

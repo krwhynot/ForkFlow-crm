@@ -8,8 +8,8 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
         return null;
     }
 
-    const imageAttachments = note.attachments.filter(
-        (attachment: RAFile) => isImageMimeType(attachment.type)
+    const imageAttachments = note.attachments.filter((attachment: RAFile) =>
+        isImageMimeType(attachment.type)
     );
     const otherAttachments = note.attachments.filter(
         (attachment: RAFile) => !isImageMimeType(attachment.type)
@@ -43,19 +43,17 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
                 </ImageList>
             )}
             {otherAttachments.length > 0 &&
-                otherAttachments.map(
-                    (attachment: RAFile, index: number) => (
-                        <Stack key={index} direction="row" alignItems="center">
-                            <AttachFileIcon fontSize="small" />
-                            <FileField
-                                record={{ attachment }}
-                                source="attachment.src"
-                                title="attachment.title"
-                                target="_blank"
-                            />
-                        </Stack>
-                    )
-                )}
+                otherAttachments.map((attachment: RAFile, index: number) => (
+                    <Stack key={index} direction="row" alignItems="center">
+                        <AttachFileIcon fontSize="small" />
+                        <FileField
+                            record={{ attachment }}
+                            source="attachment.src"
+                            title="attachment.title"
+                            target="_blank"
+                        />
+                    </Stack>
+                ))}
         </Stack>
     );
 };

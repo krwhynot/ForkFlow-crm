@@ -14,7 +14,13 @@ const organizationFilters = [
 ];
 
 export const OrganizationListFilter = () => {
-    const { displayedFilters, filterValues } = useListContext();
+    const { displayedFilters, filterValues, setFilters } = useListContext();
+
+    const removeFilter = (filterKey: string) => {
+        const newFilters = { ...filterValues };
+        delete newFilters[filterKey];
+        setFilters(newFilters, null);
+    };
 
     // Fetch Settings for filter options
     const { data: prioritySettings } = useGetList<Setting>('settings', {
@@ -46,8 +52,8 @@ export const OrganizationListFilter = () => {
                 display: {
                     xs:
                         displayedFilters.priority ||
-                            displayedFilters.segment ||
-                            displayedFilters.distributor
+                        displayedFilters.segment ||
+                        displayedFilters.distributor
                             ? 'block'
                             : 'none',
                     sm: 'block',
@@ -103,82 +109,78 @@ export const OrganizationListFilter = () => {
                 {(filterValues.priorityId ||
                     filterValues.segmentId ||
                     filterValues.distributorId) && (
-                        <Box
-                            sx={{
-                                mt: 2,
-                                pt: 2,
-                                borderTop: 1,
-                                borderColor: 'divider',
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                {filterValues.priorityId && (
-                                    <Chip
-                                        size="small"
-                                        label={
-                                            prioritySettings?.find(
-                                                s =>
-                                                    s.id === filterValues.priorityId
-                                            )?.label || 'Priority'
-                                        }
-                                        onDelete={() => {
-                                            // Remove filter logic would go here
-                                        }}
-                                        sx={{
-                                            backgroundColor: prioritySettings?.find(
-                                                s =>
-                                                    s.id === filterValues.priorityId
-                                            )?.color,
-                                            color: 'white',
-                                        }}
-                                    />
-                                )}
-                                {filterValues.segmentId && (
-                                    <Chip
-                                        size="small"
-                                        label={
-                                            segmentSettings?.find(
-                                                s => s.id === filterValues.segmentId
-                                            )?.label || 'Segment'
-                                        }
-                                        onDelete={() => {
-                                            // Remove filter logic would go here
-                                        }}
-                                        sx={{
-                                            backgroundColor: segmentSettings?.find(
-                                                s => s.id === filterValues.segmentId
-                                            )?.color,
-                                            color: 'white',
-                                        }}
-                                    />
-                                )}
-                                {filterValues.distributorId && (
-                                    <Chip
-                                        size="small"
-                                        label={
+                    <Box
+                        sx={{
+                            mt: 2,
+                            pt: 2,
+                            borderTop: 1,
+                            borderColor: 'divider',
+                        }}
+                    >
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {filterValues.priorityId && (
+                                <Chip
+                                    size="small"
+                                    label={
+                                        prioritySettings?.find(
+                                            s =>
+                                                s.id === filterValues.priorityId
+                                        )?.label || 'Priority'
+                                    }
+                                    onDelete={() => removeFilter('priorityId')}
+                                    sx={{
+                                        backgroundColor: prioritySettings?.find(
+                                            s =>
+                                                s.id === filterValues.priorityId
+                                        )?.color,
+                                        color: 'white',
+                                    }}
+                                />
+                            )}
+                            {filterValues.segmentId && (
+                                <Chip
+                                    size="small"
+                                    label={
+                                        segmentSettings?.find(
+                                            s => s.id === filterValues.segmentId
+                                        )?.label || 'Segment'
+                                    }
+                                    onDelete={() => removeFilter('segmentId')}
+                                    sx={{
+                                        backgroundColor: segmentSettings?.find(
+                                            s => s.id === filterValues.segmentId
+                                        )?.color,
+                                        color: 'white',
+                                    }}
+                                />
+                            )}
+                            {filterValues.distributorId && (
+                                <Chip
+                                    size="small"
+                                    label={
+                                        distributorSettings?.find(
+                                            s =>
+                                                s.id ===
+                                                filterValues.distributorId
+                                        )?.label || 'Distributor'
+                                    }
+                                    onDelete={() =>
+                                        removeFilter('distributorId')
+                                    }
+                                    sx={{
+                                        backgroundColor:
                                             distributorSettings?.find(
                                                 s =>
                                                     s.id ===
                                                     filterValues.distributorId
-                                            )?.label || 'Distributor'
-                                        }
-                                        onDelete={() => {
-                                            // Remove filter logic would go here
-                                        }}
-                                        sx={{
-                                            backgroundColor:
-                                                distributorSettings?.find(
-                                                    s =>
-                                                        s.id ===
-                                                        filterValues.distributorId
-                                                )?.color,
-                                            color: 'white',
-                                        }}
-                                    />
-                                )}
-                            </Box>
+                                            )?.color,
+                                        color: 'white',
+                                    }}
+                                />
+                            )}
                         </Box>
-                    )}
+                    </Box>
+                )}
             </CardContent>
         </Card>
     );

@@ -31,7 +31,10 @@ for (const { from, to } of replacements) {
             countMatches: true,
             dry: false, // Set to true for a dry run (no changes)
         });
-        const totalChanged = results.reduce((acc, file) => acc + file.numReplacements, 0);
+        const totalChanged = results.reduce(
+            (acc, file) => acc + file.numReplacements,
+            0
+        );
         if (totalChanged > 0) {
             console.log(`Replaced ${from} → ${to}: ${totalChanged} changes`);
         }

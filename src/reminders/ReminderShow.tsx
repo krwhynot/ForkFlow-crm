@@ -14,7 +14,7 @@ import {
     Card,
     CardContent,
     Chip,
-    Typography
+    Typography,
 } from '@mui/material';
 import {
     DeleteButton,
@@ -24,7 +24,7 @@ import {
     SimpleShowLayout,
     TopToolbar,
     useNotify,
-    useUpdate
+    useUpdate,
 } from 'react-admin';
 import { Reminder } from '../types';
 

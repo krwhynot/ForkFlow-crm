@@ -21,7 +21,9 @@ export const ContactList = () => {
                         </Link>
                         <Typography variant="caption" color="text.secondary">
                             {contact.title}
-                            {contact.title && contact.organization?.name && ' at '}
+                            {contact.title &&
+                                contact.organization?.name &&
+                                ' at '}
                             {contact.organization?.name}
                         </Typography>
                     </Stack>

@@ -12,6 +12,10 @@ import { generateSales } from './sales';
 import { generateSettings } from './settings';
 import { generateTags } from './tags';
 import { generateTasks } from './tasks';
+import { generateCustomerSummary } from './customerSummary';
+import { generateVisits } from './visits';
+import { generateReminders } from './reminders';
+import { generateOrders } from './orders';
 import { Db } from './types';
 
 export default (): Db => {
@@ -31,6 +35,13 @@ export default (): Db => {
     db.deals = generateDeals(db);
     db.dealNotes = generateDealNotes(db);
     db.tasks = generateTasks(db);
+
+    // Generate additional collections
+    db.customer_summary = generateCustomerSummary(db);
+    db.visits = generateVisits(db);
+    db.reminders = generateReminders(db);
+    db.orders = generateOrders(db);
+
     finalize(db);
 
     return db;

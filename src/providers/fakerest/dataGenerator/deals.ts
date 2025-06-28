@@ -20,13 +20,13 @@ export const generateDeals = (db: Db): Deal[] => {
         const company = faker.helpers.arrayElement(db.companies);
         company.nb_deals++;
         const contacts = faker.helpers.arrayElements(
-            db.contacts.filter(contact => contact.organizationId === company.id),
+            db.contacts.filter(
+                contact => contact.organizationId === company.id
+            ),
             faker.number.int({ min: 1, max: 3 })
         );
         const lowercaseName = faker.lorem.words();
-        const createdAt = randomDate(
-            new Date(company.createdAt)
-        ).toISOString();
+        const createdAt = randomDate(new Date(company.createdAt)).toISOString();
 
         const expectedClosingDate = randomDate(
             new Date(createdAt),
@@ -39,16 +39,24 @@ export const generateDeals = (db: Db): Deal[] => {
             organizationId: Number(company.id),
             contactId: contacts.length > 0 ? contacts[0].id : undefined,
             stage: faker.helpers.arrayElement(defaultDealStages).value,
-            status: faker.helpers.arrayElement(['active', 'won', 'lost', 'on-hold']) as 'active' | 'won' | 'lost' | 'on-hold',
+            status: faker.helpers.arrayElement([
+                'active',
+                'won',
+                'lost',
+                'on-hold',
+            ]) as 'active' | 'won' | 'lost' | 'on-hold',
             probability: faker.number.int({ min: 10, max: 90 }),
             amount: faker.number.int(1000) * 100,
             expectedClosingDate,
-            description: faker.lorem.paragraphs(faker.number.int({ min: 1, max: 4 })),
+            description: faker.lorem.paragraphs(
+                faker.number.int({ min: 1, max: 4 })
+            ),
             notes: faker.lorem.sentence(),
             index: 0,
             createdAt: createdAt,
             updatedAt: safeDate(randomDate(new Date(createdAt))),
-            createdBy: company.salesId?.toString() || company.broker_id?.toString(),
+            createdBy:
+                company.salesId?.toString() || company.broker_id?.toString(),
             // Legacy compatibility fields
             customer_id: company.id,
             broker_id: company.salesId || company.broker_id,

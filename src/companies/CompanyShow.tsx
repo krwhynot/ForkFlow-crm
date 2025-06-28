@@ -74,8 +74,8 @@ const CompanyShowContent = () => {
                                     !record.nb_contacts
                                         ? 'No Contacts'
                                         : record.nb_contacts === 1
-                                            ? '1 Contact'
-                                            : `${record.nb_contacts} Contacts`
+                                          ? '1 Contact'
+                                          : `${record.nb_contacts} Contacts`
                                 }
                                 path="contacts"
                             >
@@ -157,10 +157,11 @@ const ContactsIterator = () => {
                                     <>
                                         {contact.title}
                                         {contact.nb_tasks
-                                            ? ` - ${contact.nb_tasks} task${contact.nb_tasks > 1
-                                                ? 's'
-                                                : ''
-                                            }`
+                                            ? ` - ${contact.nb_tasks} task${
+                                                  contact.nb_tasks > 1
+                                                      ? 's'
+                                                      : ''
+                                              }`
                                             : ''}
                                         &nbsp; &nbsp;
                                         <TagsList />
@@ -194,7 +195,9 @@ const CreateRelatedContactButton = () => {
         <Button
             component={RouterLink}
             to="/contacts/create"
-            state={company ? { record: { organizationId: company.id } } : undefined}
+            state={
+                company ? { record: { organizationId: company.id } } : undefined
+            }
             color="primary"
             size="small"
             startIcon={<PersonAddIcon />}

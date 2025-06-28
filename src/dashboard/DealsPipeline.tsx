@@ -10,7 +10,7 @@ import {
     ReferenceField,
     SimpleList,
     useGetIdentity,
-    useGetList
+    useGetList,
 } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';

@@ -16,3 +16,15 @@ export { ProductList } from './ProductList';
 export { ProductCreate } from './ProductCreate';
 export { ProductEdit } from './ProductEdit';
 export { ProductShow } from './ProductShow';
+
+// Enhanced component exports
+export { ProductListFilter } from './ProductListFilter';
+export { ProductBulkActions } from './ProductBulkActions';
+export { ProductComparison, useProductComparison } from './ProductComparison';
+export {
+    PriceField,
+    PriceFieldLarge,
+    PriceFieldMedium,
+    PriceFieldSmall,
+    formatPrice,
+} from './PriceField';

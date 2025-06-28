@@ -45,10 +45,14 @@ export const generateTasks = (db: Db) => {
     return Array.from(Array(400).keys()).map<Task>(id => {
         const contact = faker.helpers.arrayElement(db.contacts);
         contact.nb_tasks++;
-        const createdAt = safeDate(randomDate(
-            faker.datatype.boolean() ? new Date() : new Date(contact.first_seen || contact.createdAt),
-            new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)
-        ));
+        const createdAt = safeDate(
+            randomDate(
+                faker.datatype.boolean()
+                    ? new Date()
+                    : new Date(contact.first_seen || contact.createdAt),
+                new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)
+            )
+        );
         return {
             id,
             contact_id: contact.id,
@@ -63,7 +67,12 @@ export const generateTasks = (db: Db) => {
             done_date: undefined,
             completed_at: undefined, // alias for compatibility
             is_completed: false, // default value
-            priority: faker.helpers.arrayElement(['low', 'medium', 'high', 'urgent']) as 'low' | 'medium' | 'high' | 'urgent',
+            priority: faker.helpers.arrayElement([
+                'low',
+                'medium',
+                'high',
+                'urgent',
+            ]) as 'low' | 'medium' | 'high' | 'urgent',
             snooze_count: 0,
             created_at: createdAt,
             createdAt: createdAt, // new schema field

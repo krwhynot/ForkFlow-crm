@@ -6,7 +6,8 @@ import { useConfigurationContext } from '../root/ConfigurationContext';
 
 export const StatusSelector = ({ status, setStatus, sx }: any) => {
     const { noteStatuses } = useConfigurationContext();
-    const noteStatusesTyped: (string | { value: string; label: string })[] = noteStatuses ?? [];
+    const noteStatusesTyped: (string | { value: string; label: string })[] =
+        noteStatuses ?? [];
 
     return (
         <TextField
@@ -22,7 +23,12 @@ export const StatusSelector = ({ status, setStatus, sx }: any) => {
             sx={sx}
         >
             {noteStatusesTyped.map(status => {
-                if (typeof status === 'object' && status && 'value' in status && 'label' in status) {
+                if (
+                    typeof status === 'object' &&
+                    status &&
+                    'value' in status &&
+                    'label' in status
+                ) {
                     return (
                         <MenuItem key={status.value} value={status.value}>
                             {status.label} <Status status={status.value} />

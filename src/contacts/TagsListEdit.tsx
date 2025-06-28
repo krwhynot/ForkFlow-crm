@@ -8,7 +8,7 @@ import {
     useGetList,
     useGetMany,
     useRecordContext,
-    useUpdate
+    useUpdate,
 } from 'react-admin';
 
 import { TagChip } from '../tags/TagChip';
@@ -31,14 +31,17 @@ export const TagsListEdit = () => {
     const unselectedTags =
         allTags &&
         record &&
-        allTags.filter(tag => !(tagsArray as string[]).includes(tag.id.toString()));
+        allTags.filter(
+            tag => !(tagsArray as string[]).includes(tag.id.toString())
+        );
     const [update] = useUpdate<Contact>();
 
-    const { data: tags = [], isPending: isPendingRecordTags = false } = useGetMany<Tag>(
-        'tags',
-        { ids: tagsArray },
-        { enabled: record && tagsArray.length > 0 }
-    );
+    const { data: tags = [], isPending: isPendingRecordTags = false } =
+        useGetMany<Tag>(
+            'tags',
+            { ids: tagsArray },
+            { enabled: record && tagsArray.length > 0 }
+        );
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget);
@@ -65,7 +68,9 @@ export const TagsListEdit = () => {
         if (!record) {
             throw new Error('No contact record found');
         }
-        const tags = (record.tags ?? []).filter(tagId => tagId !== id.toString());
+        const tags = (record.tags ?? []).filter(
+            tagId => tagId !== id.toString()
+        );
         await update('contacts', {
             id: record.id,
             data: { tags },

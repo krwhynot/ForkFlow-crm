@@ -15,7 +15,7 @@ import {
     GPSCoordinates,
     RAFile,
     SignUpData,
-    Visit
+    Visit,
 } from '../../types';
 import { getActivityLog } from '../commons/activity';
 import { getIsInitialized } from './authProvider';
@@ -67,8 +67,12 @@ const getCurrentLocation = (): Promise<GPSCoordinates> => {
 };
 
 // Process visit data to auto-capture GPS if needed
-async function processVisitLocation(params: CreateParams<Visit>): Promise<CreateParams<Visit>>;
-async function processVisitLocation(params: UpdateParams<Visit>): Promise<UpdateParams<Visit>>;
+async function processVisitLocation(
+    params: CreateParams<Visit>
+): Promise<CreateParams<Visit>>;
+async function processVisitLocation(
+    params: UpdateParams<Visit>
+): Promise<UpdateParams<Visit>>;
 async function processVisitLocation(
     params: CreateParams<Visit> | UpdateParams<Visit>
 ): Promise<CreateParams<Visit> | UpdateParams<Visit>> {
@@ -428,7 +432,9 @@ export const dataProvider = withLifecycleCallbacks(
                 };
             },
             beforeUpdate: async params => {
-                return (await processVisitLocation(params)) as UpdateParams<Visit>;
+                return (await processVisitLocation(
+                    params
+                )) as UpdateParams<Visit>;
             },
             beforeGetList: async params => {
                 return applyFullTextSearch(['notes', 'visit_type'])(params);

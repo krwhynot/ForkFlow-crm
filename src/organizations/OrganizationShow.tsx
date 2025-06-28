@@ -39,6 +39,8 @@ import {
     Add as AddIcon,
     Star as StarIcon,
     LinkedIn as LinkedInIcon,
+    History as HistoryIcon,
+    EventNote as InteractionIcon,
 } from '@mui/icons-material';
 import { Organization, Setting, Contact } from '../types';
 
@@ -482,7 +484,7 @@ const OrganizationShowContent = () => {
                                         variant="outlined"
                                         size="small"
                                         startIcon={<AddIcon />}
-                                        sx={{ minHeight: 36 }}
+                                        sx={{ minHeight: 44, px: 2 }}
                                     >
                                         Add Contact
                                     </Button>
@@ -524,6 +526,63 @@ const OrganizationShowContent = () => {
                                         </Button>
                                     </Box>
                                 )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Interaction History */}
+                        <Card>
+                            <CardContent>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        mb: 2,
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h6"
+                                        sx={{ fontWeight: 600 }}
+                                    >
+                                        Recent Interactions
+                                    </Typography>
+                                    <Button
+                                        component={Link}
+                                        to={`/interactions/create?organizationId=${record.id}`}
+                                        variant="outlined"
+                                        size="small"
+                                        startIcon={<InteractionIcon />}
+                                        sx={{ minHeight: 44, px: 2 }}
+                                    >
+                                        Log Interaction
+                                    </Button>
+                                </Box>
+
+                                {/* Placeholder for future interactions */}
+                                <Box sx={{ textAlign: 'center', py: 3 }}>
+                                    <HistoryIcon
+                                        sx={{
+                                            fontSize: 48,
+                                            color: 'text.secondary',
+                                            mb: 1,
+                                        }}
+                                    />
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{ mb: 2 }}
+                                    >
+                                        No interactions logged yet
+                                    </Typography>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ fontStyle: 'italic' }}
+                                    >
+                                        Interaction tracking will be available when Task 8 
+                                        (Interaction Tracking API) and Task 33 (Interactions UI) are completed.
+                                    </Typography>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Stack>
@@ -692,8 +751,8 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 onClick={handlePhoneClick}
                                 size="small"
                                 sx={{
-                                    width: 32,
-                                    height: 32,
+                                    width: 40,
+                                    height: 40,
                                     backgroundColor: 'primary.main',
                                     color: 'white',
                                     '&:hover': {
@@ -710,8 +769,8 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 onClick={handleEmailClick}
                                 size="small"
                                 sx={{
-                                    width: 32,
-                                    height: 32,
+                                    width: 40,
+                                    height: 40,
                                     backgroundColor: 'primary.main',
                                     color: 'white',
                                     '&:hover': {
@@ -728,8 +787,8 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 onClick={handleLinkedInClick}
                                 size="small"
                                 sx={{
-                                    width: 32,
-                                    height: 32,
+                                    width: 40,
+                                    height: 40,
                                     backgroundColor: 'primary.main',
                                     color: 'white',
                                     '&:hover': {

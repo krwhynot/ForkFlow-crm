@@ -14,8 +14,10 @@ import {
     Contact,
     Deal,
     GPSCoordinates,
+    Organization,
     Sale,
     SalesFormData,
+    Setting,
     SignUpData,
     Task,
     Visit,
@@ -23,10 +25,16 @@ import {
 import { getActivityLog } from '../commons/activity';
 import { getCompanyAvatar } from '../commons/getCompanyAvatar';
 import { getContactAvatar } from '../commons/getContactAvatar';
-import { CrmDataProvider } from '../types';
+import {
+    CrmDataProvider,
+    OrganizationSearchFilters,
+    OrganizationStats,
+} from '../types';
 import { authProvider, USER_STORAGE_KEY } from './authProvider';
 import generateData from './dataGenerator';
 import { withSupabaseFilterAdapter } from './internal/supabaseAdapter';
+import { organizationFilterEngine } from './internal/organizationFilters';
+import { organizationValidator } from './organizationValidator';
 
 const baseDataProvider = fakeRestDataProvider(generateData(), true, 300);
 
@@ -110,7 +118,7 @@ async function fetchAndUpdateCompanyData(
     return { ...params, data: newData };
 }
 
-const dataProviderWithCustomMethod: CrmDataProvider = {
+const dataProviderWithCustomMethod = {
     ...baseDataProvider,
     async getList(resource: string, params: any) {
         if (resource === 'customers') {
@@ -192,12 +200,18 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
             user_id: id,
             ...body,
         };
-        
+
         const result = await dataProvider.create('sales', { data: newBroker });
         return result.data;
     },
-    async brokerUpdate(id: Identifier, data: Partial<Omit<BrokerFormData, 'password'>>) {
-        const { data: previousData } = await dataProvider.getOne<Sale>('sales', { id });
+    async brokerUpdate(
+        id: Identifier,
+        data: Partial<Omit<BrokerFormData, 'password'>>
+    ) {
+        const { data: previousData } = await dataProvider.getOne<Sale>(
+            'sales',
+            { id }
+        );
         const result = await dataProvider.update('sales', {
             id,
             data,
@@ -218,7 +232,11 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
             customers_needing_attention: 8,
         };
     },
-    async findNearbyCustomers(latitude: number, longitude: number, radiusKm: number = 5) {
+    async findNearbyCustomers(
+        latitude: number,
+        longitude: number,
+        radiusKm: number = 5
+    ) {
         // Mock implementation - return some random customers
         const { data: customers } = await dataProvider.getList('customers', {
             filter: {},
@@ -228,7 +246,9 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
         return customers.slice(0, 3); // Return first 3 as "nearby"
     },
     async completeReminder(id: Identifier) {
-        const { data: previousData } = await dataProvider.getOne('reminders', { id });
+        const { data: previousData } = await dataProvider.getOne('reminders', {
+            id,
+        });
         return dataProvider.update('reminders', {
             id,
             data: {
@@ -239,7 +259,9 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
         });
     },
     async snoozeReminder(id: Identifier, snoozedUntil: string) {
-        const { data: previousData } = await dataProvider.getOne('reminders', { id });
+        const { data: previousData } = await dataProvider.getOne('reminders', {
+            id,
+        });
         return dataProvider.update('reminders', {
             id,
             data: {
@@ -248,6 +270,288 @@ const dataProviderWithCustomMethod: CrmDataProvider = {
             },
             previousData,
         });
+    },
+
+    // Organization-specific API methods
+    async getOrganizations(params: any = {}) {
+        // Get all organizations and settings for filtering
+        const organizationsResult = await baseDataProvider.getList(
+            'organizations',
+            params
+        );
+        const settingsResult = await baseDataProvider.getList('settings', {
+            filter: {},
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'id', order: 'ASC' },
+        });
+
+        // Update validator with current settings
+        organizationValidator.updateSettings(settingsResult.data);
+
+        // Apply enhanced filtering and search
+        const filterOptions = {
+            searchQuery: params.filter?.q,
+            filters: params.filter
+                ? {
+                      priorityId: params.filter.priorityId,
+                      segmentId: params.filter.segmentId,
+                      distributorId: params.filter.distributorId,
+                      accountManager: params.filter.accountManager,
+                      city: params.filter.city,
+                      state: params.filter.state,
+                      zipCode: params.filter.zipCode,
+                      hasContacts: params.filter.hasContacts,
+                      hasOpportunities: params.filter.hasOpportunities,
+                      lastContactDateBefore:
+                          params.filter.lastContactDateBefore,
+                      lastContactDateAfter: params.filter.lastContactDateAfter,
+                  }
+                : undefined,
+            sort: params.sort
+                ? {
+                      field: params.sort.field,
+                      order: params.sort.order,
+                  }
+                : undefined,
+            pagination: params.pagination
+                ? {
+                      offset:
+                          (params.pagination.page - 1) *
+                          params.pagination.perPage,
+                      limit: params.pagination.perPage,
+                  }
+                : undefined,
+        };
+
+        const filtered = organizationFilterEngine.applyFilters(
+            organizationsResult.data,
+            filterOptions
+        );
+
+        return {
+            data: filtered.data,
+            total: filtered.total,
+        };
+    },
+
+    async getOrganization(params: any) {
+        const result = await baseDataProvider.getOne('organizations', params);
+
+        // Calculate computed fields
+        const stats =
+            await dataProviderWithCustomMethod.calculateOrganizationStats(
+                params.id
+            );
+
+        return {
+            data: {
+                ...result.data,
+                contactCount: stats.contactCount,
+                lastContactDate: stats.lastContactDate,
+                totalOpportunities: stats.totalOpportunities,
+                totalOpportunityValue: stats.totalOpportunityValue,
+            },
+        };
+    },
+
+    async createOrganization(params: any) {
+        // Get settings for validation
+        const settingsResult = await baseDataProvider.getList('settings', {
+            filter: {},
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'id', order: 'ASC' },
+        });
+
+        organizationValidator.updateSettings(settingsResult.data);
+
+        // Sanitize and validate data
+        const sanitizedData = organizationValidator.sanitizeOrganization(
+            params.data
+        );
+        const validation =
+            organizationValidator.validateOrganization(sanitizedData);
+
+        if (!validation.isValid) {
+            throw new Error(
+                `Validation failed: ${validation.errors.map(e => e.message).join(', ')}`
+            );
+        }
+
+        return baseDataProvider.create('organizations', {
+            ...params,
+            data: {
+                ...sanitizedData,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            },
+        });
+    },
+
+    async updateOrganization(params: any) {
+        // Get settings for validation
+        const settingsResult = await baseDataProvider.getList('settings', {
+            filter: {},
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'id', order: 'ASC' },
+        });
+
+        organizationValidator.updateSettings(settingsResult.data);
+
+        // Sanitize and validate data
+        const sanitizedData = organizationValidator.sanitizeOrganization(
+            params.data
+        );
+        const validation =
+            organizationValidator.validateOrganization(sanitizedData);
+
+        if (!validation.isValid) {
+            throw new Error(
+                `Validation failed: ${validation.errors.map(e => e.message).join(', ')}`
+            );
+        }
+
+        return baseDataProvider.update('organizations', {
+            ...params,
+            data: {
+                ...sanitizedData,
+                updatedAt: new Date().toISOString(),
+            },
+        });
+    },
+
+    async deleteOrganization(params: any) {
+        return baseDataProvider.delete('organizations', params);
+    },
+
+    async searchOrganizations(query: string, options: any = {}) {
+        const organizationsResult = await baseDataProvider.getList(
+            'organizations',
+            {
+                filter: {},
+                pagination: { page: 1, perPage: 10000 },
+                sort: { field: 'id', order: 'ASC' },
+            }
+        );
+
+        const filterOptions = {
+            searchQuery: query,
+            filters: options.filters,
+            pagination: {
+                offset: options.offset || 0,
+                limit: options.limit || 50,
+            },
+        };
+
+        const filtered = organizationFilterEngine.applyFilters(
+            organizationsResult.data,
+            filterOptions
+        );
+
+        return {
+            data: filtered.data,
+            total: filtered.total,
+        };
+    },
+
+    async findNearbyOrganizations(
+        latitude: number,
+        longitude: number,
+        radiusKm: number = 10
+    ) {
+        const organizationsResult = await baseDataProvider.getList(
+            'organizations',
+            {
+                filter: {},
+                pagination: { page: 1, perPage: 10000 },
+                sort: { field: 'id', order: 'ASC' },
+            }
+        );
+
+        return organizationFilterEngine.findNearbyOrganizations(
+            organizationsResult.data,
+            latitude,
+            longitude,
+            radiusKm
+        );
+    },
+
+    async calculateOrganizationStats(
+        organizationId: Identifier
+    ): Promise<OrganizationStats> {
+        // Get contacts for this organization
+        const contactsResult = await baseDataProvider.getList('contacts', {
+            filter: { organizationId },
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'id', order: 'ASC' },
+        });
+
+        // Get deals/opportunities for this organization
+        const dealsResult = await baseDataProvider.getList('deals', {
+            filter: { organizationId },
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'id', order: 'ASC' },
+        });
+
+        // Calculate stats
+        const contactCount = contactsResult.data.length;
+        const totalOpportunities = dealsResult.data.length;
+        const totalOpportunityValue = dealsResult.data.reduce(
+            (sum: number, deal: any) => sum + (deal.amount || 0),
+            0
+        );
+        const averageOpportunityValue =
+            totalOpportunities > 0
+                ? totalOpportunityValue / totalOpportunities
+                : 0;
+
+        // Find last contact date from various sources
+        const contactDates = contactsResult.data
+            .map((c: any) => c.lastInteractionDate)
+            .filter(Boolean);
+        const dealDates = dealsResult.data
+            .map((d: any) => d.updatedAt)
+            .filter(Boolean);
+        const allDates = [...contactDates, ...dealDates];
+        const lastContactDate =
+            allDates.length > 0
+                ? allDates.reduce((latest, current) =>
+                      current > latest ? current : latest
+                  )
+                : undefined;
+
+        // Calculate conversion rate (won deals / total deals)
+        const wonDeals = dealsResult.data.filter(
+            (d: any) => d.status === 'won'
+        ).length;
+        const conversionRate =
+            totalOpportunities > 0 ? (wonDeals / totalOpportunities) * 100 : 0;
+
+        return {
+            contactCount,
+            lastContactDate,
+            totalOpportunities,
+            totalOpportunityValue,
+            interactionCount: 0, // TODO: Calculate from interactions when implemented
+            lastInteractionDate: lastContactDate,
+            averageOpportunityValue,
+            conversionRate,
+        };
+    },
+
+    async bulkUpdateOrganizations(
+        ids: Identifier[],
+        data: Partial<Organization>
+    ) {
+        const results = await Promise.all(
+            ids.map(id =>
+                dataProviderWithCustomMethod.updateOrganization({
+                    id,
+                    data,
+                    previousData: {}, // Will be fetched by the update method
+                })
+            )
+        );
+        return results.map((r: any) => r.data);
     },
 };
 
@@ -269,9 +573,18 @@ async function updateCompany(
 }
 
 // Defensive: Ensure all required resources are initialized
-const requiredResources = ['organizations', 'contacts', 'settings', 'companies', 'tasks', 'deals', 'dealNotes', 'contactNotes'];
+const requiredResources = [
+    'organizations',
+    'contacts',
+    'settings',
+    'companies',
+    'tasks',
+    'deals',
+    'dealNotes',
+    'contactNotes',
+];
 export const ensureDbResources = (db: any) => {
-    requiredResources.forEach((res) => {
+    requiredResources.forEach(res => {
         if (!db[res]) {
             db[res] = [];
         }
@@ -384,9 +697,12 @@ export const dataProvider = withLifecycleCallbacks(
             },
             afterCreate: async result => {
                 if (result.data.organizationId != null) {
-                    await updateCompany(result.data.organizationId, company => ({
-                        nb_contacts: (company.nb_contacts ?? 0) + 1,
-                    }));
+                    await updateCompany(
+                        result.data.organizationId,
+                        company => ({
+                            nb_contacts: (company.nb_contacts ?? 0) + 1,
+                        })
+                    );
                 }
 
                 return result;
@@ -397,9 +713,12 @@ export const dataProvider = withLifecycleCallbacks(
             },
             afterDelete: async result => {
                 if (result.data.organizationId != null) {
-                    await updateCompany(result.data.organizationId, company => ({
-                        nb_contacts: (company.nb_contacts ?? 1) - 1,
-                    }));
+                    await updateCompany(
+                        result.data.organizationId,
+                        company => ({
+                            nb_contacts: (company.nb_contacts ?? 1) - 1,
+                        })
+                    );
                 }
 
                 return result;
@@ -544,6 +863,92 @@ export const dataProvider = withLifecycleCallbacks(
                 return result;
             },
         } satisfies ResourceCallbacks<Deal>,
+        {
+            resource: 'organizations',
+            beforeCreate: async params => {
+                // Get settings for validation
+                const settingsResult = await dataProvider.getList('settings', {
+                    filter: {},
+                    pagination: { page: 1, perPage: 1000 },
+                    sort: { field: 'id', order: 'ASC' },
+                });
+
+                organizationValidator.updateSettings(settingsResult.data);
+
+                // Sanitize and validate data
+                const sanitizedData =
+                    organizationValidator.sanitizeOrganization(params.data);
+                const validation =
+                    organizationValidator.validateOrganization(sanitizedData);
+
+                if (!validation.isValid) {
+                    throw new Error(
+                        `Validation failed: ${validation.errors.map(e => e.message).join(', ')}`
+                    );
+                }
+
+                return {
+                    ...params,
+                    data: {
+                        ...sanitizedData,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                    },
+                };
+            },
+            beforeUpdate: async params => {
+                // Get settings for validation
+                const settingsResult = await dataProvider.getList('settings', {
+                    filter: {},
+                    pagination: { page: 1, perPage: 1000 },
+                    sort: { field: 'id', order: 'ASC' },
+                });
+
+                organizationValidator.updateSettings(settingsResult.data);
+
+                // Sanitize and validate data
+                const sanitizedData =
+                    organizationValidator.sanitizeOrganization(params.data);
+                const validation =
+                    organizationValidator.validateOrganization(sanitizedData);
+
+                if (!validation.isValid) {
+                    throw new Error(
+                        `Validation failed: ${validation.errors.map(e => e.message).join(', ')}`
+                    );
+                }
+
+                return {
+                    ...params,
+                    data: {
+                        ...sanitizedData,
+                        updatedAt: new Date().toISOString(),
+                    },
+                };
+            },
+            afterCreate: async result => {
+                // Log organization creation activity
+                console.log(
+                    `Organization created: ${result.data.name} (ID: ${result.data.id})`
+                );
+                return result;
+            },
+            afterUpdate: async result => {
+                // Log organization update activity
+                console.log(
+                    `Organization updated: ${result.data.name} (ID: ${result.data.id})`
+                );
+                return result;
+            },
+            afterDelete: async result => {
+                // Log organization deletion activity
+                console.log(
+                    `Organization deleted: ${result.data.name} (ID: ${result.data.id})`
+                );
+                // TODO: Handle cleanup of related records (contacts, deals, etc.)
+                return result;
+            },
+        } satisfies ResourceCallbacks<Organization>,
     ]
 );
 

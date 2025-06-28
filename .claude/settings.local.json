@@ -49,7 +49,15 @@
       "Bash(curl:*)",
       "Bash(timeout 10s npm run dev:*)",
       "Bash(timeout:*)",
-      "Bash(make:*)"
+      "Bash(make:*)",
+      "Bash(npm test:*)",
+      "mcp__filesystem__write_file",
+      "Bash(sudo apt-get:*)",
+      "Bash(sudo apt-get install:*)",
+      "mcp__filesystem__directory_tree",
+      "Bash(pkill:*)",
+      "Bash(pkill:*)",
+      "Bash(true)"
     ]
   },
   "enableAllProjectMcpServers": true,

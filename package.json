@@ -44,6 +44,7 @@
     "devDependencies": {
         "@chromatic-com/storybook": "^3.2.6",
         "@inquirer/prompts": "^7.4.0",
+        "@playwright/test": "^1.40.0",
         "@storybook/addon-essentials": "^8.6.7",
         "@storybook/addon-interactions": "^8.6.7",
         "@storybook/addon-links": "^8.6.7",
@@ -99,6 +100,27 @@
         "ghpages:deploy": "node ./scripts/ghpages-deploy.mjs",
         "supabase:remote:init": "node ./scripts/supabase-remote-init.mjs",
         "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "test:e2e:headed": "playwright test --headed",
+        "test:e2e:debug": "playwright test --debug",
+        "test:e2e:report": "playwright show-report",
+        "test:e2e:install": "playwright install",
+        "test:e2e:organizations": "playwright test tests/organizations",
+        "test:e2e:organizations:crud": "playwright test tests/organizations/crud-workflow.spec.ts",
+        "test:e2e:organizations:validation": "playwright test tests/organizations/form-validation.spec.ts",
+        "test:e2e:organizations:search": "playwright test tests/organizations/search-filter.spec.ts",
+        "test:e2e:organizations:mobile": "playwright test tests/organizations/mobile-responsive.spec.ts",
+        "test:e2e:organizations:visual": "playwright test tests/organizations/visual-regression.spec.ts",
+        "test:e2e:organizations:errors": "playwright test tests/organizations/error-handling.spec.ts",
+        "test:e2e:organizations:accessibility": "playwright test tests/organizations/accessibility.spec.ts",
+        "test:e2e:organizations:performance": "playwright test tests/organizations/performance.spec.ts",
+        "test:e2e:chrome": "playwright test --project=chromium",
+        "test:e2e:firefox": "playwright test --project=firefox",
+        "test:e2e:safari": "playwright test --project=webkit",
+        "test:e2e:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+        "test:e2e:ci": "playwright test --reporter=github",
+        "test:e2e:update-snapshots": "playwright test --update-snapshots"
     }
 }

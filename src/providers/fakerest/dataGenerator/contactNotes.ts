@@ -14,7 +14,9 @@ const safeDate = (value: any) => {
 export const generateContactNotes = (db: Db): ContactNote[] => {
     return Array.from(Array(1200).keys()).map(id => {
         const contact = faker.helpers.arrayElement(db.contacts);
-        const date = randomDate(new Date(contact.first_seen || contact.createdAt));
+        const date = randomDate(
+            new Date(contact.first_seen || contact.createdAt)
+        );
         contact.last_seen =
             date > new Date(contact.last_seen || contact.createdAt)
                 ? safeDate(date)
@@ -23,7 +25,9 @@ export const generateContactNotes = (db: Db): ContactNote[] => {
             id,
             contactId: contact.id,
             organizationId: contact.organizationId,
-            content: faker.lorem.paragraphs(faker.number.int({ min: 1, max: 4 })),
+            content: faker.lorem.paragraphs(
+                faker.number.int({ min: 1, max: 4 })
+            ),
             subject: `Contact Note ${id}`,
             status: faker.helpers.arrayElement(defaultNoteStatuses).value,
             createdAt: safeDate(date),
@@ -37,7 +41,12 @@ export const generateContactNotes = (db: Db): ContactNote[] => {
             is_completed: false,
             title: `Contact Note ${id}`,
             notes: faker.lorem.paragraphs(faker.number.int({ min: 1, max: 4 })),
-            priority: faker.helpers.arrayElement(['low', 'medium', 'high', 'urgent']) as 'low' | 'medium' | 'high' | 'urgent',
+            priority: faker.helpers.arrayElement([
+                'low',
+                'medium',
+                'high',
+                'urgent',
+            ]) as 'low' | 'medium' | 'high' | 'urgent',
             visit_id: null,
             snoozed_until: null,
             snooze_count: 0,

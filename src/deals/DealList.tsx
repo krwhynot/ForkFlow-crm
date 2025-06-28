@@ -57,7 +57,7 @@ const DealLayout = () => {
             label="Category"
             choices={dealCategories.map(type => ({ id: type, name: type }))}
         />,
-        <OnlyMineInput source="salesId" alwaysOn />
+        <OnlyMineInput source="salesId" alwaysOn />,
     ];
 
     const { data, isPending, filterValues } = useListContext();

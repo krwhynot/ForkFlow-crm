@@ -3,7 +3,7 @@ import {
     Stack,
     Typography,
     useMediaQuery,
-    useTheme
+    useTheme,
 } from '@mui/material';
 import * as React from 'react';
 import {
@@ -16,7 +16,7 @@ import {
     useGetIdentity,
     useGetList,
     useNotify,
-    useRecordContext
+    useRecordContext,
 } from 'react-admin';
 import { useFormContext } from 'react-hook-form';
 import { isLinkedinUrl } from '../misc/isLinkedInUrl';
@@ -24,17 +24,52 @@ import { Contact, Setting } from '../types';
 
 const isEmail = (email: string) => {
     if (!email) return;
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    
+    // More comprehensive email validation
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
+    // Basic format check
     if (!emailRegex.test(email)) {
         return 'Must be a valid email address';
+    }
+    
+    // Length validation
+    if (email.length > 254) {
+        return 'Email address is too long';
+    }
+    
+    // Local part validation (before @)
+    const localPart = email.split('@')[0];
+    if (localPart.length > 64) {
+        return 'Email local part is too long';
+    }
+    
+    // Check for consecutive dots
+    if (email.includes('..')) {
+        return 'Email cannot contain consecutive dots';
     }
 };
 
 const isPhoneNumber = (phone: string) => {
     if (!phone) return;
-    const phoneRegex = /^[\d\s\-\.\(\)\+]+$/;
-    if (!phoneRegex.test(phone)) {
-        return 'Must be a valid phone number';
+    
+    // Remove all spaces, dashes, dots, parentheses for validation
+    const cleanPhone = phone.replace(/[\s\-\.\(\)]/g, '');
+    
+    // Must contain only digits and optional + at start
+    const phoneRegex = /^\+?[\d]{7,15}$/;
+    
+    if (!phoneRegex.test(cleanPhone)) {
+        return 'Must be a valid phone number (7-15 digits)';
+    }
+    
+    // US phone number format validation (optional)
+    if (cleanPhone.length === 10 && !cleanPhone.startsWith('+')) {
+        // US format: area code cannot start with 0 or 1
+        const areaCode = cleanPhone.substring(0, 3);
+        if (areaCode.startsWith('0') || areaCode.startsWith('1')) {
+            return 'Invalid US area code';
+        }
     }
 };
 
@@ -159,10 +194,7 @@ const ContactOrganizationInputs: React.FC<ContactOrganizationInputsProps> = ({
     return (
         <Stack>
             <Typography variant="h6">Organization</Typography>
-            <ReferenceInput
-                source="organizationId"
-                reference="organizations"
-            >
+            <ReferenceInput source="organizationId" reference="organizations">
                 <AutocompleteInput
                     optionText="name"
                     onCreate={handleCreateOrganization}

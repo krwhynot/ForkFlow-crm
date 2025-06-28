@@ -45,7 +45,7 @@ export async function getContactAvatar(
     }
 
     const emailAddr = record.email;
-    
+
     // Step 1: Try to get Gravatar image
     const gravatarUrl = await getGravatarUrl(emailAddr);
     try {

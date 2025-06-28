@@ -31,14 +31,7 @@ import { Setting } from '../types';
 const PrincipalListActions = () => (
     <TopToolbar>
         <FilterButton />
-        <CreateButton 
-            variant="contained" 
-            label="Add Principal"
-            transform={(data: any) => ({
-                ...data,
-                category: 'principal',
-            })}
-        />
+        <CreateButton variant="contained" label="Add Principal" />
     </TopToolbar>
 );
 
@@ -49,7 +42,7 @@ const principalFilters = [
 const PrincipalColorChip = (props: { label?: string }) => {
     const record = useRecordContext<Setting>(props);
     if (!record?.color) return null;
-    
+
     return (
         <Box display="flex" alignItems="center" gap={1}>
             <Box
@@ -72,19 +65,25 @@ const PrincipalColorChip = (props: { label?: string }) => {
 const PrincipalCard = (props: { label?: string }) => {
     const record = useRecordContext<Setting>(props);
     if (!record) return null;
-    
+
     return (
-        <Card 
-            sx={{ 
-                mb: 1, 
+        <Card
+            sx={{
+                mb: 1,
                 border: `2px solid ${record.color}`,
-                '&:hover': { boxShadow: 3 }
+                '&:hover': { boxShadow: 3 },
             }}
         >
             <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
                     <Box display="flex" alignItems="center" gap={2}>
-                        <DragIndicator sx={{ color: 'text.secondary', cursor: 'grab' }} />
+                        <DragIndicator
+                            sx={{ color: 'text.secondary', cursor: 'grab' }}
+                        />
                         <Box
                             sx={{
                                 width: 32,
@@ -106,7 +105,8 @@ const PrincipalCard = (props: { label?: string }) => {
                                 {record.label}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                Key: {record.key} | Market Rank: #{record.sortOrder}
+                                Key: {record.key} | Market Rank: #
+                                {record.sortOrder}
                             </Typography>
                         </Box>
                     </Box>
@@ -115,7 +115,13 @@ const PrincipalCard = (props: { label?: string }) => {
                             label={record.active ? 'Active' : 'Inactive'}
                             color={record.active ? 'success' : 'default'}
                             size="small"
-                            icon={record.active ? <Visibility /> : <VisibilityOff />}
+                            icon={
+                                record.active ? (
+                                    <Visibility />
+                                ) : (
+                                    <VisibilityOff />
+                                )
+                            }
                         />
                         <EditButton />
                         <DeleteButton />
@@ -134,14 +140,16 @@ const PrincipalActiveToggle = () => {
 
     const handleToggle = async () => {
         if (!record) return;
-        
+
         try {
             await dataProvider.update('settings', {
                 id: record.id,
                 data: { ...record, active: !record.active },
                 previousData: record,
             });
-            notify(`${record.label} ${record.active ? 'deactivated' : 'activated'}`);
+            notify(
+                `${record.label} ${record.active ? 'deactivated' : 'activated'}`
+            );
             refresh();
         } catch (error) {
             notify('Error updating principal status', { type: 'error' });
@@ -151,7 +159,11 @@ const PrincipalActiveToggle = () => {
     return (
         <Tooltip title={record?.active ? 'Deactivate' : 'Activate'}>
             <IconButton onClick={handleToggle} size="small">
-                {record?.active ? <Visibility color="success" /> : <VisibilityOff color="disabled" />}
+                {record?.active ? (
+                    <Visibility color="success" />
+                ) : (
+                    <VisibilityOff color="disabled" />
+                )}
             </IconButton>
         </Tooltip>
     );
@@ -164,9 +176,10 @@ export const PrincipalManager = () => {
                 Principal Management
             </Typography>
             <Typography variant="body1" color="textSecondary" paragraph>
-                Manage food service principals and brands. Drag to reorder by market importance.
+                Manage food service principals and brands. Drag to reorder by
+                market importance.
             </Typography>
-            
+
             <List
                 resource="settings"
                 filter={{ category: 'principal' }}
@@ -185,9 +198,9 @@ export const PrincipalManager = () => {
 
 const PrincipalDatagrid = () => {
     const listContext = useListContext();
-    
+
     if (listContext.isLoading) return null;
-    
+
     // For mobile/card view
     if (window.innerWidth < 768) {
         return (
@@ -200,7 +213,7 @@ const PrincipalDatagrid = () => {
             </Box>
         );
     }
-    
+
     // For desktop/table view
     return (
         <Datagrid rowClick="show" bulkActionButtons={false}>

@@ -40,7 +40,7 @@ const settingsFilters = [
 const ColorChip = (props: { label?: string }) => {
     const record = useRecordContext<Setting>(props);
     if (!record?.color) return null;
-    
+
     return (
         <Box display="flex" alignItems="center" gap={1}>
             <Box
@@ -60,17 +60,17 @@ const ColorChip = (props: { label?: string }) => {
 const CategoryChip = (props: { label?: string }) => {
     const record = useRecordContext<Setting>(props);
     if (!record?.category) return null;
-    
+
     const categoryColors: Record<string, string> = {
         priority: '#9C27B0',
-        segment: '#2196F3', 
+        segment: '#2196F3',
         distributor: '#FF9800',
         role: '#4CAF50',
         influence: '#F44336',
         decision: '#795548',
         principal: '#607D8B',
     };
-    
+
     return (
         <Chip
             label={record.category}
@@ -111,9 +111,9 @@ export const SettingsList = () => {
 
 const SettingsDatagrid = () => {
     const listContext = useListContext();
-    
+
     if (listContext.isLoading) return null;
-    
+
     return (
         <Datagrid rowClick="show" bulkActionButtons={false}>
             <CategoryChip label="Category" />

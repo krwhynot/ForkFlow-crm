@@ -21,7 +21,7 @@ export const SettingsCreate = () => {
     return (
         <Create
             redirect="show"
-            transform={(data) => ({
+            transform={data => ({
                 ...data,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),

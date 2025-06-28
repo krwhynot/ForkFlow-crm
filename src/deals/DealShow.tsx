@@ -20,7 +20,7 @@ import {
     useRecordContext,
     useRedirect,
     useRefresh,
-    useUpdate
+    useUpdate,
 } from 'react-admin';
 
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -98,11 +98,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     {record.name}
                                 </Typography>
                             </Stack>
-                            <Stack
-                                gap={1}
-                                direction="row"
-                                pr={6}
-                            >
+                            <Stack gap={1} direction="row" pr={6}>
                                 {record.archivedAt ? (
                                     <>
                                         <UnarchiveButton record={record} />
@@ -131,9 +127,16 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     gap={1}
                                 >
                                     <Typography variant="body2">
-                                        {record.expectedClosingDate ? new Date(record.expectedClosingDate).toLocaleDateString() : ''}
+                                        {record.expectedClosingDate
+                                            ? new Date(
+                                                  record.expectedClosingDate
+                                              ).toLocaleDateString()
+                                            : ''}
                                     </Typography>
-                                    {record.expectedClosingDate ? new Date(record.expectedClosingDate) < new Date() : false ? (
+                                    {record.expectedClosingDate ? (
+                                        new Date(record.expectedClosingDate) <
+                                        new Date()
+                                    ) : false ? (
                                         <Chip
                                             label="Past"
                                             color="error"
@@ -151,13 +154,16 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     Budget
                                 </Typography>
                                 <Typography variant="body2">
-                                    {(record.amount ?? 0).toLocaleString('en-US', {
-                                        notation: 'compact',
-                                        style: 'currency',
-                                        currency: 'USD',
-                                        currencyDisplay: 'narrowSymbol',
-                                        minimumSignificantDigits: 3,
-                                    })}
+                                    {(record.amount ?? 0).toLocaleString(
+                                        'en-US',
+                                        {
+                                            notation: 'compact',
+                                            style: 'currency',
+                                            currency: 'USD',
+                                            currencyDisplay: 'narrowSymbol',
+                                            minimumSignificantDigits: 3,
+                                        }
+                                    )}
                                 </Typography>
                             </Box>
 

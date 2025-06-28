@@ -4,7 +4,10 @@ import {
     Typography,
     useMediaQuery,
     useTheme,
+    Button,
+    Box,
 } from '@mui/material';
+import { LocationOn as LocationIcon } from '@mui/icons-material';
 import {
     ReferenceInput,
     SelectInput,
@@ -12,6 +15,7 @@ import {
     required,
     useRecordContext,
     useGetList,
+    useInput,
 } from 'react-admin';
 import { Organization, Setting } from '../types';
 
@@ -191,9 +195,62 @@ const OrganizationContextInputs = () => {
 };
 
 const OrganizationAddressInputs = () => {
+    const record = useRecordContext<Organization>();
+    
+    // Get form inputs for GPS coordinates
+    const latitudeInput = useInput({ source: 'latitude' });
+    const longitudeInput = useInput({ source: 'longitude' });
+
+    const captureGPSLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const { latitude, longitude } = position.coords;
+                    
+                    // Update form values
+                    latitudeInput.field.onChange(latitude);
+                    longitudeInput.field.onChange(longitude);
+                    
+                    console.log('GPS Coordinates captured:', {
+                        latitude,
+                        longitude,
+                    });
+                    alert(
+                        `GPS Location captured: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\nCoordinates have been saved to the form.`
+                    );
+                },
+                error => {
+                    console.error('GPS capture error:', error);
+                    alert(
+                        'Unable to capture GPS location. Please check location permissions.'
+                    );
+                }
+            );
+        } else {
+            alert('GPS location capture is not supported by this browser.');
+        }
+    };
+
     return (
         <Stack>
-            <Typography variant="h6">Address</Typography>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    mb: 1,
+                }}
+            >
+                <Typography variant="h6">Address</Typography>
+                <Button
+                    size="small"
+                    startIcon={<LocationIcon />}
+                    onClick={captureGPSLocation}
+                    sx={{ minHeight: 44, px: 2 }}
+                >
+                    GPS
+                </Button>
+            </Box>
             <TextInput
                 source="address"
                 label="Street Address"
@@ -207,11 +264,35 @@ const OrganizationAddressInputs = () => {
                 helperText={false}
                 validate={isZipCode}
             />
+            
+            {/* Hidden GPS coordinate inputs */}
+            <TextInput
+                source="latitude"
+                sx={{ display: 'none' }}
+            />
+            <TextInput
+                source="longitude"
+                sx={{ display: 'none' }}
+            />
+            
+            {/* GPS Coordinates Display */}
+            {(record?.latitude && record?.longitude) || (latitudeInput.field.value && longitudeInput.field.value) ? (
+                <Box sx={{ mt: 1, p: 1, bgcolor: 'success.light', borderRadius: 1 }}>
+                    <Typography variant="caption" color="success.contrastText">
+                        📍 GPS: {(latitudeInput.field.value || record?.latitude)?.toFixed(6)},{' '}
+                        {(longitudeInput.field.value || record?.longitude)?.toFixed(6)}
+                    </Typography>
+                </Box>
+            ) : null}
         </Stack>
     );
 };
 
 const OrganizationNotesInputs = () => {
+    const record = useRecordContext<Organization>();
+    const noteLength = record?.notes?.length || 0;
+    const maxLength = 500;
+
     return (
         <Stack>
             <Typography variant="h6">Notes</Typography>
@@ -219,8 +300,9 @@ const OrganizationNotesInputs = () => {
                 source="notes"
                 label="Business Notes"
                 multiline
-                helperText={false}
+                helperText={`${noteLength}/${maxLength} characters`}
                 minRows={3}
+                inputProps={{ maxLength }}
             />
         </Stack>
     );
@@ -233,8 +315,9 @@ const OrganizationAccountManagerInput = () => {
             <TextInput
                 source="accountManager"
                 label="Account Manager Email"
-                helperText={false}
+                helperText="Default: john.smith@forkflow.com (will be set automatically if left blank)"
                 validate={isEmail}
+                placeholder="john.smith@forkflow.com"
             />
         </Stack>
     );

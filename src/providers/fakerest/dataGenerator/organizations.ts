@@ -11,9 +11,13 @@ const safeDate = (value: any) => {
 
 export const generateOrganizations = (db: Db): Organization[] => {
     // Get settings for relationships (with safety checks)
-    const prioritySettings = db.settings?.filter(s => s.category === 'priority' && s.active) || [];
-    const segmentSettings = db.settings?.filter(s => s.category === 'segment' && s.active) || [];
-    const distributorSettings = db.settings?.filter(s => s.category === 'distributor' && s.active) || [];
+    const prioritySettings =
+        db.settings?.filter(s => s.category === 'priority' && s.active) || [];
+    const segmentSettings =
+        db.settings?.filter(s => s.category === 'segment' && s.active) || [];
+    const distributorSettings =
+        db.settings?.filter(s => s.category === 'distributor' && s.active) ||
+        [];
 
     // Sample organization names for food service businesses
     const organizationNames = [
@@ -41,22 +45,65 @@ export const generateOrganizations = (db: Db): Organization[] => {
         'Valley View Country Club',
         'Harmony Health Foods',
         'Emerald City Bistro',
-        'Copper Canyon Restaurant'
+        'Copper Canyon Restaurant',
     ];
 
     const cities = [
-        'New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix',
-        'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose',
-        'Austin', 'Jacksonville', 'Fort Worth', 'Columbus', 'Charlotte',
-        'Indianapolis', 'San Francisco', 'Seattle', 'Denver', 'Boston'
+        'New York',
+        'Los Angeles',
+        'Chicago',
+        'Houston',
+        'Phoenix',
+        'Philadelphia',
+        'San Antonio',
+        'San Diego',
+        'Dallas',
+        'San Jose',
+        'Austin',
+        'Jacksonville',
+        'Fort Worth',
+        'Columbus',
+        'Charlotte',
+        'Indianapolis',
+        'San Francisco',
+        'Seattle',
+        'Denver',
+        'Boston',
     ];
 
     const states = [
-        'NY', 'CA', 'IL', 'TX', 'AZ', 'PA', 'TX', 'CA', 'TX', 'CA',
-        'TX', 'FL', 'TX', 'OH', 'NC', 'IN', 'CA', 'WA', 'CO', 'MA'
+        'NY',
+        'CA',
+        'IL',
+        'TX',
+        'AZ',
+        'PA',
+        'TX',
+        'CA',
+        'TX',
+        'CA',
+        'TX',
+        'FL',
+        'TX',
+        'OH',
+        'NC',
+        'IN',
+        'CA',
+        'WA',
+        'CO',
+        'MA',
     ];
 
-    const streetPrefixes = ['Main St', 'Oak Ave', 'Park Blvd', 'First St', 'Broadway', 'Market St', 'Center Ave', 'Union St'];
+    const streetPrefixes = [
+        'Main St',
+        'Oak Ave',
+        'Park Blvd',
+        'First St',
+        'Broadway',
+        'Market St',
+        'Center Ave',
+        'Union St',
+    ];
     const accountManagers = [
         'john.smith@forkflow.com',
         'sarah.johnson@forkflow.com',
@@ -65,40 +112,62 @@ export const generateOrganizations = (db: Db): Organization[] => {
         'david.brown@forkflow.com',
         'emily.jones@forkflow.com',
         'chris.miller@forkflow.com',
-        'amanda.taylor@forkflow.com'
+        'amanda.taylor@forkflow.com',
     ];
 
     return organizationNames.map((name, index) => {
         const cityIndex = index % cities.length;
         const id = index + 1;
-        
+
         return {
             id,
             name,
-            priorityId: weightedBoolean(0.7) && prioritySettings.length > 0 ? faker.helpers.arrayElement(prioritySettings).id : undefined,
-            segmentId: weightedBoolean(0.8) && segmentSettings.length > 0 ? faker.helpers.arrayElement(segmentSettings).id : undefined,
-            distributorId: weightedBoolean(0.6) && distributorSettings.length > 0 ? faker.helpers.arrayElement(distributorSettings).id : undefined,
+            priorityId:
+                weightedBoolean(0.7) && prioritySettings.length > 0
+                    ? faker.helpers.arrayElement(prioritySettings).id
+                    : undefined,
+            segmentId:
+                weightedBoolean(0.8) && segmentSettings.length > 0
+                    ? faker.helpers.arrayElement(segmentSettings).id
+                    : undefined,
+            distributorId:
+                weightedBoolean(0.6) && distributorSettings.length > 0
+                    ? faker.helpers.arrayElement(distributorSettings).id
+                    : undefined,
             accountManager: faker.helpers.arrayElement(accountManagers),
             address: `${Math.floor(Math.random() * 9999) + 1} ${faker.helpers.arrayElement(streetPrefixes)}`,
             city: cities[cityIndex],
             state: states[cityIndex],
             zipCode: String(Math.floor(Math.random() * 90000) + 10000),
             phone: `(${Math.floor(Math.random() * 900) + 100}) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
-            website: weightedBoolean(0.7) ? `https://www.${name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')}.com` : undefined,
-            notes: weightedBoolean(0.4) ? `Key account in the ${cities[cityIndex]} market. ${faker.helpers.arrayElement([
-                'Strong relationship with management team.',
-                'Focus on premium product lines.',
-                'Price-sensitive buyer, needs competitive pricing.',
-                'Expanding to multiple locations.',
-                'Seasonal business with peak summer demand.',
-                'Long-term partnership opportunity.',
-                'New management team, building relationships.',
-                'High-volume potential customer.'
-            ])}` : undefined,
+            website: weightedBoolean(0.7)
+                ? `https://www.${name
+                      .toLowerCase()
+                      .replace(/\s+/g, '')
+                      .replace(/[^a-z0-9]/g, '')}.com`
+                : undefined,
+            notes: weightedBoolean(0.4)
+                ? `Key account in the ${cities[cityIndex]} market. ${faker.helpers.arrayElement(
+                      [
+                          'Strong relationship with management team.',
+                          'Focus on premium product lines.',
+                          'Price-sensitive buyer, needs competitive pricing.',
+                          'Expanding to multiple locations.',
+                          'Seasonal business with peak summer demand.',
+                          'Long-term partnership opportunity.',
+                          'New management team, building relationships.',
+                          'High-volume potential customer.',
+                      ]
+                  )}`
+                : undefined,
             latitude: 40.7128 + (Math.random() - 0.5) * 20, // Rough US latitude range
-            longitude: -74.0060 + (Math.random() - 0.5) * 60, // Rough US longitude range
-            createdAt: safeDate(new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000)), // Random date within last year
-            updatedAt: safeDate(new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)), // Random date within last month
+            longitude: -74.006 + (Math.random() - 0.5) * 60, // Rough US longitude range
+            createdAt: safeDate(
+                new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000)
+            ), // Random date within last year
+            updatedAt: safeDate(
+                new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
+            ), // Random date within last month
             createdBy: faker.helpers.arrayElement(accountManagers),
         } as Organization;
     });

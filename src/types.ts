@@ -83,15 +83,15 @@ export type Contact = {
     lastInteractionDate?: string;
     interactionCount?: number;
     tags?: string[];
-    
+
     // Additional field aliases for compatibility
     first_name?: string; // Alias for firstName
-    last_name?: string;  // Alias for lastName
+    last_name?: string; // Alias for lastName
     first_seen?: string; // For data generator compatibility
-    last_seen?: string;  // For data generator compatibility
-    title?: string;      // For compatibility
+    last_seen?: string; // For data generator compatibility
+    title?: string; // For compatibility
     salesId?: Identifier; // For compatibility
-    nb_tasks?: number;   // For compatibility
+    nb_tasks?: number; // For compatibility
 } & Pick<RaRecord, 'id'>;
 
 // Products - Food Service Catalog Entity
@@ -109,15 +109,60 @@ export type Product = {
     createdAt: string;
     updatedAt: string;
     createdBy?: string;
+    images?: string[]; // Array of image URLs
 
     // Computed fields with Settings relationships
     principal?: Setting;
-    
+
     // Additional computed fields
     displayPrice?: string;
     fullDescription?: string;
     categoryDisplay?: string;
     isAvailable?: boolean;
+} & Pick<RaRecord, 'id'>;
+
+// Interactions - Food Service Broker Interaction Tracking
+export type Interaction = {
+    id: number;
+    organizationId: number;
+    contactId?: number;
+    opportunityId?: number;
+    typeId: number; // References Setting with category 'interaction_type'
+    subject: string;
+    description?: string;
+    scheduledDate?: string;
+    completedDate?: string;
+    isCompleted: boolean;
+    duration?: number; // Duration in minutes
+    outcome?: string;
+    followUpRequired: boolean;
+    followUpDate?: string;
+    followUpNotes?: string;
+    
+    // GPS location for in-person interactions
+    latitude?: number;
+    longitude?: number;
+    locationNotes?: string;
+    
+    // File attachments
+    attachments?: string[];
+    
+    createdAt: string;
+    updatedAt: string;
+    createdBy?: string;
+
+    // Computed fields with Settings relationships
+    organization?: Organization;
+    contact?: Contact;
+    opportunity?: Deal;
+    type?: Setting;
+    
+    // Additional computed fields
+    typeLabel?: string;
+    statusLabel?: string;
+    isOverdue?: boolean;
+    hasLocation?: boolean;
+    formattedDuration?: string;
 } & Pick<RaRecord, 'id'>;
 
 export type SignUpData = {
@@ -178,7 +223,7 @@ export type Customer = {
     salesId?: Identifier;
     description?: string;
     context_links?: string[];
-    
+
     // Contact-specific fields for compatibility
     name?: string; // Alias for business_name
     first_name?: string;
@@ -234,7 +279,7 @@ export type Reminder = {
     snooze_count: number;
     created_at: string;
     updatedAt: string;
-    
+
     // Additional fields for compatibility
     salesId?: Identifier;
     contact_id?: Identifier;
@@ -247,23 +292,7 @@ export type Reminder = {
     days_until_due?: number;
 } & Pick<RaRecord, 'id'>;
 
-export type Product = {
-    name: string;
-    category: string;
-    subcategory?: string;
-    unit_price?: number;
-    unit_type: string;
-    description?: string;
-    image_url?: string;
-    sku?: string;
-    is_active: boolean;
-    allergens?: string[];
-    dietary_tags?: string[];
-    shelf_life_days?: number;
-    storage_requirements?: string;
-    created_at: string;
-    updatedAt: string;
-} & Pick<RaRecord, 'id'>;
+// Legacy Product type removed - using B2B Product type above
 
 export type OrderProduct = {
     product_id: Identifier;
@@ -298,7 +327,7 @@ export type Order = {
     commission_amount: number;
     created_at: string;
     updatedAt: string;
-    
+
     // Additional fields for compatibility
     salesId?: Identifier;
     organizationId?: Identifier;
@@ -547,13 +576,13 @@ export type ContactNote = {
     createdAt: string;
     updatedAt: string;
     createdBy?: string;
-    
+
     // Computed fields
     contact?: Contact;
     organization?: Organization;
 } & Pick<RaRecord, 'id'>;
 
-// Deal Notes - Notes attached to deals/opportunities  
+// Deal Notes - Notes attached to deals/opportunities
 export type DealNote = {
     id: number;
     dealId: number;
@@ -565,7 +594,7 @@ export type DealNote = {
     createdAt: string;
     updatedAt: string;
     createdBy?: string;
-    
+
     // Computed fields
     deal?: Deal;
     organization?: Organization;

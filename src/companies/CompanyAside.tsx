@@ -200,8 +200,19 @@ const AdditionalInfo = ({ record }: { record: Company }) => {
         return null;
     }
     const getBaseURL = (url: string) => {
-        const urlObject = new URL(url);
-        return urlObject.origin;
+        try {
+            // Check if URL has a protocol, if not prepend https://
+            const urlWithProtocol =
+                url.startsWith('http://') || url.startsWith('https://')
+                    ? url
+                    : `https://${url}`;
+
+            const urlObject = new URL(urlWithProtocol);
+            return urlObject.origin;
+        } catch (error) {
+            // Return the original URL if it can't be parsed
+            return url;
+        }
     };
 
     return (
@@ -215,23 +226,30 @@ const AdditionalInfo = ({ record }: { record: Company }) => {
             )}
             {record.context_links && (
                 <Stack>
-                    {record.context_links.map((link, index) =>
-                        link ? (
-                            <Tooltip title={link}>
-                                <Typography
-                                    key={index}
-                                    variant="body2"
-                                    gutterBottom
-                                    component={Link}
-                                    href={link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {getBaseURL(link)}
-                                </Typography>
-                            </Tooltip>
-                        ) : null
-                    )}
+                    {record.context_links
+                        .filter(link => link && link.trim() !== '')
+                        .map((link, index) => {
+                            const urlWithProtocol =
+                                link.startsWith('http://') ||
+                                link.startsWith('https://')
+                                    ? link
+                                    : `https://${link}`;
+
+                            return (
+                                <Tooltip key={index} title={urlWithProtocol}>
+                                    <Typography
+                                        variant="body2"
+                                        gutterBottom
+                                        component={Link}
+                                        href={urlWithProtocol}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {getBaseURL(link)}
+                                    </Typography>
+                                </Tooltip>
+                            );
+                        })}
                 </Stack>
             )}
             {record.salesId !== null && (

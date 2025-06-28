@@ -16,6 +16,11 @@ export const OrganizationCreate = () => {
                     values.website = `https://${values.website}`;
                 }
 
+                // Set default account manager if not provided
+                if (!values.accountManager) {
+                    values.accountManager = 'john.smith@forkflow.com';
+                }
+
                 // Set the creator
                 return {
                     ...values,
@@ -23,7 +28,11 @@ export const OrganizationCreate = () => {
                 };
             }}
         >
-            <Form>
+            <Form
+                defaultValues={{
+                    accountManager: 'john.smith@forkflow.com',
+                }}
+            >
                 <CardContent>
                     <OrganizationInputs />
                 </CardContent>

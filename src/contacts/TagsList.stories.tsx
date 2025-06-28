@@ -15,7 +15,9 @@ const db = {} as Db;
 db.tags = generateTags(db);
 db.companies = generateCompanies(db, 1);
 db.contacts = generateContacts(db, 1);
-db.contacts[0].tags = random.arrayElements(db.tags, 3).map(tag => tag.id.toString());
+db.contacts[0].tags = random
+    .arrayElements(db.tags, 3)
+    .map(tag => tag.id.toString());
 db.contacts[0].firstName = 'John';
 db.contacts[0].lastName = 'Doe';
 

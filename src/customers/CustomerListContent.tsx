@@ -17,7 +17,7 @@ import {
     ListItemSecondaryAction,
     ListItemText,
     Typography,
-    useMediaQuery
+    useMediaQuery,
 } from '@mui/material';
 import { formatRelative } from 'date-fns';
 import {

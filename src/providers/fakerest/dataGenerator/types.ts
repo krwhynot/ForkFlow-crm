@@ -25,4 +25,9 @@ export interface Db {
     organizations?: Organization[];
     settings?: Setting[];
     products?: Product[];
+    // Additional collections
+    customer_summary?: any[];
+    visits?: any[];
+    reminders?: any[];
+    orders?: any[];
 }

@@ -8,16 +8,17 @@ const demoAuthProvider: AuthProvider = {
     logout: () => Promise.resolve(),
     checkError: () => Promise.resolve(),
     checkAuth: () => Promise.resolve(), // Always allow access
-    getIdentity: () => Promise.resolve({
-        id: 'demo-user',
-        fullName: 'Demo User',
-    }),
+    getIdentity: () =>
+        Promise.resolve({
+            id: 'demo-user',
+            fullName: 'Demo User',
+        }),
     getPermissions: () => Promise.resolve(), // Required by react-admin
 };
 
 const Demo = () => (
-    <CRM 
-        title="ForkFlow Food Broker CRM - Demo" 
+    <CRM
+        title="ForkFlow Food Broker CRM - Demo"
         enableGPS={true}
         dataProvider={dataProvider}
         authProvider={demoAuthProvider}

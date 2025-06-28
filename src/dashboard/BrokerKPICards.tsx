@@ -3,7 +3,7 @@ import {
     Assessment as MetricsIcon,
     People as PeopleIcon,
     AttachMoney as RevenueIcon,
-    Schedule as TimeIcon
+    Schedule as TimeIcon,
 } from '@mui/icons-material';
 import {
     Box,
@@ -67,8 +67,8 @@ const KPICard = ({
                             trend === 'up'
                                 ? 'success'
                                 : trend === 'down'
-                                    ? 'error'
-                                    : 'default'
+                                  ? 'error'
+                                  : 'default'
                         }
                         size="small"
                         sx={{ height: 20, fontSize: '0.7rem' }}
@@ -165,11 +165,11 @@ export const BrokerKPICards = ({
     const avgVisitDuration =
         visitsWithDuration.length > 0
             ? Math.round(
-                visitsWithDuration.reduce(
-                    (sum, v) => sum + (v.duration_minutes || 0),
-                    0
-                ) / visitsWithDuration.length
-            )
+                  visitsWithDuration.reduce(
+                      (sum, v) => sum + (v.duration_minutes || 0),
+                      0
+                  ) / visitsWithDuration.length
+              )
             : 0;
 
     // GPS coverage - visits with location data
@@ -190,23 +190,23 @@ export const BrokerKPICards = ({
     const customerGrowthTrend =
         newCustomersLastMonth > 0
             ? (
-                ((newCustomersThisMonth - newCustomersLastMonth) /
-                    newCustomersLastMonth) *
-                100
-            ).toFixed(0) + '%'
+                  ((newCustomersThisMonth - newCustomersLastMonth) /
+                      newCustomersLastMonth) *
+                  100
+              ).toFixed(0) + '%'
             : newCustomersThisMonth > 0
-                ? '+100%'
-                : '0%';
+              ? '+100%'
+              : '0%';
 
     const visitTrend =
         visitsLastMonth > 0
             ? (
-                ((visitsThisMonth - visitsLastMonth) / visitsLastMonth) *
-                100
-            ).toFixed(0) + '%'
+                  ((visitsThisMonth - visitsLastMonth) / visitsLastMonth) *
+                  100
+              ).toFixed(0) + '%'
             : visitsThisMonth > 0
-                ? '+100%'
-                : '0%';
+              ? '+100%'
+              : '0%';
 
     // Order metrics (if available)
     const ordersThisMonth = orders.filter(
@@ -277,7 +277,9 @@ export const BrokerKPICards = ({
 
     const kpiCards = kpis.map(kpi => ({
         ...kpi,
-        trend: (['up', 'down', 'stable'].includes((kpi.trend ?? '') as string) ? kpi.trend : undefined) as 'up' | 'down' | 'stable' | undefined,
+        trend: (['up', 'down', 'stable'].includes((kpi.trend ?? '') as string)
+            ? kpi.trend
+            : undefined) as 'up' | 'down' | 'stable' | undefined,
     }));
 
     return (

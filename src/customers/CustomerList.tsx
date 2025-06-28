@@ -73,9 +73,7 @@ const CustomerListLayout = () => {
 
 const CustomerListActions = () => (
     <TopToolbar>
-        <SortButton
-            fields={['business_name', 'contact_person', 'createdAt']}
-        />
+        <SortButton fields={['business_name', 'contact_person', 'createdAt']} />
         <CustomerImportButton />
         <ExportButton />
         <CreateButton

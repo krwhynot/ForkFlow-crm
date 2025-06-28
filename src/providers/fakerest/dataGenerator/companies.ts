@@ -25,7 +25,13 @@ export const generateCompanies = (db: Db, size = 55): Required<Company>[] => {
             name: name, // alias for compatibility
             logo: faker.image.avatar(),
             sector: faker.helpers.arrayElement(defaultCompanySectors),
-            size: faker.helpers.arrayElement(['Very Small', 'Small', 'Medium', 'Big', 'Very Big']) as 'Very Small' | 'Small' | 'Medium' | 'Big' | 'Very Big',
+            size: faker.helpers.arrayElement([
+                'Very Small',
+                'Small',
+                'Medium',
+                'Big',
+                'Very Big',
+            ]) as 'Very Small' | 'Small' | 'Medium' | 'Big' | 'Very Big',
             linkedin_url: `https://www.linkedin.com/company/${name
                 .toLowerCase()
                 .replace(regex, '_')}`,
@@ -40,11 +46,21 @@ export const generateCompanies = (db: Db, size = 55): Required<Company>[] => {
             stateAbbr: faker.location.state({ abbreviated: true }),
             nb_contacts: 0,
             nb_deals: 0,
-            business_type: faker.helpers.arrayElement(['restaurant', 'grocery', 'distributor', 'other']) as 'restaurant' | 'grocery' | 'distributor' | 'other',
+            business_type: faker.helpers.arrayElement([
+                'restaurant',
+                'grocery',
+                'distributor',
+                'other',
+            ]) as 'restaurant' | 'grocery' | 'distributor' | 'other',
             // at least 1/3rd of companies for Jane Doe
             salesId:
-                faker.number.int(2) === 0 ? 0 : faker.helpers.arrayElement(db.sales).id,
-            broker_id: faker.number.int(2) === 0 ? 0 : faker.helpers.arrayElement(db.sales).id, // alias for salesId
+                faker.number.int(2) === 0
+                    ? 0
+                    : faker.helpers.arrayElement(db.sales).id,
+            broker_id:
+                faker.number.int(2) === 0
+                    ? 0
+                    : faker.helpers.arrayElement(db.sales).id, // alias for salesId
             created_at: createdAt,
             createdAt,
             updatedAt: safeDate(randomDate(new Date(createdAt))),

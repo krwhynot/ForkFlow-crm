@@ -19,7 +19,11 @@ export function ActivityLogCompanyCreated({
     return (
         <ListItem disableGutters>
             <Stack direction="row" spacing={1} alignItems="center" width="100%">
-                <CompanyAvatar width={20} height={20} record={organization as any} />
+                <CompanyAvatar
+                    width={20}
+                    height={20}
+                    record={organization as any}
+                />
                 <Typography
                     component="p"
                     variant="body2"

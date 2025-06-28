@@ -22,7 +22,7 @@ const SettingsEditToolbar = () => (
 export const SettingsEdit = () => {
     return (
         <Edit
-            transform={(data) => ({
+            transform={data => ({
                 ...data,
                 updatedAt: new Date().toISOString(),
             })}

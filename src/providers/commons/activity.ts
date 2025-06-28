@@ -68,9 +68,13 @@ const getNewCompanies = async (
     return companies.map(company => ({
         id: `organization.${company.id}.created`,
         type: COMPANY_CREATED,
-        organizationId: typeof company.id === 'number' ? company.id : Number(company.id),
+        organizationId:
+            typeof company.id === 'number' ? company.id : Number(company.id),
         organization: {
-            id: typeof company.id === 'number' ? company.id : Number(company.id),
+            id:
+                typeof company.id === 'number'
+                    ? company.id
+                    : Number(company.id),
             name: company.name ?? '',
             phone: company.phone,
             website: company.website,
