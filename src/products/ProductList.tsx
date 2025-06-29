@@ -8,10 +8,11 @@ import {
     TopToolbar,
     CreateButton,
     ExportButton,
-    FilterForm,
+    FilterButton,
     TextInput,
     SelectInput,
     BooleanInput,
+    NumberInput,
     useListContext,
     useGetList,
     useRecordContext,
@@ -40,6 +41,7 @@ import { PriceField } from './PriceField';
 // Product List Actions in Top Toolbar
 const ProductListActions = () => (
     <TopToolbar>
+        <FilterButton />
         <ExportButton />
         <CreateButton
             variant="contained"
@@ -298,7 +300,7 @@ const ProductListContent = () => {
     return isMobile ? <ProductMobileGrid /> : <ProductDesktopTable />;
 };
 
-// Product filters for FilterForm
+// Product filters for List component
 const useProductFilters = () => {
     const { data: principalSettings } = useGetList<Setting>('settings', {
         filter: { category: 'principal', active: true },
@@ -326,76 +328,59 @@ const useProductFilters = () => {
             key="search-name"
             source="name"
             label="Search by name"
-            variant="outlined"
-            size="small"
             alwaysOn
-            sx={{ mb: 2 }}
         />,
         <TextInput
             key="search-sku"
             source="sku"
             label="Search by SKU"
-            variant="outlined"
-            size="small"
-            sx={{ mb: 2 }}
         />,
         <SelectInput
             key="category"
             source="category"
             label="Category"
             choices={categoryChoices}
-            variant="outlined"
-            size="small"
-            sx={{ mb: 2 }}
         />,
         <SelectInput
             key="principal"
             source="principalId"
             label="Principal/Brand"
             choices={principalChoices}
-            variant="outlined"
-            size="small"
-            sx={{ mb: 2 }}
         />,
         <BooleanInput
             key="active"
             source="active"
             label="Active products only"
-            sx={{ mb: 2 }}
+        />,
+        <NumberInput
+            key="price-min"
+            source="price_gte"
+            label="Min Price ($)"
+        />,
+        <NumberInput
+            key="price-max"
+            source="price_lte"
+            label="Max Price ($)"
         />,
     ];
 };
 
 // Main Product List Component
 export const ProductList = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const filters = useProductFilters();
 
     // Debug logging for ProductList component
     React.useEffect(() => {
-        console.log('🛍️ ProductList component mounted', {
-            isMobile,
-            screenWidth: window.innerWidth
-        });
-    }, [isMobile]);
+        console.log('🛍️ ProductList component mounted with filters');
+    }, []);
 
     return (
         <List
             actions={<ProductListActions />}
+            filters={filters}
             sort={{ field: 'name', order: 'ASC' }}
             perPage={25}
             title="Food Service Products"
-            aside={
-                !isMobile ? (
-                    <Box sx={{ width: 250, p: 2 }}>
-                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                            Filter Products
-                        </Typography>
-                        <FilterForm filters={filters} />
-                    </Box>
-                ) : undefined
-            }
             sx={{ 
                 '& .RaList-content': { px: { xs: 1, sm: 2 } },
                 '& .RaList-main': { width: '100%' }
