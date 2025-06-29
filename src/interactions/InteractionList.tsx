@@ -10,7 +10,6 @@ import {
     useListContext,
     TopToolbar,
     CreateButton,
-    FilterButton,
     FilterForm,
     TextInput,
     SelectInput,
@@ -55,7 +54,6 @@ const interactionTypeIcons = {
 
 const ListActions = () => (
     <TopToolbar>
-        <FilterButton />
         <CreateButton />
     </TopToolbar>
 );
