@@ -284,6 +284,35 @@ If build is completely broken:
 // @ts-expect-error  # Better - documents expected error
 ```
 
+**7. React-Admin Component Props Compatibility (TS2322)**
+- **Prevention**: Custom components used in Datagrid must accept react-admin field props
+- **Issue**: `Property 'label' does not exist on type 'IntrinsicAttributes'`
+- **Root Cause**: Custom chip components didn't define proper TypeScript interfaces for props
+- **Solution**: Add proper interfaces with `label`, `source`, and `record` props
+- **Example**:
+  ```typescript
+  // ❌ WRONG - Component without props interface
+  const CategoryChip = () => {
+    const record = useRecordContext<Product>();
+    return <Chip label={record?.category} />;
+  };
+  
+  // ✅ CORRECT - Component with proper props interface
+  interface CategoryChipProps {
+    label?: string;
+    source?: string; 
+    record?: Product;
+  }
+  
+  const CategoryChip: React.FC<CategoryChipProps> = ({ label, source, record: propRecord }) => {
+    const contextRecord = useRecordContext<Product>();
+    const record = propRecord || contextRecord;
+    return <Chip label={record?.category} />;
+  };
+  ```
+- **When Applied**: Custom field components used in Datagrid (e.g., `<CategoryChip label="Category" />`)
+- **Files Affected**: src/products/ProductList.tsx (CategoryChip, PrincipalChip components)
+
 **Remember**: These rules prevent the 49% error reduction we achieved (85→43 errors) from regressing!
 
 # important-instruction-reminders

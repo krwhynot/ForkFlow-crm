@@ -54,8 +54,16 @@ const ProductListActions = () => (
 );
 
 // Category Chip Component
-const CategoryChip = () => {
-    const record = useRecordContext<Product>();
+interface CategoryChipProps {
+    label?: string;
+    source?: string;
+    record?: Product;
+}
+
+const CategoryChip: React.FC<CategoryChipProps> = ({ label, source, record: propRecord }) => {
+    const contextRecord = useRecordContext<Product>();
+    const record = propRecord || contextRecord;
+    
     if (!record?.category) return null;
 
     const categoryColors: Record<string, string> = {
@@ -82,8 +90,16 @@ const CategoryChip = () => {
 };
 
 // Principal Chip Component
-const PrincipalChip = () => {
-    const record = useRecordContext<Product>();
+interface PrincipalChipProps {
+    label?: string;
+    source?: string;
+    record?: Product;
+}
+
+const PrincipalChip: React.FC<PrincipalChipProps> = ({ label, source, record: propRecord }) => {
+    const contextRecord = useRecordContext<Product>();
+    const record = propRecord || contextRecord;
+    
     if (!record?.principalId) return null;
 
     return (
@@ -92,6 +108,7 @@ const PrincipalChip = () => {
             reference="settings"
             label="Principal"
             link={false}
+            record={record}
         >
             <TextField source="label" />
         </ReferenceField>
