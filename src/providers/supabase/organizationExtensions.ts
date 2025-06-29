@@ -1,3 +1,4 @@
+// src/providers/supabase/organizationExtensions.ts
 /**
  * Supabase Data Provider Extensions for Organizations
  * Adds mobile-optimized organization management with GPS, search, and territory features
@@ -275,7 +276,12 @@ export const findNearbyOrganizations = async (
 export const getTerritoryOrganizations = async (
     dataProvider: DataProvider,
     userId: string,
-    territory?: TerritoryBoundary
+    territory?: TerritoryBoundary,
+    options: {
+        limit?: number;
+        includeInactive?: boolean;
+        filters?: Record<string, any>;
+    } = {}
 ): Promise<{ data: Organization[]; total: number }> => {
     // For now, implement basic territory logic
     // In production, this would use PostGIS geometric queries
@@ -702,6 +708,7 @@ const calculateOrganizationAnalytics = async (
         opportunities,
     };
 };
+
 /**
  * Calculate engagement score with detailed factors
  */
@@ -709,7 +716,7 @@ export const calculateDetailedEngagementScore = async (
     organizationId: Identifier
 ): Promise<{
     score: number;
-    riskLevel: 'low'  < /dev/null |  'medium' | 'high';
+    riskLevel: 'low' | 'medium' | 'high';
     trend: 'improving' | 'declining' | 'stable';
     factors: {
         daysSinceLastInteraction: number;
