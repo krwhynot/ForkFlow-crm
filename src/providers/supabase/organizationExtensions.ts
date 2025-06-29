@@ -288,11 +288,16 @@ export const getTerritoryOrganizations = async (
     
     if (!territory) {
         // Get all organizations assigned to user
-        return dataProvider.getList('organizations', {
+        const result = await dataProvider.getList('organizations', {
             pagination: { page: 1, perPage: 1000 },
             sort: { field: 'name', order: 'ASC' },
             filter: { accountManager: userId },
         });
+        
+        return {
+            data: result.data,
+            total: result.total ?? 0,
+        };
     }
 
     // Get organizations within territory boundaries

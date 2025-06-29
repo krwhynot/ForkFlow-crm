@@ -1,9 +1,11 @@
+// src/providers/supabase/dataProvider.ts
 import { supabaseDataProvider } from 'ra-supabase';
 
 import {
     CreateParams,
     DataProvider,
     GetListParams,
+    GetListResult,
     Identifier,
     UpdateParams,
     withLifecycleCallbacks,
@@ -13,6 +15,7 @@ import {
     BrokerDashboardStats,
     BrokerFormData,
     GPSCoordinates,
+    Organization,
     RAFile,
     SignUpData,
     Visit,
@@ -592,7 +595,7 @@ const dataProviderWithCustomMethods = {
         });
         
         return {
-            data: result.data.map(org => ({
+            data: result.data.map((org: Organization) => ({
                 id: org.id,
                 name: org.name,
                 address: org.address,
@@ -607,7 +610,7 @@ const dataProviderWithCustomMethods = {
     async getOrganizationsNeedingAttention(
         daysSinceLastInteraction: number = 30,
         userId?: string
-    ): Promise<{ data: Organization[]; total: number }> {
+    ): Promise<GetListResult<Organization>> {
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - daysSinceLastInteraction);
 
