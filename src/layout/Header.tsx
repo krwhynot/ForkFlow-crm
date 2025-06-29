@@ -32,8 +32,8 @@ const Header = () => {
         currentPath = '/contacts';
     } else if (!!matchPath('/companies/*', location.pathname)) {
         currentPath = '/companies';
-    } else if (!!matchPath('/deals/*', location.pathname)) {
-        currentPath = '/deals';
+    } else if (!!matchPath('/interactions/*', location.pathname)) {
+        currentPath = '/interactions';
     } else if (!!matchPath('/products/*', location.pathname)) {
         currentPath = '/products';
     } else {
@@ -92,10 +92,10 @@ const Header = () => {
                                     value="/companies"
                                 />
                                 <Tab
-                                    label={'Deals'}
+                                    label={'Interactions'}
                                     component={Link}
-                                    to="/deals"
-                                    value="/deals"
+                                    to="/interactions"
+                                    value="/interactions"
                                 />
                                 <Tab
                                     label={'Products'}

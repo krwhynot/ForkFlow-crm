@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
     CreateButton,
     Datagrid,
@@ -225,6 +226,14 @@ export const ProductList = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+    // Debug logging for ProductList component
+    React.useEffect(() => {
+        console.log('🛍️ ProductList component mounted', {
+            isMobile,
+            screenWidth: window.innerWidth
+        });
+    }, [isMobile]);
+
     return (
         <Stack direction="row" sx={{ width: '100%' }}>
             {!isMobile && <ProductListFilter />}
@@ -251,7 +260,63 @@ const ProductDatagrid = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    if (listContext.isLoading) return null;
+    // Debug logging for data loading
+    React.useEffect(() => {
+        console.log('📊 ProductDatagrid state:', {
+            isLoading: listContext.isLoading,
+            dataLength: listContext.data?.length || 0,
+            total: listContext.total,
+            error: listContext.error,
+            isMobile
+        });
+    }, [listContext.isLoading, listContext.data, listContext.total, listContext.error, isMobile]);
+
+    // Enhanced error handling
+    if (listContext.error) {
+        console.error('❌ ProductList error:', listContext.error);
+        return (
+            <Box sx={{ p: 3, textAlign: 'center' }}>
+                <Typography variant="h6" color="error" gutterBottom>
+                    Error Loading Products
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {listContext.error.message || 'An unexpected error occurred'}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                    Check the browser console for more details
+                </Typography>
+            </Box>
+        );
+    }
+
+    if (listContext.isLoading) {
+        console.log('⏳ ProductList loading...');
+        return null;
+    }
+
+    // Handle empty data state
+    if (!listContext.data || listContext.data.length === 0) {
+        console.log('📭 No products found');
+        return (
+            <Box sx={{ p: 3, textAlign: 'center' }}>
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                    No Products Found
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {listContext.total === 0 
+                        ? 'No products have been added yet.' 
+                        : 'No products match your current filters.'}
+                </Typography>
+                <CreateButton 
+                    variant="contained" 
+                    label="Add First Product"
+                    sx={{ mt: 1 }}
+                />
+            </Box>
+        );
+    }
+
+    console.log(`✅ ProductList loaded successfully with ${listContext.data.length} products`);
 
     // For mobile/card view
     if (isMobile) {

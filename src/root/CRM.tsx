@@ -163,7 +163,43 @@ export const CRM = ({
 
     if (isTestMode) {
         console.log('🎭 Test mode detected - using fakerest data provider');
+    } else {
+        console.log('🗄️ Production mode - using Supabase data provider');
     }
+
+    // Debug logging for data provider verification
+    useEffect(() => {
+        console.log('🔧 CRM Debug Info:', {
+            isTestMode,
+            dataProviderType: isTestMode ? 'fakerest' : 'supabase',
+            effectiveDataProvider: effectiveDataProvider?.constructor?.name || 'Unknown',
+            authProviderType: isTestMode ? 'fake' : 'supabase',
+            requireAuth: effectiveRequireAuth
+        });
+
+        // Test products resource connection
+        if (effectiveDataProvider && typeof effectiveDataProvider.getList === 'function') {
+            effectiveDataProvider.getList('products', {
+                pagination: { page: 1, perPage: 1 },
+                sort: { field: 'id', order: 'ASC' },
+                filter: {}
+            }).then((result) => {
+                console.log('✅ Products data provider test successful:', {
+                    totalProducts: result.total,
+                    sampleData: result.data?.[0] || 'No products found'
+                });
+            }).catch((error) => {
+                console.error('❌ Products data provider test failed:', error);
+                console.error('🔍 Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+            });
+        } else {
+            console.error('❌ Data provider not initialized or missing getList method');
+        }
+    }, [effectiveDataProvider, effectiveAuthProvider, isTestMode, effectiveRequireAuth]);
     useEffect(() => {
         if (
             disableTelemetry ||
