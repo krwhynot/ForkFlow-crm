@@ -13,24 +13,33 @@ import {
 } from 'react-admin';
 import { Route } from 'react-router';
 
-import companies from '../companies';
 import { LocationProvider } from '../components/mobile';
-import {
-    ContactCreate,
-    ContactEdit,
-    ContactList,
-    ContactShow,
-} from '../contacts';
-import organizations from '../organizations';
-import products from '../products';
-import opportunities from '../opportunities';
-import interactions from '../interactions';
-import { CustomerList } from '../customers';
-import { FoodServiceDashboard } from '../dashboard/FoodServiceDashboard';
 import { Layout } from '../layout/Layout';
 import { LoginPage } from '../login/LoginPage';
 import { MobileLoginForm } from '../login/MobileLoginForm';
 import { SignupPage } from '../login/SignupPage';
+import {
+    LazyOrganizations,
+    LazyProducts,
+    LazyOpportunities,
+    LazyInteractions,
+    LazyCompanies,
+    LazyDashboard,
+    LazyContactList,
+    LazyContactCreate,
+    LazyContactEdit,
+    LazyContactShow,
+    LazyCustomerList,
+    LazyVisitList,
+    LazyVisitCreate,
+    LazyVisitShow,
+    LazyReminderList,
+    LazyReminderCreate,
+    LazyReminderShow,
+    LazySettings,
+    preloadCriticalResources,
+    withSuspense,
+} from './LazyResources';
 import {
     authProvider as defaultAuthProvider,
     dataProvider as defaultDataProvider,
@@ -43,10 +52,7 @@ import {
     jwtAuthProvider,
     initializeAuthentication 
 } from '../providers/auth';
-import { ReminderCreate, ReminderList, ReminderShow } from '../reminders';
-import settings from '../settings';
 import { SettingsPage } from '../settings/SettingsPage';
-import { VisitCreate, VisitList, VisitShow } from '../visits';
 import {
     ConfigurationContextValue,
     ConfigurationProvider,
@@ -242,6 +248,11 @@ export const CRM = ({
             });
         }
     }, [isJWTMode, isTestMode]);
+
+    // Preload critical resources after initial render
+    useEffect(() => {
+        preloadCriticalResources();
+    }, []);
     useEffect(() => {
         if (
             disableTelemetry ||
@@ -263,7 +274,7 @@ export const CRM = ({
             store={localStorageStore(undefined, 'ForkFlowCRM')}
             layout={Layout}
             loginPage={isJWTMode ? MobileLoginForm : LoginPage}
-            dashboard={FoodServiceDashboard}
+            dashboard={withSuspense(LazyDashboard)}
             theme={lightTheme}
             darkTheme={darkTheme || null}
             i18nProvider={i18nProvider}
@@ -287,73 +298,73 @@ export const CRM = ({
                 <Route path={SettingsPage.path} element={<SettingsPage />} />
             </CustomRoutes>
 
-            {/* Food Broker CRM Resources */}
+            {/* Food Broker CRM Resources - Lazy Loaded */}
             <Resource
                 name="settings"
-                list={settings.list}
-                create={settings.create}
-                edit={settings.edit}
-                show={settings.show}
+                list={LazySettings.list}
+                create={LazySettings.create}
+                edit={LazySettings.edit}
+                show={LazySettings.show}
                 options={{ label: 'Settings' }}
             />
             <Resource
                 name="organizations"
-                list={organizations.list}
-                create={organizations.create}
-                edit={organizations.edit}
-                show={organizations.show}
+                list={LazyOrganizations.list}
+                create={LazyOrganizations.create}
+                edit={LazyOrganizations.edit}
+                show={LazyOrganizations.show}
                 options={{ label: 'Organizations' }}
             />
             <Resource
                 name="companies"
-                list={companies.list}
-                create={companies.create}
-                edit={companies.edit}
-                show={companies.show}
+                list={LazyCompanies.list}
+                create={LazyCompanies.create}
+                edit={LazyCompanies.edit}
+                show={LazyCompanies.show}
                 options={{ label: 'Companies (Legacy)' }}
             />
             <Resource
                 name="contacts"
-                list={ContactList}
-                create={ContactCreate}
-                edit={ContactEdit}
-                show={ContactShow}
+                list={withSuspense(LazyContactList)}
+                create={withSuspense(LazyContactCreate)}
+                edit={withSuspense(LazyContactEdit)}
+                show={withSuspense(LazyContactShow)}
             />
-            <Resource name="customers" list={CustomerList} />
+            <Resource name="customers" list={withSuspense(LazyCustomerList)} />
             <Resource
                 name="visits"
-                list={VisitList}
-                create={VisitCreate}
-                show={VisitShow}
+                list={withSuspense(LazyVisitList)}
+                create={withSuspense(LazyVisitCreate)}
+                show={withSuspense(LazyVisitShow)}
             />
             <Resource
                 name="reminders"
-                list={ReminderList}
-                create={ReminderCreate}
-                show={ReminderShow}
+                list={withSuspense(LazyReminderList)}
+                create={withSuspense(LazyReminderCreate)}
+                show={withSuspense(LazyReminderShow)}
             />
             <Resource
                 name="products"
-                list={products.list}
-                create={products.create}
-                edit={products.edit}
-                show={products.show}
+                list={LazyProducts.list}
+                create={LazyProducts.create}
+                edit={LazyProducts.edit}
+                show={LazyProducts.show}
                 options={{ label: 'Products' }}
             />
             <Resource
                 name="opportunities"
-                list={opportunities.list}
-                create={opportunities.create}
-                edit={opportunities.edit}
-                show={opportunities.show}
+                list={LazyOpportunities.list}
+                create={LazyOpportunities.create}
+                edit={LazyOpportunities.edit}
+                show={LazyOpportunities.show}
                 options={{ label: 'Opportunities' }}
             />
             <Resource
                 name="interactions"
-                list={interactions.list}
-                create={interactions.create}
-                edit={interactions.edit}
-                show={interactions.show}
+                list={LazyInteractions.list}
+                create={LazyInteractions.create}
+                edit={LazyInteractions.edit}
+                show={LazyInteractions.show}
                 options={{ label: 'Interactions' }}
             />
             <Resource name="deals" />

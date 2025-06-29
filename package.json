@@ -121,6 +121,13 @@
         "test:e2e:safari": "playwright test --project=webkit",
         "test:e2e:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
         "test:e2e:ci": "playwright test --reporter=github",
-        "test:e2e:update-snapshots": "playwright test --update-snapshots"
+        "test:e2e:update-snapshots": "playwright test --update-snapshots",
+        "bundle:analyze": "vite build --mode analyze",
+        "bundle:visualize": "vite build && npx vite-bundle-analyzer dist",
+        "bundle:size": "npm run build && du -sh dist",
+        "bundle:size-detailed": "npm run build && find dist -name '*.js' -o -name '*.css' | xargs ls -lah | sort -k5 -hr",
+        "bundle:stats": "vite build --write-bundle-stats && echo 'Bundle stats generated in dist/stats.html'",
+        "performance:lighthouse": "npm run build && npx lighthouse http://localhost:4173 --output html --output-path lighthouse-report.html",
+        "performance:bundle-buddy": "npm run build && npx bundle-buddy dist/*.js"
     }
 }
