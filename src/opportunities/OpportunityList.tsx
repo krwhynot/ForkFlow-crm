@@ -1,12 +1,8 @@
 import {
     CreateButton,
     ExportButton,
-    FilterButton,
     ListBase,
     ListToolbar,
-    ReferenceInput,
-    SearchInput,
-    SelectInput,
     Title,
     TopToolbar,
     useGetIdentity,
@@ -20,8 +16,8 @@ import { OpportunityCreate } from './OpportunityCreate';
 import { OpportunityEdit } from './OpportunityEdit';
 import { OpportunityEmpty } from './OpportunityEmpty';
 import { OpportunityListContent } from './OpportunityListContent';
+import { OpportunityListFilter } from './OpportunityListFilter';
 import { OpportunityShow } from './OpportunityShow';
-import { OnlyMineInput } from './OnlyMineInput';
 
 export const OpportunityList = () => {
     const { identity } = useGetIdentity();
@@ -66,68 +62,32 @@ const OpportunityLayout = () => {
         );
     }
 
+    const hasFilters = filterValues && Object.keys(filterValues).length > 0;
+
+    if (isPending) return null;
+    if (!data?.length && !hasFilters) return <OpportunityEmpty />;
+
     return (
-        <Stack spacing={2}>
-            <TopToolbar>
-                <FilterButton />
-                <CreateButton
-                    variant="contained"
-                    label="New Opportunity"
-                    sx={{ marginLeft: 'auto' }}
-                />
-                <ExportButton />
-            </TopToolbar>
-            <Card>
+        <Stack direction="row" component="div">
+            <OpportunityListFilter />
+            <Stack sx={{ width: '100%' }}>
                 <Title title="Food Service Sales Pipeline" />
-                <ListToolbar
-                    filters={[
-                        <SearchInput source="q" alwaysOn placeholder="Search opportunities..." />,
-                        <ReferenceInput
-                            source="organizationId"
-                            reference="organizations"
-                            key="organizationId"
-                        >
-                            <SelectInput optionText="name" />
-                        </ReferenceInput>,
-                        <ReferenceInput
-                            source="contactId"
-                            reference="contacts"
-                            key="contactId"
-                        >
-                            <SelectInput optionText={(choice: any) => 
-                                `${choice.firstName} ${choice.lastName}`
-                            } />
-                        </ReferenceInput>,
-                        <SelectInput
-                            source="stage"
-                            choices={[
-                                { id: 'lead_discovery', name: 'Lead Discovery' },
-                                { id: 'contacted', name: 'Contacted' },
-                                { id: 'sampled_visited', name: 'Sampled/Visited' },
-                                { id: 'follow_up', name: 'Follow-up' },
-                                { id: 'close', name: 'Close' },
-                            ]}
-                            key="stage"
-                        />,
-                        <SelectInput
-                            source="status"
-                            choices={[
-                                { id: 'active', name: 'Active' },
-                                { id: 'won', name: 'Won' },
-                                { id: 'lost', name: 'Lost' },
-                                { id: 'on-hold', name: 'On Hold' },
-                            ]}
-                            key="status"
-                        />,
-                        <OnlyMineInput key="onlyMine" />,
-                    ]}
-                />
-                {isPending ? null : (data?.length ?? 0) > 0 ? (
+                <ListToolbar actions={<OpportunityListActions />} />
+                <Card>
                     <OpportunityListContent />
-                ) : (
-                    <OpportunityEmpty />
-                )}
-            </Card>
+                </Card>
+            </Stack>
         </Stack>
     );
 };
+
+const OpportunityListActions = () => (
+    <TopToolbar>
+        <CreateButton
+            variant="contained"
+            label="New Opportunity"
+            sx={{ marginLeft: 'auto' }}
+        />
+        <ExportButton />
+    </TopToolbar>
+);

@@ -34,6 +34,8 @@ const Header = () => {
         currentPath = '/companies';
     } else if (!!matchPath('/interactions/*', location.pathname)) {
         currentPath = '/interactions';
+    } else if (!!matchPath('/opportunities/*', location.pathname)) {
+        currentPath = '/opportunities';
     } else if (!!matchPath('/products/*', location.pathname)) {
         currentPath = '/products';
     } else {
@@ -96,6 +98,12 @@ const Header = () => {
                                     component={Link}
                                     to="/interactions"
                                     value="/interactions"
+                                />
+                                <Tab
+                                    label={'Opportunities'}
+                                    component={Link}
+                                    to="/opportunities"
+                                    value="/opportunities"
                                 />
                                 <Tab
                                     label={'Products'}
