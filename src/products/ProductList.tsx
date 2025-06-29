@@ -1,19 +1,21 @@
 import * as React from 'react';
 import {
-    CreateButton,
-    Datagrid,
-    FilterButton,
     List,
+    Datagrid,
     TextField,
-    TopToolbar,
-    useListContext,
-    useRecordContext,
-    NumberField,
     BooleanField,
     ReferenceField,
-    SimpleList,
-    BulkActionsToolbar,
+    TopToolbar,
+    CreateButton,
     ExportButton,
+    FilterForm,
+    TextInput,
+    SelectInput,
+    BooleanInput,
+    useListContext,
+    useGetList,
+    useRecordContext,
+    BulkActionsToolbar,
 } from 'react-admin';
 import {
     Box,
@@ -22,7 +24,6 @@ import {
     useMediaQuery,
     useTheme,
     Stack,
-    Avatar,
     Card,
     CardContent,
     CardActions,
@@ -32,11 +33,11 @@ import {
 import { Edit as EditIcon, Visibility as ViewIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-import { Product } from '../types';
-import { ProductListFilter } from './ProductListFilter';
+import { Product, Setting } from '../types';
 import { ProductBulkActions } from './ProductBulkActions';
 import { PriceField } from './PriceField';
 
+// Product List Actions in Top Toolbar
 const ProductListActions = () => (
     <TopToolbar>
         <ExportButton />
@@ -52,8 +53,9 @@ const ProductListActions = () => (
     </TopToolbar>
 );
 
-const CategoryChip = (props: { label?: string }) => {
-    const record = useRecordContext<Product>(props);
+// Category Chip Component
+const CategoryChip = () => {
+    const record = useRecordContext<Product>();
     if (!record?.category) return null;
 
     const categoryColors: Record<string, string> = {
@@ -79,8 +81,9 @@ const CategoryChip = (props: { label?: string }) => {
     );
 };
 
-const PrincipalChip = (props: { label?: string }) => {
-    const record = useRecordContext<Product>(props);
+// Principal Chip Component
+const PrincipalChip = () => {
+    const record = useRecordContext<Product>();
     if (!record?.principalId) return null;
 
     return (
@@ -222,90 +225,20 @@ const EnhancedProductCard = () => {
     );
 };
 
-export const ProductList = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+// Mobile Grid Layout for Products
+const ProductMobileGrid = () => {
+    const { data, isLoading } = useListContext<Product>();
 
-    // Debug logging for ProductList component
-    React.useEffect(() => {
-        console.log('🛍️ ProductList component mounted', {
-            isMobile,
-            screenWidth: window.innerWidth
-        });
-    }, [isMobile]);
+    if (isLoading) return <Typography>Loading products...</Typography>;
 
-    return (
-        <Stack direction="row" sx={{ width: '100%' }}>
-            {!isMobile && <ProductListFilter />}
-            <Box sx={{ flexGrow: 1 }}>
-                <List
-                    actions={<ProductListActions />}
-                    sort={{ field: 'name', order: 'ASC' }}
-                    perPage={25}
-                    title="Food Service Products"
-                    sx={{ '& .RaList-content': { px: { xs: 1, sm: 2 } } }}
-                >
-                    <BulkActionsToolbar>
-                        <ProductBulkActions />
-                    </BulkActionsToolbar>
-                    <ProductDatagrid />
-                </List>
-            </Box>
-        </Stack>
-    );
-};
-
-const ProductDatagrid = () => {
-    const listContext = useListContext();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-    // Debug logging for data loading
-    React.useEffect(() => {
-        console.log('📊 ProductDatagrid state:', {
-            isLoading: listContext.isLoading,
-            dataLength: listContext.data?.length || 0,
-            total: listContext.total,
-            error: listContext.error,
-            isMobile
-        });
-    }, [listContext.isLoading, listContext.data, listContext.total, listContext.error, isMobile]);
-
-    // Enhanced error handling
-    if (listContext.error) {
-        console.error('❌ ProductList error:', listContext.error);
-        return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="h6" color="error" gutterBottom>
-                    Error Loading Products
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {listContext.error.message || 'An unexpected error occurred'}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                    Check the browser console for more details
-                </Typography>
-            </Box>
-        );
-    }
-
-    if (listContext.isLoading) {
-        console.log('⏳ ProductList loading...');
-        return null;
-    }
-
-    // Handle empty data state
-    if (!listContext.data || listContext.data.length === 0) {
-        console.log('📭 No products found');
+    if (!data || data.length === 0) {
         return (
             <Box sx={{ p: 3, textAlign: 'center' }}>
                 <Typography variant="h6" color="text.secondary" gutterBottom>
                     No Products Found
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {listContext.total === 0 
-                        ? 'No products have been added yet.' 
-                        : 'No products match your current filters.'}
+                    No products match your current filters.
                 </Typography>
                 <CreateButton 
                     variant="contained" 
@@ -316,31 +249,159 @@ const ProductDatagrid = () => {
         );
     }
 
-    console.log(`✅ ProductList loaded successfully with ${listContext.data.length} products`);
-
-    // For mobile/card view
-    if (isMobile) {
-        return (
-            <Grid container spacing={2} sx={{ mt: 1, mb: 2, px: 1 }}>
-                {listContext.data?.map((record: Product) => (
-                    <Grid item xs={12} sm={6} key={record.id}>
-                        <EnhancedProductCard />
-                    </Grid>
-                ))}
-            </Grid>
-        );
-    }
-
-    // For desktop/table view
     return (
-        <Datagrid rowClick="show">
-            <TextField source="name" label="Product Name" />
-            <TextField source="sku" label="SKU" />
-            <CategoryChip label="Category" />
-            <PrincipalChip label="Principal" />
-            <PriceField source="price" label="Price" />
-            <TextField source="packageSize" label="Package Size" />
-            <BooleanField source="active" label="Active" />
-        </Datagrid>
+        <Grid container spacing={2} sx={{ mt: 1, mb: 2, px: 1 }}>
+            {data.map((record: Product) => (
+                <Grid item xs={12} sm={6} key={record.id}>
+                    <EnhancedProductCard />
+                </Grid>
+            ))}
+        </Grid>
+    );
+};
+
+// Desktop Table Layout for Products
+const ProductDesktopTable = () => (
+    <Datagrid rowClick="show">
+        <TextField source="name" label="Product Name" />
+        <TextField source="sku" label="SKU" />
+        <CategoryChip label="Category" />
+        <PrincipalChip label="Principal" />
+        <PriceField source="price" label="Price" />
+        <TextField source="packageSize" label="Package Size" />
+        <BooleanField source="active" label="Active" />
+    </Datagrid>
+);
+
+// Responsive Product List Content
+const ProductListContent = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    
+    return isMobile ? <ProductMobileGrid /> : <ProductDesktopTable />;
+};
+
+// Product filters for FilterForm
+const useProductFilters = () => {
+    const { data: principalSettings } = useGetList<Setting>('settings', {
+        filter: { category: 'principal', active: true },
+        sort: { field: 'sortOrder', order: 'ASC' },
+        pagination: { page: 1, perPage: 100 },
+    });
+
+    const categoryChoices = [
+        { id: 'Dairy', name: 'Dairy' },
+        { id: 'Meat', name: 'Meat' },
+        { id: 'Produce', name: 'Produce' },
+        { id: 'Frozen', name: 'Frozen' },
+        { id: 'Dry Goods', name: 'Dry Goods' },
+        { id: 'Beverages', name: 'Beverages' },
+        { id: 'Cleaning', name: 'Cleaning' },
+    ];
+
+    const principalChoices = principalSettings?.map(setting => ({
+        id: setting.id,
+        name: setting.label,
+    })) || [];
+
+    return [
+        <TextInput
+            key="search-name"
+            source="name"
+            label="Search by name"
+            variant="outlined"
+            size="small"
+            alwaysOn
+            sx={{ mb: 2 }}
+        />,
+        <TextInput
+            key="search-sku"
+            source="sku"
+            label="Search by SKU"
+            variant="outlined"
+            size="small"
+            sx={{ mb: 2 }}
+        />,
+        <SelectInput
+            key="category"
+            source="category"
+            label="Category"
+            choices={categoryChoices}
+            variant="outlined"
+            size="small"
+            sx={{ mb: 2 }}
+        />,
+        <SelectInput
+            key="principal"
+            source="principalId"
+            label="Principal/Brand"
+            choices={principalChoices}
+            variant="outlined"
+            size="small"
+            sx={{ mb: 2 }}
+        />,
+        <BooleanInput
+            key="active"
+            source="active"
+            label="Active products only"
+            sx={{ mb: 2 }}
+        />,
+    ];
+};
+
+// Main Product List Component
+export const ProductList = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const filters = useProductFilters();
+
+    // Debug logging for ProductList component
+    React.useEffect(() => {
+        console.log('🛍️ ProductList component mounted', {
+            isMobile,
+            screenWidth: window.innerWidth
+        });
+    }, [isMobile]);
+
+    return (
+        <List
+            actions={<ProductListActions />}
+            sort={{ field: 'name', order: 'ASC' }}
+            perPage={25}
+            title="Food Service Products"
+            aside={
+                !isMobile ? (
+                    <Box sx={{ width: 250, p: 2 }}>
+                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                            Filter Products
+                        </Typography>
+                        <FilterForm filters={filters} />
+                    </Box>
+                ) : undefined
+            }
+            sx={{ 
+                '& .RaList-content': { px: { xs: 1, sm: 2 } },
+                '& .RaList-main': { width: '100%' }
+            }}
+            empty={
+                <Box sx={{ p: 3, textAlign: 'center' }}>
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                        No Products Found
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Add your first product to get started.
+                    </Typography>
+                    <CreateButton 
+                        variant="contained" 
+                        label="Add First Product"
+                    />
+                </Box>
+            }
+        >
+            <BulkActionsToolbar>
+                <ProductBulkActions />
+            </BulkActionsToolbar>
+            <ProductListContent />
+        </List>
     );
 };

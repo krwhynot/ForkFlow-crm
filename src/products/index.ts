@@ -18,7 +18,15 @@ export { ProductEdit } from './ProductEdit';
 export { ProductShow } from './ProductShow';
 
 // Enhanced component exports
-export { ProductListFilter } from './ProductListFilter';
+export { 
+    ProductListFilter,
+    ProductNameFilter,
+    ProductSKUFilter,
+    ProductCategoryFilter,
+    ProductPrincipalFilter,
+    ProductActiveFilter,
+    getProductFilters,
+} from './ProductListFilter';
 export { ProductBulkActions } from './ProductBulkActions';
 export { ProductComparison, useProductComparison } from './ProductComparison';
 export {

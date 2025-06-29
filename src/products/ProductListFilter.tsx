@@ -1,198 +1,125 @@
 import * as React from 'react';
 import {
-    FilterList,
-    FilterLiveSearch,
-    FilterListItem,
-    useGetList,
     TextInput,
+    SelectInput,
+    BooleanInput,
+    useGetList,
 } from 'react-admin';
-import { Box, Chip, Typography, Divider } from '@mui/material';
-import {
-    Category as CategoryIcon,
-    Business as BusinessIcon,
-    Search as SearchIcon,
-    CheckCircle as ActiveIcon,
-    Cancel as InactiveIcon,
-} from '@mui/icons-material';
 
 import { Setting } from '../types';
 
-export const ProductListFilter = () => {
-    // Fetch Settings for principal filtering
+/**
+ * ProductListFilter - Filter components for products
+ * 
+ * Note: This file is kept for backward compatibility and potential future use.
+ * The main ProductList component now uses inline filters with FilterForm.
+ * 
+ * These filter components can be used in other contexts if needed.
+ */
+
+// Get filter choices for principals
+const usePrincipalChoices = () => {
     const { data: principalSettings } = useGetList<Setting>('settings', {
         filter: { category: 'principal', active: true },
         sort: { field: 'sortOrder', order: 'ASC' },
         pagination: { page: 1, perPage: 100 },
     });
 
-    const categoryChoices = [
-        { id: 'Dairy', name: 'Dairy', color: '#1976d2' },
-        { id: 'Meat', name: 'Meat', color: '#d32f2f' },
-        { id: 'Produce', name: 'Produce', color: '#388e3c' },
-        { id: 'Frozen', name: 'Frozen', color: '#0288d1' },
-        { id: 'Dry Goods', name: 'Dry Goods', color: '#f57c00' },
-        { id: 'Beverages', name: 'Beverages', color: '#7b1fa2' },
-        { id: 'Cleaning', name: 'Cleaning', color: '#5d4037' },
-    ];
+    return React.useMemo(() => 
+        principalSettings?.map(setting => ({
+            id: setting.id,
+            name: setting.label,
+        })) || [],
+        [principalSettings]
+    );
+};
 
+// Category choices for products
+const categoryChoices = [
+    { id: 'Dairy', name: 'Dairy' },
+    { id: 'Meat', name: 'Meat' },
+    { id: 'Produce', name: 'Produce' },
+    { id: 'Frozen', name: 'Frozen' },
+    { id: 'Dry Goods', name: 'Dry Goods' },
+    { id: 'Beverages', name: 'Beverages' },
+    { id: 'Cleaning', name: 'Cleaning' },
+];
+
+// Individual filter components for reuse
+export const ProductNameFilter = (props: any) => (
+    <TextInput
+        source="name"
+        label="Search by name"
+        variant="outlined"
+        size="small"
+        alwaysOn
+        {...props}
+    />
+);
+
+export const ProductSKUFilter = (props: any) => (
+    <TextInput
+        source="sku"
+        label="Search by SKU"
+        variant="outlined"
+        size="small"
+        {...props}
+    />
+);
+
+export const ProductCategoryFilter = (props: any) => (
+    <SelectInput
+        source="category"
+        label="Category"
+        choices={categoryChoices}
+        variant="outlined"
+        size="small"
+        {...props}
+    />
+);
+
+export const ProductPrincipalFilter = (props: any) => {
+    const principalChoices = usePrincipalChoices();
+    
     return (
-        <Box width="16em" minWidth="16em" order={-1} mr={2} mt={5}>
-            {/* Enhanced Search Section */}
-            <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                    Search Products
-                </Typography>
-                <FilterLiveSearch
-                    source="name"
-                    hiddenLabel
-                    sx={{
-                        display: 'block',
-                        mb: 2,
-                        '& .MuiFilledInput-root': {
-                            width: '100%',
-                            minHeight: '44px',
-                        },
-                    }}
-                    placeholder="Search by product name..."
-                />
-                <FilterLiveSearch
-                    source="sku"
-                    hiddenLabel
-                    sx={{
-                        display: 'block',
-                        '& .MuiFilledInput-root': {
-                            width: '100%',
-                            minHeight: '44px',
-                        },
-                    }}
-                    placeholder="Search by SKU..."
-                />
-            </Box>
+        <SelectInput
+            source="principalId"
+            label="Principal/Brand"
+            choices={principalChoices}
+            variant="outlined"
+            size="small"
+            {...props}
+        />
+    );
+};
 
-            <Divider sx={{ my: 2 }} />
+export const ProductActiveFilter = (props: any) => (
+    <BooleanInput
+        source="active"
+        label="Active products only"
+        {...props}
+    />
+);
 
-            {/* Principal/Brand Filter */}
-            <FilterList label="Principal/Brand" icon={<BusinessIcon />}>
-                {principalSettings?.map(principal => (
-                    <FilterListItem
-                        key={principal.id}
-                        label={
-                            <Chip
-                                label={principal.label}
-                                size="small"
-                                sx={{
-                                    backgroundColor:
-                                        principal.color || '#e0e0e0',
-                                    color: 'white',
-                                    border: 0,
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
-                                    minHeight: '32px',
-                                    '&:hover': {
-                                        backgroundColor: principal.color
-                                            ? `${principal.color}dd`
-                                            : '#d0d0d0',
-                                    },
-                                }}
-                            />
-                        }
-                        value={{ principalId: principal.id }}
-                    />
-                ))}
-            </FilterList>
+// Array of all product filters (for use with FilterForm)
+export const getProductFilters = () => [
+    <ProductNameFilter key="search-name" />,
+    <ProductSKUFilter key="search-sku" />,
+    <ProductCategoryFilter key="category" />,
+    <ProductPrincipalFilter key="principal" />,
+    <ProductActiveFilter key="active" />,
+];
 
-            {/* Category Filter */}
-            <FilterList label="Category" icon={<CategoryIcon />}>
-                {categoryChoices.map(category => (
-                    <FilterListItem
-                        key={category.id}
-                        label={
-                            <Chip
-                                label={category.name}
-                                size="small"
-                                sx={{
-                                    backgroundColor: category.color,
-                                    color: 'white',
-                                    border: 0,
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
-                                    minHeight: '32px',
-                                    '&:hover': {
-                                        backgroundColor: `${category.color}dd`,
-                                    },
-                                }}
-                            />
-                        }
-                        value={{ category: category.id }}
-                    />
-                ))}
-            </FilterList>
-
-            {/* Status Filter */}
-            <FilterList label="Status" icon={<ActiveIcon />}>
-                <FilterListItem
-                    label={
-                        <Chip
-                            icon={<ActiveIcon fontSize="small" />}
-                            label="Active Products"
-                            size="small"
-                            sx={{
-                                backgroundColor: '#4caf50',
-                                color: 'white',
-                                border: 0,
-                                cursor: 'pointer',
-                                fontWeight: 500,
-                                minHeight: '32px',
-                                '& .MuiChip-icon': {
-                                    color: 'white',
-                                },
-                                '&:hover': {
-                                    backgroundColor: '#45a049',
-                                },
-                            }}
-                        />
-                    }
-                    value={{ active: true }}
-                />
-                <FilterListItem
-                    label={
-                        <Chip
-                            icon={<InactiveIcon fontSize="small" />}
-                            label="Inactive Products"
-                            size="small"
-                            sx={{
-                                backgroundColor: '#9e9e9e',
-                                color: 'white',
-                                border: 0,
-                                cursor: 'pointer',
-                                fontWeight: 500,
-                                minHeight: '32px',
-                                '& .MuiChip-icon': {
-                                    color: 'white',
-                                },
-                                '&:hover': {
-                                    backgroundColor: '#8e8e8e',
-                                },
-                            }}
-                        />
-                    }
-                    value={{ active: false }}
-                />
-            </FilterList>
-
-            {/* Price Range Filter (Future Enhancement) */}
-            <FilterList label="Price Range" icon={<SearchIcon />}>
-                <FilterListItem label="Under $10" value={{ price_lt: 10 }} />
-                <FilterListItem
-                    label="$10 - $50"
-                    value={{ price_gte: 10, price_lt: 50 }}
-                />
-                <FilterListItem
-                    label="$50 - $100"
-                    value={{ price_gte: 50, price_lt: 100 }}
-                />
-                <FilterListItem label="Over $100" value={{ price_gte: 100 }} />
-            </FilterList>
-        </Box>
+// Legacy component for backward compatibility
+export const ProductListFilter = () => {
+    console.warn(
+        'ProductListFilter is deprecated. Use getProductFilters() with FilterForm instead.'
+    );
+    
+    return (
+        <div style={{ padding: '16px', minWidth: '200px' }}>
+            <h3>Product Filters (Legacy)</h3>
+            <p>This component is no longer used in the main ProductList.</p>
+        </div>
     );
 };
