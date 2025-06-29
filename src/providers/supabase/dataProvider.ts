@@ -595,7 +595,7 @@ const dataProviderWithCustomMethods = {
         });
         
         return {
-            data: result.data.map((org: Organization) => ({
+            data: result.data.map((org: OrganizationSearchResult) => ({
                 id: org.id,
                 name: org.name,
                 address: org.address,
