@@ -68,7 +68,7 @@ describe('Organization API', () => {
 
         expect(searchResult.data.length).toBeGreaterThan(0);
         expect(
-            searchResult.data.some(org => org.name === 'Test Restaurant')
+            searchResult.data.some((org: any) => org.name === 'Test Restaurant')
         ).toBe(true);
     });
 

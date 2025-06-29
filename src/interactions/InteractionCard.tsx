@@ -21,7 +21,7 @@ import {
     Email as EmailIcon,
     Phone as PhoneIcon,
     PersonPin as PersonPinIcon,
-    Presentation as DemoIcon,
+    Slideshow as DemoIcon,
     AttachMoney as QuoteIcon,
     Schedule as FollowUpIcon,
 } from '@mui/icons-material';
@@ -99,7 +99,7 @@ export const InteractionCard = ({
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    handleView(e);
+                    handleView(e as any);
                 }
             }}
             sx={{

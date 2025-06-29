@@ -26,8 +26,9 @@ import { useGetList } from 'react-admin';
 import { format, startOfWeek, startOfMonth, subDays, subWeeks, subMonths } from 'date-fns';
 
 import { Interaction, Setting } from '../types';
+import { safeTrend, validateChartData, safeAmount } from '../utils/chartSafety';
 
-const interactionTypeIcons: Record<string, React.ReactNode> = {
+const interactionTypeIcons: Record<string, React.ReactElement> = {
     call: <PhoneIcon />,
     email: <EmailIcon />,
     'in-person': <PersonIcon />,
@@ -71,7 +72,10 @@ export const InteractionMetricsCard = () => {
     });
 
     const metrics = useMemo(() => {
-        if (!interactions || !interactionTypes) return null;
+        const validInteractions = validateChartData(interactions);
+        const validInteractionTypes = validateChartData(interactionTypes);
+        
+        if (validInteractions.length === 0 || validInteractionTypes.length === 0) return null;
 
         const now = new Date();
         const weekStart = startOfWeek(now);
@@ -81,7 +85,7 @@ export const InteractionMetricsCard = () => {
 
         // Helper function to get interaction type key by ID
         const getTypeKey = (typeId: number): string => {
-            const type = interactionTypes.find(t => t.id === typeId);
+            const type = validInteractionTypes.find(t => t.id === typeId);
             return type?.key || 'other';
         };
 
@@ -107,49 +111,44 @@ export const InteractionMetricsCard = () => {
         };
 
         // Today's interactions
-        const todayInteractions = interactions.filter(i => 
+        const todayInteractions = validInteractions.filter(i => 
             i.completedDate && format(new Date(i.completedDate), 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')
         );
 
         // This week's interactions
-        const thisWeekInteractions = interactions.filter(i => 
+        const thisWeekInteractions = validInteractions.filter(i => 
             i.completedDate && new Date(i.completedDate) >= weekStart
         );
 
         // Last week's interactions
-        const lastWeekInteractions = interactions.filter(i => 
+        const lastWeekInteractions = validInteractions.filter(i => 
             i.completedDate && 
             new Date(i.completedDate) >= lastWeekStart && 
             new Date(i.completedDate) < weekStart
         );
 
         // This month's interactions
-        const thisMonthInteractions = interactions.filter(i => 
+        const thisMonthInteractions = validInteractions.filter(i => 
             i.completedDate && new Date(i.completedDate) >= monthStart
         );
 
         // Last month's interactions
-        const lastMonthInteractions = interactions.filter(i => 
+        const lastMonthInteractions = validInteractions.filter(i => 
             i.completedDate && 
             new Date(i.completedDate) >= lastMonthStart && 
             new Date(i.completedDate) < monthStart
         );
 
-        // Calculate trends
-        const weeklyTrend = lastWeekInteractions.length > 0 
-            ? ((thisWeekInteractions.length - lastWeekInteractions.length) / lastWeekInteractions.length) * 100
-            : thisWeekInteractions.length > 0 ? 100 : 0;
-
-        const monthlyTrend = lastMonthInteractions.length > 0
-            ? ((thisMonthInteractions.length - lastMonthInteractions.length) / lastMonthInteractions.length) * 100
-            : thisMonthInteractions.length > 0 ? 100 : 0;
+        // Calculate trends safely
+        const weeklyTrend = safeTrend(thisWeekInteractions.length, lastWeekInteractions.length);
+        const monthlyTrend = safeTrend(thisMonthInteractions.length, lastMonthInteractions.length);
 
         // Weekly breakdown for chart
         const weeklyData: InteractionMetric[] = [];
         for (let i = 6; i >= 0; i--) {
             const weekDate = subWeeks(now, i);
             const weekLabel = format(weekDate, 'MMM dd');
-            const weeklyInteractions = interactions.filter(interaction => {
+            const weeklyInteractions = validInteractions.filter(interaction => {
                 if (!interaction.completedDate) return false;
                 const interactionDate = new Date(interaction.completedDate);
                 const weekStartDate = startOfWeek(weekDate);
@@ -161,12 +160,12 @@ export const InteractionMetricsCard = () => {
             weeklyData.push({
                 period: weekLabel,
                 total: weeklyInteractions.length,
-                calls: typeCounts.call,
-                emails: typeCounts.email,
-                inPerson: typeCounts['in-person'],
-                demos: typeCounts.demo,
-                quotes: typeCounts.quote,
-                followUps: typeCounts['follow-up'],
+                calls: safeAmount(typeCounts.call),
+                emails: safeAmount(typeCounts.email),
+                inPerson: safeAmount(typeCounts['in-person']),
+                demos: safeAmount(typeCounts.demo),
+                quotes: safeAmount(typeCounts.quote),
+                followUps: safeAmount(typeCounts['follow-up']),
             });
         }
 
@@ -207,7 +206,7 @@ export const InteractionMetricsCard = () => {
                     <Grid item xs={12} sm={4}>
                         <Box textAlign="center">
                             <Typography variant="h3" color="primary.main">
-                                {metrics.today}
+                                {safeAmount(metrics.today)}
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
                                 Today
@@ -220,12 +219,12 @@ export const InteractionMetricsCard = () => {
                         <Box textAlign="center">
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
                                 <Typography variant="h3" color="secondary.main">
-                                    {metrics.thisWeek}
+                                    {safeAmount(metrics.thisWeek)}
                                 </Typography>
                                 <Chip
                                     size="small"
                                     icon={metrics.weeklyTrend >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
-                                    label={`${metrics.weeklyTrend.toFixed(0)}%`}
+                                    label={`${safeAmount(metrics.weeklyTrend).toFixed(0)}%`}
                                     color={metrics.weeklyTrend >= 0 ? 'success' : 'error'}
                                     variant="outlined"
                                 />
@@ -241,12 +240,12 @@ export const InteractionMetricsCard = () => {
                         <Box textAlign="center">
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
                                 <Typography variant="h3" color="info.main">
-                                    {metrics.thisMonth}
+                                    {safeAmount(metrics.thisMonth)}
                                 </Typography>
                                 <Chip
                                     size="small"
                                     icon={metrics.monthlyTrend >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
-                                    label={`${metrics.monthlyTrend.toFixed(0)}%`}
+                                    label={`${safeAmount(metrics.monthlyTrend).toFixed(0)}%`}
                                     color={metrics.monthlyTrend >= 0 ? 'success' : 'error'}
                                     variant="outlined"
                                 />
@@ -277,56 +276,70 @@ export const InteractionMetricsCard = () => {
 
                 {/* Weekly Trend Chart */}
                 <Box sx={{ height: isMobile ? 200 : 250, mt: 2 }}>
-                    <ResponsiveBar
-                        data={metrics.weeklyData}
-                        keys={['calls', 'emails', 'inPerson', 'demos', 'quotes', 'followUps']}
-                        indexBy="period"
-                        margin={{ 
-                            top: 20, 
-                            right: isMobile ? 10 : 30, 
-                            bottom: isMobile ? 40 : 50, 
-                            left: isMobile ? 10 : 30 
-                        }}
-                        padding={0.3}
-                        colors={['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#F44336', '#00BCD4']}
-                        enableGridY={false}
-                        enableGridX={false}
-                        enableLabel={false}
-                        axisBottom={{
-                            tickSize: 0,
-                            tickPadding: 5,
-                            tickRotation: isMobile ? -45 : 0,
-                            format: (value: string) => isMobile ? value.split(' ')[1] : value,
-                        }}
-                        axisLeft={null}
-                        axisRight={null}
-                        animate
-                        motionConfig="gentle"
-                        tooltip={({ id, value, color, indexValue }) => (
-                            <div
-                                style={{
-                                    background: 'white',
-                                    padding: '9px 12px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '4px',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                }}
-                            >
-                                <strong>{indexValue}</strong><br />
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <div
-                                        style={{
-                                            width: '12px',
-                                            height: '12px',
-                                            backgroundColor: color,
-                                            borderRadius: '2px',
-                                        }}
-                                    />
-                                    {id}: {value}
+                    {metrics.weeklyData && metrics.weeklyData.length > 0 ? (
+                        <ResponsiveBar
+                            data={metrics.weeklyData}
+                            keys={['calls', 'emails', 'inPerson', 'demos', 'quotes', 'followUps']}
+                            indexBy="period"
+                            margin={{ 
+                                top: 20, 
+                                right: isMobile ? 10 : 30, 
+                                bottom: isMobile ? 40 : 50, 
+                                left: isMobile ? 10 : 30 
+                            }}
+                            padding={0.3}
+                            colors={['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#F44336', '#00BCD4']}
+                            enableGridY={false}
+                            enableGridX={false}
+                            enableLabel={false}
+                            axisBottom={{
+                                tickSize: 0,
+                                tickPadding: 5,
+                                tickRotation: isMobile ? -45 : 0,
+                                format: (value: string) => isMobile ? value.split(' ')[1] : value,
+                            }}
+                            axisLeft={null}
+                            axisRight={null}
+                            animate
+                            motionConfig="gentle"
+                            tooltip={({ id, value, color, indexValue }) => (
+                                <div
+                                    style={{
+                                        background: 'white',
+                                        padding: '9px 12px',
+                                        border: '1px solid #ccc',
+                                        borderRadius: '4px',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                    }}
+                                >
+                                    <strong>{indexValue}</strong><br />
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <div
+                                            style={{
+                                                width: '12px',
+                                                height: '12px',
+                                                backgroundColor: color,
+                                                borderRadius: '2px',
+                                            }}
+                                        />
+                                        {id}: {safeAmount(value)}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    />
+                            )}
+                        />
+                    ) : (
+                        <Box 
+                            display="flex" 
+                            alignItems="center" 
+                            justifyContent="center" 
+                            height="100%"
+                            color="text.secondary"
+                        >
+                            <Typography variant="body2">
+                                No interaction data available
+                            </Typography>
+                        </Box>
+                    )}
                 </Box>
             </CardContent>
         </Card>

@@ -52,7 +52,7 @@ const OpportunityEditForm = () => {
     const record = useRecordContext<Deal>();
 
     return (
-        <Form toolbar={<OpportunityEditToolbar />}>
+        <Form>
             <Box maxWidth="lg" sx={{ mx: 'auto', p: 2 }}>
                 <Card>
                     <CardContent>
@@ -115,7 +115,7 @@ const OpportunityEditForm = () => {
                                 <ReferenceInput 
                                     source="organizationId" 
                                     reference="organizations"
-                                    validate={required()}
+                                    validate={required() as any}
                                 >
                                     <AutocompleteInput
                                         optionText="name"

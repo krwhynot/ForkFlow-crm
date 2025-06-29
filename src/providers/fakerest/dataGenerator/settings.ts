@@ -217,5 +217,52 @@ export const generateSettings = (db: Db): Setting[] => {
         });
     });
 
+    // Opportunity Stage settings (Food service sales pipeline)
+    const stages = [
+        { label: 'Lead Discovery', key: 'lead_discovery', color: '#9E9E9E', sortOrder: 1 },
+        { label: 'Contacted', key: 'contacted', color: '#2196F3', sortOrder: 2 },
+        { label: 'Sampled/Visited', key: 'sampled_visited', color: '#FF9800', sortOrder: 3 },
+        { label: 'Follow-up', key: 'follow_up', color: '#9C27B0', sortOrder: 4 },
+        { label: 'Close', key: 'close', color: '#4CAF50', sortOrder: 5 },
+    ];
+
+    stages.forEach((stage, index) => {
+        settings.push({
+            id: index + 37,
+            category: 'stage',
+            key: stage.key,
+            label: stage.label,
+            color: stage.color,
+            sortOrder: stage.sortOrder,
+            active: true,
+            createdAt: safeDate(new Date()),
+            updatedAt: safeDate(new Date()),
+        });
+    });
+
+    // Interaction Type settings (Food service broker interactions)
+    const interactionTypes = [
+        { label: 'Email', key: 'email', color: '#2196F3', sortOrder: 1 },
+        { label: 'Call', key: 'call', color: '#4CAF50', sortOrder: 2 },
+        { label: 'In Person', key: 'in_person', color: '#FF9800', sortOrder: 3 },
+        { label: 'Demo/Sampled', key: 'demo', color: '#9C27B0', sortOrder: 4 },
+        { label: 'Quoted Price', key: 'quote', color: '#F44336', sortOrder: 5 },
+        { label: 'Follow-up', key: 'follow_up', color: '#607D8B', sortOrder: 6 },
+    ];
+
+    interactionTypes.forEach((type, index) => {
+        settings.push({
+            id: index + 42,
+            category: 'interaction_type',
+            key: type.key,
+            label: type.label,
+            color: type.color,
+            sortOrder: type.sortOrder,
+            active: true,
+            createdAt: safeDate(new Date()),
+            updatedAt: safeDate(new Date()),
+        });
+    });
+
     return settings;
 };

@@ -34,7 +34,7 @@ import {
     Email as EmailIcon,
     Phone as PhoneIcon,
     PersonPin as PersonIcon,
-    Presentation as DemoIcon,
+    Slideshow as DemoIcon,
     AttachMoney as QuoteIcon,
     Schedule as FollowUpIcon,
 } from '@mui/icons-material';
@@ -155,40 +155,45 @@ export const InteractionList = () => {
             actions={<ListActions />}
             aside={
                 <Box sx={{ width: 250, p: 2 }}>
-                    <FilterForm>
-                        <Stack spacing={2}>
+                    <FilterForm 
+                        filters={[
                             <TextInput 
+                                key="search"
                                 source="q" 
                                 label="Search" 
                                 alwaysOn 
                                 variant="outlined"
                                 size="small"
-                            />
+                            />,
                             <SelectInput
+                                key="type"
                                 source="typeId"
                                 label="Interaction Type"
                                 choices={interactionTypeChoices}
                                 variant="outlined"
                                 size="small"
-                            />
+                            />,
                             <BooleanInput
+                                key="has-files"
                                 source="isCompleted"
                                 label="Completed Only"
-                            />
+                            />,
                             <DateInput
+                                key="date-after"
                                 source="scheduledDate_gte"
                                 label="Scheduled After"
                                 variant="outlined"
                                 size="small"
-                            />
+                            />,
                             <DateInput
+                                key="date-before"
                                 source="scheduledDate_lte"
                                 label="Scheduled Before"
                                 variant="outlined"
                                 size="small"
                             />
-                        </Stack>
-                    </FilterForm>
+                        ]}
+                    />
                 </Box>
             }
             sx={{

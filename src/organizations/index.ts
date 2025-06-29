@@ -20,3 +20,4 @@ export { OrganizationInputs } from './OrganizationInputs';
 export { OrganizationCard } from './OrganizationCard';
 export { OrganizationEmpty } from './OrganizationEmpty';
 export { OrganizationListFilter } from './OrganizationListFilter';
+export { OrganizationMapView } from './OrganizationMapView';

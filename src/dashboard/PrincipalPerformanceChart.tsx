@@ -25,6 +25,7 @@ import { format, startOfMonth, subMonths } from 'date-fns';
 import { useGetList } from 'react-admin';
 
 import { Product, Deal, Interaction, Setting } from '../types';
+import { safeAmount, safeDivide, safeTrend, validateChartData, safeCurrencyFormat } from '../utils/chartSafety';
 
 interface PrincipalMetrics {
     principalId: number;
@@ -65,37 +66,42 @@ export const PrincipalPerformanceChart = () => {
     });
 
     const principalMetrics = useMemo(() => {
-        if (!products || !opportunities || !interactions || !principals) return [];
+        const validProducts = validateChartData(products);
+        const validOpportunities = validateChartData(opportunities);
+        const validInteractions = validateChartData(interactions);
+        const validPrincipals = validateChartData(principals);
+        
+        if (validPrincipals.length === 0) return [];
 
         const now = new Date();
         const currentMonth = startOfMonth(now);
         const lastMonth = startOfMonth(subMonths(now, 1));
 
-        return principals.map((principal): PrincipalMetrics => {
+        return validPrincipals.map((principal): PrincipalMetrics => {
             // Get products for this principal
-            const principalProducts = products.filter(p => p.principalId === principal.id);
+            const principalProducts = validProducts.filter(p => p.principalId === principal.id);
             
             // Get opportunities related to these products
-            const principalOpportunities = opportunities.filter(opp => 
+            const principalOpportunities = validOpportunities.filter(opp => 
                 principalProducts.some(product => product.id === opp.productId)
             );
 
             // Get interactions related to these opportunities
-            const principalInteractions = interactions.filter(interaction =>
+            const principalInteractions = validInteractions.filter(interaction =>
                 principalOpportunities.some(opp => opp.id === interaction.opportunityId)
             );
 
-            // Calculate metrics
+            // Calculate metrics safely
             const wonOpportunities = principalOpportunities.filter(opp => opp.stage === 'won');
-            const totalRevenue = wonOpportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0);
-            const conversionRate = principalOpportunities.length > 0 
-                ? (wonOpportunities.length / principalOpportunities.length) * 100 
-                : 0;
-            const avgDealSize = wonOpportunities.length > 0 
-                ? totalRevenue / wonOpportunities.length 
-                : 0;
+            const totalRevenue = wonOpportunities.reduce((sum, opp) => sum + safeAmount(opp.amount), 0);
+            
+            // Safe division for conversion rate
+            const conversionRate = safeDivide(wonOpportunities.length, principalOpportunities.length) * 100;
+            
+            // Safe division for average deal size
+            const avgDealSize = safeDivide(totalRevenue, wonOpportunities.length);
 
-            // Calculate monthly trend
+            // Calculate monthly trend safely
             const currentMonthOpps = principalOpportunities.filter(opp => 
                 opp.createdAt && new Date(opp.createdAt) >= currentMonth
             );
@@ -105,9 +111,7 @@ export const PrincipalPerformanceChart = () => {
                 new Date(opp.createdAt) < currentMonth
             );
             
-            const monthlyTrend = lastMonthOpps.length > 0 
-                ? ((currentMonthOpps.length - lastMonthOpps.length) / lastMonthOpps.length) * 100
-                : currentMonthOpps.length > 0 ? 100 : 0;
+            const monthlyTrend = safeTrend(currentMonthOpps.length, lastMonthOpps.length);
 
             return {
                 principalId: principal.id,
@@ -214,12 +218,7 @@ export const PrincipalPerformanceChart = () => {
     }
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            notation: amount >= 1000000 ? 'compact' : 'standard',
-            maximumFractionDigits: 0,
-        }).format(amount);
+        return safeCurrencyFormat(amount);
     };
 
     const tabLabels = ['Revenue', 'Opportunities', 'Conversion %'];
@@ -279,67 +278,81 @@ export const PrincipalPerformanceChart = () => {
 
                 {/* Chart */}
                 <Box sx={{ height: isMobile ? 250 : 300 }}>
-                    <ResponsiveBar
-                        data={chartData}
-                        keys={[chartKeys[activeTab]]}
-                        indexBy="principal"
-                        margin={{ 
-                            top: 20, 
-                            right: isMobile ? 10 : 30, 
-                            bottom: isMobile ? 60 : 50, 
-                            left: isMobile ? 50 : 80 
-                        }}
-                        padding={0.3}
-                        colors={chartData.map(d => d.color)}
-                        enableGridY={true}
-                        enableGridX={false}
-                        enableLabel={!isMobile}
-                        labelTextColor="white"
-                        axisBottom={{
-                            tickSize: 0,
-                            tickPadding: 5,
-                            tickRotation: isMobile ? -45 : -15,
-                        }}
-                        axisLeft={{
-                            tickSize: 0,
-                            tickPadding: 5,
-                            format: activeTab === 0 
-                                ? (value: number) => formatCurrency(value).replace('$', '$')
-                                : activeTab === 2
-                                    ? (value: number) => `${value}%`
-                                    : undefined,
-                        }}
-                        animate
-                        motionConfig="gentle"
-                        tooltip={({ id, value, color, indexValue }) => (
-                            <div
-                                style={{
-                                    background: 'white',
-                                    padding: '9px 12px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '4px',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                }}
-                            >
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                                    <div
-                                        style={{
-                                            width: '12px',
-                                            height: '12px',
-                                            backgroundColor: color,
-                                            borderRadius: '2px',
-                                        }}
-                                    />
-                                    <strong>{indexValue}</strong>
+                    {chartData.length > 0 ? (
+                        <ResponsiveBar
+                            data={chartData}
+                            keys={[chartKeys[activeTab]]}
+                            indexBy="principal"
+                            margin={{ 
+                                top: 20, 
+                                right: isMobile ? 10 : 30, 
+                                bottom: isMobile ? 60 : 50, 
+                                left: isMobile ? 50 : 80 
+                            }}
+                            padding={0.3}
+                            colors={chartData.map(d => d.color)}
+                            enableGridY={true}
+                            enableGridX={false}
+                            enableLabel={!isMobile}
+                            labelTextColor="white"
+                            axisBottom={{
+                                tickSize: 0,
+                                tickPadding: 5,
+                                tickRotation: isMobile ? -45 : -15,
+                            }}
+                            axisLeft={{
+                                tickSize: 0,
+                                tickPadding: 5,
+                                format: activeTab === 0 
+                                    ? (value: number) => formatCurrency(value).replace('$', '$')
+                                    : activeTab === 2
+                                        ? (value: number) => `${safeAmount(value)}%`
+                                        : undefined,
+                            }}
+                            animate
+                            motionConfig="gentle"
+                            tooltip={({ id, value, color, indexValue }) => (
+                                <div
+                                    style={{
+                                        background: 'white',
+                                        padding: '9px 12px',
+                                        border: '1px solid #ccc',
+                                        borderRadius: '4px',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
+                                        <div
+                                            style={{
+                                                width: '12px',
+                                                height: '12px',
+                                                backgroundColor: color,
+                                                borderRadius: '2px',
+                                            }}
+                                        />
+                                        <strong>{indexValue}</strong>
+                                    </div>
+                                    <div>
+                                        {activeTab === 0 && `Revenue: ${formatCurrency(safeAmount(value))}`}
+                                        {activeTab === 1 && `Opportunities: ${safeAmount(value)}`}
+                                        {activeTab === 2 && `Conversion: ${safeAmount(value)}%`}
+                                    </div>
                                 </div>
-                                <div>
-                                    {activeTab === 0 && `Revenue: ${formatCurrency(Number(value))}`}
-                                    {activeTab === 1 && `Opportunities: ${value}`}
-                                    {activeTab === 2 && `Conversion: ${value}%`}
-                                </div>
-                            </div>
-                        )}
-                    />
+                            )}
+                        />
+                    ) : (
+                        <Box 
+                            display="flex" 
+                            alignItems="center" 
+                            justifyContent="center" 
+                            height="100%"
+                            color="text.secondary"
+                        >
+                            <Typography variant="body2">
+                                No principal performance data available
+                            </Typography>
+                        </Box>
+                    )}
                 </Box>
 
                 {/* Top Performers List */}

@@ -20,7 +20,7 @@ export const generateCustomerSummary = (db: Db): CustomerSummary[] => {
         const totalRevenue = faker.number.float({
             min: 1000,
             max: 500000,
-            precision: 0.01,
+            fractionDigits: 2,
         });
         const averageOrderValue = totalRevenue / totalOrders;
 

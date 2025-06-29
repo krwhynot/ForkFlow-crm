@@ -38,7 +38,7 @@ export const generateReminders = (db: Db): Reminder[] => {
     // Generate 1-3 reminders per organization
     organizations.forEach((org, orgIndex) => {
         const reminderCount = faker.number.int({ min: 1, max: 3 });
-        const orgContacts = contacts.filter(c => c.company_id === org.id);
+        const orgContacts = contacts.filter(c => c.organizationId === org.id);
 
         for (let i = 0; i < reminderCount; i++) {
             const reminderId = `reminder_${orgIndex}_${i + 1}`;
@@ -58,14 +58,14 @@ export const generateReminders = (db: Db): Reminder[] => {
                 description: faker.datatype.boolean()
                     ? faker.lorem.sentence()
                     : undefined,
-                dueDate: faker.date.future({ days: 90 }).toISOString(),
+                dueDate: faker.date.future({ refDate: new Date() }).toISOString(),
                 completed: isCompleted,
                 organizationId: org.id,
                 contactId: contact?.id,
                 priority: faker.helpers.arrayElement(['low', 'medium', 'high']),
-                assignedTo: salesRep?.id || 'unknown',
+                assignedTo: String(salesRep?.id || 'unknown'),
                 createdAt: faker.date.past({ years: 1 }).toISOString(),
-                updatedAt: faker.date.recent({ days: 30 }).toISOString(),
+                updatedAt: faker.date.recent({ refDate: new Date() }).toISOString(),
             });
         }
     });
@@ -85,10 +85,10 @@ export const generateReminders = (db: Db): Reminder[] => {
                 'Performance evaluation',
             ]),
             description: faker.lorem.sentence(),
-            dueDate: faker.date.future({ days: 30 }).toISOString(),
+            dueDate: faker.date.future({ refDate: new Date() }).toISOString(),
             completed: faker.datatype.boolean(0.2),
             priority: faker.helpers.arrayElement(['low', 'medium', 'high']),
-            assignedTo: salesRep?.id || 'unknown',
+            assignedTo: String(salesRep?.id || 'unknown'),
             createdAt: faker.date.past({ years: 1 }).toISOString(),
             updatedAt: faker.date.recent({ days: 30 }).toISOString(),
         });

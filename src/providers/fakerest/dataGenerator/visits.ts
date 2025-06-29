@@ -37,7 +37,7 @@ export const generateVisits = (db: Db): Visit[] => {
     // Generate 2-5 visits per organization
     organizations.forEach((org, orgIndex) => {
         const visitCount = faker.number.int({ min: 2, max: 5 });
-        const orgContacts = contacts.filter(c => c.company_id === org.id);
+        const orgContacts = contacts.filter(c => c.organizationId === org.id);
 
         for (let i = 0; i < visitCount; i++) {
             const visitId = `visit_${orgIndex}_${i + 1}`;
@@ -66,7 +66,7 @@ export const generateVisits = (db: Db): Visit[] => {
                 longitude: org.longitude
                     ? org.longitude + (Math.random() - 0.5) * 0.01
                     : undefined,
-                salesRepId: salesRep?.id || 'unknown',
+                salesRepId: String(salesRep?.id || 'unknown'),
                 createdAt: faker.date.past({ years: 1 }).toISOString(),
                 updatedAt: faker.date.recent({ days: 30 }).toISOString(),
             });

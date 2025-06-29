@@ -42,7 +42,7 @@ export const generateOrders = (db: Db): Order[] => {
     // Generate 3-8 orders per organization
     organizations.forEach((org, orgIndex) => {
         const orderCount = faker.number.int({ min: 3, max: 8 });
-        const orgContacts = contacts.filter(c => c.company_id === org.id);
+        const orgContacts = contacts.filter(c => c.organizationId === org.id);
 
         for (let i = 0; i < orderCount; i++) {
             const orderId = `order_${orgIndex}_${i + 1}`;
@@ -73,7 +73,7 @@ export const generateOrders = (db: Db): Order[] => {
                 const quantity = faker.number.int({ min: 1, max: 100 });
                 const unitPrice =
                     product?.price ||
-                    faker.number.float({ min: 5, max: 500, precision: 0.01 });
+                    faker.number.float({ min: 5, max: 500, fractionDigits: 2 });
                 const totalPrice = quantity * unitPrice;
 
                 items.push({
@@ -90,7 +90,7 @@ export const generateOrders = (db: Db): Order[] => {
 
             const deliveryDate =
                 status === 'delivered' || status === 'shipped'
-                    ? faker.date.future({ days: 30 })
+                    ? faker.date.future({ refDate: orderDate })
                     : undefined;
 
             orders.push({

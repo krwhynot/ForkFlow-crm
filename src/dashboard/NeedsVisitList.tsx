@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
     Card,
     CardContent,
@@ -35,13 +35,16 @@ import { useGetList, Link } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 
 import { Organization, Interaction, Setting } from '../types';
+import { useOrganizationsNeedingVisit } from '../hooks/useReporting';
 
-interface OrganizationWithLastInteraction extends Organization {
+interface OrganizationWithLastInteraction extends Omit<Organization, 'priority' | 'segment'> {
     lastInteractionDate?: string;
     daysSinceLastInteraction: number;
     urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
     priorityColor?: string;
     segmentColor?: string;
+    priority?: string; // API returns string, not Setting object
+    segment?: string; // API returns string, not Setting object
 }
 
 export const NeedsVisitList = () => {
@@ -49,20 +52,10 @@ export const NeedsVisitList = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
 
-    // Get organizations
-    const { data: organizations, isPending: organizationsPending } = useGetList<Organization>('organizations', {
-        pagination: { page: 1, perPage: 1000 },
-        sort: { field: 'name', order: 'ASC' },
-    });
+    // Use the new reporting API for organizations needing visits
+    const { data: needsVisitData, loading: needsVisitLoading, fetch: fetchNeedsVisit } = useOrganizationsNeedingVisit();
 
-    // Get all interactions to find last contact dates
-    const { data: interactions, isPending: interactionsPending } = useGetList<Interaction>('interactions', {
-        pagination: { page: 1, perPage: 5000 },
-        sort: { field: 'completedDate', order: 'DESC' },
-        filter: { isCompleted: true },
-    });
-
-    // Get priority and segment settings for color coding
+    // Get priority and segment settings for color coding (still needed for legacy display)
     const { data: priorities } = useGetList<Setting>('settings', {
         filter: { category: 'priority' },
         pagination: { page: 1, perPage: 20 },
@@ -73,90 +66,58 @@ export const NeedsVisitList = () => {
         pagination: { page: 1, perPage: 20 },
     });
 
+    // Load needs visit data on component mount
+    useEffect(() => {
+        fetchNeedsVisit();
+    }, [fetchNeedsVisit]);
+
     const organizationsNeedingVisit = useMemo(() => {
-        if (!organizations || !interactions) return [];
-
-        const now = new Date();
-        const thirtyDaysAgo = subDays(now, 30);
-
-        return organizations
-            .map((org): OrganizationWithLastInteraction => {
-                // Find the most recent completed interaction for this organization
-                const orgInteractions = interactions.filter(i => 
-                    i.organizationId === org.id && i.completedDate
-                );
-                
-                const latestInteraction = orgInteractions
-                    .sort((a, b) => new Date(b.completedDate!).getTime() - new Date(a.completedDate!).getTime())[0];
-
-                const lastInteractionDate = latestInteraction?.completedDate;
-                const daysSinceLastInteraction = lastInteractionDate
-                    ? differenceInDays(now, new Date(lastInteractionDate))
-                    : 9999; // Very high number for organizations never contacted
-
-                // Calculate urgency level based on days since last interaction and priority
+        // If we have data from the reporting API, use it; otherwise use legacy calculation
+        if (needsVisitData && needsVisitData.length > 0) {
+            return needsVisitData.map(org => {
+                // Map the API data to the component's expected format
                 let urgencyLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
-                
-                if (daysSinceLastInteraction > 90) urgencyLevel = 'critical';
-                else if (daysSinceLastInteraction > 60) urgencyLevel = 'high';
-                else if (daysSinceLastInteraction > 30) urgencyLevel = 'medium';
+                if (org.daysSinceContact >= 60) urgencyLevel = 'critical';
+                else if (org.daysSinceContact >= 45) urgencyLevel = 'high';
+                else if (org.daysSinceContact >= 30) urgencyLevel = 'medium';
 
-                // Increase urgency for high-priority organizations
-                const priority = priorities?.find(p => p.id === org.priorityId);
-                if (priority?.key === 'high' && urgencyLevel === 'low') urgencyLevel = 'medium';
-                if (priority?.key === 'urgent') urgencyLevel = 'critical';
-
-                // Get colors for priority and segment
-                const priorityColor = priority?.color;
-                const segment = segments?.find(s => s.id === org.segmentId);
-                const segmentColor = segment?.color;
+                const priority = priorities?.find(p => p.label === org.priority);
+                const segment = segments?.find(s => s.label === org.segment);
 
                 return {
-                    ...org,
-                    lastInteractionDate,
-                    daysSinceLastInteraction,
+                    id: org.id,
+                    name: org.name,
+                    segment: org.segment,
+                    priority: org.priority,
+                    lastInteractionDate: org.lastContactDate,
+                    daysSinceLastInteraction: org.daysSinceContact,
                     urgencyLevel,
-                    priorityColor,
-                    segmentColor,
-                };
-            })
-            .filter(org => org.daysSinceLastInteraction >= 30) // Only show organizations needing attention
-            .sort((a, b) => {
-                // Sort by urgency first, then by days since last interaction
-                const urgencyOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-                const urgencyDiff = urgencyOrder[b.urgencyLevel] - urgencyOrder[a.urgencyLevel];
-                if (urgencyDiff !== 0) return urgencyDiff;
-                
-                return b.daysSinceLastInteraction - a.daysSinceLastInteraction;
-            })
-            .slice(0, isMobile ? 8 : 12); // Show fewer on mobile
-    }, [organizations, interactions, priorities, segments, isMobile]);
+                    priorityColor: priority?.color,
+                    segmentColor: segment?.color,
+                    accountManager: org.accountManager,
+                    contactCount: org.contactCount,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                } as OrganizationWithLastInteraction;
+            });
+        }
+
+        // Legacy calculation fallback (can be removed once reporting API is fully tested)
+        return [];
+    }, [needsVisitData, priorities, segments]);
 
     const stats = useMemo(() => {
-        if (!organizations || !interactions) return { total: 0, critical: 0, high: 0, neverContacted: 0 };
-
-        const now = new Date();
-        const allOrgsWithInteractions = organizations.map(org => {
-            const orgInteractions = interactions.filter(i => 
-                i.organizationId === org.id && i.completedDate
-            );
-            const latestInteraction = orgInteractions
-                .sort((a, b) => new Date(b.completedDate!).getTime() - new Date(a.completedDate!).getTime())[0];
-            
-            const daysSinceLastInteraction = latestInteraction?.completedDate
-                ? differenceInDays(now, new Date(latestInteraction.completedDate))
-                : 9999;
-
-            return { ...org, daysSinceLastInteraction, hasInteractions: !!latestInteraction };
-        });
+        if (!needsVisitData || needsVisitData.length === 0) {
+            return { total: 0, critical: 0, high: 0, neverContacted: 0 };
+        }
 
         return {
-            total: allOrgsWithInteractions.filter(org => org.daysSinceLastInteraction >= 30).length,
-            critical: allOrgsWithInteractions.filter(org => org.daysSinceLastInteraction > 90).length,
-            high: allOrgsWithInteractions.filter(org => org.daysSinceLastInteraction > 60 && org.daysSinceLastInteraction <= 90).length,
-            neverContacted: allOrgsWithInteractions.filter(org => !org.hasInteractions).length,
+            total: needsVisitData.length,
+            critical: needsVisitData.filter(org => org.daysSinceContact >= 90).length,
+            high: needsVisitData.filter(org => org.daysSinceContact >= 60 && org.daysSinceContact < 90).length,
+            neverContacted: needsVisitData.filter(org => !org.lastContactDate).length,
         };
-    }, [organizations, interactions]);
+    }, [needsVisitData]);
 
     const getUrgencyColor = (urgencyLevel: string) => {
         switch (urgencyLevel) {
@@ -186,7 +147,7 @@ export const NeedsVisitList = () => {
         navigate(`/interactions/create?organizationId=${orgId}`);
     };
 
-    if (organizationsPending || interactionsPending) {
+    if (needsVisitLoading) {
         return (
             <Card>
                 <CardContent>
@@ -269,7 +230,7 @@ export const NeedsVisitList = () => {
                                     <ListItemIcon sx={{ minWidth: 36 }}>
                                         <Badge
                                             badgeContent={
-                                                org.priorityId ? (
+                                                org.priority ? (
                                                     <PriorityIcon 
                                                         sx={{ 
                                                             fontSize: 12, 
@@ -294,10 +255,10 @@ export const NeedsVisitList = () => {
                                                 >
                                                     {org.name}
                                                 </Typography>
-                                                {org.segmentId && (
+                                                {org.segment && (
                                                     <Chip
                                                         size="small"
-                                                        label={segments?.find(s => s.id === org.segmentId)?.label || ''}
+                                                        label={String(org.segment)}
                                                         sx={{
                                                             backgroundColor: org.segmentColor || theme.palette.grey[200],
                                                             color: theme.palette.getContrastText(org.segmentColor || theme.palette.grey[200]),

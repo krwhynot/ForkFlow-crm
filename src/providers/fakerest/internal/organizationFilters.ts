@@ -380,12 +380,12 @@ export class OrganizationFilterEngine {
             }
         });
 
-        if (!matchingIndices || matchingIndices.size === 0) {
+        if (!matchingIndices || (matchingIndices as Set<number>).size === 0) {
             return [];
         }
 
         const result: Organization[] = [];
-        matchingIndices.forEach(idx => {
+        (matchingIndices as Set<number>).forEach((idx: number) => {
             result.push(organizations[idx]);
         });
         return result;

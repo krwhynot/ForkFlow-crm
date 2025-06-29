@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
     Card,
     CardContent,
@@ -29,6 +29,7 @@ import { format, startOfWeek, startOfMonth, subDays, subMonths } from 'date-fns'
 import { useGetList } from 'react-admin';
 
 import { Organization, Contact, Interaction, Deal, Setting } from '../types';
+import { useDashboardReport } from '../hooks/useReporting';
 
 interface StatCardProps {
     title: string;
@@ -146,7 +147,10 @@ export const QuickStatsSection = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    // Get data for calculations
+    // Use the new reporting API for dashboard data
+    const { data: dashboardData, loading: dashboardLoading, fetch: fetchDashboard } = useDashboardReport();
+
+    // Legacy data fetching for detailed calculations (can be removed once all calculations are in reporting API)
     const { data: interactions, isPending: interactionsPending } = useGetList<Interaction>('interactions', {
         pagination: { page: 1, perPage: 1000 },
         sort: { field: 'completedDate', order: 'DESC' },
@@ -171,7 +175,33 @@ export const QuickStatsSection = () => {
         pagination: { page: 1, perPage: 20 },
     });
 
+    // Load dashboard data on component mount
+    useEffect(() => {
+        fetchDashboard();
+    }, [fetchDashboard]);
+
     const stats = useMemo(() => {
+        // If dashboard data is available, use it; otherwise use legacy calculations
+        if (dashboardData) {
+            return {
+                totalInteractions: dashboardData.totalInteractions,
+                totalOrganizations: dashboardData.totalOrganizations,
+                totalContacts: dashboardData.totalContacts,
+                totalOpportunities: dashboardData.totalOpportunities,
+                pipelineValue: dashboardData.pipelineValue,
+                conversionRate: dashboardData.conversionRate,
+                todayInteractions: dashboardData.trends.daily,
+                weeklyInteractions: dashboardData.trends.weekly,
+                monthlyInteractions: dashboardData.trends.monthly,
+                // Add trend calculations
+                interactionTrend: {
+                    value: ((dashboardData.trends.weekly - dashboardData.trends.daily) / Math.max(dashboardData.trends.daily, 1)) * 100,
+                    isPositive: dashboardData.trends.weekly > dashboardData.trends.daily,
+                },
+            };
+        }
+
+        // Legacy calculation fallback
         if (interactionsPending || opportunitiesPending || organizationsPending || contactsPending) {
             return null;
         }
@@ -295,6 +325,7 @@ export const QuickStatsSection = () => {
             thisWeekByType,
         };
     }, [
+        dashboardData,
         interactions,
         opportunities,
         organizations,
@@ -306,17 +337,27 @@ export const QuickStatsSection = () => {
         contactsPending
     ]);
 
+    const handleRefresh = () => {
+        fetchDashboard();
+    };
+
     if (!stats) {
         return (
             <Card>
                 <CardContent>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant="h6">Quick Stats</Typography>
-                        <IconButton size="small">
+                        <IconButton 
+                            size="small" 
+                            onClick={handleRefresh}
+                            disabled={dashboardLoading}
+                        >
                             <RefreshIcon />
                         </IconButton>
                     </Box>
-                    <Typography color="textSecondary">Loading...</Typography>
+                    <Typography color="textSecondary">
+                        {dashboardLoading ? 'Loading dashboard data...' : 'Loading...'}
+                    </Typography>
                 </CardContent>
             </Card>
         );
@@ -339,49 +380,49 @@ export const QuickStatsSection = () => {
             icon: <InteractionIcon />,
             color: 'primary' as const,
             trend: {
-                value: stats.weeklyInteractionTrend,
-                isPositive: stats.weeklyInteractionTrend >= 0,
+                value: stats.weeklyInteractionTrend ?? 0,
+                isPositive: (stats.weeklyInteractionTrend ?? 0) >= 0,
             },
         },
         {
             title: 'Monthly Interactions',
-            value: stats.thisMonthInteractions,
+            value: stats.thisMonthInteractions ?? 0,
             subtitle: `Target: 100 interactions`,
             icon: <ScheduleIcon />,
             color: 'secondary' as const,
-            progress: stats.monthlyInteractionProgress,
+            progress: stats.monthlyInteractionProgress ?? 0,
             trend: {
-                value: stats.monthlyInteractionTrend,
-                isPositive: stats.monthlyInteractionTrend >= 0,
+                value: stats.monthlyInteractionTrend ?? 0,
+                isPositive: (stats.monthlyInteractionTrend ?? 0) >= 0,
             },
         },
         {
             title: 'Active Opportunities',
-            value: stats.activeOpportunities,
-            subtitle: `${formatCurrency(stats.totalPipelineValue)} in pipeline`,
+            value: stats.activeOpportunities ?? 0,
+            subtitle: `${formatCurrency(stats.totalPipelineValue ?? 0)} in pipeline`,
             icon: <OpportunityIcon />,
             color: 'info' as const,
         },
         {
             title: 'Conversion Rate',
-            value: `${stats.conversionRate.toFixed(1)}%`,
-            subtitle: `${stats.wonOpportunities} won opportunities`,
+            value: `${(stats.conversionRate ?? 0).toFixed(1)}%`,
+            subtitle: `${stats.wonOpportunities ?? 0} won opportunities`,
             icon: <ConversionIcon />,
             color: 'success' as const,
         },
         {
             title: 'Total Organizations',
-            value: stats.totalOrganizations,
-            subtitle: `${stats.totalContacts} contacts`,
+            value: stats.totalOrganizations ?? 0,
+            subtitle: `${stats.totalContacts ?? 0} contacts`,
             icon: <OrganizationIcon />,
             color: 'info' as const,
         },
         {
             title: 'Need Attention',
-            value: stats.organizationsNeedingVisit,
+            value: stats.organizationsNeedingVisit ?? 0,
             subtitle: 'No contact in 30+ days',
             icon: <PhoneIcon />,
-            color: (stats.organizationsNeedingVisit > 0 ? 'warning' : 'success') as 'warning' | 'success',
+            color: ((stats.organizationsNeedingVisit ?? 0) > 0 ? 'warning' : 'success') as 'warning' | 'success',
         },
     ];
 
@@ -411,7 +452,7 @@ export const QuickStatsSection = () => {
                         This Week's Interactions by Type
                     </Typography>
                     <Stack direction="row" spacing={1} flexWrap="wrap">
-                        {Object.entries(stats.thisWeekByType).map(([type, count]) => {
+                        {Object.entries(stats.thisWeekByType ?? {}).map(([type, count]) => {
                             const getIcon = (type: string) => {
                                 switch (type) {
                                     case 'call': return <PhoneIcon sx={{ fontSize: 14 }} />;

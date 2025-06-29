@@ -122,7 +122,7 @@ const OpportunityLayout = () => {
                         <OnlyMineInput key="onlyMine" />,
                     ]}
                 />
-                {isPending ? null : data?.length > 0 ? (
+                {isPending ? null : (data?.length ?? 0) > 0 ? (
                     <OpportunityListContent />
                 ) : (
                     <OpportunityEmpty />

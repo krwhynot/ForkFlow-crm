@@ -13,8 +13,11 @@ import {
 
 import { ImageList } from './GridList';
 import { OrganizationListFilter } from './OrganizationListFilter';
-import { Stack } from '@mui/material';
+import { Stack, Button, Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
+import { Map as MapIcon } from '@mui/icons-material';
+import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
+import { OrganizationMapView } from './OrganizationMapView';
 
 export const OrganizationList = () => {
     const { identity } = useGetIdentity();
@@ -47,19 +50,57 @@ const OrganizationListLayout = () => {
 };
 
 const OrganizationListActions = () => {
+    const [showMap, setShowMap] = useState(false);
+    const theme = useTheme();
+    const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
-        <TopToolbar>
-            <SortButton fields={['name', 'createdAt', 'city', 'state']} />
-            <ExportButton />
-            <CreateButton
-                variant="contained"
-                label="New Organization"
-                sx={{
-                    marginLeft: 2,
-                    minHeight: 44,
-                    px: 3,
+        <>
+            <TopToolbar>
+                <SortButton fields={['name', 'createdAt', 'city', 'state']} />
+                <ExportButton />
+                <Button
+                    variant="outlined"
+                    startIcon={<MapIcon />}
+                    onClick={() => setShowMap(true)}
+                    sx={{
+                        marginLeft: 1,
+                        minHeight: 44,
+                        px: 2,
+                    }}
+                >
+                    Map View
+                </Button>
+                <CreateButton
+                    variant="contained"
+                    label="New Organization"
+                    sx={{
+                        marginLeft: 2,
+                        minHeight: 44,
+                        px: 3,
+                    }}
+                />
+            </TopToolbar>
+
+            {/* Map Dialog */}
+            <Dialog
+                open={showMap}
+                onClose={() => setShowMap(false)}
+                maxWidth={false}
+                fullScreen={isFullScreen}
+                PaperProps={{
+                    sx: {
+                        width: isFullScreen ? '100%' : '90vw',
+                        height: isFullScreen ? '100%' : '90vh',
+                        maxWidth: 'none',
+                        maxHeight: 'none',
+                    }
                 }}
-            />
-        </TopToolbar>
+            >
+                <DialogContent sx={{ p: 0, height: '100%' }}>
+                    <OrganizationMapView onClose={() => setShowMap(false)} />
+                </DialogContent>
+            </Dialog>
+        </>
     );
 };

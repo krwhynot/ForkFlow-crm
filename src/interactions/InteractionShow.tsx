@@ -31,7 +31,7 @@ import {
     Email as EmailIcon,
     Phone as PhoneIcon,
     PersonPin as PersonPinIcon,
-    Presentation as DemoIcon,
+    Slideshow as DemoIcon,
     AttachMoney as QuoteIcon,
     Schedule as FollowUpIcon,
     LocationOn as LocationIcon,
@@ -39,7 +39,7 @@ import {
     RadioButtonUnchecked as PendingIcon,
     Business as BusinessIcon,
     Person as PersonIcon,
-    Opportunity as OpportunityIcon,
+    TrendingUp as OpportunityIcon,
 } from '@mui/icons-material';
 
 import { Interaction } from '../types';
@@ -372,7 +372,7 @@ const InteractionDetails = () => {
                             {record.attachments.map((attachment, index) => (
                                 <FileField 
                                     key={index}
-                                    source={`attachments[${index}]`}
+                                    source={`attachments.${index}` as any}
                                     record={record}
                                     title="title"
                                 />

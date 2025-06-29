@@ -10,7 +10,7 @@ import {
     Email as EmailIcon,
     Phone as PhoneIcon,
     PersonPin as PersonPinIcon,
-    Presentation as DemoIcon,
+    Slideshow as DemoIcon,
     AttachMoney as QuoteIcon,
     Schedule as FollowUpIcon,
 } from '@mui/icons-material';
@@ -127,7 +127,7 @@ export const InteractionTypeSelector = ({
             label={label}
             choices={interactionTypeChoices}
             optionText={optionRenderer}
-            validate={required ? [required] : undefined}
+            validate={required ? [required as any] : undefined}
             size={size}
             variant={variant}
             fullWidth={fullWidth}

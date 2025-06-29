@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { random } from 'faker/locale/en_US';
+import { faker } from '@faker-js/faker';
 import fakerestDataProvider from 'ra-data-fakerest';
 import { DataProviderContext, RecordContextProvider } from 'react-admin';
 import { MemoryRouter } from 'react-router-dom';
@@ -15,9 +15,9 @@ const db = {} as Db;
 db.tags = generateTags(db);
 db.companies = generateCompanies(db, 1);
 db.contacts = generateContacts(db, 1);
-db.contacts[0].tags = random
+db.contacts[0].tags = faker.helpers
     .arrayElements(db.tags, 3)
-    .map(tag => tag.id.toString());
+    .map((tag: any) => tag.id.toString());
 db.contacts[0].firstName = 'John';
 db.contacts[0].lastName = 'Doe';
 

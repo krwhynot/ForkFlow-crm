@@ -28,6 +28,9 @@ import {
     Grid,
     Avatar,
     CardActionArea,
+    Dialog,
+    DialogContent,
+    useMediaQuery,
 } from '@mui/material';
 import {
     Phone as PhoneIcon,
@@ -41,15 +44,61 @@ import {
     LinkedIn as LinkedInIcon,
     History as HistoryIcon,
     EventNote as InteractionIcon,
+    Map as MapIcon,
 } from '@mui/icons-material';
 import { Organization, Setting, Contact } from '../types';
+import { OrganizationMapView } from './OrganizationMapView';
 
-const OrganizationShowActions = () => (
-    <TopToolbar>
-        <EditButton />
-        <DeleteButton />
-    </TopToolbar>
-);
+const OrganizationShowActions = () => {
+    const [showMap, setShowMap] = React.useState(false);
+    const theme = useTheme();
+    const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const record = useRecordContext<Organization>();
+
+    return (
+        <>
+            <TopToolbar>
+                {/* Map Button - only show if organization has coordinates */}
+                {(record?.latitude && record?.longitude) && (
+                    <Button
+                        variant="outlined"
+                        startIcon={<MapIcon />}
+                        onClick={() => setShowMap(true)}
+                        sx={{
+                            marginRight: 1,
+                            minHeight: 44,
+                            px: 2,
+                        }}
+                    >
+                        View on Map
+                    </Button>
+                )}
+                <EditButton />
+                <DeleteButton />
+            </TopToolbar>
+
+            {/* Map Dialog */}
+            <Dialog
+                open={showMap}
+                onClose={() => setShowMap(false)}
+                maxWidth={false}
+                fullScreen={isFullScreen}
+                PaperProps={{
+                    sx: {
+                        width: isFullScreen ? '100%' : '90vw',
+                        height: isFullScreen ? '100%' : '90vh',
+                        maxWidth: 'none',
+                        maxHeight: 'none',
+                    }
+                }}
+            >
+                <DialogContent sx={{ p: 0, height: '100%' }}>
+                    <OrganizationMapView onClose={() => setShowMap(false)} />
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+};
 
 export const OrganizationShow = () => (
     <Show actions={<OrganizationShowActions />}>

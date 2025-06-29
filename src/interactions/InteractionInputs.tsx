@@ -12,7 +12,8 @@ import {
     required,
     useGetList,
     useRecordContext,
-    useWatch,
+    useDataProvider,
+    useNotify,
 } from 'react-admin';
 import {
     Stack,
@@ -23,23 +24,36 @@ import {
     Alert,
     FormControlLabel,
     Switch,
+    CircularProgress,
+    Chip,
 } from '@mui/material';
 import {
     LocationOn as LocationIcon,
     ExpandMore as ExpandMoreIcon,
     ExpandLess as ExpandLessIcon,
+    CloudOff as OfflineIcon,
+    CloudDone as OnlineIcon,
+    GpsFixed as GpsIcon,
 } from '@mui/icons-material';
 
 import { LocationProvider } from '../components/mobile';
+import { useGPSService, useOfflineService } from '../providers/mobile';
 
 export const InteractionInputs = () => {
     const record = useRecordContext();
+    const dataProvider = useDataProvider();
+    const notify = useNotify();
+    const gpsService = useGPSService();
+    const offlineService = useOfflineService();
+    
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [gpsEnabled, setGpsEnabled] = useState(false);
-    const [location, setLocation] = useState<{latitude: number; longitude: number} | null>(null);
+    const [location, setLocation] = useState<{latitude: number; longitude: number; accuracy?: number} | null>(null);
     const [locationError, setLocationError] = useState<string>('');
+    const [locationLoading, setLocationLoading] = useState(false);
+    const [offlineStatus, setOfflineStatus] = useState(offlineService.getStatus());
     
-    const typeId = useWatch({ name: 'typeId' });
+    const typeId = record?.typeId;
     
     // Get interaction types from settings
     const { data: interactionTypes } = useGetList('settings', {
@@ -53,65 +67,117 @@ export const InteractionInputs = () => {
         name: type.label,
     })) || [];
 
-    // Check if selected type is "in_person" to show GPS options
+    // Check if selected type requires GPS
     const selectedType = interactionTypes?.find(type => type.id === typeId);
-    const isInPersonInteraction = selectedType?.key === 'in_person';
+    const isLocationRecommended = selectedType?.key === 'in_person' || selectedType?.key === 'demo';
 
+    // Subscribe to offline status changes
     useEffect(() => {
-        if (isInPersonInteraction && gpsEnabled) {
+        const unsubscribe = offlineService.onStatusChange(setOfflineStatus);
+        return unsubscribe;
+    }, [offlineService]);
+
+    // Auto-enable GPS for location-based interactions
+    useEffect(() => {
+        if (isLocationRecommended && !gpsEnabled) {
+            setGpsEnabled(true);
+        }
+    }, [isLocationRecommended]);
+
+    // Get location when GPS is enabled
+    useEffect(() => {
+        if (gpsEnabled) {
             getCurrentLocation();
         }
-    }, [isInPersonInteraction, gpsEnabled]);
+    }, [gpsEnabled]);
 
-    const getCurrentLocation = () => {
-        if (!navigator.geolocation) {
+    const getCurrentLocation = async () => {
+        if (!gpsService.isAvailable()) {
             setLocationError('Geolocation is not supported by this browser.');
             return;
         }
 
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                setLocation({ latitude, longitude });
-                setLocationError('');
-                // These will be handled by the form
-            },
-            (error) => {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        setLocationError('Location access denied by user.');
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        setLocationError('Location information is unavailable.');
-                        break;
-                    case error.TIMEOUT:
-                        setLocationError('Location request timed out.');
-                        break;
-                    default:
-                        setLocationError('An unknown error occurred.');
-                        break;
-                }
-            },
-            {
+        setLocationLoading(true);
+        setLocationError('');
+
+        try {
+            // Try cached location first
+            const cachedLocation = gpsService.getCachedLocation();
+            if (cachedLocation) {
+                setLocation({
+                    latitude: cachedLocation.latitude,
+                    longitude: cachedLocation.longitude,
+                    accuracy: cachedLocation.accuracy,
+                });
+                setLocationLoading(false);
+                return;
+            }
+
+            // Get fresh location
+            const result = await gpsService.getCurrentLocation({
                 enableHighAccuracy: true,
                 timeout: 10000,
-                maximumAge: 0,
+                maximumAge: 60000, // 1 minute cache
+            });
+
+            if (result.coordinates) {
+                setLocation({
+                    latitude: result.coordinates.latitude,
+                    longitude: result.coordinates.longitude,
+                    accuracy: result.coordinates.accuracy,
+                });
+                
+                // Show accuracy info to user
+                if (result.coordinates.accuracy && result.coordinates.accuracy > 50) {
+                    notify('GPS accuracy is low. Consider moving to an open area for better precision.', { type: 'warning' });
+                }
+            } else {
+                setLocationError(result.error || 'Failed to get location');
             }
-        );
+        } catch (error: any) {
+            setLocationError(error.message || 'Failed to get location');
+        } finally {
+            setLocationLoading(false);
+        }
+    };
+
+    const refreshLocation = () => {
+        getCurrentLocation();
     };
 
     return (
         <Stack spacing={3}>
-            {/* Basic Information */}
-            <Typography variant="h6" gutterBottom>
-                Interaction Details
-            </Typography>
+            {/* Offline Status Indicator */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6" gutterBottom>
+                    Interaction Details
+                </Typography>
+                
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    {/* Offline Status */}
+                    <Chip
+                        icon={offlineStatus.isOnline ? <OnlineIcon /> : <OfflineIcon />}
+                        label={offlineStatus.isOnline ? 'Online' : 'Offline'}
+                        color={offlineStatus.isOnline ? 'success' : 'warning'}
+                        size="small"
+                    />
+                    
+                    {/* Pending Sync Count */}
+                    {offlineStatus.pendingActions > 0 && (
+                        <Chip
+                            label={`${offlineStatus.pendingActions} pending`}
+                            color="info"
+                            size="small"
+                        />
+                    )}
+                </Box>
+            </Box>
             
             <Stack spacing={2}>
                 <ReferenceInput
                     source="organizationId"
                     reference="organizations"
-                    validate={required()}
+                    validate={required() as any}
                     label="Organization"
                 >
                     <AutocompleteInput
@@ -126,7 +192,7 @@ export const InteractionInputs = () => {
                     source="contactId"
                     reference="contacts"
                     label="Contact (Optional)"
-                    filter={{ organizationId: useWatch({ name: 'organizationId' }) }}
+                    filter={{ organizationId: record?.organizationId }}
                 >
                     <AutocompleteInput
                         optionText={(choice: any) => 
@@ -198,11 +264,11 @@ export const InteractionInputs = () => {
                 />
             </Stack>
 
-            {/* GPS Location for In-Person Interactions */}
-            {isInPersonInteraction && (
+            {/* GPS Location for Location-Based Interactions */}
+            {(isLocationRecommended || gpsEnabled) && (
                 <Box>
                     <Typography variant="h6" gutterBottom>
-                        Location (In-Person Interaction)
+                        Location {isLocationRecommended && '(Recommended)'}
                     </Typography>
                     
                     <Stack spacing={2}>
@@ -219,24 +285,55 @@ export const InteractionInputs = () => {
 
                         {gpsEnabled && (
                             <Box>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<LocationIcon />}
-                                    onClick={getCurrentLocation}
-                                    sx={{ mb: 2 }}
-                                >
-                                    Get Current Location
-                                </Button>
+                                <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={locationLoading ? <CircularProgress size={16} /> : <GpsIcon />}
+                                        onClick={refreshLocation}
+                                        disabled={locationLoading}
+                                    >
+                                        {locationLoading ? 'Getting Location...' : 'Get Current Location'}
+                                    </Button>
+                                    
+                                    {location && (
+                                        <Button
+                                            variant="text"
+                                            startIcon={<LocationIcon />}
+                                            onClick={() => {
+                                                // Open in maps app
+                                                const url = `https://maps.google.com/maps?q=${location.latitude},${location.longitude}`;
+                                                window.open(url, '_blank');
+                                            }}
+                                        >
+                                            View on Map
+                                        </Button>
+                                    )}
+                                </Box>
 
                                 {location && (
                                     <Alert severity="success" sx={{ mb: 2 }}>
-                                        Location captured: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
+                                        <Box>
+                                            <strong>Location captured:</strong> {gpsService.formatCoordinates(location)}
+                                            {location.accuracy && (
+                                                <Box component="span" sx={{ display: 'block', fontSize: '0.875em', mt: 0.5 }}>
+                                                    Accuracy: ±{Math.round(location.accuracy)}m
+                                                    {location.accuracy > 50 && ' (Consider moving to an open area for better accuracy)'}
+                                                </Box>
+                                            )}
+                                        </Box>
                                     </Alert>
                                 )}
 
                                 {locationError && (
                                     <Alert severity="error" sx={{ mb: 2 }}>
                                         {locationError}
+                                        <Button
+                                            size="small"
+                                            onClick={refreshLocation}
+                                            sx={{ ml: 1 }}
+                                        >
+                                            Retry
+                                        </Button>
                                     </Alert>
                                 )}
 
@@ -245,7 +342,8 @@ export const InteractionInputs = () => {
                                     label="Latitude"
                                     size="medium"
                                     step={0.000001}
-                                    format={(value) => location?.latitude || value}
+                                    defaultValue={location?.latitude}
+                                    helperText="GPS latitude coordinate"
                                 />
 
                                 <NumberInput
@@ -253,7 +351,8 @@ export const InteractionInputs = () => {
                                     label="Longitude"
                                     size="medium"
                                     step={0.000001}
-                                    format={(value) => location?.longitude || value}
+                                    defaultValue={location?.longitude}
+                                    helperText="GPS longitude coordinate"
                                 />
 
                                 <TextInput
@@ -332,14 +431,26 @@ export const InteractionInputs = () => {
                             helperText="Notes for the follow-up"
                         />
 
-                        <FileInput
-                            source="attachments"
-                            label="Attachments"
-                            multiple
-                            accept="image/*,application/pdf,.doc,.docx"
-                        >
-                            <FileField source="src" title="title" />
-                        </FileInput>
+                        <Box>
+                            <Typography variant="subtitle2" gutterBottom>
+                                Attachments
+                            </Typography>
+                            <FileInput
+                                source="attachments"
+                                label="Upload Files"
+                                multiple
+                                accept={{"image/*": [], "application/pdf": [], ".doc": [], ".docx": [], ".txt": [], ".csv": []} as any}
+                                helperText="Max 10MB per file. Images will be compressed for mobile upload."
+                            >
+                                <FileField source="src" title="title" />
+                            </FileInput>
+                            
+                            {!offlineStatus.isOnline && (
+                                <Alert severity="info" sx={{ mt: 1 }}>
+                                    Files will be uploaded when connection is restored.
+                                </Alert>
+                            )}
+                        </Box>
                     </Stack>
                 </Collapse>
             </Box>

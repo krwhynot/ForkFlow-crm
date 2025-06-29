@@ -16,6 +16,7 @@ import { generateCustomerSummary } from './customerSummary';
 import { generateVisits } from './visits';
 import { generateReminders } from './reminders';
 import { generateOrders } from './orders';
+import { generateInteractions } from './interactions';
 import { Db } from './types';
 
 export default (): Db => {
@@ -41,6 +42,7 @@ export default (): Db => {
     db.visits = generateVisits(db);
     db.reminders = generateReminders(db);
     db.orders = generateOrders(db);
+    (db as any).interactions = generateInteractions(db);
 
     finalize(db);
 

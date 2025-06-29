@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useGetList } from 'react-admin';
 
 import { Deal } from '../types';
+import { safeAmount, safeRange, validateChartData } from '../utils/chartSafety';
 
 const multiplier = {
     opportunity: 0.2,
@@ -30,8 +31,10 @@ export const DealsChart = () => {
         },
     });
     const months = useMemo(() => {
-        if (!data) return [];
-        const dealsByMonth = data.reduce((acc, deal) => {
+        const validData = validateChartData(data);
+        if (validData.length === 0) return [];
+        
+        const dealsByMonth = validData.reduce((acc, deal) => {
             const month = startOfMonth(
                 deal.createdAt ?? new Date()
             ).toISOString();
@@ -48,23 +51,20 @@ export const DealsChart = () => {
                 won: dealsByMonth[month]
                     .filter((deal: Deal) => deal.stage === 'won')
                     .reduce((acc: number, deal: Deal) => {
-                        acc += deal.amount;
-                        return acc;
+                        return acc + safeAmount(deal.amount);
                     }, 0),
                 pending: dealsByMonth[month]
                     .filter(
                         (deal: Deal) => !['won', 'lost'].includes(deal.stage)
                     )
                     .reduce((acc: number, deal: Deal) => {
-                        // @ts-ignore
-                        acc += deal.amount * multiplier[deal.stage];
-                        return acc;
+                        const stageMultiplier = multiplier[deal.stage as keyof typeof multiplier] || 0;
+                        return acc + (safeAmount(deal.amount) * stageMultiplier);
                     }, 0),
                 lost: dealsByMonth[month]
                     .filter((deal: Deal) => deal.stage === 'lost')
                     .reduce((acc: number, deal: Deal) => {
-                        acc -= deal.amount;
-                        return acc;
+                        return acc - safeAmount(deal.amount);
                     }, 0),
             };
         });
@@ -73,14 +73,15 @@ export const DealsChart = () => {
     }, [data]);
 
     if (isPending) return null; // FIXME return skeleton instead
-    const range = months.reduce(
-        (acc, month) => {
-            acc.min = Math.min(acc.min, month.lost);
-            acc.max = Math.max(acc.max, month.won + month.pending);
-            return acc;
-        },
-        { min: 0, max: 0 }
-    );
+    
+    // Calculate safe range for chart scale
+    const allValues = months.flatMap(month => [
+        month.won, 
+        month.pending, 
+        month.lost,
+        month.won + month.pending
+    ]);
+    const range = safeRange(allValues);
     return (
         <Stack>
             <Box display="flex" alignItems="center" mb={1}>
@@ -92,22 +93,23 @@ export const DealsChart = () => {
                 </Typography>
             </Box>
             <Box height={400}>
-                <ResponsiveBar
-                    data={months}
-                    indexBy="date"
-                    keys={['won', 'pending', 'lost']}
-                    colors={['#61cdbb', '#97e3d5', '#e25c3b']}
-                    margin={{ top: 30, right: 50, bottom: 30, left: 0 }}
-                    padding={0.3}
-                    valueScale={{
-                        type: 'linear',
-                        min: range.min * 1.2,
-                        max: range.max * 1.2,
-                    }}
-                    indexScale={{ type: 'band', round: true }}
-                    enableGridX={true}
-                    enableGridY={false}
-                    enableLabel={false}
+                {months.length > 0 ? (
+                    <ResponsiveBar
+                        data={months}
+                        indexBy="date"
+                        keys={['won', 'pending', 'lost']}
+                        colors={['#61cdbb', '#97e3d5', '#e25c3b']}
+                        margin={{ top: 30, right: 50, bottom: 30, left: 0 }}
+                        padding={0.3}
+                        valueScale={{
+                            type: 'linear',
+                            min: range.min * 1.2,
+                            max: range.max * 1.2,
+                        }}
+                        indexScale={{ type: 'band', round: true }}
+                        enableGridX={true}
+                        enableGridY={false}
+                        enableLabel={false}
                     axisTop={{
                         tickSize: 0,
                         tickPadding: 12,
@@ -148,7 +150,20 @@ export const DealsChart = () => {
                             },
                         ] as any
                     }
-                />
+                    />
+                ) : (
+                    <Box 
+                        display="flex" 
+                        alignItems="center" 
+                        justifyContent="center" 
+                        height="100%"
+                        color="text.secondary"
+                    >
+                        <Typography variant="body2">
+                            No deal data available
+                        </Typography>
+                    </Box>
+                )}
             </Box>
         </Stack>
     );

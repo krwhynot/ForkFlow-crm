@@ -98,7 +98,7 @@ const OpportunityForm = () => {
                                 <ReferenceInput 
                                     source="organizationId" 
                                     reference="organizations"
-                                    validate={required()}
+                                    validate={required() as any}
                                 >
                                     <AutocompleteInput
                                         optionText="name"
