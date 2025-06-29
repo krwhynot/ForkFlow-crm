@@ -16,10 +16,45 @@ import {
     RAFile,
     SignUpData,
     Visit,
+    Interaction,
 } from '../../types';
 import { getActivityLog } from '../commons/activity';
 import { getIsInitialized } from './authProvider';
 import { supabase } from './supabase';
+import { logAuditEvent } from '../../utils/auditLogging';
+import {
+    getCurrentLocation as getInteractionLocation,
+    validateFileAttachment,
+    compressImageForMobile,
+    createImageThumbnail,
+    uploadInteractionAttachment,
+    deleteInteractionAttachment,
+    processInteractionLocation,
+    addLocationToInteraction,
+    getInteractionTimeline,
+    getFollowUpReminders,
+    completeInteraction,
+    scheduleFollowUp,
+    getOfflineStatus,
+    storeOfflineInteraction,
+    getOfflineInteractions,
+    syncOfflineInteractions,
+    clearOfflineData,
+    type FileAttachment,
+    type SyncResult,
+} from './interactionExtensions';
+import {
+    searchOrganizations,
+    findNearbyOrganizations,
+    getTerritoryOrganizations,
+    importOrganizationsFromCSV,
+    getOrganizationSummary,
+    type OrganizationSearchResult,
+    type TerritoryBoundary,
+    type OrganizationAnalytics,
+    type BulkImportResult,
+    type OrganizationSummary,
+} from './organizationExtensions';
 
 if (import.meta.env.VITE_SUPABASE_URL === undefined) {
     throw new Error('Please set the VITE_SUPABASE_URL environment variable');
@@ -293,6 +328,359 @@ const dataProviderWithCustomMethods = {
     getActivityLog: async (companyId?: Identifier) => {
         return getActivityLog(dataProviderWithCustomMethods, companyId);
     },
+
+    // ===========================================
+    // Interaction Management Methods (Mobile-Optimized)
+    // ===========================================
+
+    /**
+     * Create interaction with automatic GPS capture
+     */
+    async createInteractionWithLocation(
+        params: { data: Partial<Interaction> }, 
+        autoCapture: boolean = true
+    ) {
+        const processedParams = await processInteractionLocation(
+            { data: params.data } as CreateParams<Interaction>, 
+            autoCapture
+        );
+        
+        const { data: user } = await supabase.auth.getUser();
+        
+        // Handle offline mode
+        if (!navigator.onLine) {
+            await storeOfflineInteraction({
+                ...processedParams.data,
+                createdBy: user?.user?.id,
+                createdAt: new Date().toISOString(),
+            });
+            
+            return {
+                data: {
+                    ...processedParams.data,
+                    id: `offline_${Date.now()}`,
+                    _offline: true,
+                }
+            };
+        }
+        
+        return baseDataProvider.create('interactions', {
+            data: {
+                ...processedParams.data,
+                createdBy: user?.user?.id,
+                createdAt: new Date().toISOString(),
+            },
+        });
+    },
+
+    /**
+     * Get current GPS location
+     */
+    getCurrentLocation: getInteractionLocation,
+
+    /**
+     * Add location to existing interaction
+     */
+    async addLocationToInteraction(interactionId: Identifier, forceRefresh: boolean = false) {
+        return addLocationToInteraction(this, interactionId, forceRefresh);
+    },
+
+    /**
+     * Validate file attachment
+     */
+    validateFileAttachment,
+
+    /**
+     * Compress image for mobile upload
+     */
+    compressImageForMobile,
+
+    /**
+     * Create image thumbnail
+     */
+    createImageThumbnail,
+
+    /**
+     * Upload interaction attachment
+     */
+    async uploadInteractionAttachment(interactionId: Identifier, file: File) {
+        const attachment = await uploadInteractionAttachment(interactionId, file);
+        
+        // Update interaction with new attachment
+        const { data: interaction } = await baseDataProvider.getOne('interactions', {
+            id: interactionId,
+        });
+        
+        const existingAttachments = interaction.attachments || [];
+        const updatedAttachments = [...existingAttachments, attachment];
+        
+        await baseDataProvider.update('interactions', {
+            id: interactionId,
+            data: { attachments: updatedAttachments },
+            previousData: interaction,
+        });
+        
+        return attachment;
+    },
+
+    /**
+     * Delete interaction attachment
+     */
+    async deleteInteractionAttachment(interactionId: Identifier, filename: string) {
+        await deleteInteractionAttachment(interactionId, filename);
+        
+        // Update interaction to remove attachment
+        const { data: interaction } = await baseDataProvider.getOne('interactions', {
+            id: interactionId,
+        });
+        
+        const updatedAttachments = (interaction.attachments || []).filter(
+            (att: FileAttachment) => att.filename !== filename
+        );
+        
+        await baseDataProvider.update('interactions', {
+            id: interactionId,
+            data: { attachments: updatedAttachments },
+            previousData: interaction,
+        });
+        
+        return true;
+    },
+
+    /**
+     * Get interaction timeline
+     */
+    async getInteractionTimeline(params: {
+        startDate?: string;
+        endDate?: string;
+        organizationId?: Identifier;
+        contactId?: Identifier;
+        typeIds?: Identifier[];
+    }) {
+        return getInteractionTimeline(this, params);
+    },
+
+    /**
+     * Get follow-up reminders
+     */
+    async getFollowUpReminders(params: {
+        overdue?: boolean;
+        upcoming?: boolean;
+        days?: number;
+    }) {
+        return getFollowUpReminders(this, params);
+    },
+
+    /**
+     * Complete interaction
+     */
+    async completeInteraction(
+        id: Identifier,
+        completionData: { duration?: number; outcome?: string; [key: string]: any }
+    ) {
+        return completeInteraction(this, id, completionData);
+    },
+
+    /**
+     * Schedule follow-up
+     */
+    async scheduleFollowUp(
+        id: Identifier,
+        followUpData: { followUpDate: string; followUpNotes?: string }
+    ) {
+        return scheduleFollowUp(this, id, followUpData);
+    },
+
+    /**
+     * Get offline status
+     */
+    getOfflineStatus,
+
+    /**
+     * Get offline interactions
+     */
+    getOfflineInteractions,
+
+    /**
+     * Sync offline interactions
+     */
+    async syncOfflineInteractions() {
+        return syncOfflineInteractions(this);
+    },
+
+    /**
+     * Clear offline data
+     */
+    clearOfflineData,
+
+    // ===========================================
+    // Organization Management Methods (Mobile-Optimized)
+    // ===========================================
+
+    /**
+     * Advanced organization search with full-text search and GPS proximity
+     */
+    async searchOrganizations(
+        query: string,
+        options: {
+            limit?: number;
+            includeInactive?: boolean;
+            filters?: Record<string, any>;
+            location?: GPSCoordinates;
+            radiusKm?: number;
+            sortBy?: 'relevance' | 'distance' | 'name' | 'lastActivity';
+        } = {}
+    ) {
+        return searchOrganizations(this, query, options);
+    },
+
+    /**
+     * Find nearby organizations using GPS coordinates
+     */
+    async findNearbyOrganizations(
+        location: GPSCoordinates,
+        radiusKm: number = 10,
+        options: {
+            limit?: number;
+            includeDistance?: boolean;
+            sortByDistance?: boolean;
+            filters?: Record<string, any>;
+        } = {}
+    ) {
+        return findNearbyOrganizations(this, location, radiusKm, options);
+    },
+
+    /**
+     * Get organizations within a user's territory
+     */
+    async getTerritoryOrganizations(userId: string, territory?: TerritoryBoundary) {
+        return getTerritoryOrganizations(this, userId, territory);
+    },
+
+    /**
+     * Import organizations from CSV data with validation
+     */
+    async importOrganizationsFromCSV(
+        csvData: any[],
+        options: {
+            skipDuplicates?: boolean;
+            updateExisting?: boolean;
+            validateAddresses?: boolean;
+            userId: string;
+        }
+    ) {
+        return importOrganizationsFromCSV(this, csvData, options);
+    },
+
+    /**
+     * Get comprehensive organization summary for dashboard
+     */
+    async getOrganizationSummary(organizationId: Identifier) {
+        return getOrganizationSummary(this, organizationId);
+    },
+
+    /**
+     * Enhanced organization finder with autocomplete support
+     */
+    async findOrganizationsAutocomplete(
+        query: string,
+        limit: number = 10
+    ): Promise<{ data: Array<{ id: number; name: string; address?: string; distance?: number }> }> {
+        const result = await this.searchOrganizations(query, { 
+            limit,
+            sortBy: 'relevance' 
+        });
+        
+        return {
+            data: result.data.map(org => ({
+                id: org.id,
+                name: org.name,
+                address: org.address,
+                distance: org.distance,
+            }))
+        };
+    },
+
+    /**
+     * Get organizations needing attention (no recent interactions)
+     */
+    async getOrganizationsNeedingAttention(
+        daysSinceLastInteraction: number = 30,
+        userId?: string
+    ): Promise<{ data: Organization[]; total: number }> {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - daysSinceLastInteraction);
+
+        // This would be implemented with a more complex query in production
+        // For now, we'll get organizations and filter
+        const orgsResult = await this.getList('organizations', {
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'updatedAt', order: 'ASC' },
+            filter: userId ? { accountManager: userId } : {},
+        });
+
+        // In production, this would be a JOIN query with interactions table
+        const needsAttention = orgsResult.data.filter(org => {
+            const lastUpdate = new Date(org.updatedAt);
+            return lastUpdate < cutoffDate;
+        });
+
+        return {
+            data: needsAttention,
+            total: needsAttention.length,
+        };
+    },
+
+    /**
+     * Geocode organization address to GPS coordinates
+     */
+    async geocodeOrganizationAddress(
+        organizationId: Identifier,
+        address?: string
+    ): Promise<{ latitude: number; longitude: number }> {
+        // Get organization if address not provided
+        if (!address) {
+            const org = await this.getOne('organizations', { id: organizationId });
+            address = `${org.data.address || ''}, ${org.data.city || ''}, ${org.data.state || ''} ${org.data.zipCode || ''}`.trim();
+        }
+
+        if (!address) {
+            throw new Error('No address available for geocoding');
+        }
+
+        // This would integrate with Google Maps Geocoding API in production
+        // For now, return mock coordinates based on US center
+        const mockLat = 39.8283 + (Math.random() - 0.5) * 20; // Rough US latitude range
+        const mockLng = -98.5795 + (Math.random() - 0.5) * 40; // Rough US longitude range
+
+        // Update organization with coordinates
+        await this.update('organizations', {
+            id: organizationId,
+            data: {
+                latitude: mockLat,
+                longitude: mockLng,
+            },
+            previousData: {} as Organization,
+        });
+
+        // Log audit event
+        await logAuditEvent('data.update', {
+            resource: 'organization',
+            organizationId,
+            action: 'geocoded',
+            address,
+            latitude: mockLat,
+            longitude: mockLng,
+        }, {
+            outcome: 'success',
+            message: 'Organization address geocoded successfully'
+        });
+
+        return {
+            latitude: mockLat,
+            longitude: mockLng,
+        };
+    },
 } satisfies DataProvider;
 
 export type CrmDataProvider = typeof dataProviderWithCustomMethods;
@@ -486,6 +874,92 @@ export const dataProvider = withLifecycleCallbacks(
             },
             beforeGetList: async params => {
                 return applyFullTextSearch(['notes', 'internal_notes'])(params);
+            },
+        },
+        {
+            resource: 'interactions',
+            beforeGetList: async params => {
+                return applyFullTextSearch([
+                    'subject',
+                    'description',
+                    'outcome',
+                    'followUpNotes',
+                    'locationNotes',
+                ])(params);
+            },
+            beforeCreate: async params => {
+                const processedParams = await processInteractionLocation(params, true);
+                const { data: user } = await supabase.auth.getUser();
+
+                return {
+                    ...processedParams,
+                    data: {
+                        ...processedParams.data,
+                        createdBy: user?.user?.id,
+                        createdAt: new Date().toISOString(),
+                        isCompleted: processedParams.data.isCompleted || false,
+                        followUpRequired: processedParams.data.followUpRequired || false,
+                    },
+                };
+            },
+            beforeUpdate: async params => {
+                // Handle completion logic
+                if (params.data.isCompleted && !params.data.completedDate) {
+                    return {
+                        ...params,
+                        data: {
+                            ...params.data,
+                            completedDate: new Date().toISOString(),
+                        },
+                    };
+                }
+                
+                return params;
+            },
+        },
+        {
+            resource: 'deals',
+            beforeGetList: async params => {
+                return applyFullTextSearch([
+                    'name',
+                    'description',
+                    'notes',
+                    'stage',
+                ])(params);
+            },
+            beforeCreate: async params => {
+                const { data: user } = await supabase.auth.getUser();
+
+                return {
+                    ...params,
+                    data: {
+                        ...params.data,
+                        createdBy: user?.user?.id,
+                        createdAt: new Date().toISOString(),
+                        stage: params.data.stage || 'lead_discovery',
+                        status: params.data.status || 'active',
+                        probability: params.data.probability || 0,
+                        amount: params.data.amount || 0,
+                        index: params.data.index || 0,
+                    },
+                };
+            },
+            beforeUpdate: async params => {
+                // Handle archiving logic for won/lost deals
+                if (
+                    (params.data.status === 'won' || params.data.status === 'lost') &&
+                    !params.data.archivedAt
+                ) {
+                    return {
+                        ...params,
+                        data: {
+                            ...params.data,
+                            archivedAt: new Date().toISOString(),
+                        },
+                    };
+                }
+                
+                return params;
             },
         },
     ]

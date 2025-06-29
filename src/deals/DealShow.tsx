@@ -21,6 +21,7 @@ import {
     useRedirect,
     useRefresh,
     useUpdate,
+    useGetOne,
 } from 'react-admin';
 
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -29,9 +30,11 @@ import { CompanyAvatar } from '../companies/CompanyAvatar';
 import { DialogCloseButton } from '../misc/DialogCloseButton';
 import { NotesIterator } from '../notes';
 import { useConfigurationContext } from '../root/ConfigurationContext';
-import { Deal } from '../types';
+import { Deal, Organization, Contact, Product } from '../types';
 import { ContactList } from './ContactList';
 import { findDealLabel } from './deal';
+import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
+import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
 
 export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
     const redirect = useRedirect();
@@ -66,6 +69,26 @@ const CLOSE_TOP_WITH_ARCHIVED = 14;
 const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
     const { dealStages } = useConfigurationContext();
     const record = useRecordContext<Deal>();
+    
+    // Fetch related entities for breadcrumbs
+    const { data: organization } = useGetOne<Organization>(
+        'organizations', 
+        { id: record?.organizationId },
+        { enabled: !!record?.organizationId }
+    );
+    
+    const { data: contact } = useGetOne<Contact>(
+        'contacts', 
+        { id: record?.contactId },
+        { enabled: !!record?.contactId }
+    );
+    
+    const { data: product } = useGetOne<Product>(
+        'products',
+        { id: record?.productId },
+        { enabled: !!record?.productId }
+    );
+    
     if (!record) return null;
 
     return (
@@ -78,6 +101,18 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
             />
             <Stack gap={1}>
                 {record.archivedAt ? <ArchivedTitle /> : null}
+                <Box p={2}>
+                    <RelationshipBreadcrumbs
+                        currentEntity="opportunity"
+                        showContext={true}
+                        relationships={{
+                            organization: organization,
+                            contact: contact,
+                            product: product,
+                            opportunity: record
+                        }}
+                    />
+                </Box>
                 <Box display="flex" p={2}>
                     <Box flex="1">
                         <Stack
@@ -219,7 +254,22 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                         )}
 
                         <Box m={2}>
-                            <Divider />
+                            <Divider sx={{ mb: 3 }} />
+                            
+                            {/* Related Interactions */}
+                            <RelatedEntitiesSection
+                                entityType="opportunity"
+                                title="Related Interactions"
+                                relatedType="interactions"
+                                filter={{ opportunityId: record?.id }}
+                                maxItems={3}
+                                createLink={`/interactions/create?opportunityId=${record?.id}&organizationId=${record?.organizationId}&contactId=${record?.contactId}`}
+                                viewAllLink={`/interactions?filter=${JSON.stringify({ opportunityId: record?.id })}`}
+                                emptyMessage="No interactions recorded for this opportunity yet."
+                            />
+                            
+                            <Divider sx={{ my: 3 }} />
+                            
                             <ReferenceManyField
                                 target="deal_id"
                                 reference="dealNotes"

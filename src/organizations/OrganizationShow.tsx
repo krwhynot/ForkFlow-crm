@@ -48,6 +48,8 @@ import {
 } from '@mui/icons-material';
 import { Organization, Setting, Contact } from '../types';
 import { OrganizationMapView } from './OrganizationMapView';
+import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
+import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
 
 const OrganizationShowActions = () => {
     const [showMap, setShowMap] = React.useState(false);
@@ -180,6 +182,10 @@ const OrganizationShowContent = () => {
 
     return (
         <Box sx={{ p: 2 }}>
+            <RelationshipBreadcrumbs
+                currentEntity="organization"
+                showContext={true}
+            />
             <Grid container spacing={3}>
                 {/* Main Organization Info */}
                 <Grid item xs={12} md={8}>
@@ -578,62 +584,29 @@ const OrganizationShowContent = () => {
                             </CardContent>
                         </Card>
 
-                        {/* Interaction History */}
-                        <Card>
-                            <CardContent>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        mb: 2,
-                                    }}
-                                >
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ fontWeight: 600 }}
-                                    >
-                                        Recent Interactions
-                                    </Typography>
-                                    <Button
-                                        component={Link}
-                                        to={`/interactions/create?organizationId=${record.id}`}
-                                        variant="outlined"
-                                        size="small"
-                                        startIcon={<InteractionIcon />}
-                                        sx={{ minHeight: 44, px: 2 }}
-                                    >
-                                        Log Interaction
-                                    </Button>
-                                </Box>
+                        {/* Recent Interactions - Enhanced */}
+                        <RelatedEntitiesSection
+                            entityType="organization"
+                            title="Recent Interactions"
+                            relatedType="interactions"
+                            filter={{ organizationId: record?.id }}
+                            maxItems={3}
+                            createLink={`/interactions/create?organizationId=${record?.id}`}
+                            viewAllLink={`/interactions?filter=${JSON.stringify({ organizationId: record?.id })}`}
+                            emptyMessage="No interactions logged yet. Log an interaction to start tracking engagement history."
+                        />
 
-                                {/* Placeholder for future interactions */}
-                                <Box sx={{ textAlign: 'center', py: 3 }}>
-                                    <HistoryIcon
-                                        sx={{
-                                            fontSize: 48,
-                                            color: 'text.secondary',
-                                            mb: 1,
-                                        }}
-                                    />
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                        sx={{ mb: 2 }}
-                                    >
-                                        No interactions logged yet
-                                    </Typography>
-                                    <Typography
-                                        variant="caption"
-                                        color="text.secondary"
-                                        sx={{ fontStyle: 'italic' }}
-                                    >
-                                        Interaction tracking will be available when Task 8 
-                                        (Interaction Tracking API) and Task 33 (Interactions UI) are completed.
-                                    </Typography>
-                                </Box>
-                            </CardContent>
-                        </Card>
+                        {/* Related Opportunities */}
+                        <RelatedEntitiesSection
+                            entityType="organization"
+                            title="Opportunities"
+                            relatedType="opportunities"
+                            filter={{ organizationId: record?.id }}
+                            maxItems={3}
+                            createLink={`/opportunities/create?organizationId=${record?.id}`}
+                            viewAllLink={`/opportunities?filter=${JSON.stringify({ organizationId: record?.id })}`}
+                            emptyMessage="No opportunities with this organization yet. Create one to start tracking potential deals."
+                        />
                     </Stack>
                 </Grid>
             </Grid>

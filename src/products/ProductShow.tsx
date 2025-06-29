@@ -29,6 +29,8 @@ import {
     PhotoCamera as PhotoIcon,
     Business as BusinessIcon,
 } from '@mui/icons-material';
+import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
+import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
 
 const ProductShowActions = () => (
     <TopToolbar>
@@ -209,44 +211,23 @@ const ProductDetails = () => {
     );
 };
 
-// Related Opportunities Placeholder
-const RelatedOpportunities = () => (
-    <Card sx={{ mb: 2 }}>
-        <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <InventoryIcon sx={{ mr: 1, color: 'primary.main' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Related Opportunities
-                </Typography>
-            </Box>
-            <Divider sx={{ mb: 2 }} />
-            <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontStyle: 'italic' }}
-            >
-                Opportunities featuring this product will appear here once the
-                Opportunities system is implemented. This will show active
-                deals, quotes, and sales pipeline data related to this product.
-            </Typography>
-            <Box
-                sx={{
-                    mt: 2,
-                    p: 3,
-                    border: '2px dashed',
-                    borderColor: 'divider',
-                    borderRadius: 1,
-                    textAlign: 'center',
-                }}
-            >
-                <Typography variant="body2" color="text.secondary">
-                    📈 Pipeline Analytics • 💼 Active Deals • 📊 Sales
-                    Performance
-                </Typography>
-            </Box>
-        </CardContent>
-    </Card>
-);
+// Related Opportunities - Enhanced with Navigation Component
+const RelatedOpportunities = () => {
+    const record = useRecordContext<Product>();
+    
+    return (
+        <RelatedEntitiesSection
+            entityType="product"
+            title="Related Opportunities"
+            relatedType="opportunities"
+            filter={{ productId: record?.id }}
+            maxItems={5}
+            createLink={`/opportunities/create?productId=${record?.id}`}
+            viewAllLink={`/opportunities?filter=${JSON.stringify({ productId: record?.id })}`}
+            emptyMessage="No opportunities featuring this product yet. Create one to start tracking sales pipeline."
+        />
+    );
+};
 
 // Price History Placeholder
 const PriceHistory = () => (
@@ -509,6 +490,10 @@ export const ProductShow = () => {
     return (
         <Show actions={<ProductShowActions />}>
             <SimpleShowLayout>
+                <RelationshipBreadcrumbs 
+                    currentEntity="product"
+                    showContext={true}
+                />
                 <ProductHeader />
                 <Grid container spacing={3}>
                     <Grid item xs={12} lg={8}>

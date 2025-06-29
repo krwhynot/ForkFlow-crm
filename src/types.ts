@@ -193,6 +193,69 @@ export type Broker = {
     password?: string; // For fake rest provider only
 } & Pick<RaRecord, 'id'>;
 
+// Enhanced Authentication Types for JWT Implementation
+export type UserRole = 'broker' | 'admin' | 'manager';
+
+export type User = {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: UserRole;
+    territory?: string[];
+    principals?: string[];
+    avatar?: string;
+    isActive: boolean;
+    lastLoginAt?: string;
+    createdAt: string;
+    updatedAt: string;
+} & Pick<RaRecord, 'id'>;
+
+export type AuthTokens = {
+    accessToken: string;
+    refreshToken: string;
+    tokenType: 'Bearer';
+    expiresIn: number;
+    expiresAt: number;
+};
+
+export type LoginCredentials = {
+    email: string;
+    password: string;
+    rememberMe?: boolean;
+};
+
+export type LoginResponse = {
+    user: User;
+    tokens: AuthTokens;
+};
+
+export type RefreshTokenRequest = {
+    refreshToken: string;
+};
+
+export type PasswordResetRequest = {
+    email: string;
+};
+
+export type PasswordResetConfirm = {
+    token: string;
+    newPassword: string;
+};
+
+export type JWTPayload = {
+    sub: string; // user id
+    email: string;
+    role: UserRole;
+    firstName: string;
+    lastName: string;
+    territory?: string[];
+    principals?: string[];
+    iat: number; // issued at
+    exp: number; // expires at
+    jti: string; // JWT ID
+};
+
 export type Customer = {
     business_name: string;
     contact_person?: string;

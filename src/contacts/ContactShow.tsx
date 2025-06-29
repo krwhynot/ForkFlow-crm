@@ -35,6 +35,8 @@ import {
     Person as PersonIcon,
 } from '@mui/icons-material';
 import { Contact, Setting, Organization } from '../types';
+import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
+import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
 
 const ContactShowActions = () => (
     <TopToolbar>
@@ -120,6 +122,13 @@ const ContactShowContent = () => {
 
     return (
         <Box sx={{ p: 2 }}>
+            <RelationshipBreadcrumbs
+                currentEntity="contact"
+                showContext={true}
+                relationships={{
+                    organization: organization
+                }}
+            />
             <Grid container spacing={3}>
                 {/* Main Contact Info */}
                 <Grid item xs={12} md={8}>
@@ -509,25 +518,29 @@ const ContactShowContent = () => {
                             </CardContent>
                         </Card>
 
-                        {/* Interaction History Placeholder */}
-                        <Card>
-                            <CardContent>
-                                <Typography
-                                    variant="h6"
-                                    sx={{ fontWeight: 600, mb: 2 }}
-                                >
-                                    Recent Interactions
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    No interactions recorded yet. Interaction
-                                    history will appear here once the
-                                    Interactions system is implemented.
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                        {/* Recent Interactions - Enhanced */}
+                        <RelatedEntitiesSection
+                            entityType="contact"
+                            title="Recent Interactions"
+                            relatedType="interactions"
+                            filter={{ contactId: record?.id }}
+                            maxItems={3}
+                            createLink={`/interactions/create?contactId=${record?.id}&organizationId=${record?.organizationId}`}
+                            viewAllLink={`/interactions?filter=${JSON.stringify({ contactId: record?.id })}`}
+                            emptyMessage="No interactions recorded yet. Log an interaction to start tracking engagement history."
+                        />
+
+                        {/* Related Opportunities */}
+                        <RelatedEntitiesSection
+                            entityType="contact"
+                            title="Opportunities"
+                            relatedType="opportunities"
+                            filter={{ contactId: record?.id }}
+                            maxItems={3}
+                            createLink={`/opportunities/create?contactId=${record?.id}&organizationId=${record?.organizationId}`}
+                            viewAllLink={`/opportunities?filter=${JSON.stringify({ contactId: record?.id })}`}
+                            emptyMessage="No opportunities with this contact yet. Create one to start tracking potential deals."
+                        />
                     </Stack>
                 </Grid>
             </Grid>

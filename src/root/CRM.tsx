@@ -29,6 +29,7 @@ import { CustomerList } from '../customers';
 import { FoodServiceDashboard } from '../dashboard/FoodServiceDashboard';
 import { Layout } from '../layout/Layout';
 import { LoginPage } from '../login/LoginPage';
+import { MobileLoginForm } from '../login/MobileLoginForm';
 import { SignupPage } from '../login/SignupPage';
 import {
     authProvider as defaultAuthProvider,
@@ -38,6 +39,10 @@ import {
     authProvider as fakeAuthProvider,
     dataProvider as fakeDataProvider,
 } from '../providers/fakerest';
+import { 
+    jwtAuthProvider,
+    initializeAuthentication 
+} from '../providers/auth';
 import { ReminderCreate, ReminderList, ReminderShow } from '../reminders';
 import settings from '../settings';
 import { SettingsPage } from '../settings/SettingsPage';
@@ -157,12 +162,33 @@ export const CRM = ({
         process.env.VITE_TEST_MODE === 'true'
     );
 
+    // Detect JWT auth mode
+    const isJWTMode = typeof window !== 'undefined' && (
+        window.location.search.includes('auth=jwt') ||
+        localStorage.getItem('auth-provider') === 'jwt' ||
+        process.env.REACT_APP_AUTH_PROVIDER === 'jwt'
+    );
+
     const effectiveDataProvider = dataProvider || (isTestMode ? fakeDataProvider : defaultDataProvider);
-    const effectiveAuthProvider = authProvider || (isTestMode ? fakeAuthProvider : defaultAuthProvider);
+    
+    // Select auth provider based on mode
+    let effectiveAuthProvider: AuthProvider;
+    if (authProvider) {
+        effectiveAuthProvider = authProvider;
+    } else if (isTestMode) {
+        effectiveAuthProvider = fakeAuthProvider;
+    } else if (isJWTMode) {
+        effectiveAuthProvider = jwtAuthProvider;
+    } else {
+        effectiveAuthProvider = defaultAuthProvider;
+    }
+    
     const effectiveRequireAuth = isTestMode ? false : requireAuth;
 
     if (isTestMode) {
         console.log('🎭 Test mode detected - using fakerest data provider');
+    } else if (isJWTMode) {
+        console.log('🔐 JWT auth mode detected - using JWT authentication with MobileLoginForm');
     } else {
         console.log('🗄️ Production mode - using Supabase data provider');
     }
@@ -171,9 +197,10 @@ export const CRM = ({
     useEffect(() => {
         console.log('🔧 CRM Debug Info:', {
             isTestMode,
+            isJWTMode,
             dataProviderType: isTestMode ? 'fakerest' : 'supabase',
             effectiveDataProvider: effectiveDataProvider?.constructor?.name || 'Unknown',
-            authProviderType: isTestMode ? 'fake' : 'supabase',
+            authProviderType: isTestMode ? 'fake' : (isJWTMode ? 'jwt' : 'supabase'),
             requireAuth: effectiveRequireAuth
         });
 
@@ -199,7 +226,22 @@ export const CRM = ({
         } else {
             console.error('❌ Data provider not initialized or missing getList method');
         }
-    }, [effectiveDataProvider, effectiveAuthProvider, isTestMode, effectiveRequireAuth]);
+    }, [effectiveDataProvider, effectiveAuthProvider, isTestMode, isJWTMode, effectiveRequireAuth]);
+
+    // Initialize JWT authentication if in JWT mode
+    useEffect(() => {
+        if (isJWTMode && !isTestMode) {
+            initializeAuthentication().then((user) => {
+                if (user) {
+                    console.log('✅ JWT authentication initialized for user:', user.email);
+                } else {
+                    console.log('ℹ️ No existing JWT session found');
+                }
+            }).catch((error) => {
+                console.error('❌ JWT authentication initialization failed:', error);
+            });
+        }
+    }, [isJWTMode, isTestMode]);
     useEffect(() => {
         if (
             disableTelemetry ||
@@ -220,7 +262,7 @@ export const CRM = ({
             authProvider={effectiveAuthProvider}
             store={localStorageStore(undefined, 'ForkFlowCRM')}
             layout={Layout}
-            loginPage={LoginPage}
+            loginPage={isJWTMode ? MobileLoginForm : LoginPage}
             dashboard={FoodServiceDashboard}
             theme={lightTheme}
             darkTheme={darkTheme || null}
