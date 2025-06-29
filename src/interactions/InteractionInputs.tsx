@@ -177,7 +177,6 @@ export const InteractionInputs = () => {
                 <ReferenceInput
                     source="organizationId"
                     reference="organizations"
-                    validate={required() as any}
                     label="Organization"
                 >
                     <AutocompleteInput
@@ -185,6 +184,7 @@ export const InteractionInputs = () => {
                         size="medium"
                         fullWidth
                         helperText="Select the organization for this interaction"
+                        validate={required() as any}
                     />
                 </ReferenceInput>
 
@@ -386,7 +386,7 @@ export const InteractionInputs = () => {
 
                         <ReferenceInput
                             source="opportunityId"
-                            reference="opportunities"
+                            reference="deals"
                             label="Related Opportunity (Optional)"
                         >
                             <AutocompleteInput
@@ -439,7 +439,7 @@ export const InteractionInputs = () => {
                                 source="attachments"
                                 label="Upload Files"
                                 multiple
-                                accept={{"image/*": [], "application/pdf": [], ".doc": [], ".docx": [], ".txt": [], ".csv": []} as any}
+                                accept={{"image/*": [], "application/pdf": [], "application/msword": [".doc"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"], "text/plain": [".txt"], "text/csv": [".csv"]} as any}
                                 helperText="Max 10MB per file. Images will be compressed for mobile upload."
                             >
                                 <FileField source="src" title="title" />

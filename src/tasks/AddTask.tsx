@@ -161,7 +161,7 @@ export const AddTask = ({
                                             optionText={contactOptionText}
                                             inputText={contactInputText}
                                             helperText={false}
-                                            validate={required()}
+                                            validate={required() as any}
                                             TextFieldProps={{
                                                 margin: 'none',
                                             }}

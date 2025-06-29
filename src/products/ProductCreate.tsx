@@ -63,7 +63,7 @@ const EnhancedPrincipalSelection = () => {
                 )}
                 optionValue="id"
                 label="Principal/Brand"
-                validate={required()}
+                validate={required() as any}
                 helperText="Food service principal/brand"
                 fullWidth
                 sx={{

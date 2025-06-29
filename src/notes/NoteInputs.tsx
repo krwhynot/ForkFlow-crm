@@ -73,7 +73,11 @@ export const NoteInputs = ({
                             parse={formatNoteDate}
                         />
                     </Stack>
-                    <FileInput source="attachments" multiple>
+                    <FileInput 
+                        source="attachments" 
+                        multiple
+                        accept={{"application/pdf": [".pdf"], "application/msword": [".doc"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"], "text/plain": [".txt"], "text/csv": [".csv"]} as any}
+                    >
                         <FileField source="src" title="title" />
                     </FileInput>
                 </Stack>

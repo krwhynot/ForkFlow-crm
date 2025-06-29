@@ -190,7 +190,7 @@ const InteractionDetails = () => {
                                     </Typography>
                                     <ReferenceField
                                         source="opportunityId"
-                                        reference="opportunities"
+                                        reference="deals"
                                         link="show"
                                         record={record}
                                     >

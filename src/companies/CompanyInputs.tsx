@@ -86,11 +86,11 @@ const CompanyContactInputs = () => {
             <Typography variant="h6">Contact</Typography>
             <TextInput source="website" helperText={false} validate={isUrl} />
             <TextInput
-                source="linkedin_url"
+                source="linkedInUrl"
                 helperText={false}
                 validate={isLinkedinUrl}
             />
-            <TextInput source="phone_number" helperText={false} />
+            <TextInput source="phoneNumber" helperText={false} />
         </Stack>
     );
 };
@@ -110,7 +110,7 @@ const CompanyContextInputs = () => {
             />
             <SelectInput source="size" choices={sizes} helperText={false} />
             <TextInput source="revenue" helperText={false} />
-            <TextInput source="tax_identifier" helperText={false} />
+            <TextInput source="taxIdentifier" helperText={false} />
         </Stack>
     );
 };
@@ -133,7 +133,7 @@ const CompanyAdditionalInformationInputs = () => {
         <Stack>
             <Typography variant="h6">Additional information</Typography>
             <TextInput source="description" multiline helperText={false} />
-            <ArrayInput source="context_links" helperText={false}>
+            <ArrayInput source="contextLinks" helperText={false}>
                 <SimpleFormIterator
                     disableReordering
                     fullWidth
@@ -159,7 +159,7 @@ const CompanyAccountManagerInput = () => {
         <Stack>
             <Typography variant="h6">Account manager</Typography>
             <ReferenceInput
-                source="salesId"
+                source="accountManager"
                 reference="sales"
                 filter={{
                     'disabled@neq': true,
@@ -169,7 +169,7 @@ const CompanyAccountManagerInput = () => {
                     label="Account manager"
                     helperText={false}
                     optionText={saleOptionRenderer}
-                    validate={required()}
+                    validate={required() as any}
                 />
             </ReferenceInput>
         </Stack>

@@ -98,13 +98,13 @@ const OpportunityForm = () => {
                                 <ReferenceInput 
                                     source="organizationId" 
                                     reference="organizations"
-                                    validate={required() as any}
                                 >
                                     <AutocompleteInput
                                         optionText="name"
                                         label="Organization"
                                         fullWidth
                                         helperText="Select the restaurant or food service business"
+                                        validate={required() as any}
                                     />
                                 </ReferenceInput>
                             </Grid>

@@ -128,7 +128,7 @@ export const InteractionFilters = () => {
                 
                 <ReferenceInput
                     source="opportunityId"
-                    reference="opportunities"
+                    reference="deals"
                     label="Opportunity"
                 >
                     <AutocompleteInput

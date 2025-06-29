@@ -75,8 +75,8 @@ const DealLinkedToInputs = () => {
                 {
                     data: {
                         name,
-                        salesId: identity?.id,
-                        created_at: new Date().toISOString(),
+                        accountManager: identity?.id,
+                        createdAt: new Date().toISOString(),
                     },
                 },
                 { returnPromise: true }
@@ -101,7 +101,7 @@ const DealLinkedToInputs = () => {
             </ReferenceInput>
 
             <ReferenceArrayInput
-                source="contact_ids"
+                source="contactIds"
                 reference="contacts_summary"
             >
                 <AutocompleteArrayInput

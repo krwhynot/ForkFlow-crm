@@ -168,7 +168,7 @@ export function ContactImportDialog({
                                 <FileInput
                                     source="csv"
                                     label="CSV File"
-                                    accept={{ 'text/csv': ['.csv'] }}
+                                    accept={{ 'text/csv': ['.csv'], 'application/csv': ['.csv'] } as any}
                                     onChange={handleFileChange}
                                 >
                                     <FileField source="src" title="title" />
