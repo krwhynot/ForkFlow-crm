@@ -3,7 +3,7 @@ import { SetPasswordPage } from 'ra-supabase';
 import { PasswordResetPage } from '../login/PasswordResetPage';
 import { SetNewPasswordPage } from '../login/SetNewPasswordPage';
 import { UserProfilePage } from '../login/UserProfilePage';
-import { SessionTimeout } from '../components/security/SessionTimeout';
+import { SessionTimeoutRoute } from '../components/security/SessionTimeoutRoute';
 import { useEffect } from 'react';
 import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
 import {
@@ -300,6 +300,17 @@ export const CRM = ({
                     path={SetNewPasswordPage.path}
                     element={<SetNewPasswordPage />}
                 />
+                {/* Session Timeout - Persistent overlay with Router context */}
+                <Route 
+                    path="*" 
+                    element={
+                        <SessionTimeoutRoute 
+                            timeoutMinutes={30}
+                            warningMinutes={5}
+                            enabled={!isTestMode && effectiveRequireAuth}
+                        />
+                    } 
+                />
             </CustomRoutes>
 
             <CustomRoutes>
@@ -418,20 +429,13 @@ export const CRM = ({
             taskTypes={['call', 'email', 'meeting', 'follow_up', 'demo']}
             contactGender={['male', 'female', 'other']}
         >
-            <>
-                {enableGPS ? (
-                    <LocationProvider autoRequest={false}>
-                        {AdminComponent}
-                    </LocationProvider>
-                ) : (
-                    AdminComponent
-                )}
-                <SessionTimeout 
-                    timeoutMinutes={30}
-                    warningMinutes={5}
-                    enabled={!isTestMode && effectiveRequireAuth}
-                />
-            </>
+            {enableGPS ? (
+                <LocationProvider autoRequest={false}>
+                    {AdminComponent}
+                </LocationProvider>
+            ) : (
+                AdminComponent
+            )}
         </ConfigurationProvider>
     );
 };
