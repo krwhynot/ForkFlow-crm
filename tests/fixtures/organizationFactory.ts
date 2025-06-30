@@ -36,7 +36,7 @@ export const organizationTestData: OrganizationTestData = {
     phone: '(310) 555-0456',
     website: 'https://pacificcoastseafood.com',
     accountManager: 'sarah.jones@forkflow.com',
-    notes: 'Premium seafood restaurant focusing on sustainable catch. High-volume location with strong weekend traffic.',
+    notes: 'Premium seafood restaurant focusing on sustainable catch.',
     latitude: 34.0194,
     longitude: -118.4912,
     priorityId: 1,
@@ -163,9 +163,6 @@ export class OrganizationFactory {
     return;
   }
 }
-
-// Export all test data for use in tests
-export { organizationTestData };
 
 export const foodServiceOrganizations = [
   {

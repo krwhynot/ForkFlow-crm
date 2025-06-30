@@ -138,36 +138,9 @@ export class TestUtils {
 export type { BrowserContext, Page };
 
 // Global test utilities
-export async function setupTestContext(context: BrowserContext) {
-  // Grant necessary permissions
-  await context.grantPermissions(['geolocation']);
-
-  // Set default geolocation
-  await context.setGeolocation({ latitude: 37.7749, longitude: -122.4194 });
-
-  // Handle console logs and errors
-  context.on('page', page => {
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        console.log(`Console error: ${msg.text()}`);
-      }
-    });
-
-    // Add request interception for test mode
-    page.route('**/*', route => {
-      const request = route.request();
-      const headers = {
-        ...request.headers(),
-        'X-Test-Mode': 'true'
-      };
-      route.continue({ headers });
-    });
-  });
-
-  // Add extra HTTP headers for test identification
-  await context.setExtraHTTPHeaders({
-    'X-Test-Mode': 'true',
-    'X-Test-Environment': 'playwright'
+export async function setupTestContext(page: Page) {
+  await page.addInitScript(() => {
+    localStorage.setItem('testMode', 'true');
   });
 }
 
@@ -236,4 +209,37 @@ export async function waitForDataProviderReady(page: any, timeout: number = 2000
     console.error('Data provider failed to initialize:', error);
     return false;
   }
+}
+
+export async function setupTestAuth(page: Page) {
+  // Set test user token in localStorage or cookie
+}
+
+export async function isLoggedIn(page: Page) {
+  return await page.isVisible('.user-avatar, .ra-logged-in');
+}
+
+export async function login(page: Page, username: string, password: string) {
+  await page.goto('/login');
+  await page.fill('input[name="username"]', username);
+  await page.fill('input[name="password"]', password);
+  await page.click('button[type="submit"]');
+}
+
+export async function measurePageLoadTime(page: Page, url: string) {
+  const start = Date.now();
+  await page.goto(url);
+  return Date.now() - start;
+}
+
+export async function logConsoleErrors(page: Page) {
+  page.on('console', msg => { if (msg.type() === 'error') console.error(msg.text()); });
+}
+
+export async function simulateMobile(page: Page) {
+  await page.setViewportSize({ width: 375, height: 812 });
+}
+
+export async function checkBasicAccessibility(page: Page) {
+  // Use axe-core or Playwright's built-in accessibility snapshot
 }

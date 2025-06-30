@@ -347,6 +347,11 @@ If build is completely broken:
 
 **Remember**: These rules prevent the 49% error reduction we achieved (85→43 errors) from regressing!
 
+## Development Principles
+
+### Principled Development Approach
+- **Never install software, packages, etc. ALWAYS give the steps to install them and wait until it is confirmed that it was installed successfully before continuing to the next step.**
+
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
 NEVER create files unless they're absolutely necessary for achieving your goal.

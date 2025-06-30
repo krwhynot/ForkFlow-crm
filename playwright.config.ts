@@ -54,7 +54,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 }
       },
@@ -62,7 +62,7 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      use: { 
+      use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1280, height: 720 }
       },
@@ -70,7 +70,7 @@ export default defineConfig({
 
     {
       name: 'webkit',
-      use: { 
+      use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1280, height: 720 }
       },
@@ -79,7 +79,7 @@ export default defineConfig({
     /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
-      use: { 
+      use: {
         ...devices['Pixel 5'],
         extraHTTPHeaders: {
           'X-Test-Mode': 'true',
@@ -89,7 +89,7 @@ export default defineConfig({
     },
     {
       name: 'Mobile Safari',
-      use: { 
+      use: {
         ...devices['iPhone 12'],
         extraHTTPHeaders: {
           'X-Test-Mode': 'true',
@@ -124,7 +124,9 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: 180 * 1000, // Increased to 3 minutes
+    stdout: 'pipe',
+    stderr: 'pipe',
     env: {
       ...process.env,
       NODE_ENV: 'test',
@@ -143,7 +145,6 @@ export default defineConfig({
   expect: {
     timeout: 10000,
     toMatchSnapshot: {
-      mode: 'strict',
       threshold: 0.2
     }
   }

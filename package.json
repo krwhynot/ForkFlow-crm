@@ -42,6 +42,7 @@
         "serve": "^14.2.3"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.10.2",
         "@chromatic-com/storybook": "^3.2.6",
         "@inquirer/prompts": "^7.4.0",
         "@playwright/test": "^1.40.0",
@@ -129,6 +130,9 @@
         "bundle:size-detailed": "npm run build && find dist -name '*.js' -o -name '*.css' | xargs ls -lah | sort -k5 -hr",
         "bundle:stats": "vite build --write-bundle-stats && echo 'Bundle stats generated in dist/stats.html'",
         "performance:lighthouse": "npm run build && npx lighthouse http://localhost:4173 --output html --output-path lighthouse-report.html",
-        "performance:bundle-buddy": "npm run build && npx bundle-buddy dist/*.js"
+        "performance:bundle-buddy": "npm run build && npx bundle-buddy dist/*.js",
+        "test:e2e:auth:signin": "playwright test tests/auth/signin.spec.ts",
+        "test:e2e:auth:signup": "playwright test tests/auth/signup.spec.ts",
+        "test:e2e:auth": "playwright test tests/auth/"
     }
 }

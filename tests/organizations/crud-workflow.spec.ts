@@ -349,4 +349,28 @@ test.describe('Organization CRUD Workflow', () => {
       expect(loadTime).toBeLessThan(5000);
     });
   });
+
+  test('should create, read, update, and delete an organization', async ({ page }) => {
+    const orgHelpers = new OrganizationHelpers(page);
+    const orgData = OrganizationFactory.create();
+
+    // Create
+    await orgHelpers.createTestOrganization(orgData);
+    await expect(page.locator('.ra-list-table')).toContainText(orgData.name!);
+
+    // Read
+    await orgHelpers.navigateToOrganizations();
+    await expect(page.locator('.ra-list-table')).toContainText(orgData.name!);
+
+    // Update
+    await orgHelpers.navigateToEditOrganization(orgData.name!);
+    await orgHelpers.fillOrganizationForm({ city: 'Oakland' });
+    await orgHelpers.submitForm();
+    await expect(page.locator('.ra-list-table')).toContainText('Oakland');
+
+    // Delete
+    await page.click(`tr:has-text("${orgData.name}") button:has-text("Delete")`);
+    await page.click('button:has-text("Confirm")');
+    await expect(page.locator('.ra-list-table')).not.toContainText(orgData.name!);
+  });
 });
