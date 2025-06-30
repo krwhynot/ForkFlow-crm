@@ -155,12 +155,13 @@ export const logout = async (): Promise<void> => {
 /**
  * Get current authenticated user
  */
-export const getCurrentUser = async (): Promise<User> => {
+export const getCurrentUser = async (): Promise<User | null> => {
     try {
         const { data: authData, error: authError } = await supabase.auth.getUser();
         
         if (authError || !authData.user) {
-            throw new Error('User not authenticated');
+            console.debug('No authenticated user found:', authError?.message || 'No user session');
+            return null;
         }
 
         // Get user profile from database
@@ -184,7 +185,8 @@ export const getCurrentUser = async (): Promise<User> => {
             .single();
 
         if (profileError || !userProfile) {
-            throw new Error('User profile not found');
+            console.debug('User profile not found for auth user:', authData.user.id);
+            return null;
         }
 
         return {
@@ -202,8 +204,8 @@ export const getCurrentUser = async (): Promise<User> => {
             updatedAt: userProfile.updated_at,
         };
     } catch (error) {
-        console.error('Failed to get current user:', error);
-        throw error;
+        console.debug('Failed to get current user (non-fatal):', error);
+        return null;
     }
 };
 
@@ -213,6 +215,12 @@ export const getCurrentUser = async (): Promise<User> => {
 export const getUserPermissions = async (): Promise<string[]> => {
     try {
         const user = await getCurrentUser();
+        
+        // If no user is authenticated, return empty permissions
+        if (!user) {
+            console.debug('No authenticated user - returning empty permissions');
+            return [];
+        }
         
         // Return permissions based on role
         switch (user.role) {
@@ -250,7 +258,7 @@ export const getUserPermissions = async (): Promise<string[]> => {
                 return [];
         }
     } catch (error) {
-        console.error('Failed to get user permissions:', error);
+        console.debug('Failed to get user permissions (non-fatal):', error);
         return [];
     }
 };
@@ -298,27 +306,30 @@ export const initializeAuth = async (): Promise<User | null> => {
         const { data, error } = await supabase.auth.getSession();
         
         if (error || !data.session) {
+            console.debug('No valid session found during initialization');
             return null;
         }
 
         // Get current user profile
         const user = await getCurrentUser();
         
-        // Log session restoration
-        await logAuditEvent('auth.session_restored', {
-            userId: user.id,
-            userEmail: user.email,
-            userRole: user.role,
-        }, {
-            userId: user.id,
-            userEmail: user.email,
-            outcome: 'success',
-            message: 'Authentication session restored',
-        });
+        // Only log session restoration if we have a valid user
+        if (user) {
+            await logAuditEvent('auth.session_restored', {
+                userId: user.id,
+                userEmail: user.email,
+                userRole: user.role,
+            }, {
+                userId: user.id,
+                userEmail: user.email,
+                outcome: 'success',
+                message: 'Authentication session restored',
+            });
+        }
 
         return user;
     } catch (error) {
-        console.error('Auth initialization failed:', error);
+        console.debug('Auth initialization failed (non-fatal):', error);
         return null;
     }
 };

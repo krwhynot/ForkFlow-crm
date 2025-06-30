@@ -1,12 +1,19 @@
 import { Organization } from '../../src/types';
 
+/**
+ * Interface for test organization data variations.
+ */
 export interface OrganizationTestData {
   basic: Partial<Organization>;
   complete: Partial<Organization>;
-  invalid: Partial<Organization>;
   minimal: Partial<Organization>;
+  edge: Partial<Organization>[];
+  invalid: Partial<Organization>[];
 }
 
+/**
+ * Deterministic, realistic food-service organization test data.
+ */
 export const organizationTestData: OrganizationTestData = {
   basic: {
     name: 'Golden Gate Restaurant',
@@ -17,8 +24,9 @@ export const organizationTestData: OrganizationTestData = {
     phone: '(415) 555-0123',
     website: 'https://goldengaterestaurant.com',
     accountManager: 'john.smith@forkflow.com',
+    createdAt: '2024-01-01T10:00:00.000Z',
+    updatedAt: '2024-01-01T10:00:00.000Z',
   },
-  
   complete: {
     name: 'Pacific Coast Seafood & Grill',
     address: '456 Ocean Boulevard',
@@ -31,31 +39,133 @@ export const organizationTestData: OrganizationTestData = {
     notes: 'Premium seafood restaurant focusing on sustainable catch. High-volume location with strong weekend traffic.',
     latitude: 34.0194,
     longitude: -118.4912,
-    // These would be actual Setting IDs in a real test environment
-    priorityId: 'high-priority-setting-id',
-    segmentId: 'fine-dining-segment-id',
-    distributorId: 'sysco-distributor-id',
+    priorityId: 1,
+    segmentId: 1,
+    distributorId: 1,
+    createdAt: '2024-01-02T11:00:00.000Z',
+    updatedAt: '2024-01-02T11:00:00.000Z',
   },
-  
   minimal: {
-    name: 'Joe\'s Corner Deli',
+    name: "Joe's Corner Deli",
     address: '789 Pine Street',
     city: 'Portland',
     state: 'OR',
     zipCode: '97205',
+    createdAt: '2024-01-03T12:00:00.000Z',
+    updatedAt: '2024-01-03T12:00:00.000Z',
   },
-  
-  invalid: {
-    name: '', // Missing required field
-    address: '999 Invalid Street',
-    city: 'Test City',
-    state: 'XX', // Invalid state
-    zipCode: '12345-invalid', // Invalid format
-    phone: 'not-a-phone-number',
-    website: 'invalid-url',
-    accountManager: 'not-an-email',
-  },
+  edge: [
+    {
+      name: 'A', // Shortest name
+      address: '',
+      city: '',
+      state: 'C',
+      zipCode: '1',
+      createdAt: '2024-01-04T13:00:00.000Z',
+      updatedAt: '2024-01-04T13:00:00.000Z',
+    },
+    {
+      name: 'Z'.repeat(255), // Longest name
+      address: '9'.repeat(255),
+      city: 'Y'.repeat(100),
+      state: 'CA',
+      zipCode: '99999',
+      createdAt: '2024-01-05T14:00:00.000Z',
+      updatedAt: '2024-01-05T14:00:00.000Z',
+    },
+    {
+      name: 'Emoji 🍕🍔',
+      address: 'Unicode Café',
+      city: 'München',
+      state: 'BY',
+      zipCode: '80331',
+      createdAt: '2024-01-06T15:00:00.000Z',
+      updatedAt: '2024-01-06T15:00:00.000Z',
+    },
+  ],
+  invalid: [
+    {
+      name: '', // Missing required
+      address: '999 Invalid Street',
+      city: 'Test City',
+      state: 'XX', // Invalid state
+      zipCode: '12345-invalid', // Invalid format
+      phone: 'not-a-phone-number',
+      website: 'invalid-url',
+      accountManager: 'not-an-email',
+      createdAt: '2024-01-07T16:00:00.000Z',
+      updatedAt: '2024-01-07T16:00:00.000Z',
+    },
+    {
+      name: 'Valid Name',
+      address: '', // Missing address
+      city: '',
+      state: '',
+      zipCode: '',
+      createdAt: '2024-01-08T17:00:00.000Z',
+      updatedAt: '2024-01-08T17:00:00.000Z',
+    },
+    {
+      name: 'Negative GPS',
+      latitude: -999,
+      longitude: -999,
+      createdAt: '2024-01-09T18:00:00.000Z',
+      updatedAt: '2024-01-09T18:00:00.000Z',
+    },
+  ],
 };
+
+/**
+ * Factory for creating test organizations for E2E tests.
+ */
+export class OrganizationFactory {
+  /**
+   * Create a deterministic, basic valid organization.
+   */
+  static create(overrides: Partial<Organization> = {}): Partial<Organization> {
+    return { ...organizationTestData.basic, ...overrides };
+  }
+
+  /**
+   * Create an array of deterministic valid organizations.
+   */
+  static createMany(count: number, overrides: Partial<Organization> = {}): Partial<Organization>[] {
+    return Array.from({ length: count }, (_, i) =>
+      this.create({
+        name: `${organizationTestData.basic.name} ${i + 1}`,
+        ...overrides,
+      })
+    );
+  }
+
+  /**
+   * Create a valid organization with explicit GPS coordinates.
+   */
+  static createWithGPS(lat: number, lng: number, overrides: Partial<Organization> = {}): Partial<Organization> {
+    return this.create({ latitude: lat, longitude: lng, ...overrides });
+  }
+
+  /**
+   * Create a deterministic invalid organization (missing/invalid fields).
+   */
+  static createInvalid(): Partial<Organization> {
+    // Always return the first invalid case for repeatability
+    return { ...organizationTestData.invalid[0] };
+  }
+
+  /**
+   * Utility to clean up created organizations by IDs (stub for now).
+   * @param ids Array of organization IDs to clean up
+   */
+  static async cleanupCreated(ids: number[]): Promise<void> {
+    // Implement actual cleanup in helpers (API/db call)
+    // This is a stub for E2E infra
+    return;
+  }
+}
+
+// Export all test data for use in tests
+export { organizationTestData };
 
 export const foodServiceOrganizations = [
   {
@@ -119,57 +229,6 @@ export const foodServiceOrganizations = [
     longitude: -121.8863,
   },
 ];
-
-export class OrganizationFactory {
-  static create(overrides: Partial<Organization> = {}): Partial<Organization> {
-    const randomOrg = foodServiceOrganizations[
-      Math.floor(Math.random() * foodServiceOrganizations.length)
-    ];
-    
-    return {
-      ...randomOrg,
-      accountManager: 'john.smith@forkflow.com',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      ...overrides,
-    };
-  }
-  
-  static createMany(count: number, overrides: Partial<Organization> = {}): Partial<Organization>[] {
-    return Array.from({ length: count }, (_, index) => 
-      this.create({
-        ...overrides,
-        name: `${overrides.name || 'Test Organization'} ${index + 1}`,
-      })
-    );
-  }
-  
-  static createWithGPS(overrides: Partial<Organization> = {}): Partial<Organization> {
-    return this.create({
-      latitude: 37.7749 + (Math.random() - 0.5) * 0.1, // SF area coordinates
-      longitude: -122.4194 + (Math.random() - 0.5) * 0.1,
-      ...overrides,
-    });
-  }
-  
-  static createInvalid(field: keyof Organization): Partial<Organization> {
-    const base = this.create();
-    const invalidValues: Record<string, any> = {
-      name: '',
-      phone: 'invalid-phone',
-      website: 'not-a-url',
-      zipCode: '12345-invalid',
-      accountManager: 'not-an-email',
-      latitude: 200, // Invalid latitude
-      longitude: 200, // Invalid longitude
-    };
-    
-    return {
-      ...base,
-      [field]: invalidValues[field] || 'invalid-value',
-    };
-  }
-}
 
 // Mock settings data for testing
 export const mockSettings = {

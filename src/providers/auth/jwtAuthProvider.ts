@@ -41,6 +41,46 @@ import {
     initializeHTTPSSecurity 
 } from '../../utils/httpsEnforcement';
 
+// Authentication state management
+type AuthState = 'initializing' | 'authenticated' | 'unauthenticated';
+let authenticationState: AuthState = 'initializing';
+let authInitializationPromise: Promise<User | null> | null = null;
+
+/**
+ * Wait for authentication to be initialized before proceeding
+ */
+const waitForAuthInitialization = async (): Promise<User | null> => {
+    if (authInitializationPromise) {
+        return authInitializationPromise;
+    }
+    
+    // If already initialized, return current state
+    if (authenticationState !== 'initializing') {
+        return authenticationState === 'authenticated' ? getCurrentUser() : null;
+    }
+    
+    // Start initialization
+    authInitializationPromise = initializeAuth().then((user) => {
+        authenticationState = user ? 'authenticated' : 'unauthenticated';
+        console.debug('🔐 Authentication state initialized:', authenticationState);
+        return user;
+    }).catch((error) => {
+        authenticationState = 'unauthenticated';
+        console.debug('🔐 Authentication initialization failed:', error);
+        return null;
+    });
+    
+    return authInitializationPromise;
+};
+
+/**
+ * Update authentication state
+ */
+const setAuthenticationState = (state: AuthState) => {
+    authenticationState = state;
+    console.debug('🔐 Authentication state changed to:', state);
+};
+
 /**
  * Food Service CRM Role-based permissions
  */
@@ -101,6 +141,10 @@ export const jwtAuthProvider: AuthProvider = {
         try {
             const response = await apiLogin(params);
             
+            // Update authentication state
+            setAuthenticationState('authenticated');
+            authInitializationPromise = Promise.resolve(response.user);
+            
             // Log successful authentication
             await logAuditEvent('auth.login', {
                 userId: response.user.id,
@@ -125,6 +169,10 @@ export const jwtAuthProvider: AuthProvider = {
             return Promise.resolve();
         } catch (error) {
             console.error('Login failed:', error);
+            
+            // Update authentication state on failure
+            setAuthenticationState('unauthenticated');
+            authInitializationPromise = Promise.resolve(null);
             
             // Log failed authentication
             await logAuditEvent('auth.login_failed', {
@@ -281,6 +329,10 @@ export const jwtAuthProvider: AuthProvider = {
             
             // Fallback: get user from API
             const user = await getCurrentUser();
+            if (!user) {
+                return Promise.reject(new Error('No authenticated user found'));
+            }
+            
             return Promise.resolve({
                 id: user.id,
                 fullName: `${user.firstName} ${user.lastName}`,
@@ -291,7 +343,7 @@ export const jwtAuthProvider: AuthProvider = {
                 principals: user.principals,
             });
         } catch (error) {
-            console.error('Failed to get user identity:', error);
+            console.debug('Failed to get user identity:', error);
             return Promise.reject(error);
         }
     },

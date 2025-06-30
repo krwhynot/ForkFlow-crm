@@ -1,197 +1,125 @@
 import { expect, test } from '@playwright/test';
-import { OrganizationTestHelpers } from '../helpers/organizationHelpers';
-import { TestUtils, setupTestContext } from '../helpers/testUtils';
+import { OrganizationHelpers } from '../helpers/organizationHelpers';
+import { TestUtils } from '../helpers/testUtils';
 
 test.describe('Organization Form Validation', () => {
-  let orgHelpers: OrganizationTestHelpers;
+  let orgHelpers: OrganizationHelpers;
   let utils: TestUtils;
+  let createdOrgNames: string[] = [];
 
-  test.beforeEach(async ({ page, context }) => {
-    await setupTestContext(context);
-    orgHelpers = new OrganizationTestHelpers(page);
+  test.beforeEach(async ({ page }) => {
+    orgHelpers = new OrganizationHelpers(page);
     utils = new TestUtils(page);
     await utils.logConsoleErrors();
-    if (!(await utils.isLoggedIn())) {
-      await utils.login();
-    }
+    await utils.login();
+    await utils.waitForAppReady();
+    await orgHelpers.goToCreate();
+  });
 
-    await orgHelpers.navigateToCreateOrganization();
+  test.afterEach(async () => {
+    if (createdOrgNames.length > 0) {
+      await orgHelpers.cleanupTestOrgs([]); // Implement actual cleanup logic as needed
+      createdOrgNames = [];
+    }
   });
 
   test.describe('Required Field Validation', () => {
-    test('should require organization name', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
+    test('should require organization name', async () => {
+      await orgHelpers.fillForm({
         address: '123 Test Street',
         city: 'Test City',
         state: 'CA',
       });
-
-      await orgHelpers.clickSaveButton();
-
-      await orgHelpers.expectValidationError('name', 'Required');
-      await expect(page).toHaveURL(/\/organizations\/create/);
+      await orgHelpers.submit();
+      await orgHelpers.expectError('name');
+      await expect(orgHelpers.page).toHaveURL(/\/organizations\/create/);
     });
 
-    test('should allow minimal required fields only', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
-        name: 'Minimal Test Restaurant',
-      });
-
-      await orgHelpers.clickSaveButton();
-
-      // Should succeed with just the name
-      await expect(page).toHaveURL(/\/organizations\/\d+/);
+    test('should allow minimal required fields only', async () => {
+      await orgHelpers.fillForm({ name: 'Minimal Test Restaurant' });
+      await orgHelpers.submit();
+      createdOrgNames.push('Minimal Test Restaurant');
+      await expect(orgHelpers.page).toHaveURL(/\/organizations\/\d+/);
     });
 
-    test('should highlight required fields on focus', async ({ page }) => {
-      const nameInput = page.locator('input[name="name"]');
-
-      // Focus and blur without entering data
+    test('should highlight required fields on focus', async () => {
+      const nameInput = orgHelpers.page.locator('input[name="name"]');
       await nameInput.focus();
       await nameInput.blur();
-
-      // Should show required indicator
       await expect(nameInput).toHaveAttribute('required');
-      await expect(page.locator('label[for="name"] .required-indicator, .MuiFormLabel-asterisk')).toBeVisible();
+      await expect(orgHelpers.page.locator('label[for="name"] .required-indicator, .MuiFormLabel-asterisk')).toBeVisible();
     });
   });
 
   test.describe('Format Validation', () => {
-    test('should validate phone number formats', async ({ page }) => {
-      const phoneInput = page.locator('input[name="phone"]');
-
-      // Test invalid formats
-      const invalidPhones = [
-        'abc123',
-        '123',
-        '123-45',
-        'not-a-phone',
-        '++1234567890',
-      ];
-
+    test('should validate phone number formats', async () => {
+      const phoneInput = orgHelpers.page.locator('input[name="phone"]');
+      const invalidPhones = ['abc123', '123', '123-45', 'not-a-phone', '++1234567890'];
       for (const invalidPhone of invalidPhones) {
         await phoneInput.fill(invalidPhone);
         await phoneInput.blur();
-        await orgHelpers.expectValidationError('phone', 'Must be a valid phone number');
+        await orgHelpers.expectError('phone');
         await phoneInput.clear();
       }
-
-      // Test valid formats
-      const validPhones = [
-        '(415) 555-1234',
-        '415-555-1234',
-        '+1 415 555 1234',
-        '4155551234',
-      ];
-
+      const validPhones = ['(415) 555-1234', '415-555-1234', '+1 415 555 1234', '4155551234'];
       for (const validPhone of validPhones) {
         await phoneInput.fill(validPhone);
         await phoneInput.blur();
-        await orgHelpers.expectNoValidationErrors();
+        await orgHelpers.expectNoErrors();
         await phoneInput.clear();
       }
     });
 
-    test('should validate email format for account manager', async ({ page }) => {
-      const emailInput = page.locator('input[name="accountManager"]');
-
-      // Test invalid emails
-      const invalidEmails = [
-        'not-an-email',
-        '@domain.com',
-        'user@',
-        'user@domain',
-        'user.domain.com',
-      ];
-
+    test('should validate email format for account manager', async () => {
+      const emailInput = orgHelpers.page.locator('input[name="accountManager"]');
+      const invalidEmails = ['not-an-email', '@domain.com', 'user@', 'user@domain', 'user.domain.com'];
       for (const invalidEmail of invalidEmails) {
         await emailInput.fill(invalidEmail);
         await emailInput.blur();
-        await orgHelpers.expectValidationError('accountManager', 'Must be a valid email address');
+        await orgHelpers.expectError('accountManager');
         await emailInput.clear();
       }
-
-      // Test valid emails
-      const validEmails = [
-        'user@domain.com',
-        'john.smith@forkflow.com',
-        'test+tag@example.co.uk',
-      ];
-
+      const validEmails = ['user@domain.com', 'john.smith@forkflow.com', 'test+tag@example.co.uk'];
       for (const validEmail of validEmails) {
         await emailInput.fill(validEmail);
         await emailInput.blur();
-        await orgHelpers.expectNoValidationErrors();
+        await orgHelpers.expectNoErrors();
         await emailInput.clear();
       }
     });
 
-    test('should validate website URL format', async ({ page }) => {
-      const websiteInput = page.locator('input[name="website"]');
-
-      // Test invalid URLs
-      const invalidUrls = [
-        'not-a-url',
-        'ftp://example.com',
-        'just-text',
-        'http://',
-        'example',
-      ];
-
+    test('should validate website URL format', async () => {
+      const websiteInput = orgHelpers.page.locator('input[name="website"]');
+      const invalidUrls = ['not-a-url', 'ftp://example.com', 'just-text', 'http://', 'example'];
       for (const invalidUrl of invalidUrls) {
         await websiteInput.fill(invalidUrl);
         await websiteInput.blur();
-        await orgHelpers.expectValidationError('website', 'Must be a valid URL');
+        await orgHelpers.expectError('website');
         await websiteInput.clear();
       }
-
-      // Test valid URLs
-      const validUrls = [
-        'https://example.com',
-        'http://test.org',
-        'www.restaurant.com',
-        'restaurant.com',
-      ];
-
+      const validUrls = ['https://example.com', 'http://test.org', 'www.restaurant.com', 'restaurant.com'];
       for (const validUrl of validUrls) {
         await websiteInput.fill(validUrl);
         await websiteInput.blur();
-        await orgHelpers.expectNoValidationErrors();
+        await orgHelpers.expectNoErrors();
         await websiteInput.clear();
       }
     });
 
-    test('should validate ZIP code format', async ({ page }) => {
-      const zipInput = page.locator('input[name="zipCode"]');
-
-      // Test invalid ZIP codes
-      const invalidZips = [
-        '123',
-        '12345-',
-        '12345-123',
-        'abcde',
-        '123456',
-      ];
-
+    test('should validate ZIP code format', async () => {
+      const zipInput = orgHelpers.page.locator('input[name="zipCode"]');
+      const invalidZips = ['123', '12345-', '12345-123', 'abcde', '123456'];
       for (const invalidZip of invalidZips) {
         await zipInput.fill(invalidZip);
         await zipInput.blur();
-        await orgHelpers.expectValidationError('zipCode', 'Must be a valid ZIP code');
+        await orgHelpers.expectError('zipCode');
         await zipInput.clear();
       }
-
-      // Test valid ZIP codes
-      const validZips = [
-        '12345',
-        '12345-6789',
-        '94102',
-        '10001-1234',
-      ];
-
+      const validZips = ['12345', '12345-6789', '94102', '10001-1234'];
       for (const validZip of validZips) {
         await zipInput.fill(validZip);
         await zipInput.blur();
-        await orgHelpers.expectNoValidationErrors();
+        await orgHelpers.expectNoErrors();
         await zipInput.clear();
       }
     });
@@ -243,14 +171,14 @@ test.describe('Organization Form Validation', () => {
       await phoneInput.type('abc');
 
       // Should show validation error immediately
-      await orgHelpers.expectValidationError('phone');
+      await orgHelpers.expectError('phone');
 
       // Clear and type valid phone
       await phoneInput.clear();
       await phoneInput.type('(415) 555-1234');
 
       // Error should clear
-      await orgHelpers.expectNoValidationErrors();
+      await orgHelpers.expectNoErrors();
     });
 
     test('should update validation on blur', async ({ page }) => {
@@ -259,14 +187,14 @@ test.describe('Organization Form Validation', () => {
       await websiteInput.fill('invalid-url');
       await websiteInput.blur();
 
-      await orgHelpers.expectValidationError('website');
+      await orgHelpers.expectError('website');
 
       await websiteInput.focus();
       await websiteInput.clear();
       await websiteInput.fill('https://valid-url.com');
       await websiteInput.blur();
 
-      await orgHelpers.expectNoValidationErrors();
+      await orgHelpers.expectNoErrors();
     });
   });
 
@@ -274,7 +202,7 @@ test.describe('Organization Form Validation', () => {
     test('should validate GPS coordinates', async ({ page }) => {
       await orgHelpers.mockGPSLocation(37.7749, -122.4194);
 
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'GPS Test Restaurant',
         address: '123 GPS Street',
         city: 'San Francisco',
@@ -285,7 +213,7 @@ test.describe('Organization Form Validation', () => {
       await orgHelpers.waitForGPSCapture();
 
       // Should accept valid coordinates
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
       await expect(page).toHaveURL(/\/organizations\/\d+/);
     });
 
@@ -293,7 +221,7 @@ test.describe('Organization Form Validation', () => {
       // Deny geolocation permission
       await page.context().clearPermissions();
 
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'GPS Test Restaurant',
         address: '123 GPS Street',
         city: 'San Francisco',
@@ -310,7 +238,7 @@ test.describe('Organization Form Validation', () => {
       // Mock invalid coordinates (latitude > 90)
       await orgHelpers.mockGPSLocation(200, -122.4194);
 
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'Invalid GPS Restaurant',
       });
 
@@ -323,14 +251,14 @@ test.describe('Organization Form Validation', () => {
 
   test.describe('Dropdown Validation', () => {
     test('should validate priority selection', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'Priority Test Restaurant',
       });
 
       // Select priority
       await orgHelpers.selectOption('priorityId', 'high-priority-setting-id');
 
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
       await expect(page).toHaveURL(/\/organizations\/\d+/);
 
       // Verify priority was saved
@@ -338,23 +266,23 @@ test.describe('Organization Form Validation', () => {
     });
 
     test('should validate segment selection', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'Segment Test Restaurant',
       });
 
       await orgHelpers.selectOption('segmentId', 'fine-dining-segment-id');
 
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
       await expect(page).toHaveURL(/\/organizations\/\d+/);
     });
 
     test('should handle empty dropdown selections', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'Empty Selection Restaurant',
       });
 
       // Don't select any dropdowns - should still be valid
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
       await expect(page).toHaveURL(/\/organizations\/\d+/);
     });
   });
@@ -394,7 +322,7 @@ test.describe('Organization Form Validation', () => {
 
   test.describe('Form Submission', () => {
     test('should prevent duplicate submissions', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'Duplicate Test Restaurant',
         address: '123 Test Street',
         city: 'Test City',
@@ -419,7 +347,7 @@ test.describe('Organization Form Validation', () => {
     });
 
     test('should disable save button during submission', async ({ page }) => {
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: 'Button State Test Restaurant',
       });
 

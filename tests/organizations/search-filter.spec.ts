@@ -1,42 +1,46 @@
 import { expect, test } from '@playwright/test';
-import { foodServiceOrganizations } from '../fixtures';
-import { OrganizationTestHelpers } from '../helpers/organizationHelpers';
-import { TestUtils, setupTestContext } from '../helpers/testUtils';
+import { foodServiceOrganizations } from '../fixtures/organizationFactory';
+import { OrganizationHelpers } from '../helpers/organizationHelpers';
+import { TestUtils } from '../helpers/testUtils';
 
 test.describe('Organization Search and Filter', () => {
-  let orgHelpers: OrganizationTestHelpers;
+  let orgHelpers: OrganizationHelpers;
   let utils: TestUtils;
+  let createdOrgNames: string[] = [];
 
   test.beforeAll(async ({ browser }) => {
     // Create test data once for all search/filter tests
     const context = await browser.newContext();
     const page = await context.newPage();
-    await setupTestContext(context);
-
-    const helpers = new OrganizationTestHelpers(page);
+    const helpers = new OrganizationHelpers(page);
     const testUtils = new TestUtils(page);
-
-    if (!(await testUtils.isLoggedIn())) {
-      await testUtils.login();
-    }
-
+    await testUtils.login();
+    await testUtils.waitForAppReady();
     // Create multiple test organizations for search/filter testing
     for (const orgData of foodServiceOrganizations) {
-      await helpers.createTestOrganization(orgData);
+      await helpers.createTestOrg(orgData);
+      createdOrgNames.push(orgData.name!);
     }
-
     await context.close();
   });
 
-  test.beforeEach(async ({ page, context }) => {
-    await setupTestContext(context);
-    orgHelpers = new OrganizationTestHelpers(page);
+  test.afterAll(async () => {
+    // Clean up all created organizations after all tests
+    if (createdOrgNames.length > 0) {
+      // In a real app, you would fetch IDs by name or use returned IDs
+      // Here, just demonstrate the cleanup call
+      await orgHelpers?.cleanupTestOrgs([]); // Implement actual cleanup logic as needed
+      createdOrgNames = [];
+    }
+  });
+
+  test.beforeEach(async ({ page }) => {
+    orgHelpers = new OrganizationHelpers(page);
     utils = new TestUtils(page);
     await utils.logConsoleErrors();
-    if (!(await utils.isLoggedIn())) {
-      await utils.login();
-    }
-    await orgHelpers.navigateToOrganizations();
+    await utils.login();
+    await utils.waitForAppReady();
+    await orgHelpers.goToList();
   });
 
   test.describe('Text Search', () => {
@@ -370,14 +374,14 @@ test.describe('Organization Search and Filter', () => {
     test('should filter large datasets quickly', async ({ page }) => {
       // Create additional test data
       for (let i = 0; i < 20; i++) {
-        await orgHelpers.createTestOrganization({
+        await orgHelpers.createTestOrg({
           name: `Performance Test Org ${i}`,
           city: 'Test City',
           state: 'CA',
         });
       }
 
-      await orgHelpers.navigateToOrganizations();
+      await orgHelpers.goToList();
 
       const startTime = Date.now();
       await orgHelpers.applyFilter('city', 'Test City');
@@ -426,4 +430,5 @@ test.describe('Organization Search and Filter', () => {
       await expect(page.locator('[aria-live="polite"], .results-announcement')).toBeVisible();
     });
   });
+});
 });

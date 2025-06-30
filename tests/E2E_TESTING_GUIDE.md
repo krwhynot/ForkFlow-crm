@@ -2,7 +2,7 @@
 
 ## 🎯 Overview
 
-This guide provides comprehensive instructions for running E2E tests on the ForkFlow CRM application. The testing infrastructure has been optimized to resolve the original 81.4% failure rate by addressing core application loading and configuration issues.
+This guide provides comprehensive instructions for running E2E tests on the ForkFlow CRM application. The testing infrastructure uses modern Playwright patterns, strict TypeScript, and robust helpers/factories for reliability, maintainability, and learning.
 
 ## 🔧 Setup and Prerequisites
 
@@ -45,6 +45,14 @@ npx playwright test --ui
 
 # Run specific test file
 npx playwright test tests/smoke/app-loading.spec.ts
+```
+
+### Device/Browser/CI
+```bash
+npm run test:e2e:chrome         # Chromium only
+npm run test:e2e:mobile         # Mobile emulation
+npm run test:e2e:ci             # CI mode
+npm run test:e2e:report         # Show HTML report
 ```
 
 ### Mobile and Responsive Testing
@@ -302,6 +310,121 @@ await page.route('**/api/**', route => route.fulfill({ body: '{}' }));
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [Mobile Web Best Practices](https://web.dev/mobile/)
 - [Testing Best Practices](https://testing-library.com/docs/)
+
+## 🧩 E2E Helper & Factory API
+
+### OrganizationHelpers (Page Object)
+- `goToList()` – Navigate to organization list
+- `goToCreate()` – Navigate to create form
+- `goToEdit(id)` – Navigate to edit form
+- `fillForm(data)` – Fill form fields
+- `submit()` – Submit the form
+- `selectOption(field, value)` – Select dropdown
+- `createTestOrg(data?)` – Create org via UI
+- `bulkCreateOrgs(dataArray)` – Bulk create via UI
+- `mockLocation(lat, lng)` – Mock browser GPS
+- `clickGpsBtn()` – Click GPS button
+- `waitForGps()` – Wait for GPS capture
+- `expectError(field)` – Assert validation error
+- `expectNoErrors()` – Assert no validation errors
+- `isMobile()` – Check if mobile viewport
+- `expectMobileLayout()` – Assert mobile layout
+- `checkA11yForm()` – Accessibility check (form)
+- `checkA11yButton()` – Accessibility check (buttons)
+- `measureLoad()` – Measure form load time
+- `measureSubmit()` – Measure submit time
+- `cleanupTestOrgs(ids)` – Cleanup created orgs
+
+### OrganizationFactory (Test Data)
+- `create(overrides?)` – Deterministic valid org
+- `createMany(count, overrides?)` – Array of valid orgs
+- `createWithGPS(lat, lng, overrides?)` – Org with GPS
+- `createInvalid()` – Invalid org (missing/invalid fields)
+- `organizationTestData` – Prebuilt basic, complete, minimal, edge, invalid cases
+
+### TestUtils (Global Utilities)
+- `login(email?, password?)` – Log in as test user
+- `isLoggedIn()` – Check login state
+- `waitForAppReady()` – Wait for app to be ready
+- `measurePageLoad()` – Measure page load time
+- `logConsoleErrors()` – Log browser errors
+- `simulateMobileDevice()` – Set mobile viewport
+- `simulateTabletDevice()` – Set tablet viewport
+- `simulateDesktopDevice()` – Set desktop viewport
+- `checkBasicWCAG()` – Basic accessibility check
+
+## 📝 Usage Examples
+
+### Create and Cleanup an Organization
+```typescript
+const orgHelpers = new OrganizationHelpers(page);
+const testData = OrganizationFactory.create();
+await orgHelpers.goToCreate();
+await orgHelpers.fillForm(testData);
+await orgHelpers.submit();
+// ... assertions ...
+await orgHelpers.cleanupTestOrgs([/* org IDs */]);
+```
+
+### Validation and Error Checking
+```typescript
+await orgHelpers.goToCreate();
+await orgHelpers.submit();
+await orgHelpers.expectError('name');
+await orgHelpers.expectNoErrors();
+```
+
+### GPS and Mobile
+```typescript
+await orgHelpers.mockLocation(37.7749, -122.4194);
+await orgHelpers.goToCreate();
+await orgHelpers.clickGpsBtn();
+await orgHelpers.waitForGps();
+await utils.simulateMobileDevice();
+await orgHelpers.expectMobileLayout();
+```
+
+### Accessibility
+```typescript
+await orgHelpers.goToCreate();
+await orgHelpers.checkA11yForm();
+await orgHelpers.checkA11yButton();
+await utils.checkBasicWCAG();
+```
+
+### Performance
+```typescript
+const loadTime = await orgHelpers.measureLoad();
+expect(loadTime).toBeLessThan(3000);
+const submitTime = await orgHelpers.measureSubmit();
+expect(submitTime).toBeLessThan(5000);
+```
+
+## 🧹 Test Data Cleanup & Isolation
+- Always call `cleanupTestOrgs` after creating test data.
+- Use unique names or track IDs for reliable cleanup.
+- Use `beforeEach`/`afterEach` for setup/teardown.
+
+## 🗂️ Quick Reference Table
+| Helper/Factory         | Purpose                        |
+|-----------------------|--------------------------------|
+| goToCreate            | Navigate to create form        |
+| fillForm              | Fill organization form         |
+| submit                | Submit the form                |
+| createTestOrg         | Create org via UI              |
+| createInvalid         | Invalid org for validation     |
+| mockLocation          | Set browser GPS                |
+| expectError           | Assert validation error        |
+| checkA11yForm         | Accessibility check (form)     |
+| measureLoad           | Measure form load time         |
+| cleanupTestOrgs       | Cleanup created orgs           |
+
+## 🛠️ Troubleshooting (New Patterns)
+- **App stuck loading:** Ensure `waitForAppReady()` is called after login.
+- **Test data not cleaned:** Use `cleanupTestOrgs` after each test.
+- **Selectors not found:** Use helper methods for navigation and form fill.
+- **Mobile layout not detected:** Use `simulateMobileDevice()` and `expectMobileLayout()`.
+- **Accessibility failures:** Use `checkA11yForm`, `checkA11yButton`, and `checkBasicWCAG()`.
 
 ---
 

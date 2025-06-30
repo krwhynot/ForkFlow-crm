@@ -1,109 +1,163 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { Organization } from '../../src/types';
 import { OrganizationFactory, organizationTestData } from '../fixtures/organizationFactory';
 
-export class OrganizationTestHelpers {
-  constructor(private page: Page) {}
+/**
+ * Interface for organization form data.
+ */
+export interface OrganizationFormData extends Partial<Organization> { }
 
-  // Navigation helpers
-  async navigateToOrganizations() {
+/**
+ * Page Object Model helpers for organization E2E tests.
+ */
+export class OrganizationHelpers {
+  constructor(private page: Page) { }
+
+  /** Navigate to the organization list page. */
+  async goToList() {
     await this.page.goto('/organizations');
     await this.page.waitForLoadState('networkidle');
   }
 
-  async navigateToCreateOrganization() {
+  /** Navigate to the create organization page. */
+  async goToCreate() {
     await this.page.goto('/organizations/create');
     await this.page.waitForLoadState('networkidle');
   }
 
-  async navigateToOrganization(id: string) {
-    await this.page.goto(`/organizations/${id}`);
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  async navigateToEditOrganization(id: string) {
+  /** Navigate to the edit page for a specific organization by ID. */
+  async goToEdit(id: number | string) {
     await this.page.goto(`/organizations/${id}/edit`);
     await this.page.waitForLoadState('networkidle');
   }
 
-  // Form interaction helpers
-  async fillOrganizationForm(data: Partial<Organization>) {
-    if (data.name) {
-      await this.page.fill('input[name="name"]', data.name);
-    }
-    
-    if (data.address) {
-      await this.page.fill('input[name="address"]', data.address);
-    }
-    
-    if (data.city) {
-      await this.page.fill('input[name="city"]', data.city);
-    }
-    
-    if (data.state) {
-      await this.page.fill('input[name="state"]', data.state);
-    }
-    
-    if (data.zipCode) {
-      await this.page.fill('input[name="zipCode"]', data.zipCode);
-    }
-    
-    if (data.phone) {
-      await this.page.fill('input[name="phone"]', data.phone);
-    }
-    
-    if (data.website) {
-      await this.page.fill('input[name="website"]', data.website);
-    }
-    
-    if (data.accountManager) {
-      await this.page.fill('input[name="accountManager"]', data.accountManager);
-    }
-    
-    if (data.notes) {
-      await this.page.fill('textarea[name="notes"]', data.notes);
-    }
-
-    // Handle select inputs
-    if (data.priorityId) {
-      await this.selectOption('priorityId', data.priorityId);
-    }
-    
-    if (data.segmentId) {
-      await this.selectOption('segmentId', data.segmentId);
-    }
-    
-    if (data.distributorId) {
-      await this.selectOption('distributorId', data.distributorId);
-    }
+  /** Fill the organization form with provided data. */
+  async fillForm(data: OrganizationFormData) {
+    if (data.name !== undefined) await this.page.fill('input[name="name"]', data.name);
+    if (data.address !== undefined) await this.page.fill('input[name="address"]', data.address);
+    if (data.city !== undefined) await this.page.fill('input[name="city"]', data.city);
+    if (data.state !== undefined) await this.page.fill('input[name="state"]', data.state);
+    if (data.zipCode !== undefined) await this.page.fill('input[name="zipCode"]', data.zipCode);
+    if (data.phone !== undefined) await this.page.fill('input[name="phone"]', data.phone);
+    if (data.website !== undefined) await this.page.fill('input[name="website"]', data.website);
+    if (data.accountManager !== undefined) await this.page.fill('input[name="accountManager"]', data.accountManager);
+    if (data.notes !== undefined) await this.page.fill('textarea[name="notes"]', data.notes);
+    if (data.priorityId !== undefined) await this.selectOption('priorityId', String(data.priorityId));
+    if (data.segmentId !== undefined) await this.selectOption('segmentId', String(data.segmentId));
+    if (data.distributorId !== undefined) await this.selectOption('distributorId', String(data.distributorId));
   }
 
-  async selectOption(fieldName: string, optionValue: string) {
-    const selector = `[data-testid="${fieldName}-select"], .MuiSelect-root[name="${fieldName}"], input[name="${fieldName}"] + div`;
+  /** Submit the organization form. */
+  async submit() {
+    await this.page.click('button[type="submit"], .MuiButton-contained:has-text("Save")');
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  /** Select an option in a dropdown/select field. */
+  async selectOption(field: string, value: string) {
+    const selector = `[data-testid="${field}-select"], .MuiSelect-root[name="${field}"], input[name="${field}"] + div`;
     await this.page.click(selector);
     await this.page.waitForSelector('.MuiMenu-list, .MuiPopover-paper');
-    await this.page.click(`[data-value="${optionValue}"], li:has-text("${optionValue}")`);
+    await this.page.click(`[data-value="${value}"], li:has-text("${value}")`);
   }
 
-  async submitForm() {
-    await this.page.click('button[type="submit"], .MuiButton-contained:has-text("Save")');
+  /** Create a test organization via the UI. Returns the created org's name. */
+  async createTestOrg(data: OrganizationFormData = {}): Promise<string> {
+    await this.goToCreate();
+    await this.fillForm(data);
+    await this.submit();
+    // Wait for redirect and return the org name
+    await this.page.waitForSelector('.MuiAlert-root, .ra-notification, .organization-details');
+    return data.name || OrganizationFactory.create().name || 'Test Org';
   }
 
-  async clickSaveButton() {
-    await this.page.click('button:has-text("Save"), .ra-save-button');
-    await this.waitForFormSubmission();
+  /** Bulk create organizations via the UI. Returns array of created org names. */
+  async bulkCreateOrgs(dataArray: OrganizationFormData[]): Promise<string[]> {
+    const names: string[] = [];
+    for (const data of dataArray) {
+      const name = await this.createTestOrg(data);
+      names.push(name);
+    }
+    return names;
   }
 
-  async clickCancelButton() {
-    await this.page.click('button:has-text("Cancel"), .ra-cancel-button');
+  /** Mock browser geolocation for GPS fields. */
+  async mockLocation(lat: number, lng: number) {
+    await this.page.context().grantPermissions(['geolocation']);
+    await this.page.context().setGeolocation({ latitude: lat, longitude: lng });
   }
 
-  async waitForFormSubmission() {
-    // Wait for either success redirect or error message
-    await Promise.race([
-      this.page.waitForURL(/\/organizations\/\d+/, { timeout: 10000 }),
-      this.page.waitForSelector('.MuiAlert-root, .ra-notification', { timeout: 5000 }),
-    ]);
+  /** Click the GPS button in the form. */
+  async clickGpsBtn() {
+    await this.page.click('button:has-text("GPS"), .gps-button');
+  }
+
+  /** Wait for GPS capture to complete. */
+  async waitForGps() {
+    await this.page.waitForSelector('.gps-success, .MuiAlert-success', { timeout: 10000 });
+  }
+
+  /** Assert that a validation error is shown for a field. */
+  async expectError(field: string) {
+    const errorSelector = `[data-testid="${field}-error"], .MuiFormHelperText-root.Mui-error`;
+    await expect(this.page.locator(errorSelector)).toBeVisible();
+  }
+
+  /** Assert that no validation errors are present. */
+  async expectNoErrors() {
+    const errorSelector = '.MuiFormHelperText-root.Mui-error, .field-error';
+    await expect(this.page.locator(errorSelector)).toHaveCount(0);
+  }
+
+  /** Returns true if the current viewport is mobile. */
+  async isMobile(): Promise<boolean> {
+    const width = (await this.page.viewportSize())?.width || 1024;
+    return width < 768;
+  }
+
+  /** Assert that the mobile layout is rendered. */
+  async expectMobileLayout() {
+    if (await this.isMobile()) {
+      await expect(this.page.locator('.mobile-layout, .MuiContainer-maxWidthSm')).toBeVisible();
+    }
+  }
+
+  /** Check accessibility of the organization form. */
+  async checkA11yForm() {
+    const inputs = await this.page.locator('input, select, textarea').count();
+    const labelsAndAria = await this.page.locator('input[aria-label], input[aria-labelledby], input + label, label input').count();
+    expect(labelsAndAria).toBeGreaterThanOrEqual(inputs * 0.9);
+  }
+
+  /** Check accessibility of all buttons. */
+  async checkA11yButton() {
+    const buttons = this.page.locator('button');
+    const buttonCount = await buttons.count();
+    for (let i = 0; i < buttonCount; i++) {
+      const button = buttons.nth(i);
+      const hasText = await button.textContent();
+      const hasAriaLabel = await button.getAttribute('aria-label');
+      expect(hasText || hasAriaLabel).toBeTruthy();
+    }
+  }
+
+  /** Measure the time to load the organization form. */
+  async measureLoad(): Promise<number> {
+    const start = Date.now();
+    await this.page.waitForSelector('form');
+    return Date.now() - start;
+  }
+
+  /** Measure the time to submit the organization form. */
+  async measureSubmit(): Promise<number> {
+    const start = Date.now();
+    await this.submit();
+    return Date.now() - start;
+  }
+
+  /** Cleanup created organizations by IDs. */
+  async cleanupTestOrgs(ids: number[]): Promise<void> {
+    await OrganizationFactory.cleanupCreated(ids);
   }
 
   // List page helpers
@@ -131,25 +185,11 @@ export class OrganizationTestHelpers {
     await this.page.click(`tr:has-text("${organizationName}"), .MuiDataGrid-row:has-text("${organizationName}")`);
   }
 
-  // GPS testing helpers
-  async mockGPSLocation(latitude: number, longitude: number) {
-    await this.page.context().grantPermissions(['geolocation']);
-    await this.page.context().setGeolocation({ latitude, longitude });
-  }
-
-  async clickGPSButton() {
-    await this.page.click('button:has-text("GPS"), .gps-button');
-  }
-
-  async waitForGPSCapture() {
-    await this.page.waitForSelector('.gps-success, .MuiAlert-success', { timeout: 10000 });
-  }
-
   // Validation helpers
   async expectValidationError(fieldName: string, errorMessage?: string) {
     const errorSelector = `[data-testid="${fieldName}-error"], .MuiFormHelperText-root.Mui-error`;
     await expect(this.page.locator(errorSelector)).toBeVisible();
-    
+
     if (errorMessage) {
       await expect(this.page.locator(errorSelector)).toContainText(errorMessage);
     }
@@ -160,74 +200,20 @@ export class OrganizationTestHelpers {
     await expect(this.page.locator(errorSelector)).toHaveCount(0);
   }
 
-  // Mobile-specific helpers
-  async isMobileView(): Promise<boolean> {
-    const width = await this.page.viewportSize()?.width || 1024;
-    return width < 768;
-  }
-
-  async expectMobileLayout() {
-    if (await this.isMobileView()) {
-      // Check for mobile-specific elements
-      await expect(this.page.locator('.mobile-layout, .MuiContainer-maxWidthSm')).toBeVisible();
-    }
-  }
-
-  // Accessibility helpers
-  async checkFormAccessibility() {
-    // Check that all form inputs have labels
-    const inputs = await this.page.locator('input, select, textarea').count();
-    const labelsAndAria = await this.page.locator('input[aria-label], input[aria-labelledby], input + label, label input').count();
-    
-    expect(labelsAndAria).toBeGreaterThanOrEqual(inputs * 0.9); // Allow 10% tolerance
-  }
-
-  async checkButtonAccessibility() {
-    // Check that buttons have proper attributes
-    const buttons = this.page.locator('button');
-    const buttonCount = await buttons.count();
-    
-    for (let i = 0; i < buttonCount; i++) {
-      const button = buttons.nth(i);
-      const hasText = await button.textContent();
-      const hasAriaLabel = await button.getAttribute('aria-label');
-      
-      expect(hasText || hasAriaLabel).toBeTruthy();
-    }
-  }
-
-  // Data factory helpers
-  async createTestOrganization(overrides: Partial<Organization> = {}): Promise<void> {
-    const testData = OrganizationFactory.create(overrides);
-    await this.navigateToCreateOrganization();
-    await this.fillOrganizationForm(testData);
-    await this.clickSaveButton();
-  }
-
-  async createMultipleTestOrganizations(count: number, overrides: Partial<Organization> = {}): Promise<void> {
-    for (let i = 0; i < count; i++) {
-      await this.createTestOrganization({
-        ...overrides,
-        name: `${overrides.name || 'Test Organization'} ${i + 1}`,
-      });
-      await this.navigateToOrganizations();
-    }
-  }
-
   // Assertion helpers
   async expectOrganizationDetails(expectedData: Partial<Organization>) {
     if (expectedData.name) {
       await expect(this.page.locator('h1, .organization-name')).toContainText(expectedData.name);
     }
-    
+
     if (expectedData.address) {
       await expect(this.page.locator('.address, .organization-address')).toContainText(expectedData.address);
     }
-    
+
     if (expectedData.phone) {
       await expect(this.page.locator('.phone, .organization-phone')).toContainText(expectedData.phone);
     }
-    
+
     if (expectedData.website) {
       await expect(this.page.locator('a[href*="http"], .website-link')).toContainText(expectedData.website);
     }
@@ -240,20 +226,6 @@ export class OrganizationTestHelpers {
         await expect(input).toHaveValue(String(value));
       }
     }
-  }
-
-  // Performance helpers
-  async measureFormLoadTime(): Promise<number> {
-    const startTime = Date.now();
-    await this.page.waitForSelector('form', { state: 'visible' });
-    await this.page.waitForLoadState('networkidle');
-    return Date.now() - startTime;
-  }
-
-  async measureSaveTime(): Promise<number> {
-    const startTime = Date.now();
-    await this.clickSaveButton();
-    return Date.now() - startTime;
   }
 }
 
@@ -279,3 +251,5 @@ export async function expectErrorNotification(page: Page, message?: string) {
     await expect(page.locator('.MuiAlert-error, .ra-notification-error')).toContainText(message);
   }
 }
+
+export type { Organization };

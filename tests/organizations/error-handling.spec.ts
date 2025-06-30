@@ -1,25 +1,31 @@
 import { expect, test } from '@playwright/test';
-import { organizationTestData } from '../fixtures';
-import { OrganizationTestHelpers, expectErrorNotification } from '../helpers/organizationHelpers';
-import { TestUtils, setupTestContext } from '../helpers/testUtils';
+import { organizationTestData } from '../fixtures/organizationFactory';
+import { OrganizationHelpers } from '../helpers/organizationHelpers';
+import { TestUtils } from '../helpers/testUtils';
 
 test.describe('Organization Error Handling and Edge Cases', () => {
-  let orgHelpers: OrganizationTestHelpers;
+  let orgHelpers: OrganizationHelpers;
   let utils: TestUtils;
+  let createdOrgNames: string[] = [];
 
-  test.beforeEach(async ({ page, context }) => {
-    await setupTestContext(context);
-    orgHelpers = new OrganizationTestHelpers(page);
+  test.beforeEach(async ({ page }) => {
+    orgHelpers = new OrganizationHelpers(page);
     utils = new TestUtils(page);
     await utils.logConsoleErrors();
-    if (!(await utils.isLoggedIn())) {
-      await utils.login();
+    await utils.login();
+    await utils.waitForAppReady();
+  });
+
+  test.afterEach(async () => {
+    if (createdOrgNames.length > 0) {
+      await orgHelpers.cleanupTestOrgs([]); // Implement actual cleanup logic as needed
+      createdOrgNames = [];
     }
   });
 
   test.describe('Network Error Handling', () => {
     test('should handle network timeout during create', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       // Mock network timeout
       await page.route('**/organizations', async route => {
@@ -27,8 +33,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         await route.continue();
       });
 
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.fillForm(organizationTestData.basic);
+      await orgHelpers.submit();
 
       // Should show timeout error
       await expectErrorNotification(page, 'Network timeout');
@@ -38,7 +44,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle 500 server error during create', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       // Mock server error
       await page.route('**/organizations', route => {
@@ -49,8 +55,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         });
       });
 
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.fillForm(organizationTestData.basic);
+      await orgHelpers.submit();
 
       // Should show server error
       await expectErrorNotification(page, 'Server error');
@@ -60,13 +66,13 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle network disconnection', async ({ page, context }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       // Simulate network disconnection
       await context.setOffline(true);
 
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.fillForm(organizationTestData.basic);
+      await orgHelpers.submit();
 
       // Should show offline error
       await expectErrorNotification(page, 'Network unavailable');
@@ -75,12 +81,12 @@ test.describe('Organization Error Handling and Edge Cases', () => {
       await context.setOffline(false);
 
       // Should be able to retry
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
       await expect(page).toHaveURL(/\/organizations\/\d+/);
     });
 
     test('should handle slow API responses', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       // Mock slow API
       await page.route('**/organizations', async route => {
@@ -88,7 +94,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         await route.continue();
       });
 
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       const saveButton = page.locator('button[type="submit"], .ra-save-button');
       await saveButton.click();
@@ -103,17 +109,17 @@ test.describe('Organization Error Handling and Edge Cases', () => {
 
   test.describe('Data Validation Edge Cases', () => {
     test('should handle extremely long text inputs', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       const extremelyLongName = 'A'.repeat(1000);
       const extremelyLongNotes = 'B'.repeat(10000);
 
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.fillForm({
         name: extremelyLongName,
         notes: extremelyLongNotes,
       });
 
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
 
       // Should either truncate or show validation error
       const nameInput = page.locator('input[name="name"]');
@@ -122,7 +128,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle special characters in inputs', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       const specialCharsData = {
         name: `Restaurant with Special Chars: !@#$%^&*()_+-=[]{}|;':",./<>?`,
@@ -130,8 +136,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         notes: `Unicode test: 测试 テスト тест 🍕🍝🍷`,
       };
 
-      await orgHelpers.fillOrganizationForm(specialCharsData);
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.fillForm(specialCharsData);
+      await orgHelpers.submit();
 
       // Should handle special characters properly
       await expect(page).toHaveURL(/\/organizations\/\d+/);
@@ -139,7 +145,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle SQL injection attempts', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       const sqlInjectionAttempts = {
         name: `'; DROP TABLE organizations; --`,
@@ -147,8 +153,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         notes: `<script>alert('xss')</script>`,
       };
 
-      await orgHelpers.fillOrganizationForm(sqlInjectionAttempts);
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.fillForm(sqlInjectionAttempts);
+      await orgHelpers.submit();
 
       // Should sanitize inputs and save safely
       await expect(page).toHaveURL(/\/organizations\/\d+/);
@@ -158,7 +164,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle XSS attempts', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       const xssPayload = {
         name: `<script>alert('XSS')</script>Restaurant`,
@@ -166,8 +172,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         notes: `<img src="x" onerror="alert('XSS')">`,
       };
 
-      await orgHelpers.fillOrganizationForm(xssPayload);
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.fillForm(xssPayload);
+      await orgHelpers.submit();
 
       // Should sanitize XSS attempts
       await expect(page).toHaveURL(/\/organizations\/\d+/);
@@ -184,10 +190,10 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     test('should handle simultaneous organization creation', async ({ page, context }) => {
       // Open multiple tabs
       const page2 = await context.newPage();
-      const orgHelpers2 = new OrganizationTestHelpers(page2);
+      const orgHelpers2 = new OrganizationHelpers(page2);
 
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers2.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
+      await orgHelpers2.goToCreate();
 
       const orgData = {
         ...organizationTestData.basic,
@@ -196,14 +202,14 @@ test.describe('Organization Error Handling and Edge Cases', () => {
 
       // Fill forms simultaneously
       await Promise.all([
-        orgHelpers.fillOrganizationForm(orgData),
-        orgHelpers2.fillOrganizationForm({ ...orgData, name: 'Concurrent Test Restaurant 2' }),
+        orgHelpers.fillForm(orgData),
+        orgHelpers2.fillForm({ ...orgData, name: 'Concurrent Test Restaurant 2' }),
       ]);
 
       // Submit simultaneously
       await Promise.all([
-        orgHelpers.clickSaveButton(),
-        orgHelpers2.clickSaveButton(),
+        orgHelpers.submit(),
+        orgHelpers2.submit(),
       ]);
 
       // Both should succeed or handle conflicts gracefully
@@ -217,26 +223,26 @@ test.describe('Organization Error Handling and Edge Cases', () => {
 
     test('should handle edit conflicts', async ({ page, context }) => {
       // Create organization first
-      await orgHelpers.createTestOrganization(organizationTestData.basic);
+      await orgHelpers.createTestOrg(organizationTestData.basic);
       const orgId = await page.url().match(/\/organizations\/(\d+)/)?.[1];
 
       // Open in two tabs
       const page2 = await context.newPage();
-      const orgHelpers2 = new OrganizationTestHelpers(page2);
+      const orgHelpers2 = new OrganizationHelpers(page2);
 
-      await orgHelpers.navigateToEditOrganization(orgId!);
-      await orgHelpers2.navigateToEditOrganization(orgId!);
+      await orgHelpers.goToEdit(orgId!);
+      await orgHelpers2.goToEdit(orgId!);
 
       // Make different changes
-      await orgHelpers.fillOrganizationForm({ name: 'Updated Name 1' });
-      await orgHelpers2.fillOrganizationForm({ name: 'Updated Name 2' });
+      await orgHelpers.fillForm({ name: 'Updated Name 1' });
+      await orgHelpers2.fillForm({ name: 'Updated Name 2' });
 
       // Submit first change
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
       await expect(page).toHaveURL(/\/organizations\/\d+/);
 
       // Submit second change - should handle conflict
-      await orgHelpers2.clickSaveButton();
+      await orgHelpers2.submit();
 
       // Should either show conflict error or merge changes
       await expect(page2.locator('.conflict-error, .merge-conflict')).toBeVisible().or(
@@ -249,7 +255,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
 
   test.describe('Resource Limits and Performance Edge Cases', () => {
     test('should handle large file uploads for logos', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
+      await orgHelpers.goToCreate();
 
       // Mock large file upload (>10MB)
       const largeFileContent = 'A'.repeat(10 * 1024 * 1024); // 10MB
@@ -262,10 +268,10 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         // File input might not exist, that's okay
       });
 
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       // Should either reject large file or handle gracefully
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
 
       // Should either show file size error or process successfully
       await expect(page.locator('.file-size-error, .upload-error')).toBeVisible().or(
@@ -278,7 +284,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
       const promises = [];
       for (let i = 0; i < 50; i++) {
         promises.push(
-          orgHelpers.createTestOrganization({
+          orgHelpers.createTestOrg({
             ...organizationTestData.basic,
             name: `Memory Test Org ${i}`,
           })
@@ -288,7 +294,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
       await Promise.all(promises);
 
       // Navigate to list and verify it still works
-      await orgHelpers.navigateToOrganizations();
+      await orgHelpers.goToOrganizations();
 
       // Should not crash or become unresponsive
       await expect(page.locator('.organization-list, .MuiDataGrid-root')).toBeVisible();
@@ -303,7 +309,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         (window as any).jsDisabled = true;
       });
 
-      await orgHelpers.navigateToOrganizations();
+      await orgHelpers.goToOrganizations();
 
       // Should show graceful degradation or no-JS message
       await expect(page.locator('.no-js-warning, noscript')).toBeVisible().or(
@@ -315,7 +321,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
       // Clear all cookies
       await context.clearCookies();
 
-      await orgHelpers.navigateToOrganizations();
+      await orgHelpers.goToOrganizations();
 
       // Should either redirect to login or handle gracefully
       await expect(page).toHaveURL(/\/(login|organizations)/);
@@ -330,7 +336,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         });
       });
 
-      await orgHelpers.navigateToOrganizations();
+      await orgHelpers.goToOrganizations();
 
       // Should handle missing localStorage gracefully
       await expect(page.locator('body')).toBeVisible();
@@ -341,8 +347,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     test('should handle GPS permission denied', async ({ page, context }) => {
       await context.clearPermissions();
 
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       await orgHelpers.clickGPSButton();
 
@@ -366,8 +372,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         };
       });
 
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       await orgHelpers.clickGPSButton();
 
@@ -394,8 +400,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         };
       });
 
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       await orgHelpers.clickGPSButton();
 
@@ -406,11 +412,11 @@ test.describe('Organization Error Handling and Edge Cases', () => {
 
   test.describe('Form State Edge Cases', () => {
     test('should handle browser back/forward during form submission', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       // Start submission
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
 
       // Immediately go back
       await page.goBack();
@@ -420,8 +426,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle page refresh during form submission', async ({ page }) => {
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       // Mock slow submission
       await page.route('**/organizations', async route => {
@@ -429,7 +435,7 @@ test.describe('Organization Error Handling and Edge Cases', () => {
         await route.continue();
       });
 
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
 
       // Refresh page during submission
       await page.reload();
@@ -439,8 +445,8 @@ test.describe('Organization Error Handling and Edge Cases', () => {
     });
 
     test('should handle browser tab close during form editing', async ({ page, context }) => {
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm(organizationTestData.basic);
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm(organizationTestData.basic);
 
       // Open new tab
       const newPage = await context.newPage();
@@ -459,19 +465,19 @@ test.describe('Organization Error Handling and Edge Cases', () => {
       const duplicateName = 'Duplicate Restaurant Name';
 
       // Create first organization
-      await orgHelpers.createTestOrganization({
+      await orgHelpers.createTestOrg({
         ...organizationTestData.basic,
         name: duplicateName,
       });
 
       // Try to create second with same name
-      await orgHelpers.navigateToCreateOrganization();
-      await orgHelpers.fillOrganizationForm({
+      await orgHelpers.goToCreate();
+      await orgHelpers.fillForm({
         ...organizationTestData.basic,
         name: duplicateName,
       });
 
-      await orgHelpers.clickSaveButton();
+      await orgHelpers.submit();
 
       // Should either allow duplicates or show error
       await expect(page.locator('.duplicate-error')).toBeVisible().or(
@@ -481,11 +487,11 @@ test.describe('Organization Error Handling and Edge Cases', () => {
 
     test('should handle orphaned data cleanup', async ({ page }) => {
       // Create organization with related data
-      await orgHelpers.createTestOrganization(organizationTestData.basic);
+      await orgHelpers.createTestOrg(organizationTestData.basic);
       const orgId = await page.url().match(/\/organizations\/(\d+)/)?.[1];
 
       // Navigate to organization page
-      await orgHelpers.navigateToOrganization(orgId!);
+      await orgHelpers.goToOrganization(orgId!);
 
       // Delete organization
       await page.click('.delete-button, button:has-text("Delete")');

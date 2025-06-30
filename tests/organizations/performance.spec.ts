@@ -1,19 +1,25 @@
 import { expect, test } from '@playwright/test';
-import { organizationTestData } from '../fixtures';
-import { OrganizationTestHelpers } from '../helpers/organizationHelpers';
-import { TestUtils, setupTestContext } from '../helpers/testUtils';
+import { organizationTestData } from '../fixtures/organizationFactory';
+import { OrganizationHelpers } from '../helpers/organizationHelpers';
+import { TestUtils } from '../helpers/testUtils';
 
 test.describe('Organization Performance Testing', () => {
-  let orgHelpers: OrganizationTestHelpers;
+  let orgHelpers: OrganizationHelpers;
   let utils: TestUtils;
+  let createdOrgNames: string[] = [];
 
-  test.beforeEach(async ({ page, context }) => {
-    await setupTestContext(context);
-    orgHelpers = new OrganizationTestHelpers(page);
+  test.beforeEach(async ({ page }) => {
+    orgHelpers = new OrganizationHelpers(page);
     utils = new TestUtils(page);
     await utils.logConsoleErrors();
-    if (!(await utils.isLoggedIn())) {
-      await utils.login();
+    await utils.login();
+    await utils.waitForAppReady();
+  });
+
+  test.afterEach(async () => {
+    if (createdOrgNames.length > 0) {
+      await orgHelpers.cleanupTestOrgs([]); // Implement actual cleanup logic as needed
+      createdOrgNames = [];
     }
   });
 
@@ -68,8 +74,8 @@ test.describe('Organization Performance Testing', () => {
       // Load different pages concurrently
       const promises = [
         orgHelpers.navigateToOrganizations(),
-        new OrganizationTestHelpers(page2).navigateToCreateOrganization(),
-        new OrganizationTestHelpers(page3).navigateToOrganizations(),
+        new OrganizationHelpers(page2).navigateToCreateOrganization(),
+        new OrganizationHelpers(page3).navigateToOrganizations(),
       ];
 
       await Promise.all(promises);
@@ -137,7 +143,7 @@ test.describe('Organization Performance Testing', () => {
       // Create test data for performance testing
       const context = await browser.newContext();
       const page = await context.newPage();
-      const helpers = new OrganizationTestHelpers(page);
+      const helpers = new OrganizationHelpers(page);
       const testUtils = new TestUtils(page);
 
       if (!(await testUtils.isLoggedIn())) {
