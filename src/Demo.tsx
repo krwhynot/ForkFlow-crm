@@ -1,6 +1,6 @@
 import { CRM } from './root/CRM';
 import { AuthProvider } from 'react-admin';
-import { dataProvider } from './providers/fakerest';
+import { dataProvider } from './providers/supabase';
 
 // Simple auth provider that always allows access
 const demoAuthProvider: AuthProvider = {

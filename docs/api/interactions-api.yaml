@@ -1,0 +1,1004 @@
+openapi: 3.0.3
+info:
+  title: ForkFlow CRM - Interactions API
+  description: |
+    REST API for interaction tracking in the ForkFlow Food Broker CRM system.
+    
+    This API provides comprehensive interaction management capabilities including:
+    - CRUD operations for interactions
+    - GPS location tracking for in-person interactions
+    - File attachment management
+    - Timeline and follow-up management
+    - Mobile-optimized endpoints
+    
+    ## Authentication
+    All endpoints require JWT authentication via the Authorization header:
+    ```
+    Authorization: Bearer <jwt_token>
+    ```
+    
+    ## Interaction Types
+    Interactions support 6 predefined types:
+    - Email
+    - Call
+    - In Person (with GPS coordinates)
+    - Demo
+    - Quote
+    - Follow-up
+    
+    ## Rate Limiting
+    - 1000 requests per hour per user
+    - 100 requests per minute per user
+    
+  version: 1.0.0
+  contact:
+    name: ForkFlow CRM Support
+    email: support@forkflow.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://your-project.supabase.co/functions/v1
+    description: Production Supabase Edge Functions
+  - url: http://localhost:54321/functions/v1
+    description: Local Development
+
+security:
+  - BearerAuth: []
+
+paths:
+  /interactions:
+    get:
+      summary: List interactions
+      description: |
+        Retrieve a paginated list of interactions with optional filtering.
+        Supports full-text search, date ranges, and relationship filtering.
+      operationId: listInteractions
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: perPage
+          in: query
+          description: Items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: organizationId
+          in: query
+          description: Filter by organization ID
+          schema:
+            type: integer
+        - name: contactId
+          in: query
+          description: Filter by contact ID
+          schema:
+            type: integer
+        - name: typeId
+          in: query
+          description: Filter by interaction type ID
+          schema:
+            type: integer
+        - name: isCompleted
+          in: query
+          description: Filter by completion status
+          schema:
+            type: boolean
+        - name: followUpRequired
+          in: query
+          description: Filter by follow-up requirement
+          schema:
+            type: boolean
+        - name: startDate
+          in: query
+          description: Filter interactions scheduled after this date (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: Filter interactions scheduled before this date (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: List of interactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InteractionWithRelations'
+                  total:
+                    type: integer
+                    description: Total count of interactions matching filters
+                  page:
+                    type: integer
+                    description: Current page number
+                  perPage:
+                    type: integer
+                    description: Items per page
+              example:
+                data:
+                  - id: 1
+                    organizationId: 5
+                    contactId: 12
+                    typeId: 3
+                    subject: "Follow-up on product demo"
+                    description: "Discuss implementation timeline and pricing"
+                    scheduledDate: "2024-01-15T10:00:00Z"
+                    completedDate: null
+                    isCompleted: false
+                    duration: null
+                    outcome: null
+                    followUpRequired: true
+                    followUpDate: "2024-01-20T14:00:00Z"
+                    followUpNotes: "Schedule technical review meeting"
+                    latitude: null
+                    longitude: null
+                    locationNotes: null
+                    attachments: []
+                    createdAt: "2024-01-10T09:00:00Z"
+                    updatedAt: "2024-01-10T09:00:00Z"
+                    createdBy: "uuid-123"
+                    organizations:
+                      id: 5
+                      name: "Gourmet Bistro"
+                    contacts:
+                      id: 12
+                      firstName: "John"
+                      lastName: "Smith"
+                    settings:
+                      id: 3
+                      label: "Follow-up"
+                      color: "#FF9800"
+                total: 1
+                page: 1
+                perPage: 25
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Create interaction
+      description: Create a new interaction with automatic GPS capture for in-person types
+      operationId: createInteraction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteractionCreate'
+            example:
+              organizationId: 5
+              contactId: 12
+              typeId: 3
+              subject: "Product demonstration"
+              description: "Show new food service equipment"
+              scheduledDate: "2024-01-15T10:00:00Z"
+              isCompleted: false
+              followUpRequired: true
+              followUpDate: "2024-01-20T14:00:00Z"
+      responses:
+        '201':
+          description: Interaction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InteractionWithRelations'
+                  message:
+                    type: string
+                    example: "Interaction created successfully"
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interactions/{id}:
+    get:
+      summary: Get interaction by ID
+      description: Retrieve a specific interaction with full details and related entities
+      operationId: getInteraction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Interaction ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Interaction details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InteractionDetailed'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      summary: Update interaction
+      description: Update an existing interaction
+      operationId: updateInteraction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Interaction ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteractionUpdate'
+      responses:
+        '200':
+          description: Interaction updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InteractionWithRelations'
+                  message:
+                    type: string
+                    example: "Interaction updated successfully"
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      summary: Delete interaction
+      description: Delete an interaction
+      operationId: deleteInteraction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Interaction ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Interaction deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Interaction deleted successfully"
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interactions/{id}/complete:
+    post:
+      summary: Mark interaction as completed
+      description: Mark an interaction as completed with optional outcome and duration
+      operationId: completeInteraction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Interaction ID
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                duration:
+                  type: integer
+                  description: Duration in minutes
+                  minimum: 1
+                outcome:
+                  type: string
+                  description: Outcome description
+                  maxLength: 1000
+            example:
+              duration: 45
+              outcome: "Successfully demonstrated product features. Customer interested in 3-month trial."
+      responses:
+        '200':
+          description: Interaction completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Interaction'
+                  message:
+                    type: string
+                    example: "Interaction completed successfully"
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interactions/{id}/schedule-follow-up:
+    post:
+      summary: Schedule follow-up
+      description: Schedule a follow-up for an interaction
+      operationId: scheduleFollowUp
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Interaction ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - followUpDate
+              properties:
+                followUpDate:
+                  type: string
+                  format: date-time
+                  description: When the follow-up should occur
+                followUpNotes:
+                  type: string
+                  description: Notes for the follow-up
+                  maxLength: 1000
+            example:
+              followUpDate: "2024-01-20T14:00:00Z"
+              followUpNotes: "Schedule technical review with IT team"
+      responses:
+        '200':
+          description: Follow-up scheduled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Interaction'
+                  message:
+                    type: string
+                    example: "Follow-up scheduled successfully"
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interactions/{id}/add-location:
+    post:
+      summary: Add GPS location to interaction
+      description: Add GPS coordinates to an interaction (typically for in-person meetings)
+      operationId: addLocationToInteraction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Interaction ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - latitude
+                - longitude
+              properties:
+                latitude:
+                  type: number
+                  format: double
+                  minimum: -90
+                  maximum: 90
+                  description: GPS latitude coordinate
+                longitude:
+                  type: number
+                  format: double
+                  minimum: -180
+                  maximum: 180
+                  description: GPS longitude coordinate
+                locationNotes:
+                  type: string
+                  description: Additional notes about the location
+                  maxLength: 500
+            example:
+              latitude: 37.7749
+              longitude: -122.4194
+              locationNotes: "Met at customer's main office, conference room B"
+      responses:
+        '200':
+          description: Location added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Interaction'
+                  message:
+                    type: string
+                    example: "Location added successfully"
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interactions/timeline:
+    get:
+      summary: Get interaction timeline
+      description: Get interactions in timeline format with filtering
+      operationId: getInteractionTimeline
+      parameters:
+        - name: organizationId
+          in: query
+          description: Filter by organization ID
+          schema:
+            type: integer
+        - name: contactId
+          in: query
+          description: Filter by contact ID
+          schema:
+            type: integer
+        - name: startDate
+          in: query
+          description: Filter interactions after this date
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: Filter interactions before this date
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Timeline data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InteractionWithRelations'
+                  total:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interactions/follow-ups:
+    get:
+      summary: Get follow-up reminders
+      description: Get interactions requiring follow-up
+      operationId: getFollowUpReminders
+      parameters:
+        - name: overdue
+          in: query
+          description: Get only overdue follow-ups
+          schema:
+            type: boolean
+        - name: upcoming
+          in: query
+          description: Get only upcoming follow-ups
+          schema:
+            type: boolean
+        - name: days
+          in: query
+          description: Number of days to look ahead for upcoming follow-ups
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 365
+            default: 7
+      responses:
+        '200':
+          description: Follow-up reminders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InteractionWithRelations'
+                  total:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Interaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique interaction ID
+        organizationId:
+          type: integer
+          description: ID of the organization this interaction belongs to
+        contactId:
+          type: integer
+          nullable: true
+          description: ID of the contact (optional)
+        opportunityId:
+          type: integer
+          nullable: true
+          description: ID of the opportunity/deal (optional)
+        typeId:
+          type: integer
+          description: ID of the interaction type (from settings table)
+        subject:
+          type: string
+          description: Brief description of the interaction
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+          description: Detailed description
+          maxLength: 2000
+        scheduledDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the interaction is scheduled
+        completedDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the interaction was completed
+        isCompleted:
+          type: boolean
+          description: Whether the interaction is completed
+          default: false
+        duration:
+          type: integer
+          nullable: true
+          description: Duration in minutes
+          minimum: 1
+        outcome:
+          type: string
+          nullable: true
+          description: Outcome of the interaction
+          maxLength: 1000
+        followUpRequired:
+          type: boolean
+          description: Whether follow-up is required
+          default: false
+        followUpDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When follow-up should occur
+        followUpNotes:
+          type: string
+          nullable: true
+          description: Notes for follow-up
+          maxLength: 1000
+        latitude:
+          type: number
+          format: double
+          nullable: true
+          description: GPS latitude for in-person interactions
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          nullable: true
+          description: GPS longitude for in-person interactions
+          minimum: -180
+          maximum: 180
+        locationNotes:
+          type: string
+          nullable: true
+          description: Notes about the location
+          maxLength: 500
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileAttachment'
+          description: File attachments
+        createdAt:
+          type: string
+          format: date-time
+          description: When the interaction was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the interaction was last updated
+        createdBy:
+          type: string
+          description: UUID of the user who created the interaction
+
+    InteractionCreate:
+      type: object
+      required:
+        - organizationId
+        - typeId
+        - subject
+      properties:
+        organizationId:
+          type: integer
+          description: ID of the organization
+        contactId:
+          type: integer
+          nullable: true
+          description: ID of the contact (optional)
+        opportunityId:
+          type: integer
+          nullable: true
+          description: ID of the opportunity/deal (optional)
+        typeId:
+          type: integer
+          description: ID of the interaction type
+        subject:
+          type: string
+          description: Brief description of the interaction
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+          description: Detailed description
+          maxLength: 2000
+        scheduledDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the interaction is scheduled
+        isCompleted:
+          type: boolean
+          description: Whether the interaction is completed
+          default: false
+        duration:
+          type: integer
+          nullable: true
+          description: Duration in minutes
+          minimum: 1
+        outcome:
+          type: string
+          nullable: true
+          description: Outcome of the interaction
+          maxLength: 1000
+        followUpRequired:
+          type: boolean
+          description: Whether follow-up is required
+          default: false
+        followUpDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When follow-up should occur
+        followUpNotes:
+          type: string
+          nullable: true
+          description: Notes for follow-up
+          maxLength: 1000
+
+    InteractionUpdate:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          nullable: true
+          description: ID of the contact (optional)
+        opportunityId:
+          type: integer
+          nullable: true
+          description: ID of the opportunity/deal (optional)
+        typeId:
+          type: integer
+          description: ID of the interaction type
+        subject:
+          type: string
+          description: Brief description of the interaction
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+          description: Detailed description
+          maxLength: 2000
+        scheduledDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the interaction is scheduled
+        isCompleted:
+          type: boolean
+          description: Whether the interaction is completed
+        duration:
+          type: integer
+          nullable: true
+          description: Duration in minutes
+          minimum: 1
+        outcome:
+          type: string
+          nullable: true
+          description: Outcome of the interaction
+          maxLength: 1000
+        followUpRequired:
+          type: boolean
+          description: Whether follow-up is required
+        followUpDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: When follow-up should occur
+        followUpNotes:
+          type: string
+          nullable: true
+          description: Notes for follow-up
+          maxLength: 1000
+
+    InteractionWithRelations:
+      allOf:
+        - $ref: '#/components/schemas/Interaction'
+        - type: object
+          properties:
+            organizations:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+            contacts:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+            deals:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+            settings:
+              type: object
+              properties:
+                id:
+                  type: integer
+                label:
+                  type: string
+                color:
+                  type: string
+
+    InteractionDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Interaction'
+        - type: object
+          properties:
+            organizations:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+            contacts:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+            deals:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                stage:
+                  type: string
+                probability:
+                  type: number
+                amount:
+                  type: number
+            settings:
+              type: object
+              properties:
+                id:
+                  type: integer
+                label:
+                  type: string
+                color:
+                  type: string
+
+    FileAttachment:
+      type: object
+      properties:
+        filename:
+          type: string
+          description: Original filename
+        size:
+          type: integer
+          description: File size in bytes
+        type:
+          type: string
+          description: MIME type
+        url:
+          type: string
+          description: Download URL
+        uploadedAt:
+          type: string
+          format: date-time
+          description: When the file was uploaded
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        message:
+          type: string
+          description: Detailed error description
+        code:
+          type: string
+          description: Error code
+
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: Field that failed validation
+              message:
+                type: string
+                description: Validation error message
+              code:
+                type: string
+                description: Validation error code
+
+  responses:
+    UnauthorizedError:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid or expired token"
+            message: "Please login again"
+
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+          example:
+            error: "Validation failed"
+            details:
+              - field: "subject"
+                message: "Subject is required"
+                code: "REQUIRED"
+              - field: "organizationId"
+                message: "Organization ID must be a positive integer"
+                code: "INVALID_TYPE"
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Interaction not found"
+            message: "No interaction found with the specified ID"
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal server error"
+            message: "An unexpected error occurred while processing your request"
+
+tags:
+  - name: Interactions
+    description: Interaction management operations
+  - name: Timeline
+    description: Timeline and activity tracking
+  - name: Follow-ups
+    description: Follow-up management and reminders
+  - name: Location
+    description: GPS and location tracking

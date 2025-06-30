@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CRM } from './root/CRM';
-import { dataProvider } from './providers/fakerest';
+import { dataProvider } from './providers/supabase';
 import { jwtAuthProvider } from './providers/auth';
 import Demo from './Demo';
 
