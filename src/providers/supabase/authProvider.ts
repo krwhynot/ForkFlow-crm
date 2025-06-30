@@ -89,7 +89,7 @@ export const authProvider: AuthProvider = {
         if (sale == null) return false;
 
         // Compute access rights from the sale role
-        const role = sale.administrator ? 'admin' : 'user';
+        const role = sale.administrator ? 'admin' : 'broker';
         return canAccess(role, params);
     },
 };

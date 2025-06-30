@@ -39,6 +39,16 @@ export type AuditEventType =
     | 'auth.session_conflict'
     | 'auth.session_restored'
     
+    // API Authentication Events
+    | 'api.auth.login'
+    | 'api.auth.logout'
+    | 'api.auth.login_failed'
+    | 'api.auth.logout_error'
+    | 'api.auth.password_reset_request'
+    | 'api.auth.password_reset_confirm'
+    | 'api.auth.password_reset_confirm_failed'
+    | 'api.auth.password_update'
+    
     // Authorization Events
     | 'authz.access_denied'
     | 'authz.permission_check'
@@ -52,6 +62,21 @@ export type AuditEventType =
     | 'data.export'
     | 'data.import'
     | 'data.bulk_operation'
+    
+    // API User Management Events
+    | 'api.users.list'
+    | 'api.users.create'
+    | 'api.users.create_failed'
+    | 'api.users.update'
+    | 'api.users.profile_update'
+    | 'api.users.delete'
+    | 'api.users.permissions_update'
+    | 'api.users.force_password_reset'
+    
+    // User Management Events
+    | 'users.create_attempt'
+    | 'users.update_attempt'
+    | 'users.delete_attempt'
     
     // Security Events
     | 'security.rate_limit_exceeded'

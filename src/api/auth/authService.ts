@@ -1,406 +1,443 @@
 /**
- * Authentication Service for Food Service CRM
- * Provides JWT-based authentication with refresh token support
+ * Authentication Service for ForkFlow CRM
+ * Handles JWT authentication with Supabase backend integration
  */
 
-import { 
-    LoginCredentials, 
-    LoginResponse, 
-    RefreshTokenRequest, 
-    PasswordResetRequest, 
-    PasswordResetConfirm,
-    User,
-    AuthTokens 
-} from '../../types';
-import { 
-    setAccessToken, 
-    getAccessToken, 
-    clearAccessToken,
-    setAuthState,
-    clearAuthState,
-    checkRateLimit,
-    clearRateLimit,
-    generateCSRFToken,
-    getUserFromToken
-} from '../../utils/jwtUtils';
-import {
-    performOfflineLogin,
-    storeOfflineCredentials,
-    clearOfflineCredentials,
-    isOnline,
-    setupOfflineAuth
-} from '../../utils/offlineAuth';
+import { supabase } from '../../providers/supabase/supabase';
+import { User, LoginCredentials } from '../../types';
+import { logAuditEvent } from '../../utils/auditLogging';
 
-// Import mock API for development
-import {
-    mockLogin,
-    mockLogout,
-    mockRefreshToken,
-    mockGetCurrentUser,
-    mockGetUserPermissions,
-    mockPasswordResetRequest,
-    mockPasswordResetConfirm,
-    mockChangePassword,
-    mockUpdateProfile
-} from './mockAuthAPI';
+// Types for auth responses
+export interface AuthResponse {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+}
 
-// API base URL - would come from environment in production
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
-const USE_MOCK_API = process.env.NODE_ENV === 'development' || !process.env.REACT_APP_API_URL;
-
-/**
- * HTTP client with automatic token injection
- */
-const createHttpClient = () => {
-    const httpClient = async (url: string, options: RequestInit = {}): Promise<Response> => {
-        const token = getAccessToken();
-        const headers = new Headers(options.headers);
-        
-        // Add content type if not present
-        if (!headers.has('Content-Type')) {
-            headers.set('Content-Type', 'application/json');
-        }
-        
-        // Add authorization header if token exists
-        if (token && !url.includes('/auth/login') && !url.includes('/auth/refresh')) {
-            headers.set('Authorization', `Bearer ${token}`);
-        }
-        
-        // Add CSRF token for state-changing operations
-        if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method?.toUpperCase() || '')) {
-            headers.set('X-CSRF-Token', generateCSRFToken());
-        }
-        
-        const response = await fetch(url, {
-            ...options,
-            headers,
-            credentials: 'include', // Include cookies for refresh tokens
-        });
-        
-        // Handle token expiration
-        if (response.status === 401 && token) {
-            // Try to refresh token
-            const refreshed = await tryRefreshToken();
-            if (refreshed) {
-                // Retry the original request with new token
-                headers.set('Authorization', `Bearer ${getAccessToken()}`);
-                return fetch(url, { ...options, headers, credentials: 'include' });
-            } else {
-                // Refresh failed, redirect to login
-                clearAccessToken();
-                clearAuthState();
-                window.location.href = '/login';
-                throw new Error('Session expired');
-            }
-        }
-        
-        return response;
-    };
-    
-    return httpClient;
-};
-
-const httpClient = createHttpClient();
+export interface RefreshTokenResponse {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+}
 
 /**
  * Login user with email and password
  */
-export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    // Check rate limiting
-    if (!checkRateLimit(credentials.email)) {
-        throw new Error('Too many login attempts. Please try again in 15 minutes.');
-    }
-    
+export const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     try {
-        let data: LoginResponse;
+        const { email, password, rememberMe } = credentials;
         
-        // Try offline login first if network is unavailable
-        if (!isOnline()) {
-            console.log('📱 Attempting offline login due to no network connection');
-            const user = await performOfflineLogin(credentials);
-            
-            // Create mock token response for offline use
-            data = {
-                user,
-                tokens: {
-                    accessToken: 'offline-token-' + Date.now(),
-                    refreshToken: 'offline-refresh-' + Date.now(),
-                    tokenType: 'Bearer',
-                    expiresIn: 24 * 60 * 60, // 24 hours for offline
-                    expiresAt: Date.now() + (24 * 60 * 60 * 1000),
-                },
-            };
-        } else {
-            // Online login
-            if (USE_MOCK_API) {
-                // Use mock API for development
-                data = await mockLogin(credentials);
-            } else {
-                // Use real API for production
-                const response = await httpClient(`${API_BASE_URL}/auth/login`, {
-                    method: 'POST',
-                    body: JSON.stringify(credentials),
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Login failed');
-                }
-                
-                data = await response.json();
-            }
-            
-            // Store credentials for offline use after successful online login
-            await storeOfflineCredentials(credentials.email, credentials.password);
+        // Authenticate with Supabase
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (authError || !authData.user) {
+            throw new Error(authError?.message || 'Login failed');
         }
-        
-        // Store tokens securely
-        setAccessToken(data.tokens.accessToken);
-        setAuthState(data.user, credentials.rememberMe || false);
-        
-        // Clear rate limiting on successful login
-        clearRateLimit(credentials.email);
-        
-        return data;
+
+        // Get user profile from the database
+        const { data: userProfile, error: profileError } = await supabase
+            .from('users')
+            .select(`
+                id,
+                email,
+                first_name,
+                last_name,
+                role,
+                avatar,
+                territory,
+                principals,
+                disabled,
+                last_login,
+                created_at,
+                updated_at
+            `)
+            .eq('auth_user_id', authData.user.id)
+            .single();
+
+        if (profileError || !userProfile) {
+            // If no user profile exists, create one
+            const { data: newProfile, error: createError } = await supabase
+                .from('users')
+                .insert({
+                    auth_user_id: authData.user.id,
+                    email: authData.user.email,
+                    first_name: authData.user.user_metadata?.first_name || '',
+                    last_name: authData.user.user_metadata?.last_name || '',
+                    role: 'broker', // Default role
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                })
+                .select()
+                .single();
+
+            if (createError || !newProfile) {
+                throw new Error('Failed to create user profile');
+            }
+
+            // Update last login
+            await supabase
+                .from('users')
+                .update({ last_login: new Date().toISOString() })
+                .eq('id', newProfile.id);
+
+            return {
+                user: {
+                    id: newProfile.id,
+                    email: newProfile.email,
+                    firstName: newProfile.first_name,
+                    lastName: newProfile.last_name,
+                    role: newProfile.role,
+                    avatar: newProfile.avatar,
+                    territory: newProfile.territory,
+                    principals: newProfile.principals || [],
+                    isActive: !newProfile.disabled,
+                    lastLoginAt: newProfile.last_login,
+                    createdAt: newProfile.created_at,
+                    updatedAt: newProfile.updated_at,
+                },
+                accessToken: authData.session?.access_token || '',
+                refreshToken: authData.session?.refresh_token || '',
+                expiresIn: authData.session?.expires_in || 3600,
+            };
+        }
+
+        // Update last login for existing user
+        await supabase
+            .from('users')
+            .update({ last_login: new Date().toISOString() })
+            .eq('id', userProfile.id);
+
+        return {
+            user: {
+                id: userProfile.id,
+                email: userProfile.email,
+                firstName: userProfile.first_name,
+                lastName: userProfile.last_name,
+                role: userProfile.role,
+                avatar: userProfile.avatar,
+                territory: userProfile.territory,
+                principals: userProfile.principals || [],
+                isActive: !userProfile.disabled,
+                lastLoginAt: new Date().toISOString(),
+                createdAt: userProfile.created_at,
+                updatedAt: userProfile.updated_at,
+            },
+            accessToken: authData.session?.access_token || '',
+            refreshToken: authData.session?.refresh_token || '',
+            expiresIn: authData.session?.expires_in || 3600,
+        };
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Login failed:', error);
         throw error;
     }
 };
 
 /**
- * Logout user and clear tokens
+ * Logout user and invalidate session
  */
 export const logout = async (): Promise<void> => {
     try {
-        if (isOnline() && !USE_MOCK_API) {
-            // Notify server of logout (invalidate refresh token)
-            await httpClient(`${API_BASE_URL}/auth/logout`, {
-                method: 'POST',
-            });
-        } else if (USE_MOCK_API) {
-            // Use mock API for development
-            await mockLogout();
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('Logout error:', error);
+            // Don't throw error for logout - always clear local state
         }
-        // Skip server logout if offline - will sync when back online
     } catch (error) {
-        console.error('Logout error:', error);
-        // Continue with local logout even if server request fails
-    } finally {
-        // Clear local tokens and state
-        clearAccessToken();
-        clearAuthState();
-        
-        // Clear offline credentials on explicit logout
-        clearOfflineCredentials();
+        console.error('Logout failed:', error);
+        // Don't throw error for logout - always clear local state
     }
 };
 
 /**
- * Refresh access token using refresh token
- */
-export const refreshAccessToken = async (): Promise<AuthTokens | null> => {
-    try {
-        let tokens: AuthTokens | null;
-        
-        if (USE_MOCK_API) {
-            // Use mock API for development - no refresh token needed for mock
-            return null; // Mock tokens don't expire in development
-        } else {
-            const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
-                method: 'POST',
-                credentials: 'include', // Send HttpOnly refresh token cookie
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            
-            if (!response.ok) {
-                return null;
-            }
-            
-            tokens = await response.json();
-        }
-        
-        if (tokens) {
-            setAccessToken(tokens.accessToken);
-        }
-        
-        return tokens;
-    } catch (error) {
-        console.error('Token refresh error:', error);
-        return null;
-    }
-};
-
-/**
- * Internal helper to try token refresh
- */
-const tryRefreshToken = async (): Promise<boolean> => {
-    const tokens = await refreshAccessToken();
-    return tokens !== null;
-};
-
-/**
- * Get current user profile
+ * Get current authenticated user
  */
 export const getCurrentUser = async (): Promise<User> => {
-    if (USE_MOCK_API) {
-        // Get user from token for mock API
-        const token = getAccessToken();
-        if (token) {
-            const payload = getUserFromToken(token);
-            if (payload?.id) {
-                return await mockGetCurrentUser(payload.id);
-            }
-        }
-        throw new Error('No authenticated user found');
-    } else {
-        const response = await httpClient(`${API_BASE_URL}/auth/me`);
+    try {
+        const { data: authData, error: authError } = await supabase.auth.getUser();
         
-        if (!response.ok) {
-            throw new Error('Failed to get user profile');
+        if (authError || !authData.user) {
+            throw new Error('User not authenticated');
         }
-        
-        return response.json();
-    }
-};
 
-/**
- * Update user profile
- */
-export const updateProfile = async (updates: Partial<User>): Promise<User> => {
-    const response = await httpClient(`${API_BASE_URL}/auth/profile`, {
-        method: 'PUT',
-        body: JSON.stringify(updates),
-    });
-    
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update profile');
-    }
-    
-    return response.json();
-};
+        // Get user profile from database
+        const { data: userProfile, error: profileError } = await supabase
+            .from('users')
+            .select(`
+                id,
+                email,
+                first_name,
+                last_name,
+                role,
+                avatar,
+                territory,
+                principals,
+                disabled,
+                last_login,
+                created_at,
+                updated_at
+            `)
+            .eq('auth_user_id', authData.user.id)
+            .single();
 
-/**
- * Change user password
- */
-export const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
-    const response = await httpClient(`${API_BASE_URL}/auth/change-password`, {
-        method: 'POST',
-        body: JSON.stringify({ currentPassword, newPassword }),
-    });
-    
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to change password');
-    }
-};
+        if (profileError || !userProfile) {
+            throw new Error('User profile not found');
+        }
 
-/**
- * Request password reset
- */
-export const requestPasswordReset = async (request: PasswordResetRequest): Promise<void> => {
-    const response = await httpClient(`${API_BASE_URL}/auth/forgot-password`, {
-        method: 'POST',
-        body: JSON.stringify(request),
-    });
-    
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to send password reset email');
+        return {
+            id: userProfile.id,
+            email: userProfile.email,
+            firstName: userProfile.first_name,
+            lastName: userProfile.last_name,
+            role: userProfile.role,
+            avatar: userProfile.avatar,
+            territory: userProfile.territory,
+            principals: userProfile.principals || [],
+            isActive: !userProfile.disabled,
+            lastLoginAt: userProfile.last_login,
+            createdAt: userProfile.created_at,
+            updatedAt: userProfile.updated_at,
+        };
+    } catch (error) {
+        console.error('Failed to get current user:', error);
+        throw error;
     }
-};
-
-/**
- * Confirm password reset with token
- */
-export const confirmPasswordReset = async (request: PasswordResetConfirm): Promise<void> => {
-    const response = await httpClient(`${API_BASE_URL}/auth/reset-password`, {
-        method: 'POST',
-        body: JSON.stringify(request),
-    });
-    
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to reset password');
-    }
-};
-
-/**
- * Check if user is authenticated (has valid token)
- */
-export const isAuthenticated = (): boolean => {
-    const token = getAccessToken();
-    return token !== null;
 };
 
 /**
  * Get user permissions based on role
  */
 export const getUserPermissions = async (): Promise<string[]> => {
-    if (USE_MOCK_API) {
-        // Get user from token for mock API
-        const token = getAccessToken();
-        if (token) {
-            const payload = getUserFromToken(token);
-            if (payload?.id) {
-                return await mockGetUserPermissions(payload.id);
-            }
+    try {
+        const user = await getCurrentUser();
+        
+        // Return permissions based on role
+        switch (user.role) {
+            case 'admin':
+                return [
+                    'organizations.*',
+                    'contacts.*', 
+                    'products.*',
+                    'opportunities.*',
+                    'interactions.*',
+                    'users.*',
+                    'settings.*',
+                    'reports.*'
+                ];
+            case 'manager':
+                return [
+                    'organizations.*',
+                    'contacts.*',
+                    'products.*',
+                    'opportunities.*',
+                    'interactions.*',
+                    'reports.view',
+                    'settings.view'
+                ];
+            case 'broker':
+                return [
+                    'organizations.view',
+                    'organizations.edit',
+                    'contacts.*',
+                    'products.view',
+                    'opportunities.*',
+                    'interactions.*'
+                ];
+            default:
+                return [];
         }
+    } catch (error) {
+        console.error('Failed to get user permissions:', error);
         return [];
-    } else {
-        const response = await httpClient(`${API_BASE_URL}/auth/permissions`);
-        
-        if (!response.ok) {
-            throw new Error('Failed to get user permissions');
-        }
-        
-        const data = await response.json();
-        return data.permissions;
     }
 };
 
 /**
- * Setup automatic token refresh listener
+ * Refresh access token using refresh token
  */
-export const setupTokenRefresh = (): void => {
-    // Listen for token expiring events
-    window.addEventListener('tokenExpiring', async () => {
-        const refreshed = await tryRefreshToken();
-        if (!refreshed) {
-            // Refresh failed, logout user
-            await logout();
-            window.location.href = '/login';
+export const refreshToken = async (): Promise<RefreshTokenResponse> => {
+    try {
+        const { data, error } = await supabase.auth.refreshSession();
+        
+        if (error || !data.session) {
+            throw new Error(error?.message || 'Token refresh failed');
         }
-    });
-    
-    // Listen for visibility change to refresh token when app becomes visible
-    document.addEventListener('visibilitychange', async () => {
-        if (!document.hidden && isAuthenticated()) {
-            await tryRefreshToken();
-        }
-    });
-    
-    // Setup offline authentication listeners
-    setupOfflineAuth();
+
+        return {
+            accessToken: data.session.access_token,
+            refreshToken: data.session.refresh_token,
+            expiresIn: data.session.expires_in || 3600,
+        };
+    } catch (error) {
+        console.error('Token refresh failed:', error);
+        throw error;
+    }
 };
 
 /**
- * Initialize authentication state from storage
+ * Check if user is authenticated
+ */
+export const isAuthenticated = async (): Promise<boolean> => {
+    try {
+        const { data, error } = await supabase.auth.getSession();
+        return !error && !!data.session;
+    } catch (error) {
+        console.error('Authentication check failed:', error);
+        return false;
+    }
+};
+
+/**
+ * Initialize authentication on app startup
  */
 export const initializeAuth = async (): Promise<User | null> => {
     try {
-        // Try to refresh token if we have a refresh token
-        const tokens = await refreshAccessToken();
-        if (tokens) {
-            return await getCurrentUser();
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error || !data.session) {
+            return null;
         }
-        return null;
+
+        // Get current user profile
+        const user = await getCurrentUser();
+        
+        // Log session restoration
+        await logAuditEvent('auth.session_restored', {
+            userId: user.id,
+            userEmail: user.email,
+            userRole: user.role,
+        }, {
+            userId: user.id,
+            userEmail: user.email,
+            outcome: 'success',
+            message: 'Authentication session restored',
+        });
+
+        return user;
     } catch (error) {
-        console.error('Auth initialization error:', error);
-        clearAuthState();
+        console.error('Auth initialization failed:', error);
         return null;
+    }
+};
+
+/**
+ * Setup automatic token refresh
+ */
+export const setupTokenRefresh = (): void => {
+    // Supabase handles automatic token refresh internally
+    // This function exists for compatibility with the JWT auth provider
+    console.log('🔄 Token refresh setup complete (handled by Supabase)');
+};
+
+/**
+ * Sign up new user
+ */
+export const signUp = async (userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    role?: string;
+}): Promise<AuthResponse> => {
+    try {
+        const { email, password, firstName, lastName, role = 'broker' } = userData;
+        
+        // Sign up with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                }
+            }
+        });
+
+        if (authError || !authData.user) {
+            throw new Error(authError?.message || 'Sign up failed');
+        }
+
+        // Create user profile in database
+        const { data: userProfile, error: profileError } = await supabase
+            .from('users')
+            .insert({
+                auth_user_id: authData.user.id,
+                email,
+                first_name: firstName,
+                last_name: lastName,
+                role,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                last_login: new Date().toISOString(),
+            })
+            .select()
+            .single();
+
+        if (profileError || !userProfile) {
+            throw new Error('Failed to create user profile');
+        }
+
+        return {
+            user: {
+                id: userProfile.id,
+                email: userProfile.email,
+                firstName: userProfile.first_name,
+                lastName: userProfile.last_name,
+                role: userProfile.role,
+                avatar: userProfile.avatar,
+                territory: userProfile.territory,
+                principals: userProfile.principals || [],
+                isActive: !userProfile.disabled,
+                lastLoginAt: userProfile.last_login,
+                createdAt: userProfile.created_at,
+                updatedAt: userProfile.updated_at,
+            },
+            accessToken: authData.session?.access_token || '',
+            refreshToken: authData.session?.refresh_token || '',
+            expiresIn: authData.session?.expires_in || 3600,
+        };
+    } catch (error) {
+        console.error('Sign up failed:', error);
+        throw error;
+    }
+};
+
+/**
+ * Reset password request
+ */
+export const requestPasswordReset = async (email: string): Promise<void> => {
+    try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`,
+        });
+
+        if (error) {
+            throw new Error(error.message);
+        }
+    } catch (error) {
+        console.error('Password reset request failed:', error);
+        throw error;
+    }
+};
+
+/**
+ * Update password
+ */
+export const updatePassword = async (newPassword: string): Promise<void> => {
+    try {
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+
+        if (error) {
+            throw new Error(error.message);
+        }
+    } catch (error) {
+        console.error('Password update failed:', error);
+        throw error;
     }
 };

@@ -1,5 +1,8 @@
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import {
     AppBar,
     Box,
@@ -20,6 +23,8 @@ import {
 } from 'react-admin';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import { useConfigurationContext } from '../root/ConfigurationContext';
+import { useUserRole } from '../components/auth/RoleBasedComponent';
+import { SecurityStatusBar } from '../components/security/SecurityStatusBar';
 
 const Header = () => {
     const { logo, title } = useConfigurationContext();
@@ -113,11 +118,16 @@ const Header = () => {
                                 />
                             </Tabs>
                         </Box>
-                        <Box display="flex" alignItems="center">
+                        <Box display="flex" alignItems="center" gap={1}>
+                            <SecurityStatusBar compact />
                             <LoadingIndicator />
                             <UserMenu>
+                                <ProfileMenu />
+                                <CanAccess resource="analytics" action="list">
+                                    <AnalyticsMenu />
+                                </CanAccess>
                                 <ConfigurationMenu />
-                                <CanAccess resource="sales" action="list">
+                                <CanAccess resource="users" action="list">
                                     <UsersMenu />
                                 </CanAccess>
                                 <Logout />
@@ -127,6 +137,30 @@ const Header = () => {
                 </Toolbar>
             </AppBar>
         </Box>
+    );
+};
+
+const ProfileMenu = () => {
+    const { onClose } = useUserMenu() ?? {};
+    return (
+        <MenuItem component={Link} to="/profile" onClick={onClose}>
+            <ListItemIcon>
+                <AccountCircleIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>My Profile</ListItemText>
+        </MenuItem>
+    );
+};
+
+const AnalyticsMenu = () => {
+    const { onClose } = useUserMenu() ?? {};
+    return (
+        <MenuItem component={Link} to="/analytics" onClick={onClose}>
+            <ListItemIcon>
+                <AnalyticsIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Analytics</ListItemText>
+        </MenuItem>
     );
 };
 

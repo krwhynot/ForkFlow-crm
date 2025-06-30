@@ -243,6 +243,19 @@ export type PasswordResetConfirm = {
     newPassword: string;
 };
 
+export type UserProfileUpdate = {
+    firstName?: string;
+    lastName?: string;
+    avatar?: string | File;
+    territory?: string[];
+    principals?: string[];
+};
+
+export type PasswordChangeRequest = {
+    currentPassword: string;
+    newPassword: string;
+};
+
 export type JWTPayload = {
     sub: string; // user id
     email: string;

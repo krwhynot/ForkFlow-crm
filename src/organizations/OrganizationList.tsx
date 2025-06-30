@@ -13,11 +13,12 @@ import {
 
 import { ImageList } from './GridList';
 import { OrganizationListFilter } from './OrganizationListFilter';
-import { Stack, Button, Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
-import { Map as MapIcon } from '@mui/icons-material';
+import { Stack, Button, Dialog, DialogContent, useMediaQuery, useTheme, Box, Chip } from '@mui/material';
+import { Map as MapIcon, LocationOn as LocationIcon } from '@mui/icons-material';
 import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
 import { OrganizationMapView } from './OrganizationMapView';
+import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
 
 export const OrganizationList = () => {
     const { identity } = useGetIdentity();
@@ -31,6 +32,7 @@ export const OrganizationList = () => {
 
 const OrganizationListLayout = () => {
     const { data, isPending, filterValues } = useListContext();
+    const { hasRestrictions, territoryDisplayName } = useTerritoryFilter();
     const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
     if (isPending) return null;
@@ -40,7 +42,18 @@ const OrganizationListLayout = () => {
         <Stack direction="row" component="div">
             <OrganizationListFilter />
             <Stack sx={{ width: '100%' }}>
-                <Title title={'Organizations'} />
+                <Box display="flex" alignItems="center" gap={2} mb={1}>
+                    <Title title={'Organizations'} />
+                    {hasRestrictions && (
+                        <Chip
+                            icon={<LocationIcon />}
+                            label={`Territory: ${territoryDisplayName}`}
+                            variant="outlined"
+                            size="small"
+                            color="primary"
+                        />
+                    )}
+                </Box>
                 <ListToolbar actions={<OrganizationListActions />} />
                 <ImageList />
                 <Pagination rowsPerPageOptions={[10, 25, 50, 100]} />

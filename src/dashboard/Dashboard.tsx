@@ -4,11 +4,13 @@ import { DealsChart } from './DealsChart';
 import { HotContacts } from './HotContacts';
 import { TasksList } from './TasksList';
 import { Welcome } from './Welcome';
-import { useGetList } from 'react-admin';
-import { Contact, ContactNote } from '../types';
+import { RoleDashboard } from './RoleDashboard';
+import { useGetList, useGetIdentity } from 'react-admin';
+import { Contact, ContactNote, User } from '../types';
 import { DashboardStepper } from './DashboardStepper';
 
 export const Dashboard = () => {
+    const { data: identity } = useGetIdentity<User>();
     const {
         data: dataContact,
         total: totalContact,
@@ -36,6 +38,7 @@ export const Dashboard = () => {
         return null;
     }
 
+    // For new systems, show the setup stepper
     if (!totalContact) {
         return <DashboardStepper step={1} />;
     }
@@ -44,6 +47,12 @@ export const Dashboard = () => {
         return <DashboardStepper step={2} contactId={dataContact?.[0]?.id} />;
     }
 
+    // Use role-based dashboard for established systems
+    if (identity?.role) {
+        return <RoleDashboard />;
+    }
+
+    // Fallback to legacy dashboard layout
     return (
         <Grid container spacing={2} mt={1} rowGap={4}>
             <Grid item xs={12} md={3}>

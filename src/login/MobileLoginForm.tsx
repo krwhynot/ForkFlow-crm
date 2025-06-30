@@ -22,7 +22,7 @@ import { Form, useLogin, useNotify, useSafeSetState } from 'ra-core';
 import { Login, TextInput } from 'react-admin';
 import { SubmitHandler, FieldValues as RHFFieldValues } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { ForgotPasswordPage } from 'ra-supabase';
+import { PasswordResetPage } from './PasswordResetPage';
 import { LoginCredentials } from '../types';
 
 const PREFIX = 'MobileLoginForm';
@@ -279,7 +279,7 @@ export const MobileLoginForm = () => {
 
                     <Typography
                         component={Link}
-                        to={ForgotPasswordPage.path}
+                        to={PasswordResetPage.path}
                         variant="body2"
                         color="primary"
                         sx={{

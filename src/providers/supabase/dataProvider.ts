@@ -25,6 +25,7 @@ import { getActivityLog } from '../commons/activity';
 import { getIsInitialized } from './authProvider';
 import { supabase } from './supabase';
 import { logAuditEvent } from '../../utils/auditLogging';
+import { applyTerritoryFilter } from '../../utils/territoryFilter';
 import {
     getCurrentLocation as getInteractionLocation,
     validateFileAttachment,
@@ -58,6 +59,7 @@ import {
     type BulkImportResult,
     type OrganizationSummary,
 } from './organizationExtensions';
+import { authDataProviderMethods } from '../../api/auth/authAPI';
 
 if (import.meta.env.VITE_SUPABASE_URL === undefined) {
     throw new Error('Please set the VITE_SUPABASE_URL environment variable');
@@ -143,6 +145,12 @@ const dataProviderWithCustomMethods = {
         if (resource === 'customers') {
             return baseDataProvider.getList('customer_summary', params);
         }
+        
+        // Handle users resource via auth API
+        if (resource === 'users') {
+            const result = await authDataProviderMethods.getList(resource, params);
+            return result as any; // Type assertion to satisfy DataProvider interface
+        }
 
         return baseDataProvider.getList(resource, params);
     },
@@ -150,8 +158,41 @@ const dataProviderWithCustomMethods = {
         if (resource === 'customers') {
             return baseDataProvider.getOne('customer_summary', params);
         }
+        
+        // Handle users resource via auth API
+        if (resource === 'users') {
+            const result = await authDataProviderMethods.getOne(resource, params);
+            return result as any; // Type assertion to satisfy DataProvider interface
+        }
 
         return baseDataProvider.getOne(resource, params);
+    },
+    async create(resource: string, params: any) {
+        // Handle users resource via auth API
+        if (resource === 'users') {
+            const result = await authDataProviderMethods.create(resource, params);
+            return result as any; // Type assertion to satisfy DataProvider interface
+        }
+
+        return baseDataProvider.create(resource, params);
+    },
+    async update(resource: string, params: any) {
+        // Handle users resource via auth API
+        if (resource === 'users') {
+            const result = await authDataProviderMethods.update(resource, params);
+            return result as any; // Type assertion to satisfy DataProvider interface
+        }
+
+        return baseDataProvider.update(resource, params);
+    },
+    async delete(resource: string, params: any) {
+        // Handle users resource via auth API
+        if (resource === 'users') {
+            const result = await authDataProviderMethods.delete(resource, params);
+            return result as any; // Type assertion to satisfy DataProvider interface
+        }
+
+        return baseDataProvider.delete(resource, params);
     },
 
     async signUp({ email, password, first_name, last_name }: SignUpData) {
@@ -684,6 +725,94 @@ const dataProviderWithCustomMethods = {
             longitude: mockLng,
         };
     },
+
+    // ===========================================
+    // Authentication Methods (API Integration)
+    // ===========================================
+
+    /**
+     * Authentication login method
+     */
+    async authLogin(credentials: any) {
+        return authDataProviderMethods.login(credentials);
+    },
+
+    /**
+     * Authentication logout method
+     */
+    async authLogout() {
+        return authDataProviderMethods.logout();
+    },
+
+    /**
+     * Get current authenticated user
+     */
+    async authGetCurrentUser() {
+        return authDataProviderMethods.getCurrentUser();
+    },
+
+    /**
+     * Check authentication status
+     */
+    async authCheckAuth() {
+        return authDataProviderMethods.checkAuth();
+    },
+
+    /**
+     * Refresh authentication token
+     */
+    async authRefreshToken() {
+        return authDataProviderMethods.refreshToken();
+    },
+
+    /**
+     * Get user permissions
+     */
+    async authGetUserPermissions(userId?: any) {
+        return authDataProviderMethods.getUserPermissions(userId);
+    },
+
+    /**
+     * Request password reset (legacy method name)
+     */
+    async authRequestPasswordReset(email: string) {
+        return authDataProviderMethods.requestPasswordReset({ email });
+    },
+
+    /**
+     * Update password
+     */
+    async authUpdatePassword(newPassword: string) {
+        return authDataProviderMethods.updatePassword(newPassword);
+    },
+
+    /**
+     * Request password reset
+     */
+    async requestPasswordReset(data: any) {
+        return authDataProviderMethods.requestPasswordReset(data);
+    },
+
+    /**
+     * Confirm password reset with token
+     */
+    async confirmPasswordReset(data: any) {
+        return authDataProviderMethods.confirmPasswordReset(data);
+    },
+
+    /**
+     * Update user profile
+     */
+    async updateUserProfile(userId: any, data: any) {
+        return authDataProviderMethods.updateUserProfile(userId, data);
+    },
+
+    /**
+     * Force password reset (admin only)
+     */
+    async authForcePasswordReset(userId: any) {
+        return authDataProviderMethods.forcePasswordReset(userId);
+    },
 } satisfies DataProvider;
 
 export type CrmDataProvider = typeof dataProviderWithCustomMethods;
@@ -726,7 +855,8 @@ export const dataProvider = withLifecycleCallbacks(
         {
             resource: 'organizations',
             beforeGetList: async params => {
-                return applyFullTextSearch([
+                // Apply full text search first
+                let processedParams = applyFullTextSearch([
                     'name',
                     'accountManager',
                     'address',
@@ -736,6 +866,39 @@ export const dataProvider = withLifecycleCallbacks(
                     'website',
                     'notes',
                 ])(params);
+
+                // Then apply territory filtering based on current user
+                const { data: user } = await supabase.auth.getUser();
+                if (user?.user) {
+                    // Get user profile to check role and territory
+                    const { data: userProfile } = await supabase
+                        .from('profiles')
+                        .select('role, territory')
+                        .eq('id', user.user.id)
+                        .single();
+                    
+                    if (userProfile) {
+                        const userData = {
+                            id: user.user.id,
+                            email: user.user.email || '',
+                            firstName: user.user.user_metadata?.first_name || '',
+                            lastName: user.user.user_metadata?.last_name || '',
+                            role: userProfile.role || 'broker',
+                            territory: userProfile.territory || [],
+                            isActive: true,
+                            createdAt: user.user.created_at,
+                            updatedAt: user.user.updated_at || user.user.created_at,
+                        };
+                        
+                        processedParams = applyTerritoryFilter({
+                            user: userData,
+                            resource: 'organizations',
+                            params: processedParams,
+                        });
+                    }
+                }
+
+                return processedParams;
             },
             beforeCreate: async params => {
                 const { data: user } = await supabase.auth.getUser();
@@ -752,13 +915,46 @@ export const dataProvider = withLifecycleCallbacks(
         {
             resource: 'contacts',
             beforeGetList: async params => {
-                return applyFullTextSearch([
+                // Apply full text search first
+                let processedParams = applyFullTextSearch([
                     'firstName',
                     'lastName',
                     'email',
                     'phone',
                     'notes',
                 ])(params);
+
+                // Apply territory filtering for contacts (through organization)
+                const { data: user } = await supabase.auth.getUser();
+                if (user?.user) {
+                    const { data: userProfile } = await supabase
+                        .from('profiles')
+                        .select('role, territory')
+                        .eq('id', user.user.id)
+                        .single();
+                    
+                    if (userProfile) {
+                        const userData = {
+                            id: user.user.id,
+                            email: user.user.email || '',
+                            firstName: user.user.user_metadata?.first_name || '',
+                            lastName: user.user.user_metadata?.last_name || '',
+                            role: userProfile.role || 'broker',
+                            territory: userProfile.territory || [],
+                            isActive: true,
+                            createdAt: user.user.created_at,
+                            updatedAt: user.user.updated_at || user.user.created_at,
+                        };
+                        
+                        processedParams = applyTerritoryFilter({
+                            user: userData,
+                            resource: 'contacts',
+                            params: processedParams,
+                        });
+                    }
+                }
+
+                return processedParams;
             },
             beforeCreate: async params => {
                 const { data: user } = await supabase.auth.getUser();
@@ -882,13 +1078,46 @@ export const dataProvider = withLifecycleCallbacks(
         {
             resource: 'interactions',
             beforeGetList: async params => {
-                return applyFullTextSearch([
+                // Apply full text search first
+                let processedParams = applyFullTextSearch([
                     'subject',
                     'description',
                     'outcome',
                     'followUpNotes',
                     'locationNotes',
                 ])(params);
+
+                // Apply territory filtering for interactions (through organization)
+                const { data: user } = await supabase.auth.getUser();
+                if (user?.user) {
+                    const { data: userProfile } = await supabase
+                        .from('profiles')
+                        .select('role, territory')
+                        .eq('id', user.user.id)
+                        .single();
+                    
+                    if (userProfile) {
+                        const userData = {
+                            id: user.user.id,
+                            email: user.user.email || '',
+                            firstName: user.user.user_metadata?.first_name || '',
+                            lastName: user.user.user_metadata?.last_name || '',
+                            role: userProfile.role || 'broker',
+                            territory: userProfile.territory || [],
+                            isActive: true,
+                            createdAt: user.user.created_at,
+                            updatedAt: user.user.updated_at || user.user.created_at,
+                        };
+                        
+                        processedParams = applyTerritoryFilter({
+                            user: userData,
+                            resource: 'interactions',
+                            params: processedParams,
+                        });
+                    }
+                }
+
+                return processedParams;
             },
             beforeCreate: async params => {
                 const processedParams = await processInteractionLocation(params, true);
@@ -923,12 +1152,45 @@ export const dataProvider = withLifecycleCallbacks(
         {
             resource: 'deals',
             beforeGetList: async params => {
-                return applyFullTextSearch([
+                // Apply full text search first
+                let processedParams = applyFullTextSearch([
                     'name',
                     'description',
                     'notes',
                     'stage',
                 ])(params);
+
+                // Apply territory filtering for deals (through organization)
+                const { data: user } = await supabase.auth.getUser();
+                if (user?.user) {
+                    const { data: userProfile } = await supabase
+                        .from('profiles')
+                        .select('role, territory')
+                        .eq('id', user.user.id)
+                        .single();
+                    
+                    if (userProfile) {
+                        const userData = {
+                            id: user.user.id,
+                            email: user.user.email || '',
+                            firstName: user.user.user_metadata?.first_name || '',
+                            lastName: user.user.user_metadata?.last_name || '',
+                            role: userProfile.role || 'broker',
+                            territory: userProfile.territory || [],
+                            isActive: true,
+                            createdAt: user.user.created_at,
+                            updatedAt: user.user.updated_at || user.user.created_at,
+                        };
+                        
+                        processedParams = applyTerritoryFilter({
+                            user: userData,
+                            resource: 'deals',
+                            params: processedParams,
+                        });
+                    }
+                }
+
+                return processedParams;
             },
             beforeCreate: async params => {
                 const { data: user } = await supabase.auth.getUser();
@@ -961,6 +1223,65 @@ export const dataProvider = withLifecycleCallbacks(
                         },
                     };
                 }
+                
+                return params;
+            },
+        },
+        {
+            resource: 'users',
+            beforeGetList: async params => {
+                return applyFullTextSearch([
+                    'firstName',
+                    'lastName', 
+                    'email',
+                    'role',
+                ])(params);
+            },
+            beforeCreate: async params => {
+                const { data: currentUser } = await supabase.auth.getUser();
+                
+                // Log user creation attempt
+                await logAuditEvent('users.create_attempt', {
+                    createdBy: currentUser?.user?.id,
+                    newUserEmail: params.data.email,
+                    newUserRole: params.data.administrator ? 'admin' : 'broker',
+                }, {
+                    userId: currentUser?.user?.id,
+                    outcome: 'success',
+                    message: 'User creation initiated',
+                });
+                
+                return params;
+            },
+            beforeUpdate: async params => {
+                const { data: currentUser } = await supabase.auth.getUser();
+                
+                // Log user update attempt
+                await logAuditEvent('users.update_attempt', {
+                    updatedBy: currentUser?.user?.id,
+                    targetUserId: params.id,
+                    changes: Object.keys(params.data),
+                }, {
+                    userId: currentUser?.user?.id,
+                    outcome: 'success',
+                    message: 'User update initiated',
+                });
+                
+                return params;
+            },
+            beforeDelete: async params => {
+                const { data: currentUser } = await supabase.auth.getUser();
+                
+                // Log user deletion attempt
+                await logAuditEvent('users.delete_attempt', {
+                    deletedBy: currentUser?.user?.id,
+                    targetUserId: params.id,
+                }, {
+                    userId: currentUser?.user?.id,
+                    outcome: 'warning',
+                    severity: 'high',
+                    message: 'User deletion initiated',
+                });
                 
                 return params;
             },

@@ -1,5 +1,9 @@
 import { deepmerge } from '@mui/utils';
-import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
+import { SetPasswordPage } from 'ra-supabase';
+import { PasswordResetPage } from '../login/PasswordResetPage';
+import { SetNewPasswordPage } from '../login/SetNewPasswordPage';
+import { UserProfilePage } from '../login/UserProfilePage';
+import { SessionTimeout } from '../components/security/SessionTimeout';
 import { useEffect } from 'react';
 import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
 import {
@@ -289,13 +293,18 @@ export const CRM = ({
                     element={<SetPasswordPage />}
                 />
                 <Route
-                    path={ForgotPasswordPage.path}
-                    element={<ForgotPasswordPage />}
+                    path={PasswordResetPage.path}
+                    element={<PasswordResetPage />}
+                />
+                <Route
+                    path={SetNewPasswordPage.path}
+                    element={<SetNewPasswordPage />}
                 />
             </CustomRoutes>
 
             <CustomRoutes>
                 <Route path={SettingsPage.path} element={<SettingsPage />} />
+                <Route path={UserProfilePage.path} element={<UserProfilePage />} />
             </CustomRoutes>
 
             {/* Food Broker CRM Resources - Lazy Loaded */}
@@ -409,13 +418,20 @@ export const CRM = ({
             taskTypes={['call', 'email', 'meeting', 'follow_up', 'demo']}
             contactGender={['male', 'female', 'other']}
         >
-            {enableGPS ? (
-                <LocationProvider autoRequest={false}>
-                    {AdminComponent}
-                </LocationProvider>
-            ) : (
-                AdminComponent
-            )}
+            <>
+                {enableGPS ? (
+                    <LocationProvider autoRequest={false}>
+                        {AdminComponent}
+                    </LocationProvider>
+                ) : (
+                    AdminComponent
+                )}
+                <SessionTimeout 
+                    timeoutMinutes={30}
+                    warningMinutes={5}
+                    enabled={!isTestMode && effectiveRequireAuth}
+                />
+            </>
         </ConfigurationProvider>
     );
 };

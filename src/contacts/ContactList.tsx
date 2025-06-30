@@ -1,4 +1,4 @@
-import { Card, Stack } from '@mui/material';
+import { Card, Stack, Chip, Box, Typography } from '@mui/material';
 import jsonExport from 'jsonexport/dist';
 import type { Exporter } from 'react-admin';
 import {
@@ -22,13 +22,14 @@ import {
     useRefresh,
     useUnselectAll,
 } from 'react-admin';
-import { Star as StarIcon } from '@mui/icons-material';
+import { Star as StarIcon, LocationOn as LocationIcon } from '@mui/icons-material';
 
 import { Organization, Contact, Setting } from '../types';
 import { ContactEmpty } from './ContactEmpty';
 import { ContactImportButton } from './ContactImportButton';
 import { ContactListContent } from './ContactListContent';
 import { ContactListFilter } from './ContactListFilter';
+import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
 
 export const ContactList = () => {
     const { identity } = useGetIdentity();
@@ -49,6 +50,7 @@ export const ContactList = () => {
 const ContactListLayout = () => {
     const { data, isPending, filterValues } = useListContext();
     const { identity } = useGetIdentity();
+    const { hasRestrictions, territoryDisplayName } = useTerritoryFilter();
 
     const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
@@ -60,7 +62,18 @@ const ContactListLayout = () => {
         <Stack direction="row">
             <ContactListFilter />
             <Stack sx={{ width: '100%' }}>
-                <Title title={'Contacts'} />
+                <Box display="flex" alignItems="center" gap={2} mb={1}>
+                    <Title title={'Contacts'} />
+                    {hasRestrictions && (
+                        <Chip
+                            icon={<LocationIcon />}
+                            label={`Territory: ${territoryDisplayName}`}
+                            variant="outlined"
+                            size="small"
+                            color="primary"
+                        />
+                    )}
+                </Box>
                 <ListToolbar actions={<ContactListActions />} />
                 <BulkActionsToolbar>
                     <BulkSetPrimaryButton />
