@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CRM } from './root/CRM';
 import { dataProvider } from './providers/supabase';
 import { jwtAuthProvider } from './providers/auth';
+import { queryClient } from './utils/queryClient';
 import Demo from './Demo';
 
 /**
@@ -62,18 +65,36 @@ const App = () => {
 
     // Render demo mode
     if (authMode === 'demo') {
-        return <Demo />;
+        return (
+            <QueryClientProvider client={queryClient}>
+                <Demo />
+                {process.env.NODE_ENV === 'development' && (
+                    <ReactQueryDevtools
+                        initialIsOpen={false}
+                        position="bottom"
+                    />
+                )}
+            </QueryClientProvider>
+        );
     }
 
     // Render production JWT mode
     return (
-        <CRM
-            title="ForkFlow Food Broker CRM"
-            enableGPS={true}
-            dataProvider={dataProvider}
-            authProvider={jwtAuthProvider}
-            requireAuth={true}
-        />
+        <QueryClientProvider client={queryClient}>
+            <CRM
+                title="ForkFlow Food Broker CRM"
+                enableGPS={true}
+                dataProvider={dataProvider}
+                authProvider={jwtAuthProvider}
+                requireAuth={true}
+            />
+            {process.env.NODE_ENV === 'development' && (
+                <ReactQueryDevtools
+                    initialIsOpen={false}
+                    position="bottom"
+                />
+            )}
+        </QueryClientProvider>
     );
 };
 
