@@ -1,5 +1,5 @@
 // src/providers/supabase/dataProvider.ts
-import { supabaseDataProvider } from 'ra-supabase';
+import { supabaseDataProvider } from 'ra-supabase-core';
 
 import {
     CreateParams,
