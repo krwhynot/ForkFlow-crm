@@ -14,42 +14,31 @@ const App = () => {
     const [authMode, setAuthMode] = useState<'demo' | 'jwt' | 'loading'>('loading');
 
     useEffect(() => {
-        // Determine authentication mode based on various factors
+        // Determine authentication mode based on environment configuration
         const determineAuthMode = () => {
-            // Check URL parameters first
+            // Check URL parameters for override (useful for testing)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'demo') {
                 return 'demo';
             }
-            if (urlParams.get('mode') === 'jwt' || urlParams.get('auth') === 'jwt') {
+            if (urlParams.get('mode') === 'jwt') {
                 return 'jwt';
             }
 
-            // Check localStorage configuration
-            const storedMode = localStorage.getItem('forkflow-auth-mode');
-            if (storedMode === 'demo' || storedMode === 'jwt') {
-                return storedMode;
-            }
-
-            // Check environment variables
-            if (process.env.REACT_APP_AUTH_MODE === 'demo') {
-                return 'demo';
-            }
-            if (process.env.REACT_APP_AUTH_MODE === 'jwt') {
-                return 'jwt';
-            }
-
-            // Default to JWT for production, demo for development
-            return process.env.NODE_ENV === 'production' ? 'jwt' : 'demo';
+            // Use VITE_IS_DEMO environment variable
+            return import.meta.env.VITE_IS_DEMO === 'true' ? 'demo' : 'jwt';
         };
 
         const mode = determineAuthMode();
         setAuthMode(mode);
 
-        // Store the determined mode for consistency
-        localStorage.setItem('forkflow-auth-mode', mode);
-
         console.log(`🔧 ForkFlow CRM starting in ${mode.toUpperCase()} mode`);
+        console.log('🔧 Environment Check:', {
+            VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+            VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? '✅ Present' : '❌ Missing',
+            VITE_IS_DEMO: import.meta.env.VITE_IS_DEMO,
+            NODE_ENV: import.meta.env.NODE_ENV
+        });
     }, []);
 
     // Show loading state while determining auth mode

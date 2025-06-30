@@ -867,3 +867,300 @@ function calculateOrganizationAnalytics(interactions: any[], deals: any[]): any 
     opportunities,
   };
 }
+
+/**
+ * GET /organizations/:id - Get specific organization
+ */
+async function getOrganization(req: Request, url: URL, user: any, organizationId: string) {
+  if (!organizationId || !organizationId.match(/^\d+$/)) {
+    return new Response(
+      JSON.stringify({ error: 'Valid organization ID is required' }),
+      { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from('organizations')
+    .select(`
+      *,
+      priority:settings!priorityId (id, label, color),
+      segment:settings!segmentId (id, label, color),
+      distributor:settings!distributorId (id, label, color)
+    `)
+    .eq('id', organizationId)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      return new Response(
+        JSON.stringify({ error: 'Organization not found' }),
+        { 
+          status: 404, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    throw new Error(`Failed to fetch organization: ${error.message}`);
+  }
+
+  return new Response(
+    JSON.stringify({ data }),
+    { 
+      status: 200, 
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    }
+  );
+}
+
+/**
+ * PUT /organizations/:id - Update organization
+ */
+async function updateOrganization(req: Request, url: URL, user: any, organizationId: string) {
+  if (!organizationId || !organizationId.match(/^\d+$/)) {
+    return new Response(
+      JSON.stringify({ error: 'Valid organization ID is required' }),
+      { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
+  const body = await req.json();
+  
+  // Add update timestamp
+  const updateData = {
+    ...body,
+    updatedAt: new Date().toISOString(),
+  };
+
+  const { data, error } = await supabaseAdmin
+    .from('organizations')
+    .update(updateData)
+    .eq('id', organizationId)
+    .select(`
+      *,
+      priority:settings!priorityId (id, label, color),
+      segment:settings!segmentId (id, label, color),
+      distributor:settings!distributorId (id, label, color)
+    `)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      return new Response(
+        JSON.stringify({ error: 'Organization not found' }),
+        { 
+          status: 404, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    throw new Error(`Failed to update organization: ${error.message}`);
+  }
+
+  return new Response(
+    JSON.stringify({ 
+      data,
+      message: 'Organization updated successfully' 
+    }),
+    { 
+      status: 200, 
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    }
+  );
+}
+
+/**
+ * DELETE /organizations/:id - Delete organization
+ */
+async function deleteOrganization(req: Request, url: URL, user: any, organizationId: string) {
+  if (!organizationId || !organizationId.match(/^\d+$/)) {
+    return new Response(
+      JSON.stringify({ error: 'Valid organization ID is required' }),
+      { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
+  const { error } = await supabaseAdmin
+    .from('organizations')
+    .delete()
+    .eq('id', organizationId);
+
+  if (error) {
+    throw new Error(`Failed to delete organization: ${error.message}`);
+  }
+
+  return new Response(
+    JSON.stringify({ message: 'Organization deleted successfully' }),
+    { 
+      status: 200, 
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    }
+  );
+}
+
+/**
+ * GET /organizations/:id/analytics - Get organization analytics
+ */
+async function getOrganizationAnalytics(req: Request, url: URL, user: any, organizationId: string) {
+  if (!organizationId || !organizationId.match(/^\d+$/)) {
+    return new Response(
+      JSON.stringify({ error: 'Valid organization ID is required' }),
+      { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
+  // Get organization
+  const { data: organization, error: orgError } = await supabaseAdmin
+    .from('organizations')
+    .select('*')
+    .eq('id', organizationId)
+    .single();
+
+  if (orgError) {
+    if (orgError.code === 'PGRST116') {
+      return new Response(
+        JSON.stringify({ error: 'Organization not found' }),
+        { 
+          status: 404, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    throw new Error(`Failed to fetch organization: ${orgError.message}`);
+  }
+
+  // Get interactions
+  const { data: interactions } = await supabaseAdmin
+    .from('interactions')
+    .select(`
+      *,
+      settings!typeId (id, label, color)
+    `)
+    .eq('organizationId', organizationId)
+    .order('scheduledDate', { ascending: false });
+
+  // Get deals
+  const { data: deals } = await supabaseAdmin
+    .from('deals')
+    .select('*')
+    .eq('organizationId', organizationId)
+    .order('updatedAt', { ascending: false });
+
+  // Calculate analytics
+  const analytics = calculateOrganizationAnalytics(
+    interactions || [],
+    deals || []
+  );
+
+  return new Response(
+    JSON.stringify({ 
+      data: {
+        organizationId: parseInt(organizationId),
+        organizationName: organization.name,
+        ...analytics
+      }
+    }),
+    { 
+      status: 200, 
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    }
+  );
+}
+
+/**
+ * POST /organizations/:id/geocode - Geocode organization address
+ */
+async function geocodeOrganization(req: Request, url: URL, user: any, organizationId: string) {
+  if (!organizationId || !organizationId.match(/^\d+$/)) {
+    return new Response(
+      JSON.stringify({ error: 'Valid organization ID is required' }),
+      { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
+  // Get organization
+  const { data: organization, error: orgError } = await supabaseAdmin
+    .from('organizations')
+    .select('*')
+    .eq('id', organizationId)
+    .single();
+
+  if (orgError) {
+    if (orgError.code === 'PGRST116') {
+      return new Response(
+        JSON.stringify({ error: 'Organization not found' }),
+        { 
+          status: 404, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    throw new Error(`Failed to fetch organization: ${orgError.message}`);
+  }
+
+  // Build address string
+  const address = `${organization.address || ''}, ${organization.city || ''}, ${organization.state || ''} ${organization.zipCode || ''}`.trim();
+  
+  if (!address) {
+    return new Response(
+      JSON.stringify({ error: 'Organization has no address to geocode' }),
+      { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+
+  // For demo purposes, generate mock coordinates
+  // In production, integrate with Google Maps Geocoding API
+  const mockLat = 39.8283 + (Math.random() - 0.5) * 20; // Rough US latitude range
+  const mockLng = -98.5795 + (Math.random() - 0.5) * 40; // Rough US longitude range
+
+  // Update organization with coordinates
+  const { data, error } = await supabaseAdmin
+    .from('organizations')
+    .update({
+      latitude: mockLat,
+      longitude: mockLng,
+      updatedAt: new Date().toISOString(),
+    })
+    .eq('id', organizationId)
+    .select(`
+      *,
+      priority:settings!priorityId (id, label, color),
+      segment:settings!segmentId (id, label, color),
+      distributor:settings!distributorId (id, label, color)
+    `)
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update organization coordinates: ${error.message}`);
+  }
+
+  return new Response(
+    JSON.stringify({ 
+      data,
+      message: 'Organization geocoded successfully',
+      coordinates: { latitude: mockLat, longitude: mockLng },
+      address
+    }),
+    { 
+      status: 200, 
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    }
+  );
+}

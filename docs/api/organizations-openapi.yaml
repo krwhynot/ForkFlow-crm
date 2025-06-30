@@ -1,0 +1,1372 @@
+openapi: 3.0.3
+info:
+  title: ForkFlow CRM - Organizations API
+  description: |
+    Comprehensive Organization Management API for ForkFlow CRM, a mobile-first B2B food service CRM system.
+    
+    This API provides complete CRUD operations for organizations (restaurants, businesses) with advanced features including:
+    - GPS-based proximity search
+    - Full-text search with relevance scoring
+    - Territory management
+    - Analytics and engagement scoring
+    - Bulk import/export capabilities
+    - Real-time data synchronization
+    
+    **Key Features:**
+    - Mobile-optimized endpoints with pagination
+    - Row Level Security (RLS) for multi-tenant access
+    - Comprehensive validation and error handling
+    - GPS coordinate management for location-based features
+    - Integration with Settings system for priorities, segments, and distributors
+  version: 1.0.0
+  contact:
+    name: ForkFlow CRM API Support
+    email: api@forkflow.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://127.0.0.1:54321/functions/v1
+    description: Local Development Server
+  - url: https://your-project.supabase.co/functions/v1
+    description: Production Server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /organizations:
+    get:
+      summary: Get Organizations List
+      description: |
+        Retrieve a paginated list of organizations with optional filtering and sorting.
+        Supports filtering by priority, segment, distributor, and other criteria.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - name: priorityId
+          in: query
+          description: Filter by priority ID
+          schema:
+            type: integer
+        - name: segmentId
+          in: query
+          description: Filter by segment ID
+          schema:
+            type: integer
+        - name: distributorId
+          in: query
+          description: Filter by distributor ID
+          schema:
+            type: integer
+        - name: accountManager
+          in: query
+          description: Filter by account manager email
+          schema:
+            type: string
+            format: email
+        - name: city
+          in: query
+          description: Filter by city
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: Filter by state
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Organizations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationsListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Create Organization
+      description: |
+        Create a new organization with comprehensive validation.
+        Automatically sets createdBy to the authenticated user.
+      tags:
+        - Organizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationRequest'
+      responses:
+        '201':
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{id}:
+    get:
+      summary: Get Organization by ID
+      description: |
+        Retrieve a specific organization by ID with all related data including
+        priority, segment, and distributor information.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/OrganizationIdParam'
+      responses:
+        '200':
+          description: Organization retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update Organization
+      description: |
+        Update an existing organization. Only provided fields will be updated.
+        Automatically updates the updatedAt timestamp.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/OrganizationIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+      responses:
+        '200':
+          description: Organization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete Organization
+      description: |
+        Delete an organization. This is a hard delete operation.
+        Only the organization owner or service role can delete.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/OrganizationIdParam'
+      responses:
+        '200':
+          description: Organization deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/search:
+    get:
+      summary: Search Organizations
+      description: |
+        Advanced full-text search across organization fields with relevance scoring.
+        Supports proximity search when GPS coordinates are provided.
+      tags:
+        - Organizations
+        - Search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query string
+          schema:
+            type: string
+            minLength: 1
+            example: "pizza restaurant"
+        - $ref: '#/components/parameters/LimitParam'
+        - name: includeInactive
+          in: query
+          description: Include inactive organizations in results
+          schema:
+            type: boolean
+            default: false
+        - name: lat
+          in: query
+          description: Latitude for proximity search
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+        - name: lng
+          in: query
+          description: Longitude for proximity search
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+        - name: radius
+          in: query
+          description: Search radius in kilometers (used with lat/lng)
+          schema:
+            type: number
+            format: double
+            minimum: 0.1
+            maximum: 100
+            default: 10
+        - name: sortBy
+          in: query
+          description: Sort results by field
+          schema:
+            type: string
+            enum: [relevance, distance, name, lastActivity]
+            default: relevance
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchOrganizationsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/nearby:
+    get:
+      summary: Find Nearby Organizations
+      description: |
+        Find organizations within a specified radius of GPS coordinates.
+        Optimized for mobile location-based features.
+      tags:
+        - Organizations
+        - Location
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude coordinate
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+        - name: lng
+          in: query
+          required: true
+          description: Longitude coordinate
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+        - name: radius
+          in: query
+          description: Search radius in kilometers
+          schema:
+            type: number
+            format: double
+            minimum: 0.1
+            maximum: 100
+            default: 10
+        - $ref: '#/components/parameters/LimitParam'
+        - name: sortByDistance
+          in: query
+          description: Sort results by distance
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Nearby organizations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchOrganizationsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/territory:
+    get:
+      summary: Get Territory Organizations
+      description: |
+        Get organizations within a user's assigned territory.
+        Uses territory boundaries if defined, otherwise returns organizations
+        assigned to the user as account manager.
+      tags:
+        - Organizations
+        - Territory
+      parameters:
+        - $ref: '#/components/parameters/LimitParam'
+        - name: includeInactive
+          in: query
+          description: Include inactive organizations
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Territory organizations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationsListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/needs-attention:
+    get:
+      summary: Get Organizations Needing Attention
+      description: |
+        Get organizations that require follow-up based on engagement metrics,
+        last interaction date, and pipeline health.
+      tags:
+        - Organizations
+        - Analytics
+      parameters:
+        - $ref: '#/components/parameters/LimitParam'
+        - name: riskLevel
+          in: query
+          description: Filter by risk level
+          schema:
+            type: string
+            enum: [low, medium, high]
+        - name: daysSinceLastContact
+          in: query
+          description: Minimum days since last contact
+          schema:
+            type: integer
+            minimum: 1
+            default: 30
+      responses:
+        '200':
+          description: Organizations needing attention retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationsNeedingAttentionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{id}/summary:
+    get:
+      summary: Get Organization Summary
+      description: |
+        Get comprehensive organization summary including contact count,
+        recent interactions, active deals, and analytics.
+      tags:
+        - Organizations
+        - Analytics
+      parameters:
+        - $ref: '#/components/parameters/OrganizationIdParam'
+      responses:
+        '200':
+          description: Organization summary retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationSummaryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{id}/analytics:
+    get:
+      summary: Get Organization Analytics
+      description: |
+        Get detailed analytics for an organization including engagement score,
+        interaction trends, pipeline health, and risk assessment.
+      tags:
+        - Organizations
+        - Analytics
+      parameters:
+        - $ref: '#/components/parameters/OrganizationIdParam'
+      responses:
+        '200':
+          description: Organization analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationAnalyticsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{id}/geocode:
+    post:
+      summary: Geocode Organization Address
+      description: |
+        Geocode the organization's address to GPS coordinates using
+        external geocoding service integration.
+      tags:
+        - Organizations
+        - Location
+      parameters:
+        - $ref: '#/components/parameters/OrganizationIdParam'
+      responses:
+        '200':
+          description: Address geocoded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeocodeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '501':
+          description: Geocoding service not implemented
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/bulk-import:
+    post:
+      summary: Bulk Import Organizations
+      description: |
+        Import multiple organizations from CSV data with duplicate detection,
+        validation, and optional address geocoding.
+      tags:
+        - Organizations
+        - Bulk Operations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkImportRequest'
+      responses:
+        '200':
+          description: Bulk import completed (may include warnings)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkImportResponse'
+        '201':
+          description: Bulk import completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkImportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from Supabase Auth.
+        Include the token in the Authorization header as: Bearer {token}
+
+  parameters:
+    OrganizationIdParam:
+      name: id
+      in: path
+      required: true
+      description: Organization ID
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    SortParam:
+      name: sort
+      in: query
+      description: Field to sort by
+      schema:
+        type: string
+        enum: [id, name, createdAt, updatedAt, city, state]
+        default: name
+
+    OrderParam:
+      name: order
+      in: query
+      description: Sort order
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: asc
+
+  schemas:
+    Organization:
+      type: object
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique organization identifier
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Organization name
+          example: "Tony's Italian Restaurant"
+        priorityId:
+          type: integer
+          format: int64
+          nullable: true
+          description: Reference to priority setting
+          example: 1
+        segmentId:
+          type: integer
+          format: int64
+          nullable: true
+          description: Reference to segment setting
+          example: 2
+        distributorId:
+          type: integer
+          format: int64
+          nullable: true
+          description: Reference to distributor setting
+          example: 3
+        accountManager:
+          type: string
+          format: email
+          nullable: true
+          description: Email of assigned account manager
+          example: "john.doe@forkflow.com"
+        address:
+          type: string
+          nullable: true
+          maxLength: 500
+          description: Street address
+          example: "123 Main Street"
+        city:
+          type: string
+          nullable: true
+          maxLength: 100
+          description: City name
+          example: "New York"
+        state:
+          type: string
+          nullable: true
+          maxLength: 50
+          description: State or province
+          example: "NY"
+        zipCode:
+          type: string
+          nullable: true
+          pattern: '^\d{5}(-\d{4})?$'
+          description: ZIP or postal code
+          example: "10001"
+        phone:
+          type: string
+          nullable: true
+          pattern: '^[\d\s\-\.\(\)\+]+$'
+          description: Phone number
+          example: "(555) 123-4567"
+        website:
+          type: string
+          nullable: true
+          format: uri
+          description: Website URL
+          example: "https://tonysitalian.com"
+        notes:
+          type: string
+          nullable: true
+          maxLength: 2000
+          description: Internal notes
+          example: "High-volume pizza restaurant, prefers weekly deliveries"
+        latitude:
+          type: number
+          format: double
+          nullable: true
+          minimum: -90
+          maximum: 90
+          description: GPS latitude coordinate
+          example: 40.7128
+        longitude:
+          type: number
+          format: double
+          nullable: true
+          minimum: -180
+          maximum: 180
+          description: GPS longitude coordinate
+          example: -74.0060
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+          example: "2024-01-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2024-01-20T14:45:00Z"
+        createdBy:
+          type: string
+          format: uuid
+          nullable: true
+          description: ID of user who created the organization
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        # Related objects (populated in responses)
+        priority:
+          $ref: '#/components/schemas/Setting'
+        segment:
+          $ref: '#/components/schemas/Setting'
+        distributor:
+          $ref: '#/components/schemas/Setting'
+        # Computed fields
+        contactCount:
+          type: integer
+          nullable: true
+          description: Number of contacts associated with organization
+          example: 5
+        lastContactDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date of last interaction
+          example: "2024-01-18T16:20:00Z"
+        totalOpportunities:
+          type: integer
+          nullable: true
+          description: Total number of opportunities/deals
+          example: 3
+        totalOpportunityValue:
+          type: number
+          format: double
+          nullable: true
+          description: Total value of all opportunities
+          example: 125000.00
+
+    Setting:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        label:
+          type: string
+          example: "Priority A"
+        color:
+          type: string
+          nullable: true
+          example: "#FF0000"
+
+    OrganizationSearchResult:
+      allOf:
+        - $ref: '#/components/schemas/Organization'
+        - type: object
+          properties:
+            distance:
+              type: number
+              format: double
+              nullable: true
+              description: Distance in kilometers (for proximity searches)
+              example: 2.5
+            matchScore:
+              type: number
+              format: double
+              nullable: true
+              minimum: 0
+              maximum: 1
+              description: Search relevance score
+              example: 0.85
+            matchReasons:
+              type: array
+              items:
+                type: string
+              nullable: true
+              description: Fields that matched the search query
+              example: ["Organization name", "Address"]
+
+    CreateOrganizationRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Organization name
+          example: "Tony's Italian Restaurant"
+        priorityId:
+          type: integer
+          format: int64
+          nullable: true
+        segmentId:
+          type: integer
+          format: int64
+          nullable: true
+        distributorId:
+          type: integer
+          format: int64
+          nullable: true
+        accountManager:
+          type: string
+          format: email
+          nullable: true
+        address:
+          type: string
+          nullable: true
+          maxLength: 500
+        city:
+          type: string
+          nullable: true
+          maxLength: 100
+        state:
+          type: string
+          nullable: true
+          maxLength: 50
+        zipCode:
+          type: string
+          nullable: true
+          pattern: '^\d{5}(-\d{4})?$'
+        phone:
+          type: string
+          nullable: true
+          pattern: '^[\d\s\-\.\(\)\+]+$'
+        website:
+          type: string
+          nullable: true
+          format: uri
+        notes:
+          type: string
+          nullable: true
+          maxLength: 2000
+        latitude:
+          type: number
+          format: double
+          nullable: true
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          nullable: true
+          minimum: -180
+          maximum: 180
+
+    UpdateOrganizationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        priorityId:
+          type: integer
+          format: int64
+          nullable: true
+        segmentId:
+          type: integer
+          format: int64
+          nullable: true
+        distributorId:
+          type: integer
+          format: int64
+          nullable: true
+        accountManager:
+          type: string
+          format: email
+          nullable: true
+        address:
+          type: string
+          nullable: true
+          maxLength: 500
+        city:
+          type: string
+          nullable: true
+          maxLength: 100
+        state:
+          type: string
+          nullable: true
+          maxLength: 50
+        zipCode:
+          type: string
+          nullable: true
+          pattern: '^\d{5}(-\d{4})?$'
+        phone:
+          type: string
+          nullable: true
+          pattern: '^[\d\s\-\.\(\)\+]+$'
+        website:
+          type: string
+          nullable: true
+          format: uri
+        notes:
+          type: string
+          nullable: true
+          maxLength: 2000
+        latitude:
+          type: number
+          format: double
+          nullable: true
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: double
+          nullable: true
+          minimum: -180
+          maximum: 180
+
+    BulkImportRequest:
+      type: object
+      required:
+        - organizations
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrganizationRequest'
+          minItems: 1
+          maxItems: 1000
+        options:
+          type: object
+          properties:
+            skipDuplicates:
+              type: boolean
+              default: true
+              description: Skip organizations that appear to be duplicates
+            updateExisting:
+              type: boolean
+              default: false
+              description: Update existing organizations instead of skipping
+            validateAddresses:
+              type: boolean
+              default: false
+              description: Attempt to geocode addresses during import
+
+    OrganizationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Organization'
+
+    OrganizationsListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+
+    SearchOrganizationsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationSearchResult'
+        total:
+          type: integer
+          description: Total number of matching results
+          example: 150
+        query:
+          type: string
+          description: The search query used
+          example: "pizza restaurant"
+
+    OrganizationsNeedingAttentionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Organization'
+              - type: object
+                properties:
+                  riskLevel:
+                    type: string
+                    enum: [low, medium, high]
+                    example: "high"
+                  daysSinceLastContact:
+                    type: integer
+                    example: 45
+                  riskFactors:
+                    type: array
+                    items:
+                      type: string
+                    example: ["No recent interactions", "Declining engagement"]
+                  recommendations:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Schedule immediate follow-up call"]
+
+    OrganizationSummaryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          allOf:
+            - $ref: '#/components/schemas/Organization'
+            - type: object
+              properties:
+                contactCount:
+                  type: integer
+                  example: 5
+                primaryContact:
+                  type: object
+                  nullable: true
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: "John Smith"
+                    email:
+                      type: string
+                      format: email
+                      example: "john@restaurant.com"
+                    phone:
+                      type: string
+                      example: "(555) 123-4567"
+                recentInteractions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                      subject:
+                        type: string
+                      date:
+                        type: string
+                        format: date-time
+                      outcome:
+                        type: string
+                        nullable: true
+                activeDeals:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      stage:
+                        type: string
+                      probability:
+                        type: number
+                      amount:
+                        type: number
+                analytics:
+                  $ref: '#/components/schemas/OrganizationAnalytics'
+
+    OrganizationAnalyticsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/OrganizationAnalytics'
+
+    OrganizationAnalytics:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          example: 1
+        engagementScore:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Engagement score (0-100)
+          example: 75
+        lastInteractionDate:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2024-01-18T16:20:00Z"
+        interactionCount:
+          type: integer
+          description: Total number of interactions
+          example: 15
+        interactionTrend:
+          type: string
+          enum: [increasing, decreasing, stable]
+          example: "increasing"
+        pipelineHealth:
+          type: object
+          properties:
+            activeDeals:
+              type: integer
+              example: 3
+            totalValue:
+              type: number
+              format: double
+              example: 125000.00
+            averageCloseRate:
+              type: number
+              format: double
+              example: 65.5
+            daysToClose:
+              type: number
+              format: double
+              example: 30
+        riskFactors:
+          type: array
+          items:
+            type: string
+          example: ["No recent interactions"]
+        opportunities:
+          type: array
+          items:
+            type: string
+          example: ["High probability deals", "Increasing engagement"]
+
+    BulkImportResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            processed:
+              type: integer
+              description: Total number of records processed
+              example: 100
+            created:
+              type: integer
+              description: Number of organizations created
+              example: 85
+            updated:
+              type: integer
+              description: Number of organizations updated
+              example: 10
+            skipped:
+              type: integer
+              description: Number of organizations skipped
+              example: 5
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  row:
+                    type: integer
+                    description: Row number with error
+                  field:
+                    type: string
+                    description: Field that caused the error
+                  message:
+                    type: string
+                    description: Error message
+                  data:
+                    type: object
+                    description: The original row data
+            duplicates:
+              type: array
+              items:
+                type: object
+                properties:
+                  row:
+                    type: integer
+                    description: Row number of duplicate
+                  existingId:
+                    type: integer
+                    description: ID of existing organization
+                  reason:
+                    type: string
+                    description: Why it was considered a duplicate
+
+    GeocodeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: double
+              example: 40.7128
+            longitude:
+              type: number
+              format: double
+              example: -74.0060
+            address:
+              type: string
+              description: Formatted address from geocoding service
+              example: "123 Main Street, New York, NY 10001, USA"
+            accuracy:
+              type: string
+              description: Accuracy level of geocoding result
+              example: "ROOFTOP"
+
+    PaginationInfo:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          example: 20
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of records
+          example: 150
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total number of pages
+          example: 8
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPrevPage:
+          type: boolean
+          example: false
+
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Organization deleted successfully"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+          example: "Organization not found"
+        code:
+          type: string
+          nullable: true
+          description: Error code for programmatic handling
+          example: "ORG_NOT_FOUND"
+        details:
+          type: object
+          nullable: true
+          description: Additional error details
+          additionalProperties: true
+
+    ValidationError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Validation failed"
+        validationErrors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: "name"
+              message:
+                type: string
+                example: "Organization name is required"
+              value:
+                type: string
+                nullable: true
+                example: ""
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request format
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Invalid organization ID format"
+            code: "INVALID_ID"
+
+    Unauthorized:
+      description: Unauthorized - missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Missing authorization header"
+            code: "UNAUTHORIZED"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Organization not found"
+            code: "ORG_NOT_FOUND"
+
+    ValidationError:
+      description: Validation error - invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: "Internal server error"
+            code: "INTERNAL_ERROR"
+
+tags:
+  - name: Organizations
+    description: Core organization management operations
+  - name: Search
+    description: Search and filtering operations
+  - name: Location
+    description: GPS and location-based operations
+  - name: Territory
+    description: Territory management operations
+  - name: Analytics
+    description: Analytics and reporting operations
+  - name: Bulk Operations
+    description: Bulk import/export operations
+
+externalDocs:
+  description: ForkFlow CRM Documentation
+  url: https://docs.forkflow.com/api/organizations

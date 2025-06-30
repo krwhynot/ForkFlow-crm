@@ -19,3 +19,8 @@ export { SettingsEdit } from './SettingsEdit';
 export { SettingsShow } from './SettingsShow';
 export { SettingsPage } from './SettingsPage';
 export { PrincipalManager } from './PrincipalManager';
+export { SettingsAdminDashboard } from './SettingsAdminDashboard';
+export { SettingsBulkOperations } from './SettingsBulkOperations';
+
+// Hooks
+export { useRealtimeSettings, useRealtimeSettingsStats } from './hooks/useRealtimeSettings';
