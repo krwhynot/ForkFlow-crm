@@ -64,7 +64,8 @@
       "mcp__knowledge__create_relations",
       "mcp__knowledge__add_observations",
       "mcp__knowledge__search_nodes",
-      "Bash(deno check:*)"
+      "Bash(deno check:*)",
+      "mcp__supabase__get_anon_key"
     ]
   },
   "enableAllProjectMcpServers": true,
