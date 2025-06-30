@@ -51,16 +51,16 @@ const mockUsers: User[] = [
 ];
 
 const defaultDataProvider = {
-    getList: () => Promise.resolve({ data: mockUsers, total: mockUsers.length }),
-    getOne: () => Promise.resolve({ data: mockUsers[0] }),
-    getMany: () => Promise.resolve({ data: mockUsers }),
+    getList: () => Promise.resolve({ data: mockUsers as any[], total: mockUsers.length }),
+    getOne: () => Promise.resolve({ data: mockUsers[0] as any }),
+    getMany: () => Promise.resolve({ data: mockUsers as any[] }),
     getManyReference: () => Promise.resolve({ data: [], total: 0 }),
-    create: () => Promise.resolve({ data: { ...mockUsers[0], id: '4' } }),
-    update: () => Promise.resolve({ data: mockUsers[0] }),
+    create: () => Promise.resolve({ data: { ...mockUsers[0], id: '4' } as any }),
+    update: () => Promise.resolve({ data: mockUsers[0] as any }),
     updateMany: () => Promise.resolve({ data: ['1', '2'] }),
-    delete: () => Promise.resolve({ data: mockUsers[0] }),
+    delete: () => Promise.resolve({ data: mockUsers[0] as any }),
     deleteMany: () => Promise.resolve({ data: ['1'] }),
-};
+} as any;
 
 const defaultAuthProvider = {
     login: () => Promise.resolve(),
@@ -323,9 +323,9 @@ describe('User Management Integration Tests', () => {
                         isActive: true,
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString(),
-                    } 
+                    } as any
                 })),
-            };
+            } as any;
 
             render(
                 <TestContext
@@ -344,8 +344,8 @@ describe('User Management Integration Tests', () => {
         it('handles user update workflow', async () => {
             const updateDataProvider = {
                 ...defaultDataProvider,
-                update: jest.fn(() => Promise.resolve({ data: mockUsers[0] })),
-            };
+                update: jest.fn(() => Promise.resolve({ data: mockUsers[0] as any })),
+            } as any;
 
             render(
                 <TestContext
@@ -368,7 +368,7 @@ describe('User Management Integration Tests', () => {
             const errorDataProvider = {
                 ...defaultDataProvider,
                 getList: () => Promise.reject(new Error('Network error')),
-            };
+            } as any;
 
             render(
                 <TestContext
