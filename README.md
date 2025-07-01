@@ -1,95 +1,183 @@
-# Atomic CRM
+# Supabase CLI
 
-A full-featured CRM built with React, react-admin, and Supabase.
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-https://user-images.githubusercontent.com/99944/116970434-4a926480-acb8-11eb-8ce2-0602c680e45e.mp4
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
-Atomic CRM is free and open-source. You can test it online at https://marmelab.com/react-admin-crm.
+This repository contains all the functionality for Supabase CLI.
 
-## Features
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
-- 📇 **Organize Contacts**: Keep all your contacts in one easily accessible place.
-- ⏰ **Create Tasks & Set Reminders**: Never miss a follow-up or deadline.
-- 📝 **Take Notes**: Capture important details and insights effortlessly.
-- ✉️ **Capture Emails**: CC Atomic CRM to automatically save communications as notes.
-- 📊 **Manage Deals**: Visualize and track your sales pipeline in a Kanban board.
-- 🔄 **Import & Export Data**: Easily transfer contacts in and out of the system.
-- 🔐 **Control Access**: Log in with Google, Azure, Keycloak, and Auth0.
-- 📜 **Track Activity History**: View all interactions in aggregated activity logs.
-- 🔗 **Integrate via API**: Connect seamlessly with other systems using our API.
-- 🛠️ **Customize Everything**: Add custom fields, change the theme, and replace any component to fit your needs.
+## Getting started
 
-## Installation
+### Install the CLI
 
-To run this project locally, you will need the following tools installed on your computer:
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
-- Make
-- Node 20 LTS
-- Docker (required by Supabase)
-
-Fork the [`marmelab/atomic-crm`](https://github.com/marmelab/atomic-crm) repository to your user/organization, then clone it locally:
-
-```sh
-git clone https://github.com/[username]/atomic-crm.git
+```bash
+npm i supabase --save-dev
 ```
 
-Install dependencies:
+To install the beta release channel:
 
-```sh
-cd atomic-crm
-make install
+```bash
+npm i supabase@beta --save-dev
 ```
 
-This will install the dependencies for the frontend and the backend, including a local Supabase instance.
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
 
-Once you app is configured, start the app locally with the following command:
-
-```sh
-make start
+```
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
 ```
 
-This will start the Vite dev server for the frontend, the local Supabase instance for the API, and a Postgres database (thanks to Docker).
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
 
-You can then access the app via [http://localhost:5173/](http://localhost:5173/). You will be prompted to create the first user.
+<details>
+  <summary><b>macOS</b></summary>
 
-If you need debug the backend, you can access the following services: 
+  Available via [Homebrew](https://brew.sh). To install:
 
-- Supabase dashboard: [http://localhost:54323/](http://localhost:54323/)
-- REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
-- Attachments storage: [http://localhost:54323/project/default/storage/buckets/attachments](http://localhost:54323/project/default/storage/buckets/attachments)
-- Inbucket email testing service: [http://localhost:54324/](http://localhost:54324/)
+  ```sh
+  brew install supabase/tap/supabase
+  ```
 
-## User Documentation
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
 
-1. [User Management](./doc/user/user-management.md)
-2. [Importing And Exporting Data](./doc/user/import-contacts.md)
-3. [Inbound Email](./doc/user/inbound-email.md)
+  ```sh
+  brew upgrade supabase
+  ```
+</details>
 
-## Deploying to Production
+<details>
+  <summary><b>Windows</b></summary>
 
-1. [Configuring Supabase](./doc/developer/supabase-configuration.md)
-2. [Configuring Inbound Email](./doc/developer/inbound-email-configuration.md) *(optional)*
-3. [Deployment](./doc/developer/deploy.md)
+  Available via [Scoop](https://scoop.sh). To install:
 
-## Customizing Atomic CRM
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
 
-To customize Atomic CRM, you will need TypeScript and React programming skills as there is no graphical user interface for customization. Here are some resources to assist you in getting started.
+  To upgrade:
 
-1. [Customizing the CRM](./doc/developer/customizing.md)
-2. [Creating Migrations](./doc/developer/migrations.md) *(optional)*
-3. [Using Fake Rest Data Provider for Development](./doc/developer/data-providers.md) *(optional)*
-4. [Architecture Decisions](./doc/developer/architecture-choices.md) *(optional)*
+  ```powershell
+  scoop update supabase
+  ```
+</details>
 
-## Testing Changes
+<details>
+  <summary><b>Linux</b></summary>
 
-This project contains unit tests. Run them with the following command:
+  Available via [Homebrew](https://brew.sh) and Linux packages.
 
-```sh
-make test
+  #### via Homebrew
+
+  To install:
+
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+
+  #### via Linux packages
+
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
+</details>
+
+<details>
+  <summary><b>Other Platforms</b></summary>
+
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
+
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
+
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
+</details>
+
+<details>
+  <summary><b>Community Maintained Packages</b></summary>
+
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
+
+  ```bash
+  pkgx install supabase
+  ```
+
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
+</details>
+
+### Run the CLI
+
+```bash
+supabase bootstrap
 ```
 
-You can add your own unit tests powered by Jest anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
+Or using npx:
 
-## License
+```bash
+npx supabase bootstrap
+```
 
-This project is licensed under the MIT License, courtesy of [Marmelab](https://marmelab.com). See the [LICENSE.md](./LICENSE.md) file for details.
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+
+## Docs
+
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+
+## Breaking changes
+
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+
+## Developing
+
+To run from source:
+
+```sh
+# Go >= 1.22
+go run . help
+```
