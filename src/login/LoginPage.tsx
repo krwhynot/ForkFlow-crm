@@ -11,13 +11,19 @@ export const LoginPage = () => {
     const dataProvider = useDataProvider<CrmDataProvider>();
     const { isLoading: authLoading, authenticated } = useAuthState();
     
-    // Detect JWT auth mode
+    // Detect authentication mode
+    const isDemoMode = typeof window !== 'undefined' && (
+        window.location.search.includes('mode=demo') ||
+        import.meta.env.VITE_IS_DEMO === 'true'
+    );
+    
     const isJWTMode = typeof window !== 'undefined' && (
         window.location.search.includes('auth=jwt') ||
         localStorage.getItem('auth-provider') === 'jwt' ||
         process.env.REACT_APP_AUTH_PROVIDER === 'jwt'
     );
     
+    // Skip initialization check in demo mode
     const {
         data: isInitialized,
         error,
@@ -25,6 +31,10 @@ export const LoginPage = () => {
     } = useQuery({
         queryKey: ['init'],
         queryFn: async () => {
+            if (isDemoMode) {
+                console.log('🎭 Demo mode - skipping initialization check');
+                return true; // Always initialized in demo mode
+            }
             try {
                 return dataProvider.isInitialized();
             } catch (err) {
@@ -32,7 +42,7 @@ export const LoginPage = () => {
                 return true; // Assume initialized on error
             }
         },
-        retry: 2,
+        retry: isDemoMode ? 0 : 2,
         retryDelay: 1000,
     });
 

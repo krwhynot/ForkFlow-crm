@@ -84,7 +84,7 @@ interface SecurityDashboardProps {
 export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     compactView = false
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const notify = useNotify();

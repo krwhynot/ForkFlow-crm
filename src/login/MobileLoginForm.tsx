@@ -165,13 +165,27 @@ export const MobileLoginForm = () => {
             rememberMe: true,
         };
 
+        console.log('🚀 Quick login attempt:', { email: user.email, role: user.role });
+
         login(credentials)
             .then(() => {
+                console.log('✅ Quick login successful');
                 setLoading(false);
             })
             .catch(error => {
+                console.error('❌ Quick login failed:', error);
                 setLoading(false);
-                notify(error?.message || 'Login failed', { type: 'error' });
+                notify(error?.message || 'Demo login failed - trying again...', { type: 'warning' });
+                
+                // Fallback: try with just email for demo mode
+                login({ email: user.email, password: 'demo123' })
+                    .then(() => {
+                        console.log('✅ Fallback demo login successful');
+                    })
+                    .catch(fallbackError => {
+                        console.error('❌ Fallback login failed:', fallbackError);
+                        notify('Demo login failed. Please try manual login.', { type: 'error' });
+                    });
             });
     };
 

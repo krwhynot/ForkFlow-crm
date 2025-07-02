@@ -358,3 +358,6 @@ NEVER create files unless they're absolutely necessary for achieving your goal.
 ALWAYS prefer editing an existing file to creating a new one.
 NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
 ALWAYS follow the TypeScript Error Prevention Rules above to maintain code quality and prevent regressions.
+
+## Reminder Guidelines
+- **ALWAYS ASK THE ADMIN TO INSTALL ANY ADDITIONAL PACKAGES TO THE SYSTEM!!!**

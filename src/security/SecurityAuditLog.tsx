@@ -106,7 +106,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
     viewType = 'both',
     compactView = false
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 

@@ -76,7 +76,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     userId,
     showAllSessions = false
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const notify = useNotify();
@@ -102,7 +102,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
             const mockSessions: UserSession[] = [
                 {
                     id: currentSessionId,
-                    userId: userId || identity?.id || 'user123',
+                    userId: userId || String(identity?.id) || 'user123',
                     deviceFingerprint: 'fp_desktop_chrome',
                     ipAddress: '192.168.1.100',
                     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -118,7 +118,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 },
                 {
                     id: 'mobile-session-456',
-                    userId: userId || identity?.id || 'user123',
+                    userId: userId || String(identity?.id) || 'user123',
                     deviceFingerprint: 'fp_mobile_safari',
                     ipAddress: '10.0.0.50',
                     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
@@ -134,7 +134,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 },
                 {
                     id: 'tablet-session-789',
-                    userId: userId || identity?.id || 'user123',
+                    userId: userId || String(identity?.id) || 'user123',
                     deviceFingerprint: 'fp_tablet_chrome',
                     ipAddress: '172.16.0.25',
                     userAgent: 'Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.80 Mobile/15E148 Safari/604.1',
@@ -152,7 +152,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 },
                 {
                     id: 'old-session-101',
-                    userId: userId || identity?.id || 'user123',
+                    userId: userId || String(identity?.id) || 'user123',
                     ipAddress: '203.0.113.45',
                     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
                     location: 'Unknown',

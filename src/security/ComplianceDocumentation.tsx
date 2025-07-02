@@ -99,7 +99,7 @@ interface ComplianceDocumentationProps {
 export const ComplianceDocumentation: React.FC<ComplianceDocumentationProps> = ({
     compactView = false
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const notify = useNotify();
@@ -322,7 +322,7 @@ export const ComplianceDocumentation: React.FC<ComplianceDocumentationProps> = (
                     category: 'Organizational',
                     description: 'Privacy considerations in system design and development',
                     implementation: 'Privacy impact assessments for new features',
-                    status: 'partial',
+                    status: 'testing',
                     effectiveness: 'medium',
                     lastTested: '2024-05-15',
                     nextReview: '2024-08-15'

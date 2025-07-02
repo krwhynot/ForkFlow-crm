@@ -21,6 +21,9 @@ import { LocationProvider } from '../components/mobile';
 import { Layout } from '../layout/Layout';
 import { LoginPage } from '../login/LoginPage';
 import { MobileLoginForm } from '../login/MobileLoginForm';
+import { UniversalLoginPage } from '../login/UniversalLoginPage';
+import { FallbackLoginPage } from '../login/FallbackLoginPage';
+import { SafeLoginPage } from '../login/SafeLoginPage';
 import { SignupPage } from '../login/SignupPage';
 import {
     LazyOrganizations,
@@ -184,16 +187,22 @@ export const CRM = ({
     // Select auth provider based on mode
     let effectiveAuthProvider: AuthProvider;
     if (authProvider) {
+        console.log('🔐 CRM: Using provided authProvider');
         effectiveAuthProvider = authProvider;
     } else if (isTestMode) {
+        console.log('🔐 CRM: Using fakeAuthProvider (test mode)');
         effectiveAuthProvider = fakeAuthProvider;
     } else if (isJWTMode) {
+        console.log('🔐 CRM: Using jwtAuthProvider (JWT mode)');
         effectiveAuthProvider = jwtAuthProvider;
     } else {
+        console.log('🔐 CRM: Using defaultAuthProvider (production)');
         effectiveAuthProvider = defaultAuthProvider;
     }
     
-    const effectiveRequireAuth = isTestMode ? false : requireAuth;
+    // For demo mode, always require auth to show login page
+    // Only disable auth for actual unit tests
+    const effectiveRequireAuth = (isTestMode && process.env.NODE_ENV === 'test') ? false : requireAuth;
 
     if (isTestMode) {
         console.log('🎭 Test mode detected - using fakerest data provider');
@@ -203,16 +212,40 @@ export const CRM = ({
         console.log('🗄️ Production mode - using Supabase data provider');
     }
 
-    // Debug logging for data provider verification
+    // Enhanced debug logging for authentication flow
     useEffect(() => {
-        console.log('🔧 CRM Debug Info:', {
+        console.log('🔧 CRM Enhanced Debug Info:', {
             isTestMode,
             isJWTMode,
             dataProviderType: isTestMode ? 'fakerest' : 'supabase',
             effectiveDataProvider: effectiveDataProvider?.constructor?.name || 'Unknown',
             authProviderType: isTestMode ? 'fake' : (isJWTMode ? 'jwt' : 'supabase'),
-            requireAuth: effectiveRequireAuth
+            requireAuth: effectiveRequireAuth,
+            nodeEnv: process.env.NODE_ENV,
+            loginPageComponent: 'UniversalLoginPage',
+            hasAuthProvider: !!effectiveAuthProvider,
+            hasDataProvider: !!effectiveDataProvider
         });
+        
+        console.log('🔐 CRM Auth Configuration Enhanced:', {
+            requireAuthProp: requireAuth,
+            effectiveRequireAuth: effectiveRequireAuth,
+            authProviderName: effectiveAuthProvider?.constructor?.name || 'Unknown',
+            authProviderMethods: effectiveAuthProvider ? Object.keys(effectiveAuthProvider) : []
+        });
+
+        // Test auth provider methods
+        if (effectiveAuthProvider) {
+            console.log('🧪 CRM: Testing authProvider.checkAuth()');
+            effectiveAuthProvider.checkAuth({ signal: new AbortController().signal })
+                .then(() => {
+                    console.log('✅ CRM: authProvider.checkAuth() RESOLVED - user authenticated');
+                })
+                .catch((error) => {
+                    console.log('❌ CRM: authProvider.checkAuth() REJECTED - user NOT authenticated', error?.message);
+                    console.log('🔄 CRM: This should trigger login page to show');
+                });
+        }
 
         // Test products resource connection
         if (effectiveDataProvider && typeof effectiveDataProvider.getList === 'function') {
@@ -271,13 +304,22 @@ export const CRM = ({
         img.src = `https://atomic-crm-telemetry.marmelab.com/atomic-crm-telemetry?domain=${window.location.hostname}`;
     }, [disableTelemetry]);
 
+    // Enhanced debugging before Admin component creation
+    console.log('🏗️ CRM: Creating Admin component with configuration:', {
+        hasDataProvider: !!effectiveDataProvider,
+        hasAuthProvider: !!effectiveAuthProvider,
+        loginPageSet: 'UniversalLoginPage',
+        requireAuth: effectiveRequireAuth,
+        storeKey: 'ForkFlowCRM'
+    });
+
     const AdminComponent = (
         <Admin
             dataProvider={effectiveDataProvider}
             authProvider={effectiveAuthProvider}
             store={localStorageStore(undefined, 'ForkFlowCRM')}
             layout={Layout}
-            loginPage={isJWTMode ? MobileLoginForm : LoginPage}
+            loginPage={SafeLoginPage}
             dashboard={withSuspense(LazyDashboard)}
             theme={lightTheme}
             darkTheme={darkTheme || null}

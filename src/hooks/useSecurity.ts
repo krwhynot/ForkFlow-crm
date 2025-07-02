@@ -33,7 +33,7 @@ export interface SecuritySettings {
 }
 
 export const useSecurity = () => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const notify = useNotify();
 
     const [securityContext, setSecurityContext] = useState<SecurityContext>({
@@ -63,8 +63,23 @@ export const useSecurity = () => {
 
     // Initialize security context when user identity changes
     useEffect(() => {
-        if (identity) {
-            updateSecurityContext(identity);
+        if (identity && typeof identity === 'object' && 'id' in identity) {
+            // Convert UserIdentity to User type with safe defaults
+            const user: User = {
+                id: String(identity.id),
+                email: identity.email || '',
+                firstName: identity.firstName || '',
+                lastName: identity.lastName || '',
+                role: identity.role || 'broker',
+                territory: identity.territory || [],
+                principals: identity.principals || [],
+                avatar: identity.avatar,
+                isActive: identity.isActive ?? true,
+                lastLoginAt: identity.lastLoginAt,
+                createdAt: identity.createdAt || new Date().toISOString(),
+                updatedAt: identity.updatedAt || new Date().toISOString(),
+            };
+            updateSecurityContext(user);
         }
     }, [identity]);
 
@@ -375,7 +390,20 @@ export const useSecurity = () => {
             setSecurityContext(prev => ({
                 ...prev,
                 sessionTimeoutMinutes: defaultSettings.sessionTimeoutMinutes,
-                requiresMFA: identity ? checkMFARequirement(identity) : false
+                requiresMFA: identity ? checkMFARequirement({
+                    id: String(identity.id),
+                    email: identity.email || '',
+                    firstName: identity.firstName || '',
+                    lastName: identity.lastName || '',
+                    role: identity.role || 'broker',
+                    territory: identity.territory || [],
+                    principals: identity.principals || [],
+                    avatar: identity.avatar,
+                    isActive: identity.isActive ?? true,
+                    lastLoginAt: identity.lastLoginAt,
+                    createdAt: identity.createdAt || new Date().toISOString(),
+                    updatedAt: identity.updatedAt || new Date().toISOString(),
+                }) : false
             }));
         } catch (error) {
             console.error('Failed to load security settings:', error);

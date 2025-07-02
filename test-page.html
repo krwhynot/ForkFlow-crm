@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ForkFlow CRM - Direct Test</title>
+</head>
+<body>
+    <h1>🧪 Direct Test Page</h1>
+    <p>If you can see this, the web server is working.</p>
+    
+    <div id="test-results">
+        <h2>JavaScript Test Results:</h2>
+        <div id="js-test">⏳ Testing JavaScript...</div>
+        <div id="fetch-test">⏳ Testing Fetch...</div>
+        <div id="react-test">⏳ Testing React...</div>
+    </div>
+
+    <script>
+        // Test 1: Basic JavaScript
+        document.getElementById('js-test').innerHTML = '✅ JavaScript is working!';
+        
+        // Test 2: Fetch API
+        fetch('/src/App.tsx')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('fetch-test').innerHTML = '✅ Fetch API working - App.tsx loads';
+                } else {
+                    document.getElementById('fetch-test').innerHTML = '❌ Fetch failed with status: ' + response.status;
+                }
+            })
+            .catch(error => {
+                document.getElementById('fetch-test').innerHTML = '❌ Fetch error: ' + error.message;
+            });
+
+        // Test 3: Try to load React
+        try {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = '/src/script.tsx';
+            script.onload = () => {
+                setTimeout(() => {
+                    const root = document.getElementById('root');
+                    if (root && root.innerHTML.includes('ForkFlow')) {
+                        document.getElementById('react-test').innerHTML = '✅ React app loaded successfully!';
+                    } else {
+                        document.getElementById('react-test').innerHTML = '⚠️ React script loaded but app not rendering';
+                    }
+                }, 2000);
+            };
+            script.onerror = (error) => {
+                document.getElementById('react-test').innerHTML = '❌ React script failed to load: ' + error;
+            };
+            document.head.appendChild(script);
+        } catch (error) {
+            document.getElementById('react-test').innerHTML = '❌ React test error: ' + error.message;
+        }
+    </script>
+
+    <!-- Add the React root div -->
+    <div id="root" style="border: 1px solid #ccc; margin: 20px 0; padding: 20px;">
+        <p>React app should render here...</p>
+    </div>
+</body>
+</html>

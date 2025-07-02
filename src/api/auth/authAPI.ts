@@ -52,6 +52,17 @@ export interface AuthAPI {
 export class SupabaseAuthAPI implements AuthAPI {
     
     /**
+     * Helper method to get current user with null safety
+     */
+    private async getCurrentUserRequired(): Promise<User> {
+        const user = await getCurrentUser();
+        if (!user) {
+            throw new Error('Authentication required');
+        }
+        return user;
+    }
+    
+    /**
      * Authenticate user with email/password
      */
     async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
@@ -130,7 +141,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Get current authenticated user
      */
     async getCurrentUser(): Promise<User> {
-        return getCurrentUser();
+        return this.getCurrentUserRequired();
     }
 
     /**
@@ -159,7 +170,7 @@ export class SupabaseAuthAPI implements AuthAPI {
         sort?: { field: string; order: 'ASC' | 'DESC' };
         filter?: Record<string, any>;
     }): Promise<{ data: User[]; total: number }> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         if (currentUser.role !== 'admin') {
             throw new Error('Insufficient permissions to list users');
         }
@@ -253,7 +264,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Get single user by ID (admin only, or current user)
      */
     async getUser(id: Identifier): Promise<User> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         
         // Allow users to get their own data, or admin to get any user
         if (currentUser.role !== 'admin' && currentUser.id !== id) {
@@ -305,7 +316,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Create new user (admin only)
      */
     async createUser(userData: BrokerFormData): Promise<User> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         if (currentUser.role !== 'admin') {
             throw new Error('Insufficient permissions to create users');
         }
@@ -353,7 +364,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Update user (admin only, or current user updating own profile)
      */
     async updateUser(id: Identifier, userData: Partial<BrokerFormData>): Promise<User> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         
         // Allow users to update their own profile, or admin to update any user
         if (currentUser.role !== 'admin' && currentUser.id !== id) {
@@ -433,7 +444,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Update user profile (simplified profile updates)
      */
     async updateUserProfile(id: Identifier, userData: UserProfileUpdate): Promise<User> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         
         // Allow users to update their own profile, or admin to update any user
         if (currentUser.role !== 'admin' && currentUser.id !== id) {
@@ -518,7 +529,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Delete user (admin only)
      */
     async deleteUser(id: Identifier): Promise<void> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         if (currentUser.role !== 'admin') {
             throw new Error('Insufficient permissions to delete users');
         }
@@ -568,7 +579,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Update user permissions (admin only)
      */
     async updateUserPermissions(userId: Identifier, permissions: string[]): Promise<void> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         if (currentUser.role !== 'admin') {
             throw new Error('Insufficient permissions to update user permissions');
         }
@@ -615,7 +626,7 @@ export class SupabaseAuthAPI implements AuthAPI {
             await updatePassword(data.newPassword);
             
             // Get current user to return email (this is a simplified implementation)
-            const currentUser = await getCurrentUser();
+            const currentUser = await this.getCurrentUserRequired();
             
             await logAuditEvent('api.auth.password_reset_confirm', {
                 endpoint: '/api/auth/password-reset/confirm',
@@ -647,7 +658,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Update current user's password
      */
     async updatePassword(newPassword: string): Promise<void> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         
         await updatePassword(newPassword);
         
@@ -667,7 +678,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      * Force password reset for another user (admin only)
      */
     async forcePasswordReset(userId: Identifier): Promise<void> {
-        const currentUser = await getCurrentUser();
+        const currentUser = await this.getCurrentUserRequired();
         if (currentUser.role !== 'admin') {
             throw new Error('Insufficient permissions to force password reset');
         }

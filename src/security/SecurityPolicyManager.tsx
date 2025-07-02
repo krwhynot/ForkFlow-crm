@@ -65,7 +65,7 @@ interface SecurityPolicyManagerProps {
 export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     onSettingChange
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const notify = useNotify();

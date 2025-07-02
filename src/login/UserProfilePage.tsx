@@ -69,7 +69,7 @@ export const UserProfilePage = () => {
         queryKey: ['current-user'],
         queryFn: async (): Promise<User> => {
             try {
-                if ('getCurrentUser' in authProvider) {
+                if (authProvider && 'getCurrentUser' in authProvider) {
                     return await (authProvider as any).getCurrentUser();
                 }
                 throw new Error('getCurrentUser not available');

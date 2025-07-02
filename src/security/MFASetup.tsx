@@ -67,7 +67,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
     onSetupComplete,
     compactView = false
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const notify = useNotify();
@@ -532,7 +532,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 <DialogContent>
                     {selectedMethod && (
                         <Stepper activeStep={activeStep} orientation="vertical">
-                            {renderSetupSteps().map((step, index) => (
+                            {renderSetupSteps()?.map((step, index) => (
                                 <Step key={index}>
                                     <StepLabel>{step.label}</StepLabel>
                                     <StepContent>
@@ -541,7 +541,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                             <Button
                                                 variant="contained"
                                                 onClick={() => {
-                                                    if (index === renderSetupSteps().length - 1) {
+                                                    if (index === (renderSetupSteps()?.length ?? 0) - 1) {
                                                         if (selectedMethod.type === 'backup_codes') {
                                                             // For backup codes, skip verification
                                                             handleVerifySetup();
@@ -553,13 +553,13 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                     }
                                                 }}
                                                 disabled={
-                                                    index === renderSetupSteps().length - 1 && 
+                                                    index === (renderSetupSteps()?.length ?? 0) - 1 && 
                                                     selectedMethod.type !== 'backup_codes' &&
                                                     verificationCode.length < 6
                                                 }
                                                 sx={{ mr: 1, minHeight: 44 }}
                                             >
-                                                {index === renderSetupSteps().length - 1 ? 'Complete Setup' : 'Next'}
+                                                {index === (renderSetupSteps()?.length ?? 0) - 1 ? 'Complete Setup' : 'Next'}
                                             </Button>
                                             {index > 0 && (
                                                 <Button

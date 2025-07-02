@@ -10,7 +10,7 @@ import { Contact, ContactNote, User } from '../types';
 import { DashboardStepper } from './DashboardStepper';
 
 export const Dashboard = () => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const {
         data: dataContact,
         total: totalContact,

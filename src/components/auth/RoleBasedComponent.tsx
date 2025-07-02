@@ -25,7 +25,7 @@ export const RoleBasedComponent: React.FC<RoleBasedComponentProps> = ({
     fallback = null,
     className,
 }) => {
-    const { data: identity, isPending } = useGetIdentity<User>();
+    const { data: identity, isPending } = useGetIdentity();
 
     // Show nothing while loading
     if (isPending) {
@@ -68,7 +68,7 @@ export const withRoleAccess = <P extends object>(
  * Hook to check if current user has specific role
  */
 export const useUserRole = () => {
-    const { data: identity, isPending } = useGetIdentity<User>();
+    const { data: identity, isPending } = useGetIdentity();
     
     return {
         role: identity?.role,

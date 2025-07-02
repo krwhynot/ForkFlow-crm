@@ -67,12 +67,16 @@
       "Bash(deno check:*)",
       "mcp__supabase__get_anon_key",
       "Bash(touch:*)",
-      "mcp__playwright__browser_install"
+      "mcp__playwright__browser_install",
+      "WebFetch(domain:github.com)",
+      "Bash(sed:*)",
+      "WebFetch(domain:marmelab.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "supabase",
+    "playwright",
     "exa",
     "filesystem",
     "sequential-thinking",

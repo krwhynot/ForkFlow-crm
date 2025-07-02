@@ -59,7 +59,7 @@ export const canAccess = <
     }
 
     // Check wildcard permission for admin
-    if (rolePermissions['*']) {
+    if ('*' in rolePermissions && (rolePermissions as any)['*']) {
         return true;
     }
 
@@ -71,7 +71,7 @@ export const canAccess = <
 
     // Check if action is allowed for this resource
     if (Array.isArray(resourcePermissions)) {
-        return resourcePermissions.includes(params.action);
+        return (resourcePermissions as string[]).includes(params.action);
     }
 
     return false;

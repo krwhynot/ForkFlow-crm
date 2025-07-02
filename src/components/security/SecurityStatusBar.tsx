@@ -39,7 +39,7 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
     showDetails = true,
     compact = false,
 }) => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -141,7 +141,7 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
             case 'critical':
                 return 'error' as const;
             default:
-                return 'default' as const;
+                return 'primary' as const;
         }
     };
 

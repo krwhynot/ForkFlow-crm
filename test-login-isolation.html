@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniversalLoginPage Isolation Test</title>
+    <style>
+        body { 
+            margin: 0; 
+            font-family: 'Roboto', sans-serif; 
+            background: #f5f5f5;
+        }
+        .test-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .test-pass {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+        }
+        .test-fail {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+        }
+        .test-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1976d2;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .debug-log {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 UniversalLoginPage Component Isolation Test</h1>
+        <p>This test page verifies if the UniversalLoginPage component can render without React-Admin context.</p>
+        
+        <div class="test-section">
+            <h2>🔍 Environment Check</h2>
+            <div id="env-results"></div>
+            <button onclick="checkEnvironment()">Check Environment</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 localStorage State</h2>
+            <div id="localStorage-results"></div>
+            <button onclick="checkLocalStorage()">Check localStorage</button>
+            <button onclick="clearAuthTokens()">Clear Auth Tokens</button>
+            <button onclick="clearAllStorage()">Clear All Storage</button>
+        </div>
+
+        <div class="test-section">
+            <h2>🌐 Network & Console</h2>
+            <div id="network-results"></div>
+            <button onclick="checkNetworkAndConsole()">Check Network/Console</button>
+        </div>
+
+        <div class="test-section">
+            <h2>🔗 Navigation Test</h2>
+            <div id="navigation-results"></div>
+            <button onclick="testDemoMode()">Test Demo Mode (?mode=demo)</button>
+            <button onclick="testSimpleDemo()">Test Simple Demo (?simple=true)</button>
+            <button onclick="testJWTMode()">Test JWT Mode (?mode=jwt)</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Debug Log</h2>
+            <div id="debug-log" class="debug-log">Click any test button to see debug output...</div>
+            <button onclick="clearDebugLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const debugLog = document.getElementById('debug-log');
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            debugLog.textContent += logEntry;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            
+            // Also log to browser console with emoji
+            const emoji = type === 'error' ? '🚨' : type === 'success' ? '✅' : '🔍';
+            console.log(`${emoji} ${message}`);
+        }
+
+        function clearDebugLog() {
+            document.getElementById('debug-log').textContent = 'Debug log cleared...\n';
+        }
+
+        function addResult(containerId, message, isSuccess = true) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${isSuccess ? 'test-pass' : 'test-fail'}`;
+            div.textContent = message;
+            container.appendChild(div);
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        function checkEnvironment() {
+            clearResults('env-results');
+            log('Starting environment check...');
+            
+            try {
+                // Check current URL and parameters
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+                
+                addResult('env-results', `✅ Current URL: ${url.href}`, true);
+                addResult('env-results', `✅ Search params: ${params.toString() || 'none'}`, true);
+                
+                // Check for demo mode indicators
+                const isDemoMode = params.get('mode') === 'demo' || params.get('simple') === 'true';
+                addResult('env-results', `${isDemoMode ? '✅' : '❌'} Demo mode detected: ${isDemoMode}`, isDemoMode);
+                
+                // Check browser support
+                const hasLocalStorage = typeof Storage !== 'undefined';
+                addResult('env-results', `${hasLocalStorage ? '✅' : '❌'} localStorage support: ${hasLocalStorage}`, hasLocalStorage);
+                
+                const hasConsole = typeof console !== 'undefined';
+                addResult('env-results', `${hasConsole ? '✅' : '❌'} Console support: ${hasConsole}`, hasConsole);
+                
+                log('Environment check completed', 'success');
+                
+            } catch (error) {
+                addResult('env-results', `❌ Environment check failed: ${error.message}`, false);
+                log(`Environment check error: ${error.message}`, 'error');
+            }
+        }
+
+        function checkLocalStorage() {
+            clearResults('localStorage-results');
+            log('Checking localStorage state...');
+            
+            try {
+                const storage = {...localStorage};
+                const keys = Object.keys(storage);
+                
+                addResult('localStorage-results', `✅ localStorage keys count: ${keys.length}`, true);
+                
+                if (keys.length === 0) {
+                    addResult('localStorage-results', 'ℹ️ localStorage is empty', true);
+                } else {
+                    keys.forEach(key => {
+                        const value = storage[key];
+                        const preview = value.length > 50 ? value.substring(0, 50) + '...' : value;
+                        addResult('localStorage-results', `📋 ${key}: ${preview}`, true);
+                    });
+                }
+                
+                // Check for specific auth-related keys
+                const authKeys = ['demo-user', 'user', 'auth-token', 'RaStore.auth', 'test-mode', 'data-provider'];
+                authKeys.forEach(key => {
+                    const hasKey = localStorage.getItem(key) !== null;
+                    addResult('localStorage-results', `${hasKey ? '✅' : '❌'} ${key}: ${hasKey ? 'present' : 'missing'}`, true);
+                });
+                
+                log('localStorage check completed', 'success');
+                
+            } catch (error) {
+                addResult('localStorage-results', `❌ localStorage check failed: ${error.message}`, false);
+                log(`localStorage error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearAuthTokens() {
+            log('Clearing auth tokens from localStorage...');
+            
+            try {
+                const authKeys = ['demo-user', 'user', 'auth-token', 'RaStore.auth'];
+                authKeys.forEach(key => {
+                    localStorage.removeItem(key);
+                    log(`Removed: ${key}`);
+                });
+                
+                // Set demo mode indicators
+                localStorage.setItem('test-mode', 'true');
+                localStorage.setItem('data-provider', 'fakerest');
+                
+                addResult('localStorage-results', '✅ Auth tokens cleared, demo mode markers set', true);
+                log('Auth tokens cleared successfully', 'success');
+                
+            } catch (error) {
+                addResult('localStorage-results', `❌ Failed to clear auth tokens: ${error.message}`, false);
+                log(`Clear auth tokens error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearAllStorage() {
+            log('Clearing ALL localStorage...');
+            
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                addResult('localStorage-results', '✅ All storage cleared', true);
+                log('All storage cleared successfully', 'success');
+                
+            } catch (error) {
+                addResult('localStorage-results', `❌ Failed to clear storage: ${error.message}`, false);
+                log(`Clear storage error: ${error.message}`, 'error');
+            }
+        }
+
+        function checkNetworkAndConsole() {
+            clearResults('network-results');
+            log('Checking network and console state...');
+            
+            try {
+                // Check console for existing errors
+                addResult('network-results', '✅ Console check: see browser devtools for errors', true);
+                
+                // Check if we can access the main app
+                addResult('network-results', '✅ Testing navigation to main app...', true);
+                
+                log('Network and console check completed', 'success');
+                log('📋 IMPORTANT: Check browser DevTools Console for detailed logs', 'info');
+                log('📋 IMPORTANT: Check Network tab for failed requests', 'info');
+                
+            } catch (error) {
+                addResult('network-results', `❌ Network/console check failed: ${error.message}`, false);
+                log(`Network check error: ${error.message}`, 'error');
+            }
+        }
+
+        function testDemoMode() {
+            clearResults('navigation-results');
+            log('Testing demo mode navigation...');
+            
+            try {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('mode', 'demo');
+                
+                addResult('navigation-results', `🔄 Navigating to: ${currentUrl.href}`, true);
+                log(`Navigating to demo mode: ${currentUrl.href}`);
+                
+                setTimeout(() => {
+                    window.location.href = currentUrl.href;
+                }, 1000);
+                
+            } catch (error) {
+                addResult('navigation-results', `❌ Demo mode test failed: ${error.message}`, false);
+                log(`Demo mode error: ${error.message}`, 'error');
+            }
+        }
+
+        function testSimpleDemo() {
+            clearResults('navigation-results');
+            log('Testing simple demo mode...');
+            
+            try {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('mode', 'demo');
+                currentUrl.searchParams.set('simple', 'true');
+                
+                addResult('navigation-results', `🔄 Navigating to: ${currentUrl.href}`, true);
+                log(`Navigating to simple demo: ${currentUrl.href}`);
+                
+                setTimeout(() => {
+                    window.location.href = currentUrl.href;
+                }, 1000);
+                
+            } catch (error) {
+                addResult('navigation-results', `❌ Simple demo test failed: ${error.message}`, false);
+                log(`Simple demo error: ${error.message}`, 'error');
+            }
+        }
+
+        function testJWTMode() {
+            clearResults('navigation-results');
+            log('Testing JWT mode navigation...');
+            
+            try {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('mode', 'jwt');
+                
+                addResult('navigation-results', `🔄 Navigating to: ${currentUrl.href}`, true);
+                log(`Navigating to JWT mode: ${currentUrl.href}`);
+                
+                setTimeout(() => {
+                    window.location.href = currentUrl.href;
+                }, 1000);
+                
+            } catch (error) {
+                addResult('navigation-results', `❌ JWT mode test failed: ${error.message}`, false);
+                log(`JWT mode error: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', () => {
+            log('🧪 Login isolation test page loaded');
+            log('🔍 Use the buttons above to test different aspects of the authentication flow');
+            checkEnvironment();
+            checkLocalStorage();
+        });
+
+        // Capture and log any JavaScript errors
+        window.addEventListener('error', (event) => {
+            log(`❌ JavaScript Error: ${event.error?.message || event.message}`, 'error');
+            log(`   File: ${event.filename}:${event.lineno}:${event.colno}`, 'error');
+        });
+
+        // Capture and log unhandled promise rejections
+        window.addEventListener('unhandledrejection', (event) => {
+            log(`❌ Unhandled Promise Rejection: ${event.reason}`, 'error');
+        });
+    </script>
+</body>
+</html>

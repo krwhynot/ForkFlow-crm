@@ -124,7 +124,7 @@ export const ManagerDashboard: React.FC = () => {
  * Broker Dashboard - Personal metrics and field tools
  */
 export const BrokerDashboard: React.FC = () => {
-    const { data: identity } = useGetIdentity<User>();
+    const { data: identity } = useGetIdentity();
     
     return (
         <Grid container spacing={3}>
@@ -182,7 +182,7 @@ export const BrokerDashboard: React.FC = () => {
  * Role-based dashboard wrapper that renders appropriate dashboard
  */
 export const RoleDashboard: React.FC = () => {
-    const { data: identity, isPending } = useGetIdentity<User>();
+    const { data: identity, isPending } = useGetIdentity();
     
     if (isPending) {
         return (

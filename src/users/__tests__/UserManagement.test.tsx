@@ -81,7 +81,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -96,7 +95,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -113,7 +111,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -131,7 +128,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserCreate />
                 </TestContext>
@@ -149,7 +145,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserCreate />
                 </TestContext>
@@ -168,7 +163,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserEdit />
                 </TestContext>
@@ -186,7 +180,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserShow />
                 </TestContext>
@@ -227,7 +220,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -243,7 +235,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -271,7 +262,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={adminAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -296,7 +286,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={defaultDataProvider}
-                    authProvider={brokerAuthProvider}
                 >
                     <UserList />
                 </TestContext>
@@ -330,7 +319,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={createDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserCreate />
                 </TestContext>
@@ -350,7 +338,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={updateDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserEdit />
                 </TestContext>
@@ -373,7 +360,6 @@ describe('User Management Integration Tests', () => {
             render(
                 <TestContext
                     dataProvider={errorDataProvider}
-                    authProvider={defaultAuthProvider}
                 >
                     <UserList />
                 </TestContext>

@@ -6,6 +6,7 @@ import { dataProvider } from './providers/supabase';
 import { jwtAuthProvider } from './providers/auth';
 import { queryClient } from './utils/queryClient';
 import Demo from './Demo';
+import SimpleDemo from './SimpleDemo';
 
 /**
  * ForkFlow Food Broker CRM Application Entry Point
@@ -63,8 +64,15 @@ const App = () => {
         );
     }
 
-    // Render demo mode
+    // Render demo mode - using SimpleDemo for immediate testing
     if (authMode === 'demo') {
+        const useSimpleDemo = window.location.search.includes('simple=true') || 
+                             window.location.search.includes('test=true');
+                             
+        if (useSimpleDemo) {
+            return <SimpleDemo />;
+        }
+        
         return (
             <QueryClientProvider client={queryClient}>
                 <Demo />
