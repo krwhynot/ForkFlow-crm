@@ -4,6 +4,10 @@
 
 Check the project [README](../README.md#installation) for installation instructions.
 
+## Quick Start
+
+**🚀 Setting Up Authentication**: If you're setting up ForkFlow CRM for the first time, start with the [Authentication System Guide](./developer/authentication.md) to configure your authentication system.
+
 ## User Documentation
 
 1. [User Management](./user/user-management.md)
@@ -12,8 +16,10 @@ Check the project [README](../README.md#installation) for installation instructi
 
 ## Developer Documentation
 
+- [Project Roadmap & Planning](../TODO.md)
 - [General Concepts](./developer/architecture-choices.md)
 - [Using Fake Rest Data Provider for Development](./developer/data-providers.md)
+- [Authentication System Guide](./developer/authentication.md)
 
 - Customization
 

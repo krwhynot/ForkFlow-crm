@@ -1,6 +1,6 @@
 import { supabaseAuthProvider } from 'ra-supabase';
 import { AuthProvider } from 'react-admin';
-import { supabase } from './supabase';
+import { supabase } from '../../lib/supabase';
 import { canAccess } from '../commons/canAccess';
 
 const baseAuthProvider = supabaseAuthProvider(supabase, {
@@ -15,6 +15,7 @@ const baseAuthProvider = supabaseAuthProvider(supabase, {
             id: sale.id,
             fullName: `${sale.first_name} ${sale.last_name}`,
             avatar: sale.avatar?.src,
+            role: sale.administrator ? 'admin' : 'broker',
         };
     },
 });
@@ -26,10 +27,27 @@ export async function getIsInitialized() {
             .select('is_initialized');
 
         getIsInitialized._is_initialized_cache =
-            data?.at(0)?.is_initialized > 0;
+            data?.at(0)?.is_initialized === true;
     }
 
     return getIsInitialized._is_initialized_cache;
+}
+
+export function clearInitializationCache() {
+    getIsInitialized._is_initialized_cache = null;
+    console.log('🔄 Initialization cache cleared - next check will query database');
+}
+
+export function clearAllCaches() {
+    getIsInitialized._is_initialized_cache = null;
+    cachedSale = undefined;
+    console.log('🔄 All caches cleared - next requests will query database');
+}
+
+// Make cache clearing available in browser console for debugging
+if (typeof window !== 'undefined') {
+    (window as any).clearInitCache = clearInitializationCache;
+    (window as any).clearAllCaches = clearAllCaches;
 }
 
 export namespace getIsInitialized {
@@ -89,7 +107,7 @@ export const authProvider: AuthProvider = {
         if (sale == null) return false;
 
         // Compute access rights from the sale role
-        const role = sale.administrator ? 'admin' : 'broker';
+        const role = sale.administrator ? 'admin' : 'user';
         return canAccess(role, params);
     },
 };

@@ -70,7 +70,18 @@
       "mcp__playwright__browser_install",
       "WebFetch(domain:github.com)",
       "Bash(sed:*)",
-      "WebFetch(domain:marmelab.com)"
+      "WebFetch(domain:marmelab.com)",
+      "Bash(claude config list)",
+      "Bash(sudo npm install -g @modelcontextprotocol/server-filesystem)",
+      "Bash(sudo npm install -g @modelcontextprotocol/server-sequential-thinking)",
+      "Bash(sudo npm install -g @upstash/context7-mcp)",
+      "Bash(sudo npm install -g mcp-knowledge-graph)",
+      "Bash(sudo npm install -g server-perplexity-ask)",
+      "Bash(sudo npm install -g @playwright/mcp)",
+      "mcp__filesystem__list_allowed_directories",
+      "mcp__supabase__get_project",
+      "mcp__supabase__get_project_url",
+      "Bash(mv:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -18,7 +18,7 @@ import { Map as MapIcon, LocationOn as LocationIcon } from '@mui/icons-material'
 import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
 import { OrganizationMapView } from './OrganizationMapView';
-import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
+import { useTerritoryFilter } from '../../hooks/useTerritoryFilter';
 
 export const OrganizationList = () => {
     const { identity } = useGetIdentity();

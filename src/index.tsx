@@ -5,9 +5,9 @@ import sales from './sales';
 
 export { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 
-export { Dashboard } from './dashboard/Dashboard';
+export { RoleDashboard as Dashboard } from './dashboard/RoleDashboard';
 export { Layout } from './layout/Layout';
-export { LoginPage } from './login/LoginPage';
+export { UniversalLoginPage as LoginPage } from './login/UniversalLoginPage';
 export { SignupPage } from './login/SignupPage';
 export { CRM } from './root/CRM';
 export type { CRMProps } from './root/CRM';

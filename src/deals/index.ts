@@ -1,7 +1,7 @@
-/* eslint-disable import/no-anonymous-default-export */
-import * as React from 'react';
-const DealList = React.lazy(() => import('./DealList'));
+import DealsIcon from '@mui/icons-material/MonetizationOn';
+import { ListGuesser } from 'react-admin';
 
 export default {
-    list: DealList,
+    list: ListGuesser,
+    icon: DealsIcon,
 };

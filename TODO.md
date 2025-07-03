@@ -497,3 +497,306 @@ Each sprint has a clear business goal and timeline, with tasks organized by busi
 **7. Single Point of Failure**  
 - **Continuity Risk:** If the sole developer becomes unavailable or overloaded, project momentum halts. Relying on one individual increases delivery risk.  
 - **Mitigation:** Document architecture decisions, setup scripts, environment configs, and create an easily shareable project handbook with Claude's help to enable quick onboarding of additional help if needed.
+
+---
+
+## Website-First, Mobile UI Friendly CRM Plan (Atomic CRM Structure & Tech Stack)
+
+This plan is structured for a **website-first** CRM that is highly usable and visually optimized on both desktop and mobile, following the architecture and conventions of [marmelab/atomic-crm](https://github.com/marmelab/atomic-crm). All language has been updated to emphasize a primary website experience with mobile-friendly UI, not a mobile-first approach.
+
+## 1. Executive Summaryy
+
+- **Product:** Website-first CRM for food brokers, optimized for both desktop and mobile browsers.   
+- **Tech Stack:** React + react-admin + TypeScript + Tailwind CSS (frontend); Supabase (PostgreSQL, Auth,Storage, REST API) as backend.    
+- **Deployment:** Static frontend (Vercel/Netlify), managed backend (Supabase).    
+- **MVP Target:** 5 brokers, 500-1,000 customers, 10-25 visits/day.    
+
+## 2. Product Strategy
+
+- **Vision:** Deliver a web-based CRM that is robust and efficient on desktop, with a user interface that remains intuitive and accessible on mobile devices.    
+- **Success Criteria:**    
+    - 100% browser accessibility (desktop, tablet, mobile)        
+    - Visit logging under 2 minutes on any device        
+    - 95% uptime, <3s load times        
+    - No app store dependencies        
+    - <$50/month operational cost       
+
+## 3. User Stories & Requirements
+
+## Authentication & User Management
+
+- Supabase Auth (email/password, OAuth, magic link)    
+- Role-based access (broker/admin)    
+- Password reset via email    
+
+## Customer Management
+
+- Add/search/edit customer records (restaurants, stores)    
+- View customer details, notes, visit history    
+- Forms and lists optimized for both desktop and mobile    
+
+## Visit Tracking
+
+- Log visits from customer detail page    
+- Capture GPS (browser-based, permissioned)    
+- Add visit notes (1000 char)    
+- Set follow-up reminders    
+- View visit history per customer    
+
+## Reporting & Dashboard
+
+- react-admin dashboard: visits per day/week/month, overdue customers    
+- CSV export for customers/visits    
+- Responsive charts and data tables    
+
+## Maps Integration
+
+- Google Maps integration (frontend)    
+- Customer pins, tap for info/directions    
+- "Near Me" view using device GPS    
+
+## 4. Technical Architecture
+
+|Layer|Technology/Service|
+|---|---|
+|Frontend|React + react-admin + TypeScript + Tailwind CSS|
+|State/Data|react-admin DataProvider (REST to Supabase)|
+|Backend|Supabase (PostgreSQL, Auth, Storage, REST API)|
+|Auth|Supabase Auth (email/password, OAuth)|
+|Storage|Supabase Storage (photos, docs)|
+|Maps|Google Maps JS API (frontend)|
+|Reporting|react-admin dashboard + Tremor charts|
+|Deployment|Vercel/Netlify (frontend), Supabase (backend)|
+
+## 5. Data Model (Supabase Schema)
+
+## Users (Managed by Supabase Auth)
+
+- id (UUID, PK)    
+- email (unique)    
+- role (broker, admin) — via metadata    
+
+## Customers
+
+- id (UUID, PK)    
+- business_name (string, required)    
+- contact_person (string)    
+- phone, email, address, city, state, zip    
+- business_type (restaurant, grocery, distributor, other)    
+- notes (text, 500 char)    
+- latitude, longitude (decimal)    
+- created_by (UUID, FK to users)    
+- created_at, updated_at (timestamp)    
+
+## Visits
+
+- id (UUID, PK)    
+- customer_id (UUID, FK)    
+- broker_id (UUID, FK)    
+- visit_date (timestamp)    
+- notes (text, 1000 char)    
+- latitude, longitude (decimal)    
+- created_at, updated_at (timestamp)    
+
+## Reminders
+
+- id (UUID, PK)    
+- customer_id (UUID, FK)    
+- broker_id (UUID, FK)    
+- reminder_date (timestamp)    
+- notes (text, 500 char)    
+- is_completed (boolean)    
+- created_at, completed_at (timestamp)    
+
+## 6. UI & Component Library
+
+- **Framework:** react-admin for all CRUD, search, and reporting UIs    
+- **Styling:** Tailwind CSS, shadcn/ui, DaisyUI for consistent, responsive design    
+- **Charts:** Tremor for dashboards    
+- **Maps:** Google Maps React components    
+- **UX:** Large click/tap targets, clear navigation, fast forms, keyboard accessible   
+
+## 7. Key Screens (react-admin Resources)
+
+- **Login:** Supabase Auth, accessible on all browsers    
+- **Dashboard:** KPIs (visits, customers), overdue reminders, quick actions    
+- **Customer List:** Search, filter, add, responsive cards and tables    
+- **Customer Detail:** Info, visit log, edit, map, directions    
+- **Visit Log:** Quick form, GPS capture, notes, follow-up    
+- **Map View:** Customer pins, "Near Me" toggle, directions    
+- **Reporting:** Visit frequency, overdue customers, CSV export    
+
+## 8. Performance, Security, and Scalability
+
+- **Performance:** <3s load, <500ms API, 5 concurrent users    
+- **Security:** HTTPS, Supabase Auth, RLS for data isolation, encrypted backups    
+- **Scalability:** Supabase/PostgreSQL for 1,000+ customers, 5,000+ visits, easy broker scaling    
+
+## 9. Deployment & Cost
+
+- **Frontend:** Deploy static site to Vercel/Netlify    
+- **Backend:** Supabase (managed PostgreSQL, Auth, Storage)    
+- **Cost:** Free tier for MVP; scale to <$50/month for 5 brokers    
+
+## 10. Implementation Phases
+
+1. **Month 1:** Supabase setup, react-admin scaffold, responsive UI, customer CRUD    
+2. **Month 2:** Visit logging, maps, reporting, reminders, dashboard    
+3. **Month 3:** Testing, optimization, broker training, go-live    
+
+## 11. Design System
+
+- **Color Palette:** Brand blue, green (success), amber (warning), red (error), neutral grays    
+- **Typography:** System UI, clear hierarchy, readable at all sizes    
+- **Accessibility:** WCAG 2.1 AA, keyboard navigation, screen reader support    
+- **Component Examples:** See [UI_elements.md] for code snippets and patterns    
+
+## 12. Testing & Support
+
+- **Cross-device Testing:** iOS Safari, Android Chrome, desktop browsers   
+- **Support:** Email, documentation, 24-hour response    
+
+## 13. Roadmap
+
+- **Post-MVP:** Territory management, product catalog, advanced analytics, native app, offline sync, multi-tenant support
+
+---
+
+## Summary
+
+This modernized roadmap provides a comprehensive guide for enhancing ForkFlow-CRM's organizations module using the latest React-Admin patterns and best practices. The plan has been updated to:
+
+### Key Updates Made:
+- **Architecture Alignment**: Uses actual ForkFlow TypeScript types from `src/types.ts`
+- **Modern React-Admin**: Incorporates DataTable component and latest v5.9 features
+- **Supabase Integration**: Leverages ra-supabase v3.5+ with real-time capabilities
+- **Performance Optimization**: Context7-verified patterns with proper TypeScript generics
+- **Testing Strategy**: Aligned with Vitest and Playwright configurations
+- **Development Workflow**: Integrated with existing make commands and CI/CD
+
+### Ready for Implementation:
+This roadmap builds upon ForkFlow's existing `src/companies/` module (13 files) and provides a clear path to implement enterprise-level organization management with modern React development patterns.
+
+**Confidence Level: 9/10** - Based on comprehensive research of current codebase and latest React-Admin patterns.
+
+### **Implementation TODO List**
+
+Here is a detailed checklist to guide you through the development of the new Organization page:
+
+#### **Phase 1: Project Foundation & Setup**
+
+*   [ ] **TypeScript Configuration**: Ensure `tsconfig.json` is set up for strict type checking to maintain code quality.
+*   [ ] **Tailwind CSS Integration**: Configure `tailwind.config.js` with the project's color scheme, custom breakpoints, and utility classes for touch targets.
+*   [ ] **Dependency Installation**: Verify that all necessary packages (`react-admin`, `ra-supabase-core`, `@dnd-kit/core`, etc.) are installed.
+*   [ ] **Project Structure**: Create the folder structure for the `organizations` feature, including subdirectories for `list`, `form`, `show`, and `common` components.
+*   [ ] **TypeScript Interfaces**: Define the `Organization` interface in `src/types.ts`, ensuring it includes all required fields and relationships.
+
+#### **Phase 2: Core Component Architecture**
+
+*   [ ] **Layout System**:
+    *   [ ] Implement a layout selector to switch between table, card, and Kanban views.
+    *   [ ] Use `localStorage` to persist the user's layout choice.
+*   [ ] **Advanced Filters**:
+    *   [ ] Build a filter component with a debounced search input.
+    *   [ ] Add dropdown filters for `priority` and `segment`.
+*   [ ] **List Implementation**:
+    *   [ ] Create the main `OrganizationList` component.
+    *   [ ] Use `react-window` or a similar library to implement virtual scrolling for performance with large datasets.
+    *   [ ] Design a responsive `OrganizationCard` component for the card view.
+*   [ ] **Kanban Board**:
+    *   [ ] Implement a drag-and-drop Kanban board using `@dnd-kit/core`.
+    *   [ ] Create columns based on organization status (e.g., Prospect, Active, Inactive).
+
+#### **Phase 3: Form Handling & Validation**
+
+*   [ ] **Create/Edit Forms**:
+    *   [ ] Build the `OrganizationCreate` and `OrganizationEdit` components.
+    *   [ ] Use a tabbed form structure for "Basic Info," "Contact Info," and "Notes."
+    *   [ ] Integrate the Geolocation API to capture GPS coordinates.
+*   [ ] **Validation**:
+    *   [ ] Implement real-time form validation using `react-hook-form`.
+    *   [ ] Add custom validation rules for fields like phone numbers and websites.
+
+#### **Phase 4: Accessibility**
+
+*   [ ] **Keyboard Navigation**: Ensure all interactive elements are fully accessible via keyboard.
+*   [ ] **Screen Reader Support**: Add ARIA labels and roles to all custom components.
+*   [ ] **Color & Contrast**: Verify that all text and UI elements meet WCAG 2.2 AA contrast requirements.
+*   [ ] **Focus Management**: Implement visible focus indicators and trap focus within modals.
+
+#### **Phase 5: Performance Optimization**
+
+*   [ ] **Component Memoization**: Use `React.memo` on list items and other expensive components to prevent unnecessary re-renders.
+*   [ ] **Data Fetching**: Leverage `react-admin`'s data fetching hooks to handle caching, background updates, and optimistic UI.
+*   [ ] **Asset Optimization**: Ensure all images are compressed and lazy-loaded.
+
+#### **Phase 6: Testing**
+
+*   [ ] **Unit Tests**: Write unit tests for all new components using React Testing Library and Jest.
+*   [ ] **Accessibility Tests**: Integrate `axe-core` to catch accessibility issues automatically.
+*   [ ] **E2E Tests**: Create end-to-end tests with Cypress or Playwright to cover critical user flows like creating and editing an organization.
+
+### **Common Troubleshooting Issues**
+
+Here are some common issues you might encounter during development and how to troubleshoot them:
+
+#### **1. Data Not Appearing in List View**
+
+*   **Symptom**: The organization list is empty, or data is not loading.
+*   **Possible Causes**:
+    *   **Supabase Connection**: Incorrect `VITE_SUPABASE_URL` or `VITE_SUPABASE_ANON_KEY` in `.env` file.
+    *   **RLS Policies**: Row Level Security (RLS) policies on the `organizations` table might be preventing data access.
+    *   **Data Provider Mapping**: The `organizations` resource might not be correctly mapped in `src/providers/supabase/dataProvider.ts` or `src/root/CRM.tsx`.
+    *   **Filtering Issues**: Filters applied (e.g., `q` for search, `broker_id`) might be too restrictive.
+    *   **Network Errors**: Check browser console for network requests to Supabase and any errors.
+*   **Solutions**:
+    *   Verify `.env` variables match your Supabase project settings.
+    *   Temporarily disable RLS on the `organizations` table in Supabase to confirm data visibility (for debugging only).
+    *   Ensure `<Resource name="organizations" {...organizations} />` is correctly set up in `src/root/CRM.tsx`.
+    *   Check `src/providers/supabase/dataProvider.ts` for any custom `getList` logic for `organizations` that might be misconfigured.
+    *   Inspect the `filter` object passed to `useGetList` in `OrganizationList.tsx`.
+    *   Use Supabase logs to check for database errors or RLS violations.
+
+#### **2. Form Validation Errors**
+
+*   **Symptom**: Form submission fails, or validation messages appear unexpectedly.
+*   **Possible Causes**:
+    *   **Validation Rules**: Incorrect `validate` props on `TextInput`, `SelectInput`, etc.
+    *   **`transform` Function**: The `transform` function in `OrganizationCreate` or `OrganizationEdit` might be altering data incorrectly before submission.
+    *   **Backend Validation**: Supabase database constraints (e.g., `NOT NULL`, `UNIQUE`, `CHECK` constraints) might be rejecting data.
+    *   **Type Mismatches**: Data types sent from the form might not match the database column types.
+*   **Solutions**:
+    *   Review `validate` arrays for each input field.
+    *   Debug the `transform` function to ensure it correctly maps form data to the `Organization` interface.
+    *   Check Supabase database logs for detailed error messages from constraint violations.
+    *   Ensure form input types (e.g., `type="email"`, `type="url"`) match the expected data format.
+
+#### **3. Performance Bottlenecks with Large Datasets**
+
+*   **Symptom**: Slow loading times, choppy scrolling, or unresponsive UI when dealing with many organizations.
+*   **Possible Causes**:
+    *   **Missing Virtualization**: `react-window` or `useInfiniteGetList` might not be correctly implemented or configured.
+    *   **Excessive Re-renders**: Components in the list are re-rendering unnecessarily.
+    *   **Inefficient Queries**: Supabase queries are fetching too much data or are not optimized (missing indexes).
+    *   **Image Loading**: Large unoptimized images are slowing down the page.
+*   **Solutions**:
+    *   Verify `FixedSizeList` or `InfiniteScroll` setup in `OrganizationList.tsx`.
+    *   Ensure `OrganizationCard` (or `OrganizationRow`) components are wrapped with `React.memo`.
+    *   Use `useCallback` for event handlers and `useMemo` for expensive calculations within list items.
+    *   Check Supabase query performance using the Supabase dashboard or `EXPLAIN ANALYZE` for complex queries.
+    *   Implement image optimization (WebP, responsive images, lazy loading) as described in Phase 5.
+
+#### **4. Styling and Theme Conflicts**
+
+*   **Symptom**: UI elements don't look as expected, or Tailwind CSS classes are not applying correctly.
+*   **Possible Causes**:
+    *   **Tailwind Configuration**: `tailwind.config.js` is not correctly configured or processed.
+    *   **Material-UI Overrides**: Material-UI components are overriding Tailwind styles, or vice-versa.
+    *   **CSS Order**: Tailwind's base styles are not loaded before component styles.
+*   **Solutions**:
+    *   Verify `tailwind.config.js` includes all necessary paths and plugins.
+    *   Ensure Tailwind's `@tailwind` directives are correctly placed in your main CSS file.
+    *   Use Material-UI's `sx` prop or `styled` utility for component-specific styles, and apply Tailwind classes directly where appropriate.
+    *   Check for conflicting CSS rules in browser developer tools.
+
+This comprehensive update to `doc/README_ORG.md` should provide a robust guide for developing the Organization page.

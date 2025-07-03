@@ -1,694 +1,466 @@
-import { SvgIconComponent } from '@mui/icons-material';
-import { Identifier, RaRecord } from 'react-admin';
+// Core Types for ForkFlow CRM
+// Based on data generators and component usage patterns
 
-// Food Broker CRM Types
+export type SignUpData = {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+};
 
-// Settings System for B2B CRM
-export type Setting = {
+// File handling types
+export interface RAFile {
+    src?: string;
+    title?: string;
+    path?: string;
+    rawFile?: File;
+}
+
+// Setting types for configuration and categories
+export interface Setting {
     id: number;
-    category:
-        | 'priority'
-        | 'segment'
-        | 'distributor'
-        | 'role'
-        | 'influence'
-        | 'decision'
-        | 'stage'
-        | 'interaction_type'
-        | 'principal';
+    category: string; // 'priority', 'segment', 'stage', 'role', 'influence', 'decision', 'principal', etc.
     key: string;
     label: string;
-    color?: string;
+    color: string;
     sortOrder: number;
     active: boolean;
     createdAt: string;
     updatedAt: string;
-} & Pick<RaRecord, 'id'>;
+}
 
-// Organizations - Core B2B Entity
-export type Organization = {
+// Organization/Company types - Enhanced for roadmap implementation
+export interface Organization {
     id: number;
     name: string;
-    priorityId?: number;
-    segmentId?: number;
-    distributorId?: number;
-    accountManager?: string;
-    address?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-    phone?: string;
+    business_name?: string; // alias for name
+    logo?: string;
+    sector?: string;
+    size?: 'Very Small' | 'Small' | 'Medium' | 'Big' | 'Very Big';
+    linkedin_url?: string;
     website?: string;
-    notes?: string;
+    phone_number?: string;
+    phone?: string; // alias for phone_number
+    email: string;
+    contact_person?: string;
+    address?: string;
+    zipcode?: string;
+    city?: string;
+    stateAbbr?: string;
+    nb_contacts?: number;
+    nb_deals?: number;
+    business_type?: 'restaurant' | 'grocery' | 'distributor' | 'other';
+    salesId?: number;
+    broker_id?: number;
+    distributorId?: number;
+    organizationId?: number;
+    // Additional properties from component usage
+    revenue?: number;
+    tax_identifier?: string;
+    description?: string;
+    context_links?: Array<{name: string; url: string}>;
+    createdAt: string;
+    updatedAt?: string;
+    // Enhanced fields for roadmap features
+    priority?: 'high' | 'medium' | 'low';
+    segment?: string;
+    status?: 'prospect' | 'active' | 'inactive' | 'closed';
+    tags?: string[];
+    // GPS coordinates for map functionality
     latitude?: number;
     longitude?: number;
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
-
-    // Computed fields with Settings relationships
-    priority?: Setting;
-    segment?: Setting;
-    distributor?: Setting;
-    contactCount?: number;
+    // Enhanced metadata
     lastContactDate?: string;
-    totalOpportunities?: number;
-    totalOpportunityValue?: number;
-} & Pick<RaRecord, 'id'>;
+    nextFollowUpDate?: string;
+    notes?: string;
+    // Performance metrics
+    totalDealsValue?: number;
+    averageDealSize?: number;
+    conversionRate?: number;
+    // Territory management
+    territoryId?: number;
+    assignedSalesRep?: string;
+}
 
-// Contacts - Enhanced with B2B Relationships
-export type Contact = {
+// Legacy Company type for compatibility
+export interface Company extends Organization {}
+
+// Organization-specific types for enhanced features
+export interface OrganizationFilter {
+    q?: string; // search query
+    priority?: 'high' | 'medium' | 'low';
+    segment?: string;
+    status?: 'prospect' | 'active' | 'inactive' | 'closed';
+    business_type?: 'restaurant' | 'grocery' | 'distributor' | 'other';
+    size?: 'Very Small' | 'Small' | 'Medium' | 'Big' | 'Very Big';
+    broker_id?: number;
+    territoryId?: number;
+    hasDeals?: boolean;
+    revenueMin?: number;
+    revenueMax?: number;
+}
+
+export interface OrganizationListViewMode {
+    mode: 'table' | 'cards' | 'kanban' | 'map';
+    sortField: string;
+    sortOrder: 'ASC' | 'DESC';
+    itemsPerPage: number;
+}
+
+export interface OrganizationFormData extends Omit<Organization, 'id' | 'createdAt'> {
+    // Form-specific fields for creation/editing
+    confirmEmail?: string;
+    agreedToTerms?: boolean;
+    captureGPS?: boolean;
+}
+
+export interface TouchTarget {
+    minHeight: number;
+    minWidth: number;
+}
+
+// Contact types
+export interface Contact {
     id: number;
-    organizationId: number;
     firstName: string;
     lastName: string;
-    email?: string;
+    first_name?: string; // legacy compatibility
+    last_name?: string; // legacy compatibility
+    fullName?: string;
+    email: string;
     phone?: string;
-    roleId?: number;
-    influenceLevelId?: number;
-    decisionRoleId?: number;
-    linkedInUrl?: string;
-    isPrimary: boolean;
-    notes?: string;
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
-
-    // Computed fields with Settings relationships
-    organization?: Organization;
+    avatar?: RAFile;
+    title?: string;
     role?: Setting;
     influenceLevel?: Setting;
     decisionRole?: Setting;
-    fullName?: string;
-    lastInteractionDate?: string;
-    interactionCount?: number;
-    tags?: string[];
+    organizationId?: number;
+    companyId?: number; // legacy compatibility
+    company?: Company; // relationship
+    organization?: Organization; // relationship
+    gender?: string;
+    background?: string;
+    first_seen?: string;
+    last_seen?: string;
+    newsletter?: boolean;
+    status?: string;
+    tags?: Tag[];
+    linkedin_url?: string;
+    // Additional properties from component usage
+    nb_tasks?: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
 
-    // Additional field aliases for compatibility
-    first_name?: string; // Alias for firstName
-    last_name?: string; // Alias for lastName
-    first_seen?: string; // For data generator compatibility
-    last_seen?: string; // For data generator compatibility
-    title?: string; // For compatibility
-    salesId?: Identifier; // For compatibility
-    nb_tasks?: number; // For compatibility
-} & Pick<RaRecord, 'id'>;
+// Deal types
+export interface Deal {
+    id: number;
+    name?: string;
+    organizationId?: number;
+    company_id?: number; // legacy compatibility
+    organization?: Organization;
+    company?: Company; // legacy compatibility
+    contactId?: number;
+    contact?: Contact;
+    productIds?: number[];
+    products?: Product[];
+    stage: string;
+    stageId?: number;
+    stageSetting?: Setting;
+    amount?: number;
+    expected_close_date?: string;
+    description?: string;
+    notes?: string;
+    salesId?: number;
+    sales?: Sale;
+    category?: string;
+    probability?: number;
+    createdAt: string;
+    updatedAt?: string;
+}
 
-// Products - Food Service Catalog Entity
-export type Product = {
+// Product types
+export interface Product {
     id: number;
     name: string;
-    principalId: number;
+    sku?: string;
     category?: string;
     description?: string;
-    sku: string;
     unitOfMeasure?: string;
     packageSize?: string;
-    price: number;
-    active: boolean;
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
-    images?: string[]; // Array of image URLs
-
-    // Computed fields with Settings relationships
+    costPerUnit?: number;
+    pricePerUnit?: number;
+    principalId?: number;
     principal?: Setting;
-
-    // Additional computed fields
-    displayPrice?: string;
-    fullDescription?: string;
-    categoryDisplay?: string;
-    isAvailable?: boolean;
-} & Pick<RaRecord, 'id'>;
-
-// Interactions - Food Service Broker Interaction Tracking
-export type Interaction = {
-    id: number;
-    organizationId: number;
-    contactId?: number;
-    opportunityId?: number;
-    typeId: number; // References Setting with category 'interaction_type'
-    subject: string;
-    description?: string;
-    scheduledDate?: string;
-    completedDate?: string;
-    isCompleted: boolean;
-    duration?: number; // Duration in minutes
-    outcome?: string;
-    followUpRequired: boolean;
-    followUpDate?: string;
-    followUpNotes?: string;
-    
-    // GPS location for in-person interactions
-    latitude?: number;
-    longitude?: number;
-    locationNotes?: string;
-    
-    // File attachments
-    attachments?: string[];
-    
+    active?: boolean;
+    image?: RAFile;
     createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
+    updatedAt?: string;
+}
 
-    // Computed fields with Settings relationships
-    organization?: Organization;
-    contact?: Contact;
-    opportunity?: Deal;
-    type?: Setting;
-    
-    // Additional computed fields
-    typeLabel?: string;
-    statusLabel?: string;
-    isOverdue?: boolean;
-    hasLocation?: boolean;
-    formattedDuration?: string;
-} & Pick<RaRecord, 'id'>;
-
-export type SignUpData = {
+// Sales/User types
+export interface Sale {
+    id: number;
+    user_id: string;
+    first_name: string;
+    last_name: string;
     email: string;
-    password: string;
-    first_name: string;
-    last_name: string;
-};
-
-export type BrokerFormData = {
-    avatar: string;
-    email: string;
-    password: string;
-    first_name: string;
-    last_name: string;
-    administrator: boolean;
-    disabled: boolean;
-};
-
-export type Broker = {
-    first_name: string;
-    last_name: string;
+    password?: string;
     administrator: boolean;
     avatar?: RAFile;
-    disabled?: boolean;
-    user_id: string;
-    email: string;
-    password?: string; // For fake rest provider only
-} & Pick<RaRecord, 'id'>;
+    phone?: string;
+    title?: string;
+    territory?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
 
-// Enhanced Authentication Types for JWT Implementation
-export type UserRole = 'broker' | 'admin' | 'manager';
-
-export type User = {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: UserRole;
-    territory?: string[];
-    principals?: string[];
-    avatar?: string;
-    isActive: boolean;
-    lastLoginAt?: string;
+// Note types
+export interface ContactNote {
+    id: number;
+    contactId: number;
+    contact?: Contact;
+    text: string;
+    status?: string;
+    date?: string;
+    salesId?: number;
+    sales?: Sale;
     createdAt: string;
-    updatedAt: string;
-} & Pick<RaRecord, 'id'>;
+    updatedAt?: string;
+}
 
-export type AuthTokens = {
-    accessToken: string;
-    refreshToken: string;
-    tokenType: 'Bearer';
-    expiresIn: number;
-    expiresAt: number;
-};
+export interface DealNote {
+    id: number;
+    dealId: number;
+    deal?: Deal;
+    text: string;
+    status?: string;
+    date?: string;
+    salesId?: number;
+    sales?: Sale;
+    createdAt: string;
+    updatedAt?: string;
+}
 
-export type LoginCredentials = {
-    email: string;
-    password: string;
-    rememberMe?: boolean;
-};
+// Task types
+export interface Task {
+    id: number;
+    title: string;
+    description?: string;
+    due_date?: string;
+    completed?: boolean;
+    priority?: string;
+    prioritySetting?: Setting;
+    type?: string;
+    typeSetting?: Setting;
+    contactId?: number;
+    contact?: Contact;
+    dealId?: number;
+    deal?: Deal;
+    salesId?: number;
+    sales?: Sale;
+    createdAt: string;
+    updatedAt?: string;
+}
 
-export type LoginResponse = {
-    user: User;
-    tokens: AuthTokens;
-};
+// Tag types
+export interface Tag {
+    id: number;
+    name: string;
+    color?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
 
-export type RefreshTokenRequest = {
-    refreshToken: string;
-};
+// Interaction types (for the interactions module)
+export interface Interaction {
+    id: number;
+    type: string; // 'email', 'call', 'meeting', 'visit', etc.
+    typeSetting?: Setting;
+    subject?: string;
+    description?: string;
+    date: string;
+    duration?: number;
+    contactId?: number;
+    contact?: Contact;
+    organizationId?: number;
+    organization?: Organization;
+    dealId?: number;
+    deal?: Deal;
+    salesId?: number;
+    sales?: Sale;
+    outcome?: string;
+    followUpRequired?: boolean;
+    followUpDate?: string;
+    attachments?: RAFile[];
+    createdAt: string;
+    updatedAt?: string;
+}
 
-export type PasswordResetRequest = {
-    email: string;
-};
+// Opportunity types (alias for Deal with specific focus)
+export interface Opportunity extends Deal {
+    source?: string;
+    estimatedValue?: number;
+    weightedValue?: number;
+    nextAction?: string;
+    nextActionDate?: string;
+}
 
-export type PasswordResetConfirm = {
-    token: string;
-    newPassword: string;
-};
+// Contact gender configuration type
+export interface ContactGender {
+    value: string;
+    label: string;
+}
 
-export type UserProfileUpdate = {
+// Deal stage configuration type
+export interface DealStage {
+    id: string;
+    label: string;
+    color?: string;
+    order?: number;
+}
+
+// Note status configuration type
+export interface NoteStatus {
+    id: string;
+    label: string;
+    color?: string;
+}
+
+// Legacy aliases for backwards compatibility
+// Company is already defined as an interface extending Organization above
+
+// Additional types needed by the application
+
+// Authentication and User types
+export interface User {
+    id: number | string;
+    user_id?: string;
     firstName?: string;
     lastName?: string;
-    avatar?: string | File;
-    territory?: string[];
-    principals?: string[];
-};
-
-export type PasswordChangeRequest = {
-    currentPassword: string;
-    newPassword: string;
-};
-
-export type JWTPayload = {
-    sub: string; // user id
-    email: string;
-    role: UserRole;
-    firstName: string;
-    lastName: string;
-    territory?: string[];
-    principals?: string[];
-    iat: number; // issued at
-    exp: number; // expires at
-    jti: string; // JWT ID
-};
-
-export type Customer = {
-    business_name: string;
-    contact_person?: string;
-    email?: string;
-    phone?: string;
-    phone_number?: string; // Additional field for compatibility
-    address?: string;
-    business_type: 'restaurant' | 'grocery' | 'distributor' | 'other';
-    latitude?: number;
-    longitude?: number;
-    notes?: string;
-    broker_id: Identifier;
-    created_at: string;
-    createdAt: string; // Additional field for compatibility
-    updatedAt: string;
-
-    // Company-specific fields for compatibility
-    website?: string;
-    linkedin_url?: string;
-    logo?: string;
-    revenue?: number;
-    sector?: string;
-    size?: 'Very Small' | 'Small' | 'Medium' | 'Big' | 'Very Big';
-    tax_identifier?: string;
-    city?: string;
-    zipcode?: string;
-    stateAbbr?: string;
-    salesId?: Identifier;
-    description?: string;
-    context_links?: string[];
-
-    // Contact-specific fields for compatibility
-    name?: string; // Alias for business_name
     first_name?: string;
     last_name?: string;
+    email: string;
+    role?: UserRole;
+    administrator?: boolean;
+    avatar?: RAFile;
+    phone?: string;
+    title?: string;
+    territory?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export type UserRole = 'admin' | 'broker' | 'user' | 'manager';
+
+export interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    user: User;
+    tokens: AuthTokens;
+    success: boolean;
+}
+
+export interface AuthTokens {
+    accessToken: string;
+    refreshToken?: string;
+    expiresIn?: number;
+}
+
+export interface JWTPayload {
+    sub: string;
+    email: string;
+    role: UserRole;
+    exp: number;
+    iat: number;
+}
+
+export interface BrokerFormData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    territory?: string;
+}
+
+export interface PasswordResetRequest {
+    email: string;
+}
+
+export interface PasswordResetConfirm {
+    token: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export interface UserProfileUpdate {
     firstName?: string;
     lastName?: string;
-    organizationId?: Identifier;
-    isPrimary?: boolean;
+    phone?: string;
+    avatar?: RAFile;
+}
 
-    // Computed fields from views
-    total_visits?: number;
-    last_visit_date?: string;
-    last_visit_notes?: string;
-    visit_status?:
-        | 'Never visited'
-        | 'Needs attention'
-        | 'Due for visit'
-        | 'Recently visited';
-    pending_reminders?: number;
-    overdue_reminders?: number;
-    nb_deals?: number;
-    nb_contacts?: number;
-} & Pick<RaRecord, 'id'>;
+// Activity types
+export interface Activity {
+    id: number;
+    type: string;
+    entityType: string;
+    entityId: number;
+    description: string;
+    metadata?: Record<string, any>;
+    userId?: number;
+    user?: User;
+    createdAt: string;
+}
 
-export type Visit = {
-    customer_id: Identifier;
-    broker_id: Identifier;
-    visit_date: string;
+export interface ActivityContactCreated extends Activity {
+    entityType: 'contact';
+    contact?: Contact;
+}
+
+export interface ActivityOrganizationCreated extends Activity {
+    entityType: 'organization';
+    organization?: Organization;
+}
+
+export interface ActivityContactNoteCreated extends Activity {
+    entityType: 'contactNote';
+    contactNote?: ContactNote;
+}
+
+export interface ActivityDealCreated extends Activity {
+    entityType: 'deal';
+    deal?: Deal;
+}
+
+export interface ActivityDealNoteCreated extends Activity {
+    entityType: 'dealNote';
+    dealNote?: DealNote;
+}
+
+// Visit and GPS types
+export interface Visit {
+    id: number;
+    contactId?: number;
+    contact?: Contact;
+    organizationId?: number;
+    organization?: Organization;
+    date: string;
+    duration?: number;
     notes?: string;
-    latitude?: number;
-    longitude?: number;
-    duration_minutes?: number;
-    visit_type: string;
-    created_at: string;
-    updatedAt: string;
+    location?: GPSCoordinates;
+    salesId?: number;
+    sales?: Sale;
+    createdAt: string;
+    updatedAt?: string;
+}
 
-    // Computed fields
-    customer_name?: string;
-    distance_from_previous?: number;
-} & Pick<RaRecord, 'id'>;
-
-export type Reminder = {
-    customer_id: Identifier;
-    broker_id: Identifier;
-    reminder_date: string;
-    completed_at?: string;
-    is_completed: boolean;
-    title: string;
-    notes?: string;
-    priority: 'low' | 'medium' | 'high' | 'urgent';
-    visit_id?: Identifier;
-    snoozed_until?: string;
-    snooze_count: number;
-    created_at: string;
-    updatedAt: string;
-
-    // Additional fields for compatibility
-    salesId?: Identifier;
-    contact_id?: Identifier;
-    text?: string;
-    attachments?: any[];
-
-    // Computed fields
-    customer_name?: string;
-    is_overdue?: boolean;
-    days_until_due?: number;
-} & Pick<RaRecord, 'id'>;
-
-// Legacy Product type removed - using B2B Product type above
-
-export type OrderProduct = {
-    product_id: Identifier;
-    product_name: string;
-    quantity: number;
-    unit_price: number;
-    total: number;
-};
-
-export type Order = {
-    customer_id: Identifier;
-    broker_id: Identifier;
-    visit_id?: Identifier;
-    order_date: string;
-    expected_delivery_date?: string;
-    products_jsonb: OrderProduct[];
-    subtotal: number;
-    tax_amount: number;
-    total_amount: number;
-    discount_percent: number;
-    status:
-        | 'draft'
-        | 'pending'
-        | 'confirmed'
-        | 'in_progress'
-        | 'delivered'
-        | 'cancelled'
-        | 'on_hold';
-    notes?: string;
-    internal_notes?: string;
-    commission_rate: number;
-    commission_amount: number;
-    created_at: string;
-    updatedAt: string;
-
-    // Additional fields for compatibility
-    salesId?: Identifier;
-    organizationId?: Identifier;
-    name?: string;
-    deal_id?: Identifier;
-    stage?: string;
-    index?: number;
-    amount?: number;
-    category?: string;
-    archivedAt?: string;
-    attachments?: any[];
-    expectedClosingDate?: string;
-
-    // Computed fields
-    customer_name?: string;
-    product_count?: number;
-} & Pick<RaRecord, 'id'>;
-
-export type Territory = {
-    name: string;
-    description?: string;
-    broker_id: Identifier;
-    boundary_coordinates?: any; // GeoJSON coordinates
-    center_latitude?: number;
-    center_longitude?: number;
-    is_active: boolean;
-    created_at: string;
-    updatedAt: string;
-
-    // Computed fields
-    customer_count?: number;
-    total_visits?: number;
-} & Pick<RaRecord, 'id'>;
-
-// GPS and Location Types
-export type GPSCoordinates = {
+export interface GPSCoordinates {
     latitude: number;
     longitude: number;
     accuracy?: number;
     timestamp?: string;
-};
-
-export type LocationPermission = 'granted' | 'denied' | 'prompt';
-
-// Dashboard Statistics
-export type BrokerDashboardStats = {
-    total_customers: number;
-    customers_this_month: number;
-    total_visits: number;
-    visits_this_week: number;
-    visits_this_month: number;
-    pending_reminders: number;
-    overdue_reminders: number;
-    customers_needing_attention: number;
-};
-
-// Activity Types for Food Broker CRM
-export type ActivityCustomerCreated = {
-    type: 'CUSTOMER_CREATED';
-    customer_id: Identifier;
-    customer: Customer;
-    broker_id: Identifier;
-    date: string;
-};
-
-export type ActivityVisitLogged = {
-    type: 'VISIT_LOGGED';
-    customer_id: Identifier;
-    broker_id: Identifier;
-    visit: Visit;
-    date: string;
-};
-
-export type ActivityOrderCreated = {
-    type: 'ORDER_CREATED';
-    customer_id: Identifier;
-    broker_id: Identifier;
-    order: Order;
-    date: string;
-};
-
-export type ActivityReminderCreated = {
-    type: 'REMINDER_CREATED';
-    customer_id: Identifier;
-    broker_id: Identifier;
-    reminder: Reminder;
-    date: string;
-};
-
-// Additional activity types for new schema compatibility
-export type ActivityOrganizationCreated = {
-    type: 'organization.created';
-    organizationId: Identifier;
-    organization: Organization;
-    brokerId: Identifier;
-    date: string;
-    salesId?: Identifier; // For compatibility
-};
-
-export type ActivityContactCreated = {
-    type: 'contact.created';
-    organizationId: Identifier;
-    contactId: Identifier;
-    contact: Contact;
-    brokerId: Identifier;
-    date: string;
-    salesId?: Identifier; // For compatibility
-};
-
-export type ActivityContactNoteCreated = {
-    type: 'contactNote.created';
-    organizationId: Identifier;
-    contactId: Identifier;
-    contactNote: ContactNote;
-    brokerId: Identifier;
-    date: string;
-    salesId?: Identifier; // For compatibility
-};
-
-export type ActivityDealCreated = {
-    type: 'deal.created';
-    organizationId: Identifier;
-    contactId?: Identifier;
-    dealId: Identifier;
-    deal: Deal;
-    brokerId: Identifier;
-    date: string;
-    salesId?: Identifier; // For compatibility
-};
-
-export type ActivityDealNoteCreated = {
-    type: 'dealNote.created';
-    organizationId: Identifier;
-    dealId: Identifier;
-    dealNote: DealNote;
-    brokerId: Identifier;
-    date: string;
-    salesId?: Identifier; // For compatibility
-};
-
-export type Activity = RaRecord &
-    (
-        | ActivityCustomerCreated
-        | ActivityVisitLogged
-        | ActivityOrderCreated
-        | ActivityReminderCreated
-        | ActivityOrganizationCreated
-        | ActivityContactCreated
-        | ActivityContactNoteCreated
-        | ActivityDealCreated
-        | ActivityDealNoteCreated
-    );
-
-export interface RAFile {
-    src: string;
-    title: string;
-    path?: string;
-    rawFile: File;
-    type?: string;
 }
-
-// Food Broker Business Configuration
-export interface BusinessType {
-    value: 'restaurant' | 'grocery' | 'distributor' | 'other';
-    label: string;
-    icon: SvgIconComponent;
-}
-
-export interface VisitType {
-    value: string;
-    label: string;
-    color: string;
-}
-
-export interface ReminderPriority {
-    value: 'low' | 'medium' | 'high' | 'urgent';
-    label: string;
-    color: string;
-}
-
-export interface OrderStatus {
-    value:
-        | 'draft'
-        | 'pending'
-        | 'confirmed'
-        | 'in_progress'
-        | 'delivered'
-        | 'cancelled'
-        | 'on_hold';
-    label: string;
-    color: string;
-}
-
-// Mobile-specific types
-export interface TouchTarget {
-    minHeight: number; // 44px minimum for mobile
-    minWidth: number;
-}
-
-export interface MobileViewport {
-    width: number;
-    height: number;
-    isMobile: boolean;
-    isTablet: boolean;
-}
-
-// Deals/Opportunities - Core B2B Entity
-export type Deal = {
-    id: number;
-    organizationId: number;
-    contactId?: number;
-    productId?: number;
-    stageId?: number;
-    stage: string; // Pipeline stage (lead_discovery, contacted, sampled_visited, follow_up, close)
-    status: 'active' | 'won' | 'lost' | 'on-hold';
-    probability: number; // 0-100% chance of closing
-    amount: number; // Deal value
-    expectedClosingDate?: string;
-    name?: string; // Deal name/title
-    description?: string;
-    notes?: string;
-    index: number; // For kanban ordering
-    archivedAt?: string; // For archived deals
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
-
-    // Computed fields with relationships
-    organization?: Organization;
-    contact?: Contact;
-    product?: Product;
-    stageInfo?: Setting;
-} & Pick<RaRecord, 'id'>;
-
-// Legacy Types for Compatibility (will be phased out)
-export type Company = Customer; // Map Company to Customer for now
-// Contact Notes - Notes attached to contacts
-export type ContactNote = {
-    id: number;
-    contactId: number;
-    organizationId: number;
-    content: string;
-    subject?: string;
-    status: string;
-    attachments?: RAFile[];
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
-
-    // Computed fields
-    contact?: Contact;
-    organization?: Organization;
-} & Pick<RaRecord, 'id'>;
-
-// Deal Notes - Notes attached to deals/opportunities
-export type DealNote = {
-    id: number;
-    dealId: number;
-    organizationId: number;
-    content: string;
-    subject?: string;
-    status: string;
-    attachments?: RAFile[];
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: string;
-
-    // Computed fields
-    deal?: Deal;
-    organization?: Organization;
-} & Pick<RaRecord, 'id'>;
-export type Sale = Broker; // Map Sale to Broker for now
-export type SalesFormData = BrokerFormData; // Map SalesFormData to BrokerFormData for now
-export type Task = Reminder; // Map Task to Reminder for now
-export type Tag = {
-    id: Identifier;
-    name: string;
-    color: string;
-} & Pick<RaRecord, 'id'>;
-
-export type ContactGender = 'male' | 'female' | 'other';
-export type DealStage = {
-    value: string;
-    label: string;
-};
-export type NoteStatus = 'draft' | 'published';
-
-// Activity Legacy Types (using full definitions above)

@@ -1,74 +1,37 @@
-import { createContext, ReactNode, useContext } from 'react';
-import { ContactGender, DealStage, NoteStatus } from '../types';
-import {
-    defaultCompanySectors,
-    defaultContactGender,
-    defaultDealCategories,
-    defaultDealPipelineStatuses,
-    defaultDealStages,
-    defaultLogo,
-    defaultNoteStatuses,
-    defaultTaskTypes,
-    defaultTitle,
-} from './defaultConfiguration';
+import { createContext, useContext } from 'react';
 
-// Define types for the context value
-export interface ConfigurationContextValue {
+export type ConfigurationContextValue = {
+    logo: string;
+    title: string;
+    contactGender: any[];
     companySectors: string[];
     dealCategories: string[];
-    dealPipelineStatuses: string[];
-    dealStages: DealStage[];
-    noteStatuses: NoteStatus[];
+    dealPipelineStatuses: any[];
+    dealStages: any[];
+    noteStatuses: any[];
     taskTypes: string[];
-    title: string;
-    logo: string;
-    contactGender: ContactGender[];
-}
+};
 
-export interface ConfigurationProviderProps extends ConfigurationContextValue {
-    children: ReactNode;
-}
-
-// Create context with default value
 export const ConfigurationContext = createContext<ConfigurationContextValue>({
-    companySectors: defaultCompanySectors,
-    dealCategories: defaultDealCategories,
-    dealPipelineStatuses: defaultDealPipelineStatuses,
-    dealStages: defaultDealStages,
-    noteStatuses: defaultNoteStatuses.map(ns => ns.value as NoteStatus),
-    taskTypes: defaultTaskTypes,
-    title: defaultTitle,
-    logo: defaultLogo,
-    contactGender: defaultContactGender.map(g => g.value as ContactGender),
+    logo: '',
+    title: '',
+    contactGender: [],
+    companySectors: [],
+    dealCategories: [],
+    dealPipelineStatuses: [],
+    dealStages: [],
+    noteStatuses: [],
+    taskTypes: [],
 });
 
-export const ConfigurationProvider = ({
-    children,
-    companySectors,
-    dealCategories,
-    dealPipelineStatuses,
-    dealStages,
-    logo,
-    noteStatuses,
-    taskTypes,
-    title,
-    contactGender,
-}: ConfigurationProviderProps) => (
-    <ConfigurationContext.Provider
-        value={{
-            companySectors,
-            dealCategories,
-            dealPipelineStatuses,
-            dealStages,
-            logo,
-            noteStatuses,
-            title,
-            taskTypes,
-            contactGender,
-        }}
-    >
-        {children}
-    </ConfigurationContext.Provider>
-);
+export const ConfigurationProvider = ConfigurationContext.Provider;
 
-export const useConfigurationContext = () => useContext(ConfigurationContext);
+export const useConfigurationContext = () => {
+    const context = useContext(ConfigurationContext);
+    if (!context) {
+        throw new Error(
+            'useConfigurationContext must be used within a ConfigurationProvider'
+        );
+    }
+    return context;
+};

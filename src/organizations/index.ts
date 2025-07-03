@@ -1,7 +1,7 @@
-import { OrganizationList } from './OrganizationList';
-import { OrganizationCreate } from './OrganizationCreate';
-import { OrganizationEdit } from './OrganizationEdit';
-import { OrganizationShow } from './OrganizationShow';
+// Import from organized subdirectories
+import { OrganizationList } from './list';
+import { OrganizationCreate, OrganizationEdit } from './form';
+import { OrganizationShow } from './show';
 
 // Default export for resource registration
 export default {
@@ -11,13 +11,10 @@ export default {
     show: OrganizationShow,
 };
 
-// Named exports for direct usage
-export { OrganizationList } from './OrganizationList';
-export { OrganizationCreate } from './OrganizationCreate';
-export { OrganizationEdit } from './OrganizationEdit';
-export { OrganizationShow } from './OrganizationShow';
-export { OrganizationInputs } from './OrganizationInputs';
-export { OrganizationCard } from './OrganizationCard';
-export { OrganizationEmpty } from './OrganizationEmpty';
-export { OrganizationListFilter } from './OrganizationListFilter';
-export { OrganizationMapView } from './OrganizationMapView';
+// Re-export all components from organized subdirectories
+export * from './list';
+export * from './form';
+export * from './show';
+export * from './common';
+export * from './hooks';
+export * from './utils';

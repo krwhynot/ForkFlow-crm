@@ -1,19 +1,19 @@
 {
     "mcpServers": {
-        "supabase": {
-            "command": "npx",
+        "github.com/supabase-community/supabase-mcp": {
+            "command": "cmd",
             "args": [
+                "/c",
+                "npx",
                 "-y",
                 "@supabase/mcp-server-supabase@latest",
-                "--access-token",
-                "sbp_2a3de2376bb3e89144b61867295b2ff97e782243"
-            ]
-        },
-        "playwright": {
-            "command": "npx",
-            "args": [
-                "@playwright/mcp@latest"
-            ]
+                "--project-ref=sbrlujvekkpthwztxfyo"
+            ],
+            "env": {
+                "SUPABASE_ACCESS_TOKEN": "sbp_7590b6e83735dfaef150f2c17017710f6403de48"
+            },
+            "disabled": false,
+            "autoApprove": []
         },
         "exa": {
             "command": "npx",
@@ -31,7 +31,7 @@
             "args": [
                 "-y",
                 "@modelcontextprotocol/server-filesystem@latest",
-                "/mnt/r/Projects/ForkFlow-crm",
+                "/mnt/c/Projects/ForkFlow-crm",
                 "/mnt/c/Users/revadmin/Documents"
             ],
             "env": {
@@ -62,19 +62,8 @@
                 "mcp-knowledge-graph"
             ],
             "env": {
-                "STORAGE_PATH": "/mnt/r/Projects/ForkFlow-crm/.knowledge",
+                "STORAGE_PATH": "/mnt/c/Projects/ForkFlow-crm/.knowledge",
                 "MCP_LOG_LEVEL": "info"
-            }
-        },
-        "perplexity": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "server-perplexity-ask"
-            ],
-            "env": {
-                "PERPLEXITY_API_KEY": "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",
-                "PERPLEXITY_MODEL": "sonar-reasoning-pro"
             }
         }
     }

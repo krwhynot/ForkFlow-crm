@@ -13,7 +13,7 @@ import {
     useGetList,
 } from 'react-admin';
 
-import { CompanyAvatar } from '../companies/CompanyAvatar';
+import { OrganizationAvatar } from '../organizations/OrganizationAvatar';
 import { findDealLabel } from '../deals/deal';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { Deal } from '../types';
@@ -70,7 +70,7 @@ export const DealsPipeline = () => {
                     isPending={isPending}
                     primaryText={deal => deal.name}
                     secondaryText={deal =>
-                        `${deal.amount.toLocaleString('en-US', {
+                        `${(deal.amount ?? 0).toLocaleString('en-US', {
                             notation: 'compact',
                             style: 'currency',
                             currency: 'USD',
@@ -82,11 +82,11 @@ export const DealsPipeline = () => {
                         <ReferenceField
                             source="organizationId"
                             record={deal}
-                            reference="companies"
+                            reference="organizations"
                             resource="deals"
                             link={false}
                         >
-                            <CompanyAvatar width={20} height={20} />
+                            <OrganizationAvatar width={20} height={20} />
                         </ReferenceField>
                     )}
                 />

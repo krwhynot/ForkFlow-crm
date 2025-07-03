@@ -1,11 +1,4 @@
-import { deepmerge } from '@mui/utils';
-import { SetPasswordPage } from 'ra-supabase';
-import { PasswordResetPage } from '../login/PasswordResetPage';
-import { SetNewPasswordPage } from '../login/SetNewPasswordPage';
-import { UserProfilePage } from '../login/UserProfilePage';
-import { SessionTimeoutRoute } from '../components/security/SessionTimeoutRoute';
 import { useEffect } from 'react';
-import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
 import {
     Admin,
     CustomRoutes,
@@ -15,86 +8,51 @@ import {
     defaultTheme,
     localStorageStore,
 } from 'react-admin';
+import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
+import { deepmerge } from '@mui/utils';
 import { Route } from 'react-router';
+import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 
-import { LocationProvider } from '../components/mobile';
-import { Layout } from '../layout/Layout';
+import Layout from '../layout/Layout';
+import { i18nProvider } from './i18nProvider';
+import companies from '../companies';
+import contacts from '../contacts';
+import { RoleDashboard as Dashboard } from '../dashboard/RoleDashboard';
+import deals from '../deals';
+import interactions from '../interactions';
+import opportunities from '../opportunities';
+import products from '../products';
 import { LoginPage } from '../login/LoginPage';
-import { MobileLoginForm } from '../login/MobileLoginForm';
-import { UniversalLoginPage } from '../login/UniversalLoginPage';
-import { FallbackLoginPage } from '../login/FallbackLoginPage';
-import { SafeLoginPage } from '../login/SafeLoginPage';
 import { SignupPage } from '../login/SignupPage';
-import {
-    LazyOrganizations,
-    LazyProducts,
-    LazyOpportunities,
-    LazyInteractions,
-    LazyCompanies,
-    LazyDashboard,
-    LazyContactList,
-    LazyContactCreate,
-    LazyContactEdit,
-    LazyContactShow,
-    LazyCustomerList,
-    LazyVisitList,
-    LazyVisitCreate,
-    LazyVisitShow,
-    LazyReminderList,
-    LazyReminderCreate,
-    LazyReminderShow,
-    LazySettings,
-    preloadCriticalResources,
-    withSuspense,
-} from './LazyResources';
 import {
     authProvider as defaultAuthProvider,
     dataProvider as defaultDataProvider,
 } from '../providers/supabase';
-import {
-    authProvider as fakeAuthProvider,
-    dataProvider as fakeDataProvider,
-} from '../providers/fakerest';
-import { 
-    jwtAuthProvider,
-    initializeAuthentication 
-} from '../providers/auth';
+import sales from '../sales';
 import { SettingsPage } from '../settings/SettingsPage';
 import {
     ConfigurationContextValue,
     ConfigurationProvider,
 } from './ConfigurationContext';
-import { defaultLogo } from './defaultConfiguration';
-import { i18nProvider } from './i18nProvider';
+import {
+    defaultCompanySectors,
+    defaultContactGender,
+    defaultDealCategories,
+    defaultDealPipelineStatuses,
+    defaultDealStages,
+    defaultLogo,
+    defaultNoteStatuses,
+    defaultTaskTypes,
+    defaultTitle,
+} from './defaultConfiguration';
 
-// Food Broker CRM specific defaults
-const defaultBusinessTypes = ['restaurant', 'grocery', 'distributor', 'other'];
-const defaultVisitTypes = [
-    'sales_call',
-    'follow_up',
-    'delivery',
-    'service_call',
-    'other',
-];
-const defaultReminderPriorities = ['low', 'medium', 'high', 'urgent'];
-
-// Define the interface for the Food Broker CRM component props
+// Define the interface for the CRM component props
 export type CRMProps = {
     dataProvider?: DataProvider;
     authProvider?: AuthProvider;
     lightTheme?: RaThemeOptions;
     darkTheme?: RaThemeOptions;
-    businessTypes?: string[];
-    visitTypes?: string[];
-    reminderPriorities?: string[];
-    enableGPS?: boolean;
-    requireAuth?: boolean;
-} & Partial<
-    Omit<
-        ConfigurationContextValue,
-        'contactGender' | 'dealCategories' | 'dealStages'
-    >
-> &
+} & Partial<ConfigurationContextValue> &
     Partial<AdminProps>;
 
 const defaultLightTheme = deepmerge(defaultTheme, {
@@ -103,7 +61,7 @@ const defaultLightTheme = deepmerge(defaultTheme, {
             default: '#fafafb',
         },
         primary: {
-            main: '#9bbb59',
+            main: '#16a34a',
         },
     },
     components: {
@@ -120,176 +78,62 @@ const defaultLightTheme = deepmerge(defaultTheme, {
 });
 
 /**
- * Food Broker CRM Component
+ * CRM Component
  *
- * This component sets up and renders the food broker CRM application using `react-admin`.
- * It's specifically designed for food brokers who visit restaurants and stores, with mobile-first
- * design, GPS integration, and food business management features.
+ * This component sets up and renders the main CRM application using `react-admin`. It provides
+ * default configurations and themes but allows for customization through props. The component
+ * wraps the application with a `ConfigurationProvider` to provide configuration values via context.
  *
- * @param {RaThemeOptions} lightTheme - The theme to use when the application is in light mode.
+ * @param {Array<ContactGender>} contactGender - The gender options for contacts used in the application.
+ * @param {string[]} companySectors - The list of company sectors used in the application.
  * @param {RaThemeOptions} darkTheme - The theme to use when the application is in dark mode.
+ * @param {string[]} dealCategories - The categories of deals used in the application.
+ * @param {string[]} dealPipelineStatuses - The statuses of deals in the pipeline used in the application.
+ * @param {DealStage[]} dealStages - The stages of deals used in the application.
+ * @param {RaThemeOptions} lightTheme - The theme to use when the application is in light mode.
  * @param {string} logo - The logo used in the CRM application.
+ * @param {NoteStatus[]} noteStatuses - The statuses of notes used in the application.
+ * @param {string[]} taskTypes - The types of tasks used in the application.
  * @param {string} title - The title of the CRM application.
- * @param {string[]} businessTypes - The types of food businesses (restaurant, grocery, etc.)
- * @param {string[]} visitTypes - The types of visits brokers can log
- * @param {string[]} reminderPriorities - Priority levels for follow-up reminders
- * @param {boolean} enableGPS - Whether to enable GPS location features
  *
- * @returns {JSX.Element} The rendered Food Broker CRM application.
+ * @returns {JSX.Element} The rendered CRM application.
  *
  * @example
- * // Basic usage of the Food Broker CRM component
+ * // Basic usage of the CRM component
  * import { CRM } from './CRM';
  *
  * const App = () => (
  *     <CRM
  *         logo="/path/to/logo.png"
- *         title="ForkFlow Food Broker CRM"
- *         enableGPS={true}
+ *         title="My Custom CRM"
+ *         lightTheme={{
+ *             ...defaultTheme,
+ *             palette: {
+ *                 primary: { main: '#0000ff' },
+ *             },
+ *         }}
  *     />
  * );
  *
  * export default App;
  */
 export const CRM = ({
+    contactGender = defaultContactGender,
+    companySectors = defaultCompanySectors,
     darkTheme,
+    dealCategories = defaultDealCategories,
+    dealPipelineStatuses = defaultDealPipelineStatuses,
+    dealStages = defaultDealStages,
     lightTheme = defaultLightTheme,
     logo = defaultLogo,
-    title = 'ForkFlow Food Broker CRM',
-    businessTypes = defaultBusinessTypes,
-    visitTypes = defaultVisitTypes,
-    reminderPriorities = defaultReminderPriorities,
-    enableGPS = true,
-    dataProvider,
-    authProvider,
-    requireAuth = true,
+    noteStatuses = defaultNoteStatuses,
+    taskTypes = defaultTaskTypes,
+    title = defaultTitle,
+    dataProvider = defaultDataProvider,
+    authProvider = defaultAuthProvider,
     disableTelemetry,
     ...rest
 }: CRMProps) => {
-    // Detect test mode and configure providers accordingly
-    const isTestMode = typeof window !== 'undefined' && (
-        window.location.search.includes('test=true') ||
-        localStorage.getItem('test-mode') === 'true' ||
-        localStorage.getItem('data-provider') === 'fakerest' ||
-        process.env.NODE_ENV === 'test' ||
-        process.env.VITE_TEST_MODE === 'true'
-    );
-
-    // Detect JWT auth mode
-    const isJWTMode = typeof window !== 'undefined' && (
-        window.location.search.includes('auth=jwt') ||
-        localStorage.getItem('auth-provider') === 'jwt' ||
-        process.env.REACT_APP_AUTH_PROVIDER === 'jwt'
-    );
-
-    const effectiveDataProvider = dataProvider || (isTestMode ? fakeDataProvider : defaultDataProvider);
-    
-    // Select auth provider based on mode
-    let effectiveAuthProvider: AuthProvider;
-    if (authProvider) {
-        console.log('🔐 CRM: Using provided authProvider');
-        effectiveAuthProvider = authProvider;
-    } else if (isTestMode) {
-        console.log('🔐 CRM: Using fakeAuthProvider (test mode)');
-        effectiveAuthProvider = fakeAuthProvider;
-    } else if (isJWTMode) {
-        console.log('🔐 CRM: Using jwtAuthProvider (JWT mode)');
-        effectiveAuthProvider = jwtAuthProvider;
-    } else {
-        console.log('🔐 CRM: Using defaultAuthProvider (production)');
-        effectiveAuthProvider = defaultAuthProvider;
-    }
-    
-    // For demo mode, always require auth to show login page
-    // Only disable auth for actual unit tests
-    const effectiveRequireAuth = (isTestMode && process.env.NODE_ENV === 'test') ? false : requireAuth;
-
-    if (isTestMode) {
-        console.log('🎭 Test mode detected - using fakerest data provider');
-    } else if (isJWTMode) {
-        console.log('🔐 JWT auth mode detected - using JWT authentication with MobileLoginForm');
-    } else {
-        console.log('🗄️ Production mode - using Supabase data provider');
-    }
-
-    // Enhanced debug logging for authentication flow
-    useEffect(() => {
-        console.log('🔧 CRM Enhanced Debug Info:', {
-            isTestMode,
-            isJWTMode,
-            dataProviderType: isTestMode ? 'fakerest' : 'supabase',
-            effectiveDataProvider: effectiveDataProvider?.constructor?.name || 'Unknown',
-            authProviderType: isTestMode ? 'fake' : (isJWTMode ? 'jwt' : 'supabase'),
-            requireAuth: effectiveRequireAuth,
-            nodeEnv: process.env.NODE_ENV,
-            loginPageComponent: 'UniversalLoginPage',
-            hasAuthProvider: !!effectiveAuthProvider,
-            hasDataProvider: !!effectiveDataProvider
-        });
-        
-        console.log('🔐 CRM Auth Configuration Enhanced:', {
-            requireAuthProp: requireAuth,
-            effectiveRequireAuth: effectiveRequireAuth,
-            authProviderName: effectiveAuthProvider?.constructor?.name || 'Unknown',
-            authProviderMethods: effectiveAuthProvider ? Object.keys(effectiveAuthProvider) : []
-        });
-
-        // Test auth provider methods
-        if (effectiveAuthProvider) {
-            console.log('🧪 CRM: Testing authProvider.checkAuth()');
-            effectiveAuthProvider.checkAuth({ signal: new AbortController().signal })
-                .then(() => {
-                    console.log('✅ CRM: authProvider.checkAuth() RESOLVED - user authenticated');
-                })
-                .catch((error) => {
-                    console.log('❌ CRM: authProvider.checkAuth() REJECTED - user NOT authenticated', error?.message);
-                    console.log('🔄 CRM: This should trigger login page to show');
-                });
-        }
-
-        // Test products resource connection
-        if (effectiveDataProvider && typeof effectiveDataProvider.getList === 'function') {
-            effectiveDataProvider.getList('products', {
-                pagination: { page: 1, perPage: 1 },
-                sort: { field: 'id', order: 'ASC' },
-                filter: {}
-            }).then((result) => {
-                console.log('✅ Products data provider test successful:', {
-                    totalProducts: result.total,
-                    sampleData: result.data?.[0] || 'No products found'
-                });
-            }).catch((error) => {
-                console.error('❌ Products data provider test failed:', error);
-                console.error('🔍 Error details:', {
-                    message: error.message,
-                    stack: error.stack,
-                    name: error.name
-                });
-            });
-        } else {
-            console.error('❌ Data provider not initialized or missing getList method');
-        }
-    }, [effectiveDataProvider, effectiveAuthProvider, isTestMode, isJWTMode, effectiveRequireAuth]);
-
-    // Initialize JWT authentication if in JWT mode
-    useEffect(() => {
-        if (isJWTMode && !isTestMode) {
-            initializeAuthentication().then((user) => {
-                if (user) {
-                    console.log('✅ JWT authentication initialized for user:', user.email);
-                } else {
-                    console.log('ℹ️ No existing JWT session found');
-                }
-            }).catch((error) => {
-                console.error('❌ JWT authentication initialization failed:', error);
-            });
-        }
-    }, [isJWTMode, isTestMode]);
-
-    // Preload critical resources after initial render
-    useEffect(() => {
-        preloadCriticalResources();
-    }, []);
     useEffect(() => {
         if (
             disableTelemetry ||
@@ -304,180 +148,64 @@ export const CRM = ({
         img.src = `https://atomic-crm-telemetry.marmelab.com/atomic-crm-telemetry?domain=${window.location.hostname}`;
     }, [disableTelemetry]);
 
-    // Enhanced debugging before Admin component creation
-    console.log('🏗️ CRM: Creating Admin component with configuration:', {
-        hasDataProvider: !!effectiveDataProvider,
-        hasAuthProvider: !!effectiveAuthProvider,
-        loginPageSet: 'UniversalLoginPage',
-        requireAuth: effectiveRequireAuth,
-        storeKey: 'ForkFlowCRM'
-    });
-
-    const AdminComponent = (
-        <Admin
-            dataProvider={effectiveDataProvider}
-            authProvider={effectiveAuthProvider}
-            store={localStorageStore(undefined, 'ForkFlowCRM')}
-            layout={Layout}
-            loginPage={SafeLoginPage}
-            dashboard={withSuspense(LazyDashboard)}
-            theme={lightTheme}
-            darkTheme={darkTheme || null}
-            i18nProvider={i18nProvider}
-            requireAuth={effectiveRequireAuth}
-            disableTelemetry
-            {...rest}
-        >
-            <CustomRoutes noLayout>
-                <Route path={SignupPage.path} element={<SignupPage />} />
-                <Route
-                    path={SetPasswordPage.path}
-                    element={<SetPasswordPage />}
-                />
-                <Route
-                    path={PasswordResetPage.path}
-                    element={<PasswordResetPage />}
-                />
-                <Route
-                    path={SetNewPasswordPage.path}
-                    element={<SetNewPasswordPage />}
-                />
-                {/* Session Timeout - Persistent overlay with Router context */}
-                <Route 
-                    path="*" 
-                    element={
-                        <SessionTimeoutRoute 
-                            timeoutMinutes={30}
-                            warningMinutes={5}
-                            enabled={!isTestMode && effectiveRequireAuth}
-                        />
-                    } 
-                />
-            </CustomRoutes>
-
-            <CustomRoutes>
-                <Route path={SettingsPage.path} element={<SettingsPage />} />
-                <Route path={UserProfilePage.path} element={<UserProfilePage />} />
-            </CustomRoutes>
-
-            {/* Food Broker CRM Resources - Lazy Loaded */}
-            <Resource
-                name="settings"
-                list={LazySettings.list}
-                create={LazySettings.create}
-                edit={LazySettings.edit}
-                show={LazySettings.show}
-                options={{ label: 'Settings' }}
-            />
-            <Resource
-                name="organizations"
-                list={LazyOrganizations.list}
-                create={LazyOrganizations.create}
-                edit={LazyOrganizations.edit}
-                show={LazyOrganizations.show}
-                options={{ label: 'Organizations' }}
-            />
-            <Resource
-                name="companies"
-                list={LazyCompanies.list}
-                create={LazyCompanies.create}
-                edit={LazyCompanies.edit}
-                show={LazyCompanies.show}
-                options={{ label: 'Companies (Legacy)' }}
-            />
-            <Resource
-                name="contacts"
-                list={withSuspense(LazyContactList)}
-                create={withSuspense(LazyContactCreate)}
-                edit={withSuspense(LazyContactEdit)}
-                show={withSuspense(LazyContactShow)}
-            />
-            <Resource name="customers" list={withSuspense(LazyCustomerList)} />
-            <Resource
-                name="visits"
-                list={withSuspense(LazyVisitList)}
-                create={withSuspense(LazyVisitCreate)}
-                show={withSuspense(LazyVisitShow)}
-            />
-            <Resource
-                name="reminders"
-                list={withSuspense(LazyReminderList)}
-                create={withSuspense(LazyReminderCreate)}
-                show={withSuspense(LazyReminderShow)}
-            />
-            <Resource
-                name="products"
-                list={LazyProducts.list}
-                create={LazyProducts.create}
-                edit={LazyProducts.edit}
-                show={LazyProducts.show}
-                options={{ label: 'Products' }}
-            />
-            <Resource
-                name="opportunities"
-                list={LazyOpportunities.list}
-                create={LazyOpportunities.create}
-                edit={LazyOpportunities.edit}
-                show={LazyOpportunities.show}
-                options={{ label: 'Opportunities' }}
-            />
-            <Resource
-                name="interactions"
-                list={LazyInteractions.list}
-                create={LazyInteractions.create}
-                edit={LazyInteractions.edit}
-                show={LazyInteractions.show}
-                options={{ label: 'Interactions' }}
-            />
-            <Resource name="deals" />
-            <Resource name="orders" list={ListGuesser} />
-            <Resource name="territories" list={ListGuesser} />
-        </Admin>
-    );
-
     return (
         <ConfigurationProvider
-            logo={logo}
-            title={title}
-            // Food broker specific configuration
-            companySectors={[
-                'food_service',
-                'retail',
-                'distribution',
-                'manufacturing',
-            ]}
-            dealCategories={[
-                'new_business',
-                'existing_account',
-                'upsell',
-                'renewal',
-            ]}
-            dealPipelineStatuses={[
-                'lead',
-                'qualified',
-                'proposal',
-                'negotiation',
-                'closed_won',
-                'closed_lost',
-            ]}
-            dealStages={[
-                { value: 'lead_discovery', label: 'Lead Discovery' },
-                { value: 'contacted', label: 'Contacted' },
-                { value: 'sampled_visited', label: 'Sampled/Visited' },
-                { value: 'follow_up', label: 'Follow Up' },
-                { value: 'close', label: 'Close' },
-            ]}
-            noteStatuses={['draft', 'published']}
-            taskTypes={['call', 'email', 'meeting', 'follow_up', 'demo']}
-            contactGender={['male', 'female', 'other']}
+            value={{
+                contactGender,
+                companySectors,
+                dealCategories,
+                dealPipelineStatuses,
+                dealStages,
+                logo,
+                noteStatuses,
+                taskTypes,
+                title,
+            }}
         >
-            {enableGPS ? (
-                <LocationProvider autoRequest={false}>
-                    {AdminComponent}
-                </LocationProvider>
-            ) : (
-                AdminComponent
-            )}
+            <Admin
+                dataProvider={dataProvider}
+                authProvider={authProvider}
+                store={localStorageStore(undefined, 'CRM')}
+                layout={Layout}
+                loginPage={LoginPage}
+                dashboard={Dashboard}
+                theme={lightTheme}
+                darkTheme={darkTheme || null}
+                i18nProvider={i18nProvider}
+                requireAuth
+                disableTelemetry
+                {...rest}
+            >
+                <CustomRoutes noLayout>
+                    <Route path={SignupPage.path} element={<SignupPage />} />
+                    <Route
+                        path={SetPasswordPage.path}
+                        element={<SetPasswordPage />}
+                    />
+                    <Route
+                        path={ForgotPasswordPage.path}
+                        element={<ForgotPasswordPage />}
+                    />
+                </CustomRoutes>
+
+                <CustomRoutes>
+                    <Route
+                        path={SettingsPage.path}
+                        element={<SettingsPage />}
+                    />
+                </CustomRoutes>
+                <Resource name="deals" {...deals} />
+                <Resource name="contacts" {...contacts} />
+                <Resource name="companies" {...companies} />
+                <Resource name="interactions" {...interactions} />
+                <Resource name="opportunities" {...opportunities} />
+                <Resource name="products" {...products} />
+                <Resource name="contactNotes" />
+                <Resource name="dealNotes" />
+                <Resource name="tasks" list={ListGuesser} />
+                <Resource name="sales" {...sales} />
+                <Resource name="tags" list={ListGuesser} />
+            </Admin>
         </ConfigurationProvider>
     );
 };

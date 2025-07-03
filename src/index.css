@@ -1,0 +1,104 @@
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom touch target utilities for ForkFlow CRM */
+@layer utilities {
+  .touch-target-interactive {
+    @apply touch-target focus-ring touch-feedback;
+  }
+  
+  .priority-high {
+    @apply text-priority-high border-priority-high;
+  }
+  
+  .priority-medium {
+    @apply text-priority-medium border-priority-medium;
+  }
+  
+  .priority-low {
+    @apply text-priority-low border-priority-low;
+  }
+  
+  .status-prospect {
+    @apply text-status-prospect bg-status-prospect/10;
+  }
+  
+  .status-active {
+    @apply text-status-active bg-status-active/10;
+  }
+  
+  .status-inactive {
+    @apply text-status-inactive bg-status-inactive/10;
+  }
+  
+  .status-closed {
+    @apply text-status-closed bg-status-closed/10;
+  }
+}
+
+/* Mobile-first responsive design utilities */
+@layer components {
+  .organization-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 
+           hover:shadow-md transition-shadow duration-200
+           touch-target-interactive;
+  }
+  
+  .organization-card-mobile {
+    @apply organization-card w-full mb-3;
+  }
+  
+  .organization-card-desktop {
+    @apply organization-card w-80 m-2;
+  }
+  
+  .form-step {
+    @apply space-y-4 p-4;
+  }
+  
+  .form-navigation {
+    @apply flex justify-between items-center p-4 bg-gray-50 border-t;
+  }
+  
+  .filter-container {
+    @apply flex flex-wrap gap-2 p-4 bg-gray-50 border-b;
+  }
+  
+  .search-input {
+    @apply flex-1 min-w-0 touch-target focus-ring;
+  }
+}
+
+/* Accessibility enhancements */
+@layer base {
+  /* Ensure proper focus visibility */
+  *:focus {
+    outline-offset: 2px;
+  }
+  
+  /* Improve text readability */
+  body {
+    @apply text-gray-900;
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .organization-card {
+      @apply border-2 border-gray-800;
+    }
+    
+    .touch-target {
+      @apply border border-gray-800;
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .touch-feedback,
+    .organization-card {
+      @apply transition-none;
+    }
+  }
+}

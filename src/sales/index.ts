@@ -1,13 +1,7 @@
-/* eslint-disable import/no-anonymous-default-export */
-import { Sale } from '../types';
-import { SalesCreate } from './SalesCreate';
-import { SalesEdit } from './SalesEdit';
-import { SalesList } from './SalesList';
+import SalesIcon from '@mui/icons-material/People';
+import { ListGuesser } from 'react-admin';
 
 export default {
-    list: SalesList,
-    create: SalesCreate,
-    edit: SalesEdit,
-    recordRepresentation: (record: Sale) =>
-        `${record.first_name} ${record.last_name}`,
+    list: ListGuesser,
+    icon: SalesIcon,
 };

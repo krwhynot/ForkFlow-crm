@@ -51,6 +51,9 @@ supabase-deploy:
 test:
 	npm test
 
+test-login: ## test login system setup
+	npm run test:login-setup
+
 test-ci:
 	CI=1 npm test
 

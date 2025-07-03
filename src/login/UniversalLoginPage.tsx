@@ -94,80 +94,19 @@ const DEMO_USERS: QuickLoginUser[] = [
 ];
 
 export const UniversalLoginPage = () => {
-    console.log('🔐 ENHANCED DEBUG: UniversalLoginPage component is rendering! Timestamp:', new Date().toISOString());
-    console.log('🧪 UniversalLoginPage: Testing hook availability');
-    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [authMode, setAuthMode] = useState<'detecting' | 'demo' | 'jwt' | 'supabase'>('detecting');
 
-    console.log('✅ UniversalLoginPage: All useState hooks initialized successfully');
-    console.log('🎯 UniversalLoginPage: Initial state:', { email, rememberMe, loading, error, authMode });
-
-    console.log('🧪 UniversalLoginPage: Testing react-admin hooks');
-    
     const login = useLogin();
-    console.log('✅ UniversalLoginPage: useLogin hook successful', typeof login);
-    
     const notify = useNotify();
-    console.log('✅ UniversalLoginPage: useNotify hook successful', typeof notify);
-    
     const { authenticated } = useAuthState();
-    console.log('✅ UniversalLoginPage: useAuthState hook successful', { authenticated });
-    
     const theme = useTheme();
-    console.log('✅ UniversalLoginPage: useTheme hook successful');
-    
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    console.log('✅ UniversalLoginPage: useMediaQuery hook successful', { isMobile });
 
-    console.log('🎉 UniversalLoginPage: All hooks initialized successfully - component is working!');
 
-    // Detect authentication mode
-    useEffect(() => {
-        const detectAuthMode = () => {
-            if (typeof window === 'undefined') return 'jwt';
-
-            // Check URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('mode') === 'demo') return 'demo';
-            if (urlParams.get('mode') === 'jwt') return 'jwt';
-            if (urlParams.get('auth') === 'jwt') return 'jwt';
-
-            // Check environment variables
-            if (import.meta.env.VITE_IS_DEMO === 'true') return 'demo';
-            if (process.env.REACT_APP_AUTH_PROVIDER === 'jwt') return 'jwt';
-
-            // Check localStorage
-            if (localStorage.getItem('auth-provider') === 'jwt') return 'jwt';
-            if (localStorage.getItem('test-mode') === 'true') return 'demo';
-
-            // Default to JWT for production
-            return 'jwt';
-        };
-
-        const mode = detectAuthMode();
-        console.log(`🔍 DEBUG: Detected auth mode: ${mode.toUpperCase()}`);
-        setAuthMode(mode);
-        console.log(`🔐 Universal Login Page - Auth Mode: ${mode.toUpperCase()}`);
-    }, []);
-
-    // Enhanced auth state checking workaround for Supabase redirectTo bug
-    useEffect(() => {
-        if (authenticated) {
-            console.log('🔄 Auth state changed to authenticated - triggering redirect');
-            // Small delay to ensure React-Admin state is fully updated
-            setTimeout(() => {
-                if (window.location.pathname.includes('login')) {
-                    console.log('🔄 Still on login page after auth - using Navigate');
-                    // This will be handled by the Navigate component below
-                }
-            }, 50);
-        }
-    }, [authenticated]);
 
     // Redirect if already authenticated
     if (authenticated) {
@@ -190,29 +129,12 @@ export const UniversalLoginPage = () => {
             rememberMe,
         };
 
-        console.log(`🚀 Login attempt in ${authMode} mode:`, { email, rememberMe });
 
         try {
             await login(credentials);
-            console.log('✅ Login successful - React-Admin will handle redirect');
             // React-Admin authProvider will handle redirect automatically
         } catch (loginError: any) {
-            console.error('❌ Login failed:', loginError);
-            
-            // In demo mode, try fallback credentials
-            if (authMode === 'demo') {
-                console.log('🔄 Trying demo mode fallback login...');
-                try {
-                    await login({ email, password: 'demo123', rememberMe });
-                    console.log('✅ Demo fallback login successful - React-Admin will handle redirect');
-                    // React-Admin authProvider will handle redirect automatically
-                } catch (fallbackError: any) {
-                    console.error('❌ Demo fallback also failed:', fallbackError);
-                    setError('Demo login failed. Try using quick login buttons or any test credentials.');
-                }
-            } else {
-                setError(loginError?.message || 'Login failed. Please check your credentials.');
-            }
+            setError(loginError?.message || 'Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
@@ -232,62 +154,18 @@ export const UniversalLoginPage = () => {
             rememberMe: true,
         };
 
-        console.log(`🚀 Quick login as ${user.role}:`, user.email);
 
         try {
             await login(credentials);
-            console.log('✅ Quick login successful - React-Admin will handle redirect');
             // React-Admin authProvider will handle redirect automatically
         } catch (quickError: any) {
-            console.error('❌ Quick login failed:', quickError);
-            
-            // Try with simple demo password
-            try {
-                await login({ email: user.email, password: 'demo123', rememberMe: true });
-                console.log('✅ Quick login fallback successful - React-Admin will handle redirect');
-                // React-Admin authProvider will handle redirect automatically
-            } catch (fallbackError: any) {
-                console.error('❌ Quick login fallback failed:', fallbackError);
-                setError(`Quick login as ${user.role} failed. Try manual login.`);
-            }
+            setError(`Quick login as ${user.role} failed. Try manual login.`);
         } finally {
             setLoading(false);
         }
     };
 
-    if (authMode === 'detecting') {
-        console.log('🔍 DEBUG: Showing "detecting" mode screen');
-        return (
-            <StyledContainer>
-                <Card style={{ padding: '40px', textAlign: 'center' }}>
-                    <CircularProgress />
-                    <Typography variant="body2" style={{ marginTop: '16px' }}>
-                        Detecting authentication mode...
-                    </Typography>
-                </Card>
-            </StyledContainer>
-        );
-    }
-    
-    console.log('🔐 DEBUG: About to render login form for authMode:', authMode);
 
-    const getModeTitle = () => {
-        switch (authMode) {
-            case 'demo': return 'Demo Mode';
-            case 'jwt': return 'JWT Authentication';
-            case 'supabase': return 'Supabase Authentication';
-            default: return 'Authentication';
-        }
-    };
-
-    const getModeColor = () => {
-        switch (authMode) {
-            case 'demo': return '#ff9800';
-            case 'jwt': return '#2196f3';
-            case 'supabase': return '#4caf50';
-            default: return '#666';
-        }
-    };
 
     return (
         <ErrorBoundary>
@@ -302,9 +180,8 @@ export const UniversalLoginPage = () => {
                             <Typography 
                                 variant="subtitle1" 
                                 className={`${PREFIX}-subtitle`}
-                                style={{ color: getModeColor() }}
                             >
-                                {getModeTitle()}
+                                Food Broker CRM
                             </Typography>
                         </div>
 
@@ -314,12 +191,6 @@ export const UniversalLoginPage = () => {
                             </Alert>
                         )}
 
-                        {authMode === 'demo' && (
-                            <Alert severity="info" style={{ marginBottom: '20px' }}>
-                                <strong>Demo Mode Active</strong><br />
-                                Use any credentials or quick login buttons below.
-                            </Alert>
-                        )}
 
                         <form onSubmit={handleSubmit} className={`${PREFIX}-form`}>
                             <TextField
@@ -388,38 +259,7 @@ export const UniversalLoginPage = () => {
                             </Button>
                         </form>
 
-                        {authMode === 'demo' && (
-                            <>
-                                <Typography variant="caption" style={{ display: 'block', textAlign: 'center', margin: '16px 0 8px 0', color: '#666' }}>
-                                    Quick Demo Login:
-                                </Typography>
-                                <div className={`${PREFIX}-quickLogin`}>
-                                    {DEMO_USERS.map((user) => (
-                                        <Button
-                                            key={user.email}
-                                            variant="outlined"
-                                            size="small"
-                                            disabled={loading}
-                                            onClick={() => handleQuickLogin(user)}
-                                            style={{ fontSize: '0.75rem' }}
-                                        >
-                                            {user.label}
-                                        </Button>
-                                    ))}
-                                </div>
-                            </>
-                        )}
 
-                        <div className={`${PREFIX}-status`}>
-                            <Typography variant="body2" style={{ fontWeight: 'bold', color: getModeColor() }}>
-                                Status: {getModeTitle()}
-                            </Typography>
-                            {authMode === 'demo' && (
-                                <Typography variant="caption" display="block" style={{ marginTop: '4px' }}>
-                                    ✅ No white screen • ✅ Error boundaries • ✅ Universal login
-                                </Typography>
-                            )}
-                        </div>
                     </CardContent>
                 </StyledCard>
             </StyledContainer>
