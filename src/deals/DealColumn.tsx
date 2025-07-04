@@ -1,5 +1,5 @@
 import { Droppable } from '@hello-pangea/dnd';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '../components/ui-kit';
 
 import { Deal } from '../types';
 import { DealCard } from './DealCard';

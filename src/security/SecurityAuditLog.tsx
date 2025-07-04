@@ -27,8 +27,6 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    useTheme,
-    useMediaQuery,
     Paper,
     List,
     ListItem,
@@ -60,13 +58,19 @@ import {
 import { useGetIdentity } from 'react-admin';
 
 import { User } from '../types';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface SecurityEvent {
     id: string;
     userId?: string;
     userEmail?: string;
     eventType: string;
-    eventCategory: 'authentication' | 'authorization' | 'data_access' | 'security_violation' | 'admin_action';
+    eventCategory:
+        | 'authentication'
+        | 'authorization'
+        | 'data_access'
+        | 'security_violation'
+        | 'admin_action';
     resource?: string;
     resourceId?: string;
     action: string;
@@ -104,18 +108,19 @@ interface SecurityAuditLogProps {
 
 export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
     viewType = 'both',
-    compactView = false
+    compactView = false,
 }) => {
     const { data: identity } = useGetIdentity();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
     const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
-    const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | AuditLog | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<
+        SecurityEvent | AuditLog | null
+    >(null);
     const [detailsOpen, setDetailsOpen] = useState(false);
 
     // Filters
@@ -128,7 +133,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
         riskScore: '',
         success: '',
         tableName: '',
-        operation: ''
+        operation: '',
     });
 
     // Mock data - in production, this would come from the API
@@ -154,7 +159,9 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     riskScore: 10,
                     details: { loginMethod: 'email_password' },
                     success: true,
-                    createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString()
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 30
+                    ).toISOString(),
                 },
                 {
                     id: '2',
@@ -169,7 +176,9 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     details: { reason: 'invalid_password', attempts: 3 },
                     success: false,
                     errorMessage: 'Invalid credentials',
-                    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString()
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 45
+                    ).toISOString(),
                 },
                 {
                     id: '3',
@@ -184,7 +193,9 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     riskScore: 5,
                     details: { organizationName: 'Acme Restaurant' },
                     success: true,
-                    createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 60
+                    ).toISOString(),
                 },
                 {
                     id: '4',
@@ -199,7 +210,9 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     details: { deniedPermission: 'delete_user' },
                     success: false,
                     errorMessage: 'Insufficient privileges',
-                    createdAt: new Date(Date.now() - 1000 * 60 * 90).toISOString()
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 90
+                    ).toISOString(),
                 },
                 {
                     id: '5',
@@ -209,15 +222,17 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     ipAddress: '203.0.113.45',
                     userAgent: 'bot/1.0',
                     riskScore: 95,
-                    details: { 
-                        requestCount: 100, 
+                    details: {
+                        requestCount: 100,
                         timeWindow: '1 minute',
-                        blocked: true 
+                        blocked: true,
                     },
                     success: false,
                     errorMessage: 'Rate limit exceeded',
-                    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-                }
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 120
+                    ).toISOString(),
+                },
             ];
 
             // Mock audit logs
@@ -230,10 +245,15 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     userId: 'user123',
                     userEmail: 'admin@example.com',
                     oldValues: { name: 'Acme Corp', phone: '555-0123' },
-                    newValues: { name: 'Acme Restaurant', phone: '555-0124' },
+                    newValues: {
+                        name: 'Acme Restaurant',
+                        phone: '555-0124',
+                    },
                     changedFields: ['name', 'phone'],
                     ipAddress: '192.168.1.100',
-                    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString()
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 15
+                    ).toISOString(),
                 },
                 {
                     id: '2',
@@ -242,15 +262,22 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     operation: 'INSERT',
                     userId: 'user456',
                     userEmail: 'broker@example.com',
-                    newValues: { 
-                        firstName: 'John', 
-                        lastName: 'Smith', 
+                    newValues: {
+                        firstName: 'John',
+                        lastName: 'Smith',
                         email: 'john@example.com',
-                        organizationId: 42
+                        organizationId: 42,
                     },
-                    changedFields: ['firstName', 'lastName', 'email', 'organizationId'],
+                    changedFields: [
+                        'firstName',
+                        'lastName',
+                        'email',
+                        'organizationId',
+                    ],
                     ipAddress: '10.0.0.50',
-                    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString()
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 45
+                    ).toISOString(),
                 },
                 {
                     id: '3',
@@ -259,15 +286,17 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     operation: 'DELETE',
                     userId: 'user123',
                     userEmail: 'admin@example.com',
-                    oldValues: { 
-                        category: 'principal', 
-                        key: 'old_principal', 
-                        label: 'Deprecated Principal' 
+                    oldValues: {
+                        category: 'principal',
+                        key: 'old_principal',
+                        label: 'Deprecated Principal',
                     },
                     changedFields: ['category', 'key', 'label'],
                     ipAddress: '192.168.1.100',
-                    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-                }
+                    createdAt: new Date(
+                        Date.now() - 1000 * 60 * 120
+                    ).toISOString(),
+                },
             ];
 
             setSecurityEvents(mockSecurityEvents);
@@ -281,10 +310,13 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
 
     const handleExport = () => {
         // In production, this would generate and download a CSV/Excel file
-        const data = viewType === 'audit' ? auditLogs : 
-                    viewType === 'security' ? securityEvents : 
-                    [...securityEvents, ...auditLogs];
-        
+        const data =
+            viewType === 'audit'
+                ? auditLogs
+                : viewType === 'security'
+                ? securityEvents
+                : [...securityEvents, ...auditLogs];
+
         console.log('Exporting data:', data);
         // Implement actual export functionality
     };
@@ -305,17 +337,22 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
             case 'suspicious_activity':
                 return <WarningIcon color="error" />;
             default:
-                if (category === 'admin_action') return <AdminIcon color="primary" />;
+                if (category === 'admin_action')
+                    return <AdminIcon color="primary" />;
                 return <InfoIcon color="action" />;
         }
     };
 
     const getOperationIcon = (operation: string) => {
         switch (operation) {
-            case 'INSERT': return <AddIcon color="success" />;
-            case 'UPDATE': return <EditIcon color="info" />;
-            case 'DELETE': return <DeleteIcon color="error" />;
-            default: return <InfoIcon color="action" />;
+            case 'INSERT':
+                return <AddIcon color="success" />;
+            case 'UPDATE':
+                return <EditIcon color="info" />;
+            case 'DELETE':
+                return <DeleteIcon color="error" />;
+            default:
+                return <InfoIcon color="action" />;
         }
     };
 
@@ -327,14 +364,20 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
 
     const formatDetails = (details: any) => {
         if (!details || typeof details !== 'object') return 'N/A';
-        
+
         return Object.entries(details).map(([key, value]) => (
             <Box key={key} sx={{ mb: 0.5 }}>
                 <Typography variant="caption" color="text.secondary">
                     {key}:
                 </Typography>
-                <Typography variant="body2" component="span" sx={{ ml: 1 }}>
-                    {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                <Typography
+                    variant="body2"
+                    component="span"
+                    sx={{ ml: 1 }}
+                >
+                    {typeof value === 'object'
+                        ? JSON.stringify(value)
+                        : String(value)}
                 </Typography>
             </Box>
         ));
@@ -356,78 +399,109 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                 </TableHead>
                 <TableBody>
                     {securityEvents
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                        )
                         .map((event) => (
-                        <TableRow key={event.id}>
-                            <TableCell>
-                                <Box display="flex" alignItems="center" gap={1}>
-                                    {getEventIcon(event.eventType, event.eventCategory)}
-                                    <Box>
-                                        <Typography variant="body2">
-                                            {event.eventType.replace(/_/g, ' ')}
-                                        </Typography>
-                                        <Chip 
-                                            label={event.eventCategory} 
-                                            size="small" 
-                                            variant="outlined"
-                                        />
-                                    </Box>
-                                </Box>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">
-                                    {event.userEmail || 'System'}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {event.userId || 'N/A'}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                {event.resource ? (
-                                    <Box>
-                                        <Typography variant="body2">{event.resource}</Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            ID: {event.resourceId || 'N/A'}
-                                        </Typography>
-                                    </Box>
-                                ) : (
-                                    <Typography variant="body2" color="text.secondary">
-                                        N/A
-                                    </Typography>
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                <Chip 
-                                    label={event.riskScore}
-                                    color={getRiskScoreColor(event.riskScore)}
-                                    size="small"
-                                />
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                                    {event.ipAddress || 'N/A'}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">
-                                    {new Date(event.createdAt).toLocaleString()}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Tooltip title="View Details">
-                                    <IconButton 
-                                        size="small"
-                                        onClick={() => {
-                                            setSelectedEvent(event);
-                                            setDetailsOpen(true);
-                                        }}
+                            <TableRow key={event.id}>
+                                <TableCell>
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={1}
                                     >
-                                        <ViewIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                                        {getEventIcon(
+                                            event.eventType,
+                                            event.eventCategory
+                                        )}
+                                        <Box>
+                                            <Typography variant="body2">
+                                                {event.eventType.replace(
+                                                    /_/g,
+                                                    ' '
+                                                )}
+                                            </Typography>
+                                            <Chip
+                                                label={event.eventCategory}
+                                                size="small"
+                                                variant="outlined"
+                                            />
+                                        </Box>
+                                    </Box>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2">
+                                        {event.userEmail || 'System'}
+                                    </Typography>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
+                                        {event.userId || 'N/A'}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    {event.resource ? (
+                                        <Box>
+                                            <Typography variant="body2">
+                                                {event.resource}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
+                                                ID: {event.resourceId || 'N/A'}
+                                            </Typography>
+                                        </Box>
+                                    ) : (
+                                        <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                        >
+                                            N/A
+                                        </Typography>
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    <Chip
+                                        label={event.riskScore}
+                                        color={getRiskScoreColor(
+                                            event.riskScore
+                                        )}
+                                        size="small"
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ fontFamily: 'monospace' }}
+                                    >
+                                        {event.ipAddress || 'N/A'}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2">
+                                        {new Date(
+                                            event.createdAt
+                                        ).toLocaleString()}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Tooltip title="View Details">
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => {
+                                                setSelectedEvent(event);
+                                                setDetailsOpen(true);
+                                            }}
+                                        >
+                                            <ViewIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>
@@ -449,75 +523,98 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                 </TableHead>
                 <TableBody>
                     {auditLogs
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                        )
                         .map((log) => (
-                        <TableRow key={log.id}>
-                            <TableCell>
-                                <Box display="flex" alignItems="center" gap={1}>
-                                    {getOperationIcon(log.operation)}
-                                    <Typography variant="body2">
-                                        {log.operation}
-                                    </Typography>
-                                </Box>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">
-                                    {log.tableName}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                                    {log.recordId}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">
-                                    {log.userEmail || 'System'}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {log.userId || 'N/A'}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Box display="flex" gap={0.5} flexWrap="wrap">
-                                    {log.changedFields.slice(0, 3).map(field => (
-                                        <Chip 
-                                            key={field} 
-                                            label={field} 
-                                            size="small" 
-                                            variant="outlined"
-                                        />
-                                    ))}
-                                    {log.changedFields.length > 3 && (
-                                        <Chip 
-                                            label={`+${log.changedFields.length - 3}`} 
-                                            size="small" 
-                                            variant="outlined"
-                                            color="primary"
-                                        />
-                                    )}
-                                </Box>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">
-                                    {new Date(log.createdAt).toLocaleString()}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Tooltip title="View Details">
-                                    <IconButton 
-                                        size="small"
-                                        onClick={() => {
-                                            setSelectedEvent(log);
-                                            setDetailsOpen(true);
-                                        }}
+                            <TableRow key={log.id}>
+                                <TableCell>
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={1}
                                     >
-                                        <ViewIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                                        {getOperationIcon(log.operation)}
+                                        <Typography variant="body2">
+                                            {log.operation}
+                                        </Typography>
+                                    </Box>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2">
+                                        {log.tableName}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ fontFamily: 'monospace' }}
+                                    >
+                                        {log.recordId}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2">
+                                        {log.userEmail || 'System'}
+                                    </Typography>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
+                                        {log.userId || 'N/A'}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Box
+                                        display="flex"
+                                        gap={0.5}
+                                        flexWrap="wrap"
+                                    >
+                                        {log.changedFields
+                                            .slice(0, 3)
+                                            .map((field) => (
+                                                <Chip
+                                                    key={field}
+                                                    label={field}
+                                                    size="small"
+                                                    variant="outlined"
+                                                />
+                                            ))}
+                                        {log.changedFields.length > 3 && (
+                                            <Chip
+                                                label={`+${
+                                                    log.changedFields.length - 3
+                                                }`}
+                                                size="small"
+                                                variant="outlined"
+                                                color="primary"
+                                            />
+                                        )}
+                                    </Box>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2">
+                                        {new Date(
+                                            log.createdAt
+                                        ).toLocaleString()}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Tooltip title="View Details">
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => {
+                                                setSelectedEvent(log);
+                                                setDetailsOpen(true);
+                                            }}
+                                        >
+                                            <ViewIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>
@@ -531,7 +628,8 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
             <Alert severity="error" sx={{ m: 3 }}>
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
-                    You need administrator privileges to access security audit logs.
+                    You need administrator privileges to access security audit
+                    logs.
                 </Typography>
             </Alert>
         );
@@ -540,15 +638,24 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
     return (
         <Box sx={{ p: compactView ? 1 : 3 }}>
             {!compactView && (
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={3}
+                >
                     <Box display="flex" alignItems="center" gap={2}>
                         <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
                         <Box>
                             <Typography variant="h4" component="h1">
                                 Security Audit Log
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Monitor security events and data changes across the system
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                            >
+                                Monitor security events and data changes across
+                                the system
                             </Typography>
                         </Box>
                     </Box>
@@ -568,7 +675,9 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
             <Card sx={{ mb: 3 }}>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        <FilterIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                        <FilterIcon
+                            sx={{ mr: 1, verticalAlign: 'middle' }}
+                        />
                         Filters
                     </Typography>
                     <Grid container spacing={2}>
@@ -577,7 +686,12 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 label="Date From"
                                 type="date"
                                 value={filters.dateFrom}
-                                onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
+                                onChange={(e) =>
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        dateFrom: e.target.value,
+                                    }))
+                                }
                                 fullWidth
                                 size="small"
                                 InputLabelProps={{ shrink: true }}
@@ -588,7 +702,12 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 label="Date To"
                                 type="date"
                                 value={filters.dateTo}
-                                onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
+                                onChange={(e) =>
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        dateTo: e.target.value,
+                                    }))
+                                }
                                 fullWidth
                                 size="small"
                                 InputLabelProps={{ shrink: true }}
@@ -599,15 +718,32 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 <InputLabel>Event Category</InputLabel>
                                 <Select
                                     value={filters.eventCategory}
-                                    onChange={(e) => setFilters(prev => ({ ...prev, eventCategory: e.target.value }))}
+                                    onChange={(e) =>
+                                        setFilters((prev) => ({
+                                            ...prev,
+                                            eventCategory: e.target.value,
+                                        }))
+                                    }
                                     label="Event Category"
                                 >
-                                    <MenuItem value="">All Categories</MenuItem>
-                                    <MenuItem value="authentication">Authentication</MenuItem>
-                                    <MenuItem value="authorization">Authorization</MenuItem>
-                                    <MenuItem value="data_access">Data Access</MenuItem>
-                                    <MenuItem value="security_violation">Security Violation</MenuItem>
-                                    <MenuItem value="admin_action">Admin Action</MenuItem>
+                                    <MenuItem value="">
+                                        All Categories
+                                    </MenuItem>
+                                    <MenuItem value="authentication">
+                                        Authentication
+                                    </MenuItem>
+                                    <MenuItem value="authorization">
+                                        Authorization
+                                    </MenuItem>
+                                    <MenuItem value="data_access">
+                                        Data Access
+                                    </MenuItem>
+                                    <MenuItem value="security_violation">
+                                        Security Violation
+                                    </MenuItem>
+                                    <MenuItem value="admin_action">
+                                        Admin Action
+                                    </MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -616,11 +752,18 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 <InputLabel>Success</InputLabel>
                                 <Select
                                     value={filters.success}
-                                    onChange={(e) => setFilters(prev => ({ ...prev, success: e.target.value }))}
+                                    onChange={(e) =>
+                                        setFilters((prev) => ({
+                                            ...prev,
+                                            success: e.target.value,
+                                        }))
+                                    }
                                     label="Success"
                                 >
                                     <MenuItem value="">All</MenuItem>
-                                    <MenuItem value="true">Successful</MenuItem>
+                                    <MenuItem value="true">
+                                        Successful
+                                    </MenuItem>
                                     <MenuItem value="false">Failed</MenuItem>
                                 </Select>
                             </FormControl>
@@ -681,25 +824,33 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
             {/* Pagination */}
             <TablePagination
                 component="div"
-                count={viewType === 'audit' ? auditLogs.length : 
-                      viewType === 'security' ? securityEvents.length : 
-                      securityEvents.length + auditLogs.length}
+                count={
+                    viewType === 'audit'
+                        ? auditLogs.length
+                        : viewType === 'security'
+                        ? securityEvents.length
+                        : securityEvents.length + auditLogs.length
+                }
                 page={page}
                 onPageChange={(_, newPage) => setPage(newPage)}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
+                onRowsPerPageChange={(e) =>
+                    setRowsPerPage(parseInt(e.target.value, 10))
+                }
                 rowsPerPageOptions={[10, 25, 50, 100]}
             />
 
             {/* Details Dialog */}
-            <Dialog 
-                open={detailsOpen} 
+            <Dialog
+                open={detailsOpen}
                 onClose={() => setDetailsOpen(false)}
                 maxWidth="md"
                 fullWidth
             >
                 <DialogTitle>
-                    {'eventType' in (selectedEvent || {}) ? 'Security Event Details' : 'Audit Log Details'}
+                    {'eventType' in (selectedEvent || {})
+                        ? 'Security Event Details'
+                        : 'Audit Log Details'}
                 </DialogTitle>
                 <DialogContent>
                     {selectedEvent && (
@@ -708,56 +859,71 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 // Security Event Details
                                 <List>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Event Type" 
-                                            secondary={selectedEvent.eventType} 
+                                        <ListItemText
+                                            primary="Event Type"
+                                            secondary={selectedEvent.eventType}
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Category" 
-                                            secondary={selectedEvent.eventCategory} 
-                                        />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText 
-                                            primary="User" 
-                                            secondary={selectedEvent.userEmail || 'System'} 
-                                        />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText 
-                                            primary="Risk Score" 
+                                        <ListItemText
+                                            primary="Category"
                                             secondary={
-                                                <Chip 
-                                                    label={selectedEvent.riskScore}
-                                                    color={getRiskScoreColor(selectedEvent.riskScore)}
+                                                selectedEvent.eventCategory
+                                            }
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary="User"
+                                            secondary={
+                                                selectedEvent.userEmail ||
+                                                'System'
+                                            }
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary="Risk Score"
+                                            secondary={
+                                                <Chip
+                                                    label={
+                                                        selectedEvent.riskScore
+                                                    }
+                                                    color={getRiskScoreColor(
+                                                        selectedEvent.riskScore
+                                                    )}
                                                     size="small"
                                                 />
-                                            } 
+                                            }
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="IP Address" 
-                                            secondary={selectedEvent.ipAddress || 'N/A'} 
+                                        <ListItemText
+                                            primary="IP Address"
+                                            secondary={
+                                                selectedEvent.ipAddress || 'N/A'
+                                            }
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Details" 
+                                        <ListItemText
+                                            primary="Details"
                                             secondary={
                                                 <Box sx={{ mt: 1 }}>
-                                                    {formatDetails(selectedEvent.details)}
+                                                    {formatDetails(
+                                                        selectedEvent.details
+                                                    )}
                                                 </Box>
-                                            } 
+                                            }
                                         />
                                     </ListItem>
                                     {selectedEvent.errorMessage && (
                                         <ListItem>
-                                            <ListItemText 
-                                                primary="Error Message" 
-                                                secondary={selectedEvent.errorMessage} 
+                                            <ListItemText
+                                                primary="Error Message"
+                                                secondary={
+                                                    selectedEvent.errorMessage
+                                                }
                                             />
                                         </ListItem>
                                     )}
@@ -766,68 +932,80 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 // Audit Log Details
                                 <List>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Operation" 
-                                            secondary={selectedEvent.operation} 
+                                        <ListItemText
+                                            primary="Operation"
+                                            secondary={selectedEvent.operation}
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Table" 
-                                            secondary={selectedEvent.tableName} 
+                                        <ListItemText
+                                            primary="Table"
+                                            secondary={selectedEvent.tableName}
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Record ID" 
-                                            secondary={selectedEvent.recordId} 
+                                        <ListItemText
+                                            primary="Record ID"
+                                            secondary={selectedEvent.recordId}
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="User" 
-                                            secondary={selectedEvent.userEmail || 'System'} 
+                                        <ListItemText
+                                            primary="User"
+                                            secondary={
+                                                selectedEvent.userEmail ||
+                                                'System'
+                                            }
                                         />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText 
-                                            primary="Changed Fields" 
+                                        <ListItemText
+                                            primary="Changed Fields"
                                             secondary={
                                                 <Box sx={{ mt: 1 }}>
-                                                    {selectedEvent.changedFields.map(field => (
-                                                        <Chip 
-                                                            key={field} 
-                                                            label={field} 
-                                                            size="small" 
-                                                            variant="outlined"
-                                                            sx={{ mr: 0.5, mb: 0.5 }}
-                                                        />
-                                                    ))}
+                                                    {selectedEvent.changedFields.map(
+                                                        (field) => (
+                                                            <Chip
+                                                                key={field}
+                                                                label={field}
+                                                                size="small"
+                                                                variant="outlined"
+                                                                sx={{
+                                                                    mr: 0.5,
+                                                                    mb: 0.5,
+                                                                }}
+                                                            />
+                                                        )
+                                                    )}
                                                 </Box>
-                                            } 
+                                            }
                                         />
                                     </ListItem>
                                     {selectedEvent.oldValues && (
                                         <ListItem>
-                                            <ListItemText 
-                                                primary="Old Values" 
+                                            <ListItemText
+                                                primary="Old Values"
                                                 secondary={
                                                     <Box sx={{ mt: 1 }}>
-                                                        {formatDetails(selectedEvent.oldValues)}
+                                                        {formatDetails(
+                                                            selectedEvent.oldValues
+                                                        )}
                                                     </Box>
-                                                } 
+                                                }
                                             />
                                         </ListItem>
                                     )}
                                     {selectedEvent.newValues && (
                                         <ListItem>
-                                            <ListItemText 
-                                                primary="New Values" 
+                                            <ListItemText
+                                                primary="New Values"
                                                 secondary={
                                                     <Box sx={{ mt: 1 }}>
-                                                        {formatDetails(selectedEvent.newValues)}
+                                                        {formatDetails(
+                                                            selectedEvent.newValues
+                                                        )}
                                                     </Box>
-                                                } 
+                                                }
                                             />
                                         </ListItem>
                                     )}

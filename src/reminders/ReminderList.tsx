@@ -14,7 +14,6 @@ import {
     useUpdate,
     useNotify,
 } from 'react-admin';
-import { useMediaQuery, Theme } from '@mui/material';
 import {
     Card,
     CardContent,
@@ -34,6 +33,7 @@ import {
 } from '@mui/icons-material';
 import { ReminderListFilter } from './ReminderListFilter';
 import { Reminder } from '../types';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const ReminderListActions = () => (
     <TopToolbar>
@@ -102,19 +102,28 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
         const now = new Date();
 
         if (date.toDateString() === now.toDateString()) {
-            return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            return `Today at ${date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+            })}`;
         }
 
         const tomorrow = new Date(now);
         tomorrow.setDate(tomorrow.getDate() + 1);
         if (date.toDateString() === tomorrow.toDateString()) {
-            return `Tomorrow at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            return `Tomorrow at ${date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+            })}`;
         }
 
         return (
             date.toLocaleDateString() +
             ' at ' +
-            date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+            })
         );
     };
 
@@ -126,10 +135,10 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
                 bgcolor: record.is_completed
                     ? 'grey.100'
                     : isOverdue
-                      ? 'error.light'
-                      : isDueToday
-                        ? 'warning.light'
-                        : 'background.paper',
+                    ? 'error.light'
+                    : isDueToday
+                    ? 'warning.light'
+                    : 'background.paper',
                 opacity: record.is_completed ? 0.7 : 1,
             }}
         >
@@ -161,7 +170,11 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
                         </Typography>
                     </Box>
                     <Box
-                        sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}
+                        sx={{
+                            display: 'flex',
+                            gap: 0.5,
+                            alignItems: 'center',
+                        }}
                     >
                         <Chip
                             label={record.priority}
@@ -248,7 +261,8 @@ const MobileReminderList = () => {
         return (
             <Box sx={{ p: 2, textAlign: 'center' }}>
                 <Typography variant="body1" color="text.secondary">
-                    No reminders set yet. Create your first follow-up reminder!
+                    No reminders set yet. Create your first follow-up
+                    reminder!
                 </Typography>
             </Box>
         );
@@ -256,7 +270,7 @@ const MobileReminderList = () => {
 
     return (
         <Box sx={{ p: 1 }}>
-            {reminders.map(reminder => (
+            {reminders.map((reminder) => (
                 <MobileReminderCard key={reminder.id} record={reminder} />
             ))}
         </Box>
@@ -286,8 +300,8 @@ const DesktopReminderList = () => (
                         record.priority === 'high'
                             ? 'error'
                             : record.priority === 'medium'
-                              ? 'warning'
-                              : 'info'
+                            ? 'warning'
+                            : 'info'
                     }
                     size="small"
                 />
@@ -301,21 +315,32 @@ const DesktopReminderList = () => (
             render={(record: Reminder) => {
                 if (record.is_completed) {
                     return (
-                        <Chip label="Completed" color="success" size="small" />
+                        <Chip
+                            label="Completed"
+                            color="success"
+                            size="small"
+                        />
                     );
                 }
 
-                const isOverdue = new Date(record.reminder_date) < new Date();
+                const isOverdue =
+                    new Date(record.reminder_date) < new Date();
                 const isDueToday =
                     new Date(record.reminder_date).toDateString() ===
                     new Date().toDateString();
 
                 if (isOverdue) {
-                    return <Chip label="Overdue" color="error" size="small" />;
+                    return (
+                        <Chip label="Overdue" color="error" size="small" />
+                    );
                 }
                 if (isDueToday) {
                     return (
-                        <Chip label="Due Today" color="warning" size="small" />
+                        <Chip
+                            label="Due Today"
+                            color="warning"
+                            size="small"
+                        />
                     );
                 }
                 return <Chip label="Pending" color="info" size="small" />;
@@ -338,9 +363,7 @@ const DesktopReminderList = () => (
 );
 
 export const ReminderList = () => {
-    const isSmall = useMediaQuery((theme: Theme) =>
-        theme.breakpoints.down('md')
-    );
+    const isSmall = useBreakpoint('md');
 
     return (
         <List

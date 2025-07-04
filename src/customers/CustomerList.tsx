@@ -1,16 +1,13 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { Card, Stack } from '@mui/material';
 import jsonExport from 'jsonexport/dist';
 import type { Exporter } from 'react-admin';
 import {
-    BulkActionsToolbar,
     BulkDeleteButton,
     BulkExportButton,
     CreateButton,
     downloadCSV,
     ExportButton,
     ListBase,
-    ListToolbar,
     Pagination,
     SortButton,
     Title,
@@ -19,11 +16,12 @@ import {
     useListContext,
 } from 'react-admin';
 
-import { Customer } from '../types';
+import { Organization as Customer } from '../types';
 import { CustomerEmpty } from './CustomerEmpty';
 import { CustomerImportButton } from './CustomerImportButton';
 import { CustomerListContent } from './CustomerListContent';
 import { CustomerListFilter } from './CustomerListFilter';
+import { Card } from '../components/ui-kit/Card';
 
 export const CustomerList = () => {
     const { identity } = useGetIdentity();
@@ -53,36 +51,34 @@ const CustomerListLayout = () => {
     if (!data?.length && !hasFilters) return <CustomerEmpty />;
 
     return (
-        <Stack direction="row">
+        <div className="flex">
             <CustomerListFilter />
-            <Stack sx={{ width: '100%' }}>
+            <div className="w-full">
                 <Title title={'Customers'} />
-                <ListToolbar actions={<CustomerListActions />} />
-                <BulkActionsToolbar>
+                <TopToolbar>
+                    <SortButton
+                        fields={['business_name', 'contact_person', 'createdAt']}
+                    />
+                    <CustomerImportButton />
+                    <ExportButton />
+                    <CreateButton
+                        variant="contained"
+                        label="New Customer"
+                        className="ml-4"
+                    />
+                </TopToolbar>
+                <div className="my-4">
                     <BulkExportButton />
                     <BulkDeleteButton />
-                </BulkActionsToolbar>
+                </div>
                 <Card>
                     <CustomerListContent />
                 </Card>
                 <Pagination rowsPerPageOptions={[10, 25, 50, 100]} />
-            </Stack>
-        </Stack>
+            </div>
+        </div>
     );
 };
-
-const CustomerListActions = () => (
-    <TopToolbar>
-        <SortButton fields={['business_name', 'contact_person', 'createdAt']} />
-        <CustomerImportButton />
-        <ExportButton />
-        <CreateButton
-            variant="contained"
-            label="New Customer"
-            sx={{ marginLeft: 2 }}
-        />
-    </TopToolbar>
-);
 
 const exporter: Exporter<Customer> = async (records, fetchRelatedRecords) => {
     const customers = records.map(customer => {

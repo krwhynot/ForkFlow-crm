@@ -1,24 +1,16 @@
-import { Box, Button, Typography } from '@mui/material';
 import { CreateButton } from 'react-admin';
 import BusinessIcon from '@mui/icons-material/Business';
+import { Box } from '../../components/Layout/Box';
+import { Typography } from '../../components/Typography/Typography';
 
 export const OrganizationEmpty = () => (
-    <Box textAlign="center" m={1}>
-        <Box sx={{ mb: 4, mt: 8 }}>
-            <BusinessIcon
-                sx={{
-                    fontSize: 80,
-                    color: 'text.disabled',
-                    mb: 2,
-                }}
-            />
-            <Typography variant="h4" paragraph color="text.secondary">
+    <Box className="text-center m-1">
+        <Box className="mb-4 mt-8">
+            <BusinessIcon className="text-8xl text-gray-400 mb-2" />
+            <Typography variant="h4" className="text-gray-500 mb-4">
                 No organizations yet
             </Typography>
-            <Typography
-                color="text.secondary"
-                sx={{ mb: 4, maxWidth: 500, mx: 'auto' }}
-            >
+            <Typography className="text-gray-500 mb-4 max-w-md mx-auto">
                 Start building your food service network by adding restaurants,
                 distributors, and other business partners to your CRM system.
             </Typography>
@@ -26,12 +18,7 @@ export const OrganizationEmpty = () => (
         <CreateButton
             variant="contained"
             label="Add First Organization"
-            sx={{
-                minHeight: 44,
-                px: 4,
-                py: 1.5,
-                fontSize: '1rem',
-            }}
+            className="min-h-11 px-4 py-2 text-base"
         />
     </Box>
 );

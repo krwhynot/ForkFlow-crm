@@ -2,9 +2,7 @@ import {
     Divider,
     Stack,
     Typography,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+} from '../components/ui-kit';
 import * as React from 'react';
 import {
     AutocompleteInput,
@@ -80,16 +78,15 @@ interface ContactInputsProps {
 export const ContactInputs: React.FC<ContactInputsProps> = ({
     defaultOrganizationId,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = window.innerWidth < 768; // Tailwind 'md' breakpoint
 
     return (
-        <Stack gap={4} p={1}>
+        <Stack spacing={4} className="p-2">
             <ContactDisplayInputs
                 defaultOrganizationId={defaultOrganizationId}
             />
-            <Stack gap={4} direction={isMobile ? 'column' : 'row'}>
-                <Stack gap={4} flex={1}>
+            <Stack spacing={4} direction={isMobile ? 'column' : 'row'}>
+                <Stack spacing={4} className="flex-1">
                     <ContactIdentityInputs />
                     <ContactOrganizationInputs
                         defaultOrganizationId={defaultOrganizationId}
@@ -97,9 +94,9 @@ export const ContactInputs: React.FC<ContactInputsProps> = ({
                 </Stack>
                 <Divider
                     orientation={isMobile ? 'horizontal' : 'vertical'}
-                    flexItem
+                    className="flex-auto"
                 />
-                <Stack gap={4} flex={1}>
+                <Stack spacing={4} className="flex-1">
                     <ContactInfoInputs />
                     <ContactRoleInputs />
                     <ContactNotesInputs />
@@ -118,8 +115,8 @@ const ContactDisplayInputs: React.FC<ContactDisplayInputsProps> = ({
 }) => {
     const record = useRecordContext<Contact>();
     return (
-        <Stack gap={2} flex={1}>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+        <Stack spacing={2} className="flex-1">
+            <Typography variant="h5" className="font-semibold mb-4">
                 Contact Information
             </Typography>
         </Stack>

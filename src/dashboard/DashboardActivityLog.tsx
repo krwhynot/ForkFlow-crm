@@ -1,24 +1,22 @@
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
+import { ClockIcon } from '@heroicons/react/24/outline';
 import { ActivityLog } from '../activity/ActivityLog';
-import { Stack } from '@mui/material';
+import { Card } from '../components/Card/Card';
+import { CardContent } from '../components/Card/CardContent';
+import { CardHeader } from '../components/Card/CardHeader';
+import { CardTitle } from '../components/Card/CardTitle';
 
 export function DashboardActivityLog() {
     return (
-        <Stack>
-            <Box display="flex" alignItems="center" mb={1}>
-                <Box mr={1} display="flex">
-                    <AccessTimeIcon color="disabled" fontSize="medium" />
-                </Box>
-                <Typography variant="h5" color="textSecondary">
-                    Latest Activity
-                </Typography>
-            </Box>
-            <Card sx={{ mb: 2, px: 2 }}>
+        <Card>
+            <CardHeader>
+                <div className="flex items-center space-x-2">
+                    <ClockIcon className="h-6 w-6 text-gray-400" />
+                    <CardTitle>Latest Activity</CardTitle>
+                </div>
+            </CardHeader>
+            <CardContent>
                 <ActivityLog pageSize={10} />
-            </Card>
-        </Stack>
+            </CardContent>
+        </Card>
     );
 }

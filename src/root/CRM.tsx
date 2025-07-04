@@ -9,7 +9,6 @@ import {
     localStorageStore,
 } from 'react-admin';
 import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
-import { deepmerge } from '@mui/utils';
 import { Route } from 'react-router';
 import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 
@@ -22,7 +21,7 @@ import deals from '../deals';
 import interactions from '../interactions';
 import opportunities from '../opportunities';
 import products from '../products';
-import { LoginPage } from '../login/LoginPage';
+import { UniversalLoginPage } from '../login/UniversalLoginPage';
 import { SignupPage } from '../login/SignupPage';
 import {
     authProvider as defaultAuthProvider,
@@ -50,32 +49,9 @@ import {
 export type CRMProps = {
     dataProvider?: DataProvider;
     authProvider?: AuthProvider;
-    lightTheme?: RaThemeOptions;
     darkTheme?: RaThemeOptions;
 } & Partial<ConfigurationContextValue> &
     Partial<AdminProps>;
-
-const defaultLightTheme = deepmerge(defaultTheme, {
-    palette: {
-        background: {
-            default: '#fafafb',
-        },
-        primary: {
-            main: '#16a34a',
-        },
-    },
-    components: {
-        RaFileInput: {
-            styleOverrides: {
-                root: {
-                    '& .RaFileInput-dropZone': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    },
-                },
-            },
-        },
-    },
-});
 
 /**
  * CRM Component
@@ -124,7 +100,6 @@ export const CRM = ({
     dealCategories = defaultDealCategories,
     dealPipelineStatuses = defaultDealPipelineStatuses,
     dealStages = defaultDealStages,
-    lightTheme = defaultLightTheme,
     logo = defaultLogo,
     noteStatuses = defaultNoteStatuses,
     taskTypes = defaultTaskTypes,
@@ -167,10 +142,8 @@ export const CRM = ({
                 authProvider={authProvider}
                 store={localStorageStore(undefined, 'CRM')}
                 layout={Layout}
-                loginPage={LoginPage}
+                loginPage={UniversalLoginPage}
                 dashboard={Dashboard}
-                theme={lightTheme}
-                darkTheme={darkTheme || null}
                 i18nProvider={i18nProvider}
                 requireAuth
                 disableTelemetry

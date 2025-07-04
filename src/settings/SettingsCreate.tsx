@@ -13,18 +13,16 @@ import {
     useNotify,
     useRedirect,
 } from 'react-admin';
-import { CardContent, Grid, Box, Typography, useTheme, useMediaQuery, Alert } from '@mui/material';
+import { CardContent, Grid, Box, Typography, Alert } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useRealtimeSettings } from './hooks/useRealtimeSettings';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const SettingsCreateToolbar = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
     return (
         <Toolbar sx={{ justifyContent: 'flex-end', p: { xs: 2, md: 3 } }}>
-            <SaveButton 
-                sx={{ 
+            <SaveButton
+                sx={{
                     minWidth: { xs: '100%', sm: 'auto' },
                     minHeight: 48, // Touch-friendly
                 }}
@@ -34,19 +32,24 @@ const SettingsCreateToolbar = () => {
 };
 
 export const SettingsCreate = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
     const { isConnected } = useRealtimeSettings();
     const [duplicateError, setDuplicateError] = useState<string | null>(null);
 
     // Validation helpers
     const validateKey = [
         required(),
-        regex(/^[a-z0-9_]+$/, 'Key must contain only lowercase letters, numbers, and underscores'),
+        regex(
+            /^[a-z0-9_]+$/,
+            'Key must contain only lowercase letters, numbers, and underscores'
+        ),
     ];
 
     const validateColor = [
-        regex(/^#[0-9A-Fa-f]{6}$/, 'Color must be a valid hex code (e.g., #FF5722)'),
+        regex(
+            /^#[0-9A-Fa-f]{6}$/,
+            'Color must be a valid hex code (e.g., #FF5722)'
+        ),
     ];
 
     const categoryChoices = [
@@ -68,7 +71,7 @@ export const SettingsCreate = () => {
     return (
         <Create
             redirect="show"
-            transform={data => ({
+            transform={(data) => ({
                 ...data,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
@@ -84,14 +87,15 @@ export const SettingsCreate = () => {
                         <Typography variant="body2" color="text.secondary">
                             Add a new configuration setting to the system
                         </Typography>
-                        
+
                         {/* Connection Status */}
                         {!isConnected && (
                             <Alert severity="warning" sx={{ mt: 2 }}>
-                                Real-time updates are currently disconnected. Changes may not be reflected immediately.
+                                Real-time updates are currently disconnected.
+                                Changes may not be reflected immediately.
                             </Alert>
                         )}
-                        
+
                         {/* Duplicate Error */}
                         {duplicateError && (
                             <Alert severity="error" sx={{ mt: 2 }}>

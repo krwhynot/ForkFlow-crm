@@ -1,18 +1,17 @@
-import { Grid, useMediaQuery, useTheme } from '@mui/material';
+import { Grid } from '../components/ui-kit';
 import { useListContext, RecordContextProvider } from 'react-admin';
 import { ContactCard } from './ContactCard';
 import { Contact } from '../types';
 
 export const ContactListContent = () => {
     const { data, isLoading } = useListContext<Contact>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = window.innerWidth < 640; // Tailwind 'sm' breakpoint
+    const isTablet = window.innerWidth < 768; // Tailwind 'md' breakpoint
 
     if (isLoading) return null;
 
     return (
-        <Grid container spacing={2} sx={{ mt: 1, mb: 2, px: 1 }}>
+        <Grid container spacing={2} className="mt-2 mb-4 px-2">
             {data?.map(record => (
                 <Grid
                     item
@@ -22,9 +21,7 @@ export const ContactListContent = () => {
                     md={4}
                     lg={4}
                     xl={3}
-                    sx={{
-                        display: 'flex',
-                    }}
+                    className="flex"
                 >
                     <RecordContextProvider value={record}>
                         <ContactCard />

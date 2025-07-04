@@ -1,10 +1,10 @@
-import { Alert, Divider, Skeleton, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Identifier, useDataProvider } from 'react-admin';
 
 import { CrmDataProvider } from '../providers/types';
 import { ActivityLogContext } from './ActivityLogContext';
 import { ActivityLogIterator } from './ActivityLogIterator';
+import { Spinner } from '../components/ui-kit/Spinner';
 
 type ActivityLogProps = {
     companyId?: Identifier;
@@ -25,31 +25,22 @@ export function ActivityLog({
 
     if (isPending) {
         return (
-            <Stack mt={0.5}>
-                {Array.from({ length: 5 }).map((_, index) => (
-                    <Stack spacing={2} sx={{ mt: 1 }} key={index}>
-                        <Stack
-                            direction="row"
-                            spacing={2}
-                            sx={{ alignItems: 'center' }}
-                        >
-                            <Skeleton
-                                variant="circular"
-                                width={20}
-                                height={20}
-                            />
-                            <Skeleton width="100%" />
-                        </Stack>
-                        <Skeleton variant="rectangular" height={50} />
-                        <Divider />
-                    </Stack>
-                ))}
-            </Stack>
+            <div className="flex justify-center my-8">
+                <Spinner />
+            </div>
         );
     }
 
     if (error) {
-        return <Alert severity="error">Failed to load activity log</Alert>;
+        return (
+            <div
+                className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4"
+                role="alert"
+            >
+                <p className="font-bold">Error</p>
+                <p>Failed to load activity log.</p>
+            </div>
+        );
     }
 
     return (

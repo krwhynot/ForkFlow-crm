@@ -122,11 +122,29 @@ export function safeCurrencyFormat(amount: number | null | undefined): string {
 }
 
 /**
- * Ensures a chart has a valid parent container size
+ * Ensures a chart has a valid parent container size (optimized to prevent forced reflows)
  */
 export function validateChartContainer(element: HTMLElement | null): boolean {
     if (!element) return false;
     
-    const rect = element.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0;
+    // Use ResizeObserver or CSS properties to avoid forced reflow
+    // First check if element has explicit size styles
+    const style = window.getComputedStyle(element);
+    const hasExplicitSize = (
+        style.width !== 'auto' && style.width !== '0px' &&
+        style.height !== 'auto' && style.height !== '0px'
+    );
+    
+    if (hasExplicitSize) {
+        return true;
+    }
+    
+    // Fallback: only use getBoundingClientRect when absolutely necessary
+    // and batch it with other DOM reads if possible
+    try {
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+    } catch {
+        return false;
+    }
 }

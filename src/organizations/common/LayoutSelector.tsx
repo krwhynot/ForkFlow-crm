@@ -1,14 +1,5 @@
 import React from 'react';
 import {
-    ToggleButton,
-    ToggleButtonGroup,
-    Tooltip,
-    Box,
-    Chip,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
-import {
     ViewList as TableIcon,
     ViewModule as CardsIcon,
     ViewKanban as KanbanIcon,
@@ -16,6 +7,13 @@ import {
 } from '@mui/icons-material';
 import { useViewMode } from '../hooks/useViewMode';
 import { OrganizationListViewMode } from '../../types';
+import { Box } from '../../components/Layout/Box';
+import { Chip } from '../../components/DataDisplay/Chip';
+import { ToggleButton } from '../../components/Button/ToggleButton';
+import { ToggleButtonGroup } from '../../components/Button/ToggleButtonGroup';
+import { Tooltip } from '../../components/Tooltip/Tooltip';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useTheme } from '../../hooks/useTheme';
 
 interface LayoutSelectorProps {
     className?: string;
@@ -33,7 +31,7 @@ export const LayoutSelector: React.FC<LayoutSelectorProps> = ({
     compact = false,
 }) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md');
     const { viewMode, setViewMode } = useViewMode();
 
     const handleViewModeChange = (
@@ -77,81 +75,66 @@ export const LayoutSelector: React.FC<LayoutSelectorProps> = ({
     ];
 
     return (
-        <Box className={className} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box className={`${className} flex items-center gap-1`}>
             <ToggleButtonGroup
                 value={viewMode.mode}
                 exclusive
                 onChange={handleViewModeChange}
                 aria-label="view mode selector"
-                size={compact || isMobile ? 'small' : 'medium'}
-                sx={{
-                    '& .MuiToggleButton-root': {
-                        minHeight: '44px',
-                        minWidth: '44px',
-                        border: `1px solid ${theme.palette.divider}`,
-                        '&.Mui-selected': {
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
-                            '&:hover': {
-                                backgroundColor: theme.palette.primary.dark,
-                            },
-                        },
-                        '&:hover': {
-                            backgroundColor: theme.palette.action.hover,
-                        },
-                        transition: 'all 0.2s ease-in-out',
-                    },
-                }}
             >
                 {viewModeOptions.map((option) => (
-                    <ToggleButton
+                    <Tooltip
                         key={option.value}
-                        value={option.value}
-                        disabled={option.disabled}
-                        aria-label={option.label}
-                    >
-                        <Tooltip 
-                            title={
-                                <Box>
-                                    <Box sx={{ fontWeight: 'bold' }}>{option.label}</Box>
-                                    <Box sx={{ fontSize: '0.75rem', opacity: 0.8 }}>
-                                        {option.description}
-                                    </Box>
+                        title={
+                            <Box>
+                                <Box className="font-bold">{option.label}</Box>
+                                <Box className="text-xs opacity-80">
+                                    {option.description}
                                 </Box>
-                            }
-                            placement="top"
-                            arrow
+                            </Box>
+                        }
+                        placement="top"
+                        arrow
+                    >
+                        <ToggleButton
+                            value={option.value}
+                            disabled={option.disabled}
+                            aria-label={option.label}
+                            className={`min-h-11 min-w-11 transition-all duration-200 ease-in-out ${
+                                compact || isMobile ? 'p-1' : 'p-2'
+                            }`}
                         >
-                            <Box sx={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: showLabels ? 1 : 0,
-                                flexDirection: isMobile && showLabels ? 'column' : 'row'
-                            }}>
+                            <Box
+                                className={`flex items-center gap-${
+                                    showLabels ? 1 : 0
+                                } ${
+                                    isMobile && showLabels
+                                        ? 'flex-col'
+                                        : 'flex-row'
+                                }`}
+                            >
                                 {option.icon}
                                 {showLabels && !isMobile && (
-                                    <Box sx={{ fontSize: '0.75rem', fontWeight: 500 }}>
+                                    <Box className="text-xs font-medium">
                                         {option.label.split(' ')[0]}
                                     </Box>
                                 )}
                             </Box>
-                        </Tooltip>
-                    </ToggleButton>
+                        </ToggleButton>
+                    </Tooltip>
                 ))}
             </ToggleButtonGroup>
 
             {/* Current view mode indicator for mobile */}
             {isMobile && (
                 <Chip
-                    label={viewModeOptions.find(opt => opt.value === viewMode.mode)?.label || 'Unknown'}
+                    label={
+                        viewModeOptions.find(
+                            (opt) => opt.value === viewMode.mode
+                        )?.label || 'Unknown'
+                    }
                     size="small"
-                    variant="outlined"
-                    sx={{
-                        height: '32px',
-                        '& .MuiChip-label': {
-                            fontSize: '0.75rem',
-                        },
-                    }}
+                    className="h-8 text-xs border"
                 />
             )}
         </Box>

@@ -1,15 +1,13 @@
-import {
-    Box,
-    Card,
-    CardContent,
-    LinearProgress,
-    Stack,
-    Typography,
-    Button,
-} from '@mui/material';
+import { Box } from '../components/Layout/Box';
+import { Card } from '../components/Card/Card';
+import { CardContent } from '../components/Card/CardContent';
+import { Stack } from '../components/Layout/Stack';
+import { Typography } from '../components/Typography/Typography';
+import { Button } from '../components/Button/Button';
+import { LinearProgress } from '../components/Progress/LinearProgress';
 import useAppBarHeight from '../misc/useAppBarHeight';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined';
+import { CheckCircleIcon, EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 import { CreateButton, Identifier } from 'react-admin';
 import { ContactImportButton } from '../contacts/ContactImportButton';
 import { Link } from 'react-router-dom';
@@ -26,57 +24,45 @@ export const DashboardStepper = ({
         <Stack
             justifyContent="center"
             alignItems="center"
-            sx={{
+            style={{
                 height: `calc(100dvh - ${appbarHeight}px)`,
             }}
         >
-            <Card
-                sx={{
-                    width: '100%',
-                    maxWidth: '600px',
-                }}
-            >
+            <Card className="w-full max-w-2xl">
                 <CardContent>
                     <Stack
                         direction="row"
                         alignItems="center"
-                        justifyContent="space-between"
-                        mb={2}
+                        justifyContent="between"
+                        className="mb-4"
                     >
-                        <Typography variant="h6" fontWeight="bold">
+                        <Typography variant="h6" className="font-bold">
                             What's next?
                         </Typography>
-                        <Box sx={{ width: '150px' }}>
+                        <Box className="w-36">
                             <LinearProgress
                                 variant="determinate"
                                 value={(step / 3) * 100}
-                                color="success"
                             />
-                            <Typography align="right">{step}/3 done</Typography>
+                            <Typography className="text-right">{step}/3 done</Typography>
                         </Box>
                     </Stack>
-                    <Stack gap={3}>
-                        <Stack gap={2} direction="row">
-                            <CheckCircleIcon color="success" fontSize="small" />
-                            <Typography fontWeight="bold">
+                    <Stack spacing={6}>
+                        <Stack spacing={4} direction="row">
+                            <CheckCircleIconSolid className="h-5 w-5 text-green-600" />
+                            <Typography className="font-bold">
                                 Install Atomic CRM
                             </Typography>
                         </Stack>
-                        <Stack gap={2} direction="row">
+                        <Stack spacing={4} direction="row">
                             {step > 1 ? (
-                                <CheckCircleIcon
-                                    color="success"
-                                    fontSize="small"
-                                />
+                                <CheckCircleIconSolid className="h-5 w-5 text-green-600" />
                             ) : (
-                                <RadioButtonUncheckedOutlinedIcon
-                                    color="disabled"
-                                    fontSize="small"
-                                />
+                                <EllipsisHorizontalCircleIcon className="h-5 w-5 text-gray-400" />
                             )}
 
-                            <Stack gap={1}>
-                                <Typography fontWeight="bold">
+                            <Stack spacing={2}>
+                                <Typography className="font-bold">
                                     Add your first contact
                                 </Typography>
 
@@ -91,26 +77,22 @@ export const DashboardStepper = ({
                                 </Stack>
                             </Stack>
                         </Stack>
-                        <Stack gap={2} direction="row">
-                            <RadioButtonUncheckedOutlinedIcon
-                                fontSize="small"
-                                color="disabled"
-                            />
-                            <Stack gap={1}>
-                                <Typography fontWeight="bold">
+                        <Stack spacing={4} direction="row">
+                            <EllipsisHorizontalCircleIcon className="h-5 w-5 text-gray-400" />
+                            <Stack spacing={2}>
+                                <Typography className="font-bold">
                                     Add your first note
                                 </Typography>
                                 <Typography>
                                     Go to a contact page and add a note
                                 </Typography>
                                 <Button
+                                    // @ts-ignore
                                     component={Link}
-                                    variant="contained"
+                                    variant="primary"
                                     size="small"
                                     disabled={step < 2}
-                                    sx={{
-                                        width: '100px',
-                                    }}
+                                    className="w-24"
                                     to={`/contacts/${contactId}/show`}
                                 >
                                     Add note

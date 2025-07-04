@@ -10,7 +10,7 @@ import {
     useListContext,
     useRecordContext,
 } from 'react-admin';
-import { Box, Chip } from '@mui/material';
+import { Box, Chip } from '../components/ui-kit';
 import { Setting } from '../types';
 
 const PostListActions = () => (
@@ -42,15 +42,10 @@ const ColorChip = (props: { label?: string }) => {
     if (!record?.color) return null;
 
     return (
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box className="flex items-center gap-1">
             <Box
-                sx={{
-                    width: 16,
-                    height: 16,
-                    borderRadius: '50%',
-                    backgroundColor: record.color,
-                    border: '1px solid #ccc',
-                }}
+                className="w-4 h-4 rounded-full border border-gray-300"
+                style={{ backgroundColor: record.color }}
             />
             <span>{record.color}</span>
         </Box>
@@ -75,11 +70,10 @@ const CategoryChip = (props: { label?: string }) => {
         <Chip
             label={record.category}
             size="small"
-            sx={{
+            style={{
                 backgroundColor: categoryColors[record.category] || '#9E9E9E',
-                color: 'white',
-                textTransform: 'capitalize',
             }}
+            className="text-white capitalize"
         />
     );
 };
@@ -90,8 +84,11 @@ const ActiveStatus = (props: { label?: string }) => {
         <Chip
             label={record?.active ? 'Active' : 'Inactive'}
             size="small"
-            color={record?.active ? 'success' : 'default'}
-            variant={record?.active ? 'filled' : 'outlined'}
+            className={
+                record?.active
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-200 text-gray-700'
+            }
         />
     );
 };

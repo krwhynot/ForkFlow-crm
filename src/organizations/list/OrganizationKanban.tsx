@@ -8,8 +8,6 @@ import {
     Avatar,
     Chip,
     IconButton,
-    useTheme,
-    useMediaQuery,
     Badge,
     Tooltip,
     Snackbar,
@@ -41,16 +39,19 @@ import {
     useSortable,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {
-    CSS,
-} from '@dnd-kit/utilities';
+import { CSS } from '@dnd-kit/utilities';
 import { Organization, OrganizationListViewMode } from '../../types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useTwTheme } from '../../hooks/useTwTheme';
 
 interface OrganizationKanbanProps {
     organizations: Organization[];
     loading?: boolean;
     viewMode: OrganizationListViewMode;
-    onStatusChange?: (organizationId: string | number, newStatus: string) => Promise<void>;
+    onStatusChange?: (
+        organizationId: string | number,
+        newStatus: string
+    ) => Promise<void>;
     onEdit?: (organizationId: string | number) => void;
     onView?: (organizationId: string | number) => void;
 }
@@ -80,15 +81,15 @@ interface StatusColumn {
 /**
  * Draggable organization card component optimized for mobile touch
  */
-const DraggableCard: React.FC<DraggableCardProps> = ({ 
-    organization, 
-    onEdit, 
+const DraggableCard: React.FC<DraggableCardProps> = ({
+    organization,
+    onEdit,
     onView,
-    isDragging = false 
+    isDragging = false,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    
+    const theme = useTwTheme();
+    const isMobile = useBreakpoint('md');
+
     const {
         attributes,
         listeners,
@@ -104,7 +105,10 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
         opacity: isDragging || isSortableDragging ? 0.5 : 1,
     };
 
-    const handleContactClick = (e: React.MouseEvent, type: 'phone' | 'email') => {
+    const handleContactClick = (
+        e: React.MouseEvent,
+        type: 'phone' | 'email'
+    ) => {
         e.stopPropagation();
         if (type === 'phone' && organization.phone) {
             window.location.href = `tel:${organization.phone}`;
@@ -114,15 +118,20 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
     };
 
     return (
-        <Card 
+        <Card
             ref={setNodeRef}
             style={style}
-            sx={{ 
-                cursor: isDragging || isSortableDragging ? 'grabbing' : 'grab',
+            sx={{
+                cursor:
+                    isDragging || isSortableDragging ? 'grabbing' : 'grab',
                 transition: 'all 0.2s ease-in-out',
                 '&:hover': {
-                    transform: isDragging || isSortableDragging ? 'none' : 'translateY(-1px)',
-                    boxShadow: isDragging || isSortableDragging ? 'none' : theme.shadows[4],
+                    transform:
+                        isDragging || isSortableDragging
+                            ? 'none'
+                            : 'translateY(-1px)',
+                    boxShadow:
+                        isDragging || isSortableDragging ? 'none' : 4,
                 },
                 minHeight: { xs: 140, sm: 160 }, // Mobile-optimized heights
                 touchAction: 'none', // Prevent scrolling while dragging on mobile
@@ -131,31 +140,46 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
             {...listeners}
             onClick={() => onView?.(organization.id)}
         >
-            <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
+            <CardContent
+                sx={{
+                    p: { xs: 1.5, sm: 2 },
+                    '&:last-child': { pb: { xs: 1.5, sm: 2 } },
+                }}
+            >
                 {/* Drag Handle & Organization Header */}
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1 }}>
-                    <DragIcon 
-                        fontSize="small" 
-                        color="action" 
-                        sx={{ 
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 1,
+                        mb: 1,
+                    }}
+                >
+                    <DragIcon
+                        fontSize="small"
+                        color="action"
+                        sx={{
                             mt: 0.5,
                             cursor: 'grab',
                             opacity: 0.7,
                             '&:hover': { opacity: 1 },
                             minWidth: '20px', // Ensure touch target
-                            minHeight: '20px'
-                        }} 
+                            minHeight: '20px',
+                        }}
                     />
-                    <Avatar 
+                    <Avatar
                         src={organization.logo}
-                        sx={{ width: { xs: 28, sm: 32 }, height: { xs: 28, sm: 32 } }}
+                        sx={{
+                            width: { xs: 28, sm: 32 },
+                            height: { xs: 28, sm: 32 },
+                        }}
                     >
                         <BusinessIcon fontSize="small" />
                     </Avatar>
                     <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <Typography 
+                        <Typography
                             variant={isMobile ? 'body2' : 'subtitle2'}
-                            sx={{ 
+                            sx={{
                                 fontWeight: 600,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -167,7 +191,10 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                             {organization.name}
                         </Typography>
                         {organization.business_type && (
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                            >
                                 {organization.business_type}
                             </Typography>
                         )}
@@ -177,43 +204,50 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                 {/* Contact & Location - Compact */}
                 <Box sx={{ mb: 1 }}>
                     {organization.contact_person && (
-                        <Typography 
-                            variant="caption" 
-                            color="text.secondary" 
+                        <Typography
+                            variant="caption"
+                            color="text.secondary"
                             sx={{ display: 'block', mb: 0.25 }}
                         >
                             👤 {organization.contact_person}
                         </Typography>
                     )}
                     {(organization.city || organization.stateAbbr) && (
-                        <Typography 
-                            variant="caption" 
+                        <Typography
+                            variant="caption"
                             color="text.secondary"
                             sx={{ display: 'block' }}
                         >
-                            📍 {[organization.city, organization.stateAbbr].filter(Boolean).join(', ')}
+                            📍{' '}
+                            {[organization.city, organization.stateAbbr]
+                                .filter(Boolean)
+                                .join(', ')}
                         </Typography>
                     )}
                 </Box>
 
                 {/* Quick Actions & Priority */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center',
-                    mt: 'auto'
-                }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mt: 'auto',
+                    }}
+                >
                     {/* Quick Contact Actions */}
                     <Box sx={{ display: 'flex', gap: 0.5 }}>
                         {organization.phone && (
                             <Tooltip title="Call">
-                                <IconButton 
+                                <IconButton
                                     size="small"
-                                    onClick={(e) => handleContactClick(e, 'phone')}
-                                    sx={{ 
+                                    onClick={(e) =>
+                                        handleContactClick(e, 'phone')
+                                    }
+                                    sx={{
                                         minWidth: { xs: 32, sm: 36 },
                                         minHeight: { xs: 32, sm: 36 },
-                                        color: 'primary.main'
+                                        color: 'primary.main',
                                     }}
                                 >
                                     <PhoneIcon fontSize="small" />
@@ -222,13 +256,15 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                         )}
                         {organization.email && (
                             <Tooltip title="Email">
-                                <IconButton 
+                                <IconButton
                                     size="small"
-                                    onClick={(e) => handleContactClick(e, 'email')}
-                                    sx={{ 
+                                    onClick={(e) =>
+                                        handleContactClick(e, 'email')
+                                    }
+                                    sx={{
                                         minWidth: { xs: 32, sm: 36 },
                                         minHeight: { xs: 32, sm: 36 },
-                                        color: 'primary.main'
+                                        color: 'primary.main',
                                     }}
                                 >
                                     <EmailIcon fontSize="small" />
@@ -238,33 +274,42 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                     </Box>
 
                     {/* Priority & Edit */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                        }}
+                    >
                         {organization.priority && (
                             <Chip
                                 label={organization.priority}
                                 size="small"
                                 color={
-                                    organization.priority === 'high' ? 'error' :
-                                    organization.priority === 'medium' ? 'warning' : 'success'
+                                    organization.priority === 'high'
+                                        ? 'error'
+                                        : organization.priority === 'medium'
+                                        ? 'warning'
+                                        : 'success'
                                 }
                                 variant="filled"
-                                sx={{ 
-                                    fontSize: '0.65rem', 
+                                sx={{
+                                    fontSize: '0.65rem',
                                     height: { xs: 18, sm: 20 },
-                                    minWidth: { xs: 50, sm: 60 }
+                                    minWidth: { xs: 50, sm: 60 },
                                 }}
                             />
                         )}
                         <Tooltip title="Edit">
-                            <IconButton 
+                            <IconButton
                                 size="small"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onEdit?.(organization.id);
                                 }}
-                                sx={{ 
+                                sx={{
                                     minWidth: { xs: 32, sm: 36 },
-                                    minHeight: { xs: 32, sm: 36 }
+                                    minHeight: { xs: 32, sm: 36 },
                                 }}
                             >
                                 <EditIcon fontSize="small" />
@@ -285,10 +330,10 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                             size="small"
                             color="primary"
                             variant="outlined"
-                            sx={{ 
-                                fontSize: '0.65rem', 
+                            sx={{
+                                fontSize: '0.65rem',
                                 height: { xs: 18, sm: 20 },
-                                fontWeight: 600 
+                                fontWeight: 600,
                             }}
                         />
                     </Box>
@@ -301,36 +346,53 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 /**
  * Droppable column component with enhanced visual feedback
  */
-const DroppableColumn: React.FC<DroppableColumnProps> = ({ 
-    column, 
-    organizations, 
-    onEdit, 
-    onView 
+const DroppableColumn: React.FC<DroppableColumnProps> = ({
+    column,
+    organizations,
+    onEdit,
+    onView,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    
+    const isMobile = useBreakpoint('md');
+
     const { setNodeRef, isOver } = useDroppable({
         id: column.id,
     });
 
     return (
-        <Box sx={{ minWidth: { xs: 280, sm: 300, md: 320 }, maxWidth: { xs: 280, sm: 300, md: 320 } }}>
+        <Box
+            sx={{
+                minWidth: { xs: 280, sm: 300, md: 320 },
+                maxWidth: { xs: 280, sm: 300, md: 320 },
+            }}
+        >
             {/* Enhanced Column Header */}
-            <Paper 
+            <Paper
                 elevation={2}
-                sx={{ 
+                sx={{
                     p: { xs: 1.5, sm: 2 },
-                    mb: 2, 
+                    mb: 2,
                     background: `linear-gradient(135deg, ${column.color}dd, ${column.color})`,
                     color: 'white',
                     textAlign: 'center',
                     borderRadius: 2,
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 0.5 }}>
-                    <Typography component="span" sx={{ fontSize: '1.2rem' }}>{column.icon}</Typography>
-                    <Typography variant={isMobile ? 'subtitle1' : 'h6'} sx={{ fontWeight: 600 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                        mb: 0.5,
+                    }}
+                >
+                    <Typography component="span" sx={{ fontSize: '1.2rem' }}>
+                        {column.icon}
+                    </Typography>
+                    <Typography
+                        variant={isMobile ? 'subtitle1' : 'h6'}
+                        sx={{ fontWeight: 600 }}
+                    >
                         {column.title}
                     </Typography>
                 </Box>
@@ -342,29 +404,37 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({
                             backgroundColor: 'rgba(255,255,255,0.9)',
                             color: column.color,
                             fontWeight: 600,
-                        }
+                        },
                     }}
                 >
-                    <Typography variant="body2" sx={{ opacity: 0.95, fontWeight: 500 }}>
+                    <Typography
+                        variant="body2"
+                        sx={{ opacity: 0.95, fontWeight: 500 }}
+                    >
                         {column.description}
                     </Typography>
                 </Badge>
             </Paper>
 
             {/* Droppable Sortable Container */}
-            <SortableContext items={organizations.map(org => org.id)} strategy={verticalListSortingStrategy}>
-                <Box 
+            <SortableContext
+                items={organizations.map((org) => org.id)}
+                strategy={verticalListSortingStrategy}
+            >
+                <Box
                     ref={setNodeRef}
-                    sx={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
                         gap: { xs: 1, sm: 1.5 },
                         minHeight: 200,
                         p: 1,
                         borderRadius: 2,
                         border: '2px dashed',
                         borderColor: isOver ? column.color : 'transparent',
-                        backgroundColor: isOver ? `${column.color}08` : 'transparent',
+                        backgroundColor: isOver
+                            ? `${column.color}08`
+                            : 'transparent',
                         transition: 'all 0.2s ease-in-out',
                     }}
                 >
@@ -379,44 +449,57 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({
 
                     {/* Empty State with Enhanced Drop Feedback */}
                     {organizations.length === 0 && (
-                        <Paper 
-                            sx={{ 
+                        <Paper
+                            sx={{
                                 p: { xs: 2, sm: 3 },
                                 textAlign: 'center',
-                                backgroundColor: isOver ? `${column.color}15` : 'grey.50',
+                                backgroundColor: isOver
+                                    ? `${column.color}15`
+                                    : 'grey.50',
                                 border: '2px dashed',
-                                borderColor: isOver ? column.color : 'grey.300',
+                                borderColor: isOver
+                                    ? column.color
+                                    : 'grey.300',
                                 borderRadius: 2,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 gap: 1,
                                 transition: 'all 0.2s ease-in-out',
-                                transform: isOver ? 'scale(1.02)' : 'scale(1)',
+                                transform: isOver
+                                    ? 'scale(1.02)'
+                                    : 'scale(1)',
                             }}
                         >
-                            <Typography 
-                                component="span" 
-                                sx={{ 
-                                    fontSize: '2rem', 
+                            <Typography
+                                component="span"
+                                sx={{
+                                    fontSize: '2rem',
                                     opacity: isOver ? 0.8 : 0.5,
-                                    transition: 'opacity 0.2s ease-in-out'
+                                    transition: 'opacity 0.2s ease-in-out',
                                 }}
                             >
                                 {column.icon}
                             </Typography>
-                            <Typography 
-                                variant="body2" 
+                            <Typography
+                                variant="body2"
                                 color="text.secondary"
-                                sx={{ 
+                                sx={{
                                     fontWeight: isOver ? 600 : 400,
-                                    color: isOver ? column.color : 'text.secondary'
+                                    color: isOver
+                                        ? column.color
+                                        : 'text.secondary',
                                 }}
                             >
-                                {isOver ? `Drop here for ${column.title}` : `No ${column.title.toLowerCase()}`}
+                                {isOver
+                                    ? `Drop here for ${column.title}`
+                                    : `No ${column.title.toLowerCase()}`}
                             </Typography>
                             {!isOver && (
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Drag organizations here
                                 </Typography>
                             )}
@@ -457,45 +540,48 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
     onEdit,
     onView,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    
+    const isMobile = useBreakpoint('md');
+
     const [activeId, setActiveId] = useState<string | number | null>(null);
-    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+    const [snackbar, setSnackbar] = useState<{
+        open: boolean;
+        message: string;
+        severity: 'success' | 'error';
+    }>({
         open: false,
         message: '',
-        severity: 'success'
+        severity: 'success',
     });
 
     // Enhanced status columns with descriptions and icons
     const statusColumns: StatusColumn[] = [
-        { 
-            id: 'prospect', 
-            title: 'Prospects', 
+        {
+            id: 'prospect',
+            title: 'Prospects',
             color: '#6366f1',
             description: 'Potential customers',
-            icon: '🎯'
+            icon: '🎯',
         },
-        { 
-            id: 'active', 
-            title: 'Active', 
+        {
+            id: 'active',
+            title: 'Active',
             color: '#10b981',
             description: 'Current customers',
-            icon: '✅'
+            icon: '✅',
         },
-        { 
-            id: 'inactive', 
-            title: 'Inactive', 
+        {
+            id: 'inactive',
+            title: 'Inactive',
             color: '#6b7280',
             description: 'Dormant accounts',
-            icon: '⏸️'
+            icon: '⏸️',
         },
-        { 
-            id: 'closed', 
-            title: 'Closed', 
+        {
+            id: 'closed',
+            title: 'Closed',
             color: '#ef4444',
             description: 'No longer active',
-            icon: '❌'
+            icon: '❌',
         },
     ];
 
@@ -516,10 +602,12 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
 
     // Group organizations by status
     const groupedOrganizations = useMemo(() => {
-        return statusColumns.map(column => ({
+        return statusColumns.map((column) => ({
             ...column,
-            organizations: organizations.filter(org => 
-                org.status === column.id || (!org.status && column.id === 'prospect')
+            organizations: organizations.filter(
+                (org) =>
+                    org.status === column.id ||
+                    (!org.status && column.id === 'prospect')
             ),
         }));
     }, [organizations, statusColumns]);
@@ -527,7 +615,9 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
     // Find active organization for drag overlay
     const activeOrganization = useMemo(() => {
         if (!activeId) return null;
-        return organizations.find(org => org.id === activeId) || null;
+        return (
+            organizations.find((org) => org.id === activeId) || null
+        );
     }, [activeId, organizations]);
 
     // Handle drag start
@@ -536,46 +626,62 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
     }, []);
 
     // Handle drag end
-    const handleDragEnd = useCallback(async (event: DragEndEvent) => {
-        const { active, over } = event;
-        setActiveId(null);
+    const handleDragEnd = useCallback(
+        async (event: DragEndEvent) => {
+            const { active, over } = event;
+            setActiveId(null);
 
-        if (!over) return;
+            if (!over) return;
 
-        const activeOrgId = active.id;
-        const newStatus = over.id as string;
+            const activeOrgId = active.id;
+            const newStatus = over.id as string;
 
-        // Find the organization being dragged
-        const activeOrg = organizations.find(org => org.id === activeOrgId);
-        if (!activeOrg) return;
+            // Find the organization being dragged
+            const activeOrg = organizations.find(
+                (org) => org.id === activeOrgId
+            );
+            if (!activeOrg) return;
 
-        // Don't update if dropping in the same column
-        if (activeOrg.status === newStatus || (!activeOrg.status && newStatus === 'prospect')) {
-            return;
-        }
+            // Don't update if dropping in the same column
+            if (
+                activeOrg.status === newStatus ||
+                (!activeOrg.status && newStatus === 'prospect')
+            ) {
+                return;
+            }
 
-        try {
-            // Call the status change handler
-            if (onStatusChange) {
-                await onStatusChange(activeOrgId, newStatus);
+            try {
+                // Call the status change handler
+                if (onStatusChange) {
+                    await onStatusChange(activeOrgId, newStatus);
+                    setSnackbar({
+                        open: true,
+                        message: `${
+                            activeOrg.name
+                        } moved to ${
+                            statusColumns.find((col) => col.id === newStatus)
+                                ?.title
+                        }`,
+                        severity: 'success',
+                    });
+                }
+            } catch (error) {
+                console.error(
+                    'Failed to update organization status:',
+                    error
+                );
                 setSnackbar({
                     open: true,
-                    message: `${activeOrg.name} moved to ${statusColumns.find(col => col.id === newStatus)?.title}`,
-                    severity: 'success'
+                    message: 'Failed to update organization status',
+                    severity: 'error',
                 });
             }
-        } catch (error) {
-            console.error('Failed to update organization status:', error);
-            setSnackbar({
-                open: true,
-                message: 'Failed to update organization status',
-                severity: 'error'
-            });
-        }
-    }, [organizations, onStatusChange, statusColumns]);
+        },
+        [organizations, onStatusChange, statusColumns]
+    );
 
     const handleSnackbarClose = useCallback(() => {
-        setSnackbar(prev => ({ ...prev, open: false }));
+        setSnackbar((prev) => ({ ...prev, open: false }));
     }, []);
 
     // Loading state
@@ -594,8 +700,13 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
                 <Typography variant="h6" color="text.secondary">
                     No organizations found
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Create your first organization to get started with the Kanban board
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                >
+                    Create your first organization to get started with the
+                    Kanban board
                 </Typography>
             </Box>
         );
@@ -608,21 +719,25 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <Box sx={{ 
-                mt: 2, 
-                overflow: 'auto',
-                pb: 2,
-                // Improve touch scrolling on mobile
-                WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'thin',
-            }}>
+            <Box
+                sx={{
+                    mt: 2,
+                    overflow: 'auto',
+                    pb: 2,
+                    // Improve touch scrolling on mobile
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'thin',
+                }}
+            >
                 {/* Kanban Board */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    gap: { xs: 1.5, sm: 2 }, 
-                    minWidth: 'fit-content',
-                    px: { xs: 1, sm: 0 }
-                }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        gap: { xs: 1.5, sm: 2 },
+                        minWidth: 'fit-content',
+                        px: { xs: 1, sm: 0 },
+                    }}
+                >
                     {groupedOrganizations.map((column) => (
                         <DroppableColumn
                             key={column.id}
@@ -635,28 +750,34 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
                 </Box>
 
                 {/* Help Text */}
-                <Box sx={{ 
-                    mt: 3, 
-                    mx: { xs: 1, sm: 0 },
-                    p: 2, 
-                    backgroundColor: 'primary.light', 
-                    borderRadius: 2,
-                    border: '1px solid',
-                    borderColor: 'primary.main'
-                }}>
-                    <Typography variant="body2" sx={{ 
-                        color: 'primary.contrastText',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        fontWeight: 500
-                    }}>
-                        <Box component="span" sx={{ fontSize: '1.2em' }}>✨</Box>
-                        <strong>Tip:</strong> 
-                        {isMobile 
-                            ? 'Touch and hold cards to drag them between columns' 
-                            : 'Drag organizations between columns to change their status'
-                        }
+                <Box
+                    sx={{
+                        mt: 3,
+                        mx: { xs: 1, sm: 0 },
+                        p: 2,
+                        backgroundColor: 'primary.light',
+                        borderRadius: 2,
+                        border: '1px solid',
+                        borderColor: 'primary.main',
+                    }}
+                >
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: 'primary.contrastText',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            fontWeight: 500,
+                        }}
+                    >
+                        <Box component="span" sx={{ fontSize: '1.2em' }}>
+                            ✨
+                        </Box>
+                        <strong>Tip:</strong>
+                        {isMobile
+                            ? 'Touch and hold cards to drag them between columns'
+                            : 'Drag organizations between columns to change their status'}
                     </Typography>
                 </Box>
             </Box>
@@ -680,8 +801,8 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
                 onClose={handleSnackbarClose}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
-                <Alert 
-                    onClose={handleSnackbarClose} 
+                <Alert
+                    onClose={handleSnackbarClose}
                     severity={snackbar.severity}
                     variant="filled"
                     sx={{ width: '100%' }}

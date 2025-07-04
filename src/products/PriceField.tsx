@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Typography, TypographyProps } from '@mui/material';
 import { useRecordContext } from 'react-admin';
 import { Product } from '../types';
+import { Typography } from '../components/Typography/Typography';
+import { TypographyProps } from '@mui/material';
 
 interface PriceFieldProps extends Omit<TypographyProps, 'children'> {
     source?: keyof Product;
@@ -32,8 +33,7 @@ export const PriceField: React.FC<PriceFieldProps> = ({
         return (
             <Typography
                 variant={variant}
-                color="text.secondary"
-                sx={sx}
+                className="text-gray-500"
                 {...props}
             >
                 —
@@ -47,7 +47,11 @@ export const PriceField: React.FC<PriceFieldProps> = ({
 
     if (isNaN(price)) {
         return (
-            <Typography variant={variant} color="error" sx={sx} {...props}>
+            <Typography
+                variant={variant}
+                className="text-red-500"
+                {...props}
+            >
                 Invalid price
             </Typography>
         );
@@ -68,11 +72,13 @@ export const PriceField: React.FC<PriceFieldProps> = ({
     return (
         <Typography
             variant={variant}
-            color={color}
-            sx={{
-                fontWeight: 500,
-                ...sx,
-            }}
+            className={`font-medium ${
+                color === 'success.main'
+                    ? 'text-green-600'
+                    : color === 'primary.main'
+                    ? 'text-blue-600'
+                    : ''
+            }`}
             {...props}
         >
             {formattedPrice}

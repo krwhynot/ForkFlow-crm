@@ -4,7 +4,7 @@
 
 **Project Name:** ForkFlow-CRM  
 **Purpose:** B2B Food Service Sales CRM for field representatives managing restaurant relationships  
-**Tech Stack:** React + react-admin + TypeScript + Material-UI + Supabase/fakerest data provider  
+**Tech Stack:** React + react-admin + TypeScript + Headless UI + Tailwind CSS + Supabase/fakerest data provider
 **Schema:** Settings → Organizations → Contacts → Products → Opportunities → Interactions  
 **Development Approach:** Sprint-based implementation following business value prioritization
 
@@ -791,12 +791,10 @@ Here are some common issues you might encounter during development and how to tr
 *   **Symptom**: UI elements don't look as expected, or Tailwind CSS classes are not applying correctly.
 *   **Possible Causes**:
     *   **Tailwind Configuration**: `tailwind.config.js` is not correctly configured or processed.
-    *   **Material-UI Overrides**: Material-UI components are overriding Tailwind styles, or vice-versa.
     *   **CSS Order**: Tailwind's base styles are not loaded before component styles.
 *   **Solutions**:
     *   Verify `tailwind.config.js` includes all necessary paths and plugins.
     *   Ensure Tailwind's `@tailwind` directives are correctly placed in your main CSS file.
-    *   Use Material-UI's `sx` prop or `styled` utility for component-specific styles, and apply Tailwind classes directly where appropriate.
     *   Check for conflicting CSS rules in browser developer tools.
 
 This comprehensive update to `doc/README_ORG.md` should provide a robust guide for developing the Organization page.

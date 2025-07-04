@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Card, Box, Stack, Typography } from '@mui/material';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import {
+    ClipboardDocumentListIcon,
+} from '@heroicons/react/24/outline';
 import { AddTask } from '../tasks/AddTask';
 import {
     startOfToday,
@@ -11,6 +12,12 @@ import {
 } from 'date-fns';
 import { TasksListFilter } from './TasksListFilter';
 import { TasksListEmpty } from './TasksListEmpty';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '../components/ui-kit/Card';
 
 const today = new Date();
 const todayDayOfWeek = getDay(today);
@@ -42,21 +49,18 @@ const taskFilters = {
 
 export const TasksList = () => {
     return (
-        <Stack>
-            <Box display="flex" alignItems="center" mb={1}>
-                <Box mr={1} display="flex">
-                    <AssignmentTurnedInIcon
-                        color="disabled"
-                        fontSize="medium"
-                    />
-                </Box>
-                <Typography variant="h5" color="textSecondary">
-                    Upcoming Tasks
-                </Typography>
-                <AddTask display="icon" selectContact />
-            </Box>
-            <Card sx={{ p: 2 }}>
-                <Stack>
+        <Card>
+            <CardHeader>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                        <ClipboardDocumentListIcon className="h-6 w-6 text-gray-400" />
+                        <CardTitle>Upcoming Tasks</CardTitle>
+                    </div>
+                    <AddTask display="icon" selectContact />
+                </div>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-4">
                     <TasksListEmpty />
                     <TasksListFilter
                         title="Overdue"
@@ -74,8 +78,8 @@ export const TasksList = () => {
                         />
                     )}
                     <TasksListFilter title="Later" filter={taskFilters.later} />
-                </Stack>
-            </Card>
-        </Stack>
+                </div>
+            </CardContent>
+        </Card>
     );
 };

@@ -11,7 +11,6 @@ import {
     CreateButton,
     FilterButton,
 } from 'react-admin';
-import { useMediaQuery, Theme } from '@mui/material';
 import {
     Card,
     CardContent,
@@ -26,6 +25,7 @@ import {
     Navigation as DirectionsIcon,
 } from '@mui/icons-material';
 import { VisitListFilter } from './VisitListFilter';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { Visit } from '../types';
 
 const VisitListActions = () => (
@@ -36,11 +36,11 @@ const VisitListActions = () => (
 );
 
 const MobileVisitCard = ({ record }: { record: Visit }) => {
-    const hasLocation = record.latitude && record.longitude;
+    const hasLocation = record.location?.latitude && record.location?.longitude;
 
     const openMaps = () => {
-        if (hasLocation) {
-            const url = `https://maps.google.com/maps?q=${record.latitude},${record.longitude}`;
+        if (hasLocation && record.location) {
+            const url = `https://maps.google.com/maps?q=${record.location.latitude},${record.location.longitude}`;
             window.open(url, '_blank');
         }
     };
@@ -81,12 +81,12 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                         variant="h6"
                         sx={{ fontWeight: 600, fontSize: '1rem' }}
                     >
-                        {record.customer_name ||
-                            `Customer #${record.customer_id}`}
+                        {record.organization?.name ||
+                            `Customer #${record.organizationId}`}
                     </Typography>
                     <Chip
-                        label={record.visit_type.replace('_', ' ')}
-                        color={getVisitTypeColor(record.visit_type) as any}
+                        label={'Visit'}
+                        color={'primary'}
                         size="small"
                     />
                 </Box>
@@ -101,15 +101,15 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                 >
                     <TimeIcon fontSize="small" sx={{ mr: 0.5 }} />
                     <Typography variant="body2">
-                        {new Date(record.visit_date).toLocaleDateString()} at{' '}
-                        {new Date(record.visit_date).toLocaleTimeString([], {
+                        {new Date(record.date).toLocaleDateString()} at{' '}
+                        {new Date(record.date).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit',
                         })}
-                        {record.duration_minutes && (
+                        {record.duration && (
                             <span>
                                 {' '}
-                                • {formatDuration(record.duration_minutes)}
+                                • {formatDuration(record.duration)}
                             </span>
                         )}
                     </Typography>
@@ -127,8 +127,8 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                             color="text.secondary"
                             sx={{ flex: 1 }}
                         >
-                            {record.latitude?.toFixed(4)},{' '}
-                            {record.longitude?.toFixed(4)}
+                            {record.location?.latitude?.toFixed(4)},{' '}
+                            {record.location?.longitude?.toFixed(4)}
                         </Typography>
                         <IconButton
                             size="small"
@@ -198,21 +198,21 @@ const DesktopVisitList = () => (
             label="Visit Type"
             render={(record: Visit) => (
                 <Chip
-                    label={record.visit_type.replace('_', ' ')}
+                    label={'Visit'}
                     size="small"
                     variant="outlined"
                 />
             )}
         />
 
-        <DateField source="visit_date" label="Visit Date" showTime />
+        <DateField source="date" label="Visit Date" showTime />
 
         <FunctionField
             label="Duration"
             render={(record: Visit) => {
-                if (!record.duration_minutes) return '';
-                const hours = Math.floor(record.duration_minutes / 60);
-                const minutes = record.duration_minutes % 60;
+                if (!record.duration) return '';
+                const hours = Math.floor(record.duration / 60);
+                const minutes = record.duration % 60;
                 if (hours > 0) {
                     return `${hours}h ${minutes}m`;
                 }
@@ -223,7 +223,7 @@ const DesktopVisitList = () => (
         <FunctionField
             label="Location"
             render={(record: Visit) => {
-                if (record.latitude && record.longitude) {
+                if (record.location?.latitude && record.location?.longitude) {
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <LocationIcon
@@ -257,16 +257,14 @@ const DesktopVisitList = () => (
 );
 
 export const VisitList = () => {
-    const isSmall = useMediaQuery((theme: Theme) =>
-        theme.breakpoints.down('md')
-    );
+    const isSmall = useBreakpoint('md');
 
     return (
         <List
             filters={<VisitListFilter />}
             actions={<VisitListActions />}
             perPage={25}
-            sort={{ field: 'visit_date', order: 'DESC' }}
+            sort={{ field: 'date', order: 'DESC' }}
         >
             {isSmall ? <MobileVisitList /> : <DesktopVisitList />}
         </List>

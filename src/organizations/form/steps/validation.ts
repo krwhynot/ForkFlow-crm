@@ -124,10 +124,10 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
     }
 
     // Address validation
-    if (data.zipCode && data.zipCode.trim().length > 0) {
-        if (!ZIP_REGEX.test(data.zipCode.trim())) {
+    if (data.zipcode && data.zipcode.trim().length > 0) {
+        if (!ZIP_REGEX.test(data.zipcode.trim())) {
             errors.push({
-                field: 'zipCode',
+                field: 'zipcode',
                 message: 'Please enter a valid ZIP code (12345 or 12345-6789)',
                 severity: 'error'
             });
@@ -151,9 +151,9 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
         });
     }
 
-    if (data.city && !data.state) {
+    if (data.city && !data.stateAbbr) {
         warnings.push({
-            field: 'state',
+            field: 'stateAbbr',
             message: 'State is recommended when city is provided',
             severity: 'warning'
         });
@@ -211,17 +211,17 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
     }
 
     // Business context warnings
-    if (!data.priorityId) {
+    if (!data.priority) {
         warnings.push({
-            field: 'priorityId',
+            field: 'priority',
             message: 'Setting a priority helps with organization management',
             severity: 'warning'
         });
     }
 
-    if (!data.segmentId) {
+    if (!data.segment) {
         warnings.push({
-            field: 'segmentId',
+            field: 'segment',
             message: 'Business segment helps with categorization and reporting',
             severity: 'warning'
         });

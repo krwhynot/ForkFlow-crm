@@ -18,25 +18,16 @@ import {
     useRecordContext,
     BulkActionsToolbar,
 } from 'react-admin';
-import {
-    Box,
-    Chip,
-    Typography,
-    useMediaQuery,
-    useTheme,
-    Stack,
-    Card,
-    CardContent,
-    CardActions,
-    IconButton,
-    Grid,
-} from '@mui/material';
+import { Stack, Typography, Card, CardContent, Box, Chip } from '@/components/ui-kit';
+import { CardActions, IconButton, Grid } from '@mui/material';
 import { Edit as EditIcon, Visibility as ViewIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 import { Product, Setting } from '../types';
 import { ProductBulkActions } from './ProductBulkActions';
 import { PriceField } from './PriceField';
+import { useBreakpoint } from '../hooks/useBreakpoint';
+import { useTwTheme } from '../hooks/useTwTheme';
 
 // Product List Actions in Top Toolbar
 const ProductListActions = () => (
@@ -46,11 +37,7 @@ const ProductListActions = () => (
         <CreateButton
             variant="contained"
             label="Add Product"
-            sx={{
-                marginLeft: 2,
-                minHeight: 44,
-                px: 3,
-            }}
+            className="ml-2 min-h-11 px-3"
         />
     </TopToolbar>
 );
@@ -62,10 +49,14 @@ interface CategoryChipProps {
     record?: Product;
 }
 
-const CategoryChip: React.FC<CategoryChipProps> = ({ label, source, record: propRecord }) => {
+const CategoryChip: React.FC<CategoryChipProps> = ({
+    label,
+    source,
+    record: propRecord,
+}) => {
     const contextRecord = useRecordContext<Product>();
     const record = propRecord || contextRecord;
-    
+
     if (!record?.category) return null;
 
     const categoryColors: Record<string, string> = {
@@ -82,11 +73,11 @@ const CategoryChip: React.FC<CategoryChipProps> = ({ label, source, record: prop
         <Chip
             label={record.category}
             size="small"
-            sx={{
-                backgroundColor: categoryColors[record.category] || '#9e9e9e',
-                color: 'white',
-                fontWeight: 500,
+            style={{
+                backgroundColor:
+                    categoryColors[record.category] || '#9e9e9e',
             }}
+            className="text-white font-medium"
         />
     );
 };
@@ -98,10 +89,14 @@ interface PrincipalChipProps {
     record?: Product;
 }
 
-const PrincipalChip: React.FC<PrincipalChipProps> = ({ label, source, record: propRecord }) => {
+const PrincipalChip: React.FC<PrincipalChipProps> = ({
+    label,
+    source,
+    record: propRecord,
+}) => {
     const contextRecord = useRecordContext<Product>();
     const record = propRecord || contextRecord;
-    
+
     if (!record?.principalId) return null;
 
     return (
@@ -120,7 +115,7 @@ const PrincipalChip: React.FC<PrincipalChipProps> = ({ label, source, record: pr
 // Enhanced Product Card for Mobile View
 const EnhancedProductCard = () => {
     const record = useRecordContext<Product>();
-    const theme = useTheme();
+    const theme = useTwTheme();
 
     if (!record) return null;
 
@@ -129,56 +124,33 @@ const EnhancedProductCard = () => {
             component="article"
             role="button"
             tabIndex={0}
-            aria-label={`Product: ${record.name}, SKU: ${record.sku}, Price: ${record.price ? `$${record.price}` : 'Not set'}`}
+            aria-label={`Product: ${record.name}, SKU: ${record.sku}, Price: ${
+                record.pricePerUnit ? `$${record.pricePerUnit}` : 'Not set'
+            }`}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     window.location.href = `/products/${record.id}/show`;
                 }
             }}
-            sx={{
-                mb: 2,
-                cursor: 'pointer',
-                '&:hover': {
-                    boxShadow: theme.shadows[4],
-                },
-                '&:focus': {
-                    outline: '2px solid',
-                    outlineColor: 'primary.main',
-                    outlineOffset: '2px',
-                },
-                minHeight: '180px',
-            }}
+            className="mb-2 cursor-pointer hover:shadow-lg focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 min-h-45"
         >
-            <CardContent sx={{ pb: 1 }}>
+            <CardContent className="pb-1">
                 {/* Product Header */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                    }}
-                >
-                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                <Box className="flex justify-between mb-2">
+                    <Box className="flex-grow min-w-0">
                         <Typography
                             variant="h6"
                             component="h3"
-                            sx={{
-                                fontWeight: 600,
-                                lineHeight: 1.2,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                mb: 0.5,
-                            }}
+                            className="font-semibold leading-tight overflow-hidden text-ellipsis whitespace-nowrap mb-1"
                         >
                             {record.name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-500">
                             SKU: {record.sku}
                         </Typography>
                     </Box>
-                    <Box sx={{ ml: 2 }}>
+                    <Box className="ml-2">
                         <PriceField variant="h6" />
                     </Box>
                 </Box>
@@ -187,41 +159,41 @@ const EnhancedProductCard = () => {
                 <Stack
                     direction="row"
                     spacing={1}
-                    sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}
+                    className="mb-2 flex-wrap gap-1"
                 >
                     <CategoryChip />
                     <Chip
                         label={record.active ? 'Active' : 'Inactive'}
                         size="small"
-                        color={record.active ? 'success' : 'default'}
-                        variant={record.active ? 'filled' : 'outlined'}
+                        className={
+                            record.active
+                                ? 'bg-green-500 text-white'
+                                : 'bg-gray-200 text-gray-700'
+                        }
                     />
                 </Stack>
 
                 {/* Principal */}
-                <Box sx={{ mb: 1 }}>
+                <Box className="mb-1">
                     <PrincipalChip />
                 </Box>
 
                 {/* Package Info */}
                 {record.packageSize && (
-                    <Typography variant="body2" color="text.secondary">
-                        Package: {record.packageSize} • {record.unitOfMeasure}
+                    <Typography variant="body2" className="text-gray-500">
+                        Package: {record.packageSize} •{' '}
+                        {record.unitOfMeasure}
                     </Typography>
                 )}
             </CardContent>
 
             {/* Quick Actions */}
             <CardActions sx={{ pt: 0, justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', gap: 0.5 }}>
+                <Box className="flex gap-0.5">
                     <IconButton
                         component={Link}
                         to={`/products/${record.id}/show`}
-                        sx={{
-                            minWidth: 44,
-                            minHeight: 44,
-                            color: theme.palette.primary.main,
-                        }}
+                        className="min-w-11 min-h-11 text-blue-500"
                         aria-label={`View product: ${record.name}`}
                     >
                         <ViewIcon />
@@ -229,11 +201,7 @@ const EnhancedProductCard = () => {
                     <IconButton
                         component={Link}
                         to={`/products/${record.id}/edit`}
-                        sx={{
-                            minWidth: 44,
-                            minHeight: 44,
-                            color: theme.palette.text.secondary,
-                        }}
+                        className="min-w-11 min-h-11 text-gray-500"
                         aria-label={`Edit product: ${record.name}`}
                     >
                         <EditIcon />
@@ -252,30 +220,36 @@ const ProductMobileGrid = () => {
 
     if (!data || data.length === 0) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="h6" color="text.secondary" gutterBottom>
+            <Box className="p-3 text-center">
+                <Typography
+                    variant="h6"
+                    className="text-gray-500 mb-2"
+                >
                     No Products Found
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                    variant="body2"
+                    className="text-gray-500 mb-2"
+                >
                     No products match your current filters.
                 </Typography>
-                <CreateButton 
-                    variant="contained" 
+                <CreateButton
+                    variant="contained"
                     label="Add First Product"
-                    sx={{ mt: 1 }}
+                    className="mt-1"
                 />
             </Box>
         );
     }
 
     return (
-        <Grid container spacing={2} sx={{ mt: 1, mb: 2, px: 1 }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1 mb-2 px-1">
             {data.map((record: Product) => (
-                <Grid item xs={12} sm={6} key={record.id}>
+                <div key={record.id}>
                     <EnhancedProductCard />
-                </Grid>
+                </div>
             ))}
-        </Grid>
+        </div>
     );
 };
 
@@ -286,7 +260,7 @@ const ProductDesktopTable = () => (
         <TextField source="sku" label="SKU" />
         <CategoryChip label="Category" />
         <PrincipalChip label="Principal" />
-        <PriceField source="price" label="Price" />
+        <PriceField source="pricePerUnit" label="Price" />
         <TextField source="packageSize" label="Package Size" />
         <BooleanField source="active" label="Active" />
     </Datagrid>
@@ -294,9 +268,8 @@ const ProductDesktopTable = () => (
 
 // Responsive Product List Content
 const ProductListContent = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    
+    const isMobile = useBreakpoint('md');
+
     return isMobile ? <ProductMobileGrid /> : <ProductDesktopTable />;
 };
 
@@ -318,10 +291,11 @@ const useProductFilters = () => {
         { id: 'Cleaning', name: 'Cleaning' },
     ];
 
-    const principalChoices = principalSettings?.map(setting => ({
-        id: setting.id,
-        name: setting.label,
-    })) || [];
+    const principalChoices =
+        principalSettings?.map((setting) => ({
+            id: setting.id,
+            name: setting.label,
+        })) || [];
 
     return [
         <TextInput
@@ -381,20 +355,22 @@ export const ProductList = () => {
             sort={{ field: 'name', order: 'ASC' }}
             perPage={25}
             title="Food Service Products"
-            sx={{ 
-                '& .RaList-content': { px: { xs: 1, sm: 2 } },
-                '& .RaList-main': { width: '100%' }
-            }}
             empty={
-                <Box sx={{ p: 3, textAlign: 'center' }}>
-                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                <Box className="p-3 text-center">
+                    <Typography
+                        variant="h6"
+                        className="text-gray-500 mb-2"
+                    >
                         No Products Found
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography
+                        variant="body2"
+                        className="text-gray-500 mb-2"
+                    >
                         Add your first product to get started.
                     </Typography>
-                    <CreateButton 
-                        variant="contained" 
+                    <CreateButton
+                        variant="contained"
                         label="Add First Product"
                     />
                 </Box>

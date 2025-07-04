@@ -1,8 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
-import BusinessIcon from '@mui/icons-material/Business';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import { Box } from '@mui/material';
+import { BuildingOfficeIcon, TruckIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { Box } from '../components/ui-kit';
 import {
     FilterList,
     FilterListItem,
@@ -21,10 +19,10 @@ export const CompanyListFilter = () => {
         name: sector,
     }));
     return (
-        <Box width="13em" minWidth="13em" order={-1} mr={2} mt={5}>
+        <Box className="w-52 min-w-52 -order-1 mr-2 mt-5">
             <FilterLiveSearch hiddenLabel />
 
-            <FilterList label="Size" icon={<BusinessIcon />}>
+            <FilterList label="Size" icon={<BuildingOfficeIcon className="h-5 w-5" />}>
                 {sizes.map(size => (
                     <FilterListItem
                         key={size.id}
@@ -34,7 +32,7 @@ export const CompanyListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Sector" icon={<LocalShippingIcon />}>
+            <FilterList label="Sector" icon={<TruckIcon className="h-5 w-5" />}>
                 {sectors.map(sector => (
                     <FilterListItem
                         key={sector.id}
@@ -46,7 +44,7 @@ export const CompanyListFilter = () => {
 
             <FilterList
                 label="Account manager"
-                icon={<SupervisorAccountIcon />}
+                icon={<UserGroupIcon className="h-5 w-5" />}
             >
                 <FilterListItem
                     label="Me"

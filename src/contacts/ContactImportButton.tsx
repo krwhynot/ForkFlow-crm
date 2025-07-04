@@ -1,4 +1,4 @@
-import UploadIcon from '@mui/icons-material/Upload';
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { Button } from 'react-admin';
 import { ContactImportDialog } from './ContactImportDialog';
@@ -17,7 +17,7 @@ export const ContactImportButton = () => {
     return (
         <>
             <Button
-                startIcon={<UploadIcon />}
+                startIcon={<ArrowUpTrayIcon className="h-4 w-4" />}
                 label="Import"
                 onClick={handleOpenModal}
             />

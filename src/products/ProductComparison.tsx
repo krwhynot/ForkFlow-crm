@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useGetMany, useGetList, Button, Loading } from 'react-admin';
+import { useGetMany, useGetList, Loading } from 'react-admin';
 import {
     Dialog,
     DialogTitle,
@@ -27,6 +27,7 @@ import {
 
 import { Product, Setting } from '../types';
 import { PriceField } from './PriceField';
+import { Button } from '../components/Button/Button';
 
 interface ProductComparisonProps {
     open: boolean;
@@ -78,7 +79,8 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
         );
     }
 
-    const getPrincipalName = (principalId: number) => {
+    const getPrincipalName = (principalId?: number) => {
+        if (!principalId) return 'Unknown';
         return principals?.find(p => p.id === principalId)?.label || 'Unknown';
     };
 
@@ -376,12 +378,11 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
             <DialogActions>
                 <Typography
                     variant="body2"
-                    color="text.secondary"
-                    sx={{ mr: 'auto' }}
+                    className="text-gray-500 mr-auto"
                 >
                     Compare up to 4 products side by side
                 </Typography>
-                <Button onClick={onClose} variant="contained">
+                <Button onClick={onClose} variant="primary">
                     Close Comparison
                 </Button>
             </DialogActions>

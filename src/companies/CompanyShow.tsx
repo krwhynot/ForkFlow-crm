@@ -1,18 +1,5 @@
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemSecondaryAction,
-    ListItemText,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
+import { Box, Button, Card, List, ListItem, ListItemAvatar, ListItemButton, ListItemSecondaryAction, ListItemText } from '../components/ui-kit';
 import { formatDistance } from 'date-fns';
 import {
     RecordContextProvider,
@@ -47,83 +34,74 @@ const CompanyShowContent = () => {
     if (isPending || !record) return null;
 
     return (
-        <Box mt={2} display="flex">
-            <Box flex="1">
-                <Card>
-                    <CardContent>
-                        <Box display="flex" mb={1}>
-                            <CompanyAvatar />
-                            <Typography variant="h5" ml={2} flex="1">
-                                {record.name}
-                            </Typography>
-                        </Box>
+        <Box className="mt-2 flex">
+            <Box className="flex-1">
+                <Card className="p-6">
+                    <Box className="flex mb-1">
+                        <CompanyAvatar />
+                        <h1 className="text-xl font-semibold ml-2 flex-1">
+                            {record.name}
+                        </h1>
+                    </Box>
 
-                        <TabbedShowLayout
-                            sx={{
-                                '& .RaTabbedShowLayout-content': { p: 0 },
-                            }}
+                    <TabbedShowLayout
+                        className="[&_.RaTabbedShowLayout-content]:p-0"
+                    >
+                        <TabbedShowLayout.Tab label="Activity">
+                            <ActivityLog
+                                companyId={record.id}
+                                context="company"
+                            />
+                        </TabbedShowLayout.Tab>
+                        <TabbedShowLayout.Tab
+                            label={
+                                !record.nb_contacts
+                                    ? 'No Contacts'
+                                    : record.nb_contacts === 1
+                                      ? '1 Contact'
+                                      : `${record.nb_contacts} Contacts`
+                            }
+                            path="contacts"
                         >
-                            <TabbedShowLayout.Tab label="Activity">
-                                <ActivityLog
-                                    companyId={record.id}
-                                    context="company"
-                                />
-                            </TabbedShowLayout.Tab>
+                            <ReferenceManyField
+                                reference="contacts_summary"
+                                target="organizationId"
+                                sort={{ field: 'last_name', order: 'ASC' }}
+                            >
+                                <Box className="flex flex-row justify-end gap-2 mt-1">
+                                    {!!record.nb_contacts && (
+                                        <SortButton
+                                            fields={[
+                                                'last_name',
+                                                'first_name',
+                                                'last_seen',
+                                            ]}
+                                        />
+                                    )}
+                                    <CreateRelatedContactButton />
+                                </Box>
+                                <ContactsIterator />
+                            </ReferenceManyField>
+                        </TabbedShowLayout.Tab>
+                        {record.nb_deals ? (
                             <TabbedShowLayout.Tab
                                 label={
-                                    !record.nb_contacts
-                                        ? 'No Contacts'
-                                        : record.nb_contacts === 1
-                                          ? '1 Contact'
-                                          : `${record.nb_contacts} Contacts`
+                                    record.nb_deals === 1
+                                        ? '1 deal'
+                                        : `${record.nb_deals} deals`
                                 }
-                                path="contacts"
+                                path="deals"
                             >
                                 <ReferenceManyField
-                                    reference="contacts_summary"
+                                    reference="deals"
                                     target="organizationId"
-                                    sort={{ field: 'last_name', order: 'ASC' }}
+                                    sort={{ field: 'name', order: 'ASC' }}
                                 >
-                                    <Stack
-                                        direction="row"
-                                        justifyContent="flex-end"
-                                        spacing={2}
-                                        mt={1}
-                                    >
-                                        {!!record.nb_contacts && (
-                                            <SortButton
-                                                fields={[
-                                                    'last_name',
-                                                    'first_name',
-                                                    'last_seen',
-                                                ]}
-                                            />
-                                        )}
-                                        <CreateRelatedContactButton />
-                                    </Stack>
-                                    <ContactsIterator />
+                                    <DealsIterator />
                                 </ReferenceManyField>
                             </TabbedShowLayout.Tab>
-                            {record.nb_deals ? (
-                                <TabbedShowLayout.Tab
-                                    label={
-                                        record.nb_deals === 1
-                                            ? '1 deal'
-                                            : `${record.nb_deals} deals`
-                                    }
-                                    path="deals"
-                                >
-                                    <ReferenceManyField
-                                        reference="deals"
-                                        target="organizationId"
-                                        sort={{ field: 'name', order: 'ASC' }}
-                                    >
-                                        <DealsIterator />
-                                    </ReferenceManyField>
-                                </TabbedShowLayout.Tab>
-                            ) : null}
-                        </TabbedShowLayout>
-                    </CardContent>
+                        ) : null}
+                    </TabbedShowLayout>
                 </Card>
             </Box>
             <CompanyAside />
@@ -139,7 +117,7 @@ const ContactsIterator = () => {
 
     const now = Date.now();
     return (
-        <List dense sx={{ pt: 0 }}>
+        <List dense className="pt-0">
             {contacts.map(contact => (
                 <RecordContextProvider key={contact.id} value={contact}>
                     <ListItem disablePadding>
@@ -170,15 +148,11 @@ const ContactsIterator = () => {
                             />
                             {contact.last_seen && (
                                 <ListItemSecondaryAction>
-                                    <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                        component="span"
-                                    >
+                                    <span className="text-sm text-gray-600">
                                         last activity{' '}
                                         {formatDistance(contact.last_seen, now)}{' '}
                                         ago
-                                    </Typography>
+                                    </span>
                                 </ListItemSecondaryAction>
                             )}
                         </ListItemButton>
@@ -200,7 +174,7 @@ const CreateRelatedContactButton = () => {
             }
             color="primary"
             size="small"
-            startIcon={<PersonAddIcon />}
+            startIcon={<UserPlusIcon className="h-4 w-4" />}
         >
             Add contact
         </Button>
@@ -238,15 +212,11 @@ const DealsIterator = () => {
                                 }
                             />
                             <ListItemSecondaryAction>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                    component="span"
-                                >
+                                <span className="text-sm text-gray-600">
                                     last activity{' '}
                                     {formatDistance(deal.updatedAt, now)}{' '}
                                     ago{' '}
-                                </Typography>
+                                </span>
                             </ListItemSecondaryAction>
                         </ListItemButton>
                     </ListItem>

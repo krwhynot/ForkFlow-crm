@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {
     Show,
-    SimpleShowLayout,
-    TextField,
     EmailField,
     UrlField,
     useRecordContext,
@@ -16,22 +14,11 @@ import {
     Button,
 } from 'react-admin';
 import {
-    Box,
-    Card,
-    CardContent,
-    Typography,
-    Chip,
-    IconButton,
-    Stack,
-    Divider,
-    useTheme,
-    Grid,
-    Avatar,
-    CardActionArea,
+    Button as MuiButton,
     Dialog,
     DialogContent,
-    useMediaQuery,
 } from '@mui/material';
+import { Box, Stack, Chip, Typography } from '../../components/ui-kit';
 import {
     Phone as PhoneIcon,
     Email as EmailIcon,
@@ -46,23 +33,21 @@ import {
     EventNote as InteractionIcon,
     Map as MapIcon,
 } from '@mui/icons-material';
-import { Organization, Setting, Contact } from '../types';
-import { OrganizationMapView } from './OrganizationMapView';
-import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
-import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
+import { Organization, Setting, Contact } from '../../types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useTwTheme } from '../../hooks/useTwTheme';
 
 const OrganizationShowActions = () => {
     const [showMap, setShowMap] = React.useState(false);
-    const theme = useTheme();
-    const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const isFullScreen = useBreakpoint('md');
     const record = useRecordContext<Organization>();
 
     return (
         <>
             <TopToolbar>
                 {/* Map Button - only show if organization has coordinates */}
-                {(record?.latitude && record?.longitude) && (
-                    <Button
+                {record?.latitude && record?.longitude && (
+                    <MuiButton
                         variant="outlined"
                         startIcon={<MapIcon />}
                         onClick={() => setShowMap(true)}
@@ -73,7 +58,7 @@ const OrganizationShowActions = () => {
                         }}
                     >
                         View on Map
-                    </Button>
+                    </MuiButton>
                 )}
                 <EditButton />
                 <DeleteButton />
@@ -91,11 +76,11 @@ const OrganizationShowActions = () => {
                         height: isFullScreen ? '100%' : '90vh',
                         maxWidth: 'none',
                         maxHeight: 'none',
-                    }
+                    },
                 }}
             >
                 <DialogContent sx={{ p: 0, height: '100%' }}>
-                    <OrganizationMapView onClose={() => setShowMap(false)} />
+                    <Box>Map will be here</Box>
                 </DialogContent>
             </Dialog>
         </>
@@ -110,23 +95,23 @@ export const OrganizationShow = () => (
 
 const OrganizationShowContent = () => {
     const record = useRecordContext<Organization>();
-    const theme = useTheme();
+    const theme = useTwTheme();
 
     // Fetch Settings for display
     const { data: priority } = useGetOne<Setting>(
         'settings',
         {
-            id: record?.priorityId,
+            id: record?.priority as any,
         },
-        { enabled: !!record?.priorityId }
+        { enabled: !!record?.priority }
     );
 
     const { data: segment } = useGetOne<Setting>(
         'settings',
         {
-            id: record?.segmentId,
+            id: record?.segment as any,
         },
-        { enabled: !!record?.segmentId }
+        { enabled: !!record?.segment }
     );
 
     const { data: distributor } = useGetOne<Setting>(
@@ -142,7 +127,7 @@ const OrganizationShowContent = () => {
         'contacts',
         {
             filter: { organizationId: record?.id },
-            sort: { field: 'isPrimary', order: 'DESC' },
+            sort: { field: 'status', order: 'DESC' },
             pagination: { page: 1, perPage: 100 },
         },
         { enabled: !!record?.id }
@@ -174,74 +159,49 @@ const OrganizationShowContent = () => {
             window.open(url, '_blank');
         } else if (record.address) {
             const url = `https://maps.google.com/?q=${encodeURIComponent(
-                `${record.address}, ${record.city}, ${record.state} ${record.zipCode}`
+                `${record.address}, ${record.city}, ${record.stateAbbr} ${
+                    record.zipcode
+                }`
             )}`;
             window.open(url, '_blank');
         }
     };
 
     return (
-        <Box sx={{ p: 2 }}>
-            <RelationshipBreadcrumbs
-                currentEntity="organization"
-                showContext={true}
-            />
-            <Grid container spacing={3}>
+        <Box className="p-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Main Organization Info */}
-                <Grid item xs={12} md={8}>
-                    <Card>
-                        <CardContent>
+                <div className="md:col-span-2">
+                    <div className="bg-white shadow rounded-lg">
+                        <div className="p-4">
                             {/* Header */}
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    mb: 3,
-                                }}
-                            >
-                                <BusinessIcon
-                                    sx={{
-                                        fontSize: 40,
-                                        color: 'primary.main',
-                                        mr: 2,
-                                    }}
-                                />
-                                <Box sx={{ flexGrow: 1 }}>
+                            <Box className="flex items-center mb-6">
+                                <BusinessIcon className="text-4xl text-blue-500 mr-4" />
+                                <Box className="flex-grow">
                                     <Typography
                                         variant="h4"
                                         component="h1"
-                                        sx={{ fontWeight: 600, mb: 1 }}
+                                        className="font-semibold mb-1"
                                     >
                                         {record.name}
                                     </Typography>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
+                                    <Box className="flex gap-2 flex-wrap">
                                         {priority && (
                                             <Chip
                                                 label={`Priority ${priority.label}`}
-                                                sx={{
+                                                style={{
                                                     backgroundColor:
                                                         priority.color ||
-                                                        theme.palette.grey[300],
-                                                    color: theme.palette.getContrastText(
-                                                        priority.color ||
-                                                            theme.palette
-                                                                .grey[300]
-                                                    ),
-                                                    fontWeight: 600,
+                                                        '#e0e0e0',
                                                 }}
+                                                className="text-black font-semibold"
                                             />
                                         )}
                                         {segment && (
                                             <Chip
                                                 label={segment.label}
-                                                variant="outlined"
-                                                sx={{
+                                                className="border"
+                                                style={{
                                                     borderColor: segment.color,
                                                 }}
                                             />
@@ -251,91 +211,52 @@ const OrganizationShowContent = () => {
                             </Box>
 
                             {/* Quick Actions */}
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    gap: 1,
-                                    mb: 3,
-                                    flexWrap: 'wrap',
-                                }}
-                            >
+                            <Box className="flex gap-2 mb-6 flex-wrap">
                                 {record.phone && (
-                                    <IconButton
+                                    <button
                                         onClick={handlePhoneClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Call organization"
                                     >
                                         <PhoneIcon />
-                                    </IconButton>
+                                    </button>
                                 )}
                                 {record.accountManager && (
-                                    <IconButton
+                                    <button
                                         onClick={handleEmailClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Email account manager"
                                     >
                                         <EmailIcon />
-                                    </IconButton>
+                                    </button>
                                 )}
                                 {record.website && (
-                                    <IconButton
+                                    <button
                                         onClick={handleWebsiteClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Visit website"
                                     >
                                         <WebsiteIcon />
-                                    </IconButton>
+                                    </button>
                                 )}
                                 {(record.latitude || record.address) && (
-                                    <IconButton
+                                    <button
                                         onClick={handleDirectionsClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Get directions"
                                     >
                                         <LocationIcon />
-                                    </IconButton>
+                                    </button>
                                 )}
                             </Box>
 
-                            <Divider sx={{ my: 3 }} />
+                            <hr className="my-6" />
 
                             {/* Contact Information */}
-                            <Stack spacing={2}>
+                            <Stack gap={4}>
                                 <Typography
                                     variant="h6"
-                                    sx={{ fontWeight: 600 }}
+                                    className="font-semibold"
                                 >
                                     Contact Information
                                 </Typography>
@@ -344,7 +265,7 @@ const OrganizationShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Phone
                                         </Typography>
@@ -358,22 +279,17 @@ const OrganizationShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Website
                                         </Typography>
-                                        <Typography
-                                            variant="body1"
-                                            component="a"
+                                        <a
                                             href={record.website}
                                             target="_blank"
-                                            sx={{
-                                                color: 'primary.main',
-                                                textDecoration: 'none',
-                                            }}
+                                            className="text-blue-500 no-underline"
                                         >
                                             {record.website}
-                                        </Typography>
+                                        </a>
                                     </Box>
                                 )}
 
@@ -381,21 +297,16 @@ const OrganizationShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Account Manager
                                         </Typography>
-                                        <Typography
-                                            variant="body1"
-                                            component="a"
+                                        <a
                                             href={`mailto:${record.accountManager}`}
-                                            sx={{
-                                                color: 'primary.main',
-                                                textDecoration: 'none',
-                                            }}
+                                            className="text-blue-500 no-underline"
                                         >
                                             {record.accountManager}
-                                        </Typography>
+                                        </a>
                                     </Box>
                                 )}
                             </Stack>
@@ -403,11 +314,11 @@ const OrganizationShowContent = () => {
                             {/* Address */}
                             {(record.address || record.city) && (
                                 <>
-                                    <Divider sx={{ my: 3 }} />
-                                    <Stack spacing={2}>
+                                    <hr className="my-6" />
+                                    <Stack gap={4}>
                                         <Typography
                                             variant="h6"
-                                            sx={{ fontWeight: 600 }}
+                                            className="font-semibold"
                                         >
                                             Address
                                         </Typography>
@@ -416,12 +327,13 @@ const OrganizationShowContent = () => {
                                                 `${record.address}`}
                                             {record.address &&
                                                 (record.city ||
-                                                    record.state) && <br />}
-                                            {record.city && record.state
-                                                ? `${record.city}, ${record.state}`
-                                                : record.city || record.state}
-                                            {record.zipCode &&
-                                                ` ${record.zipCode}`}
+                                                    record.stateAbbr) && <br />}
+                                            {record.city && record.stateAbbr
+                                                ? `${record.city}, ${record.stateAbbr}`
+                                                : record.city ||
+                                                  record.stateAbbr}
+                                            {record.zipcode &&
+                                                ` ${record.zipcode}`}
                                         </Typography>
                                     </Stack>
                                 </>
@@ -430,61 +342,56 @@ const OrganizationShowContent = () => {
                             {/* Notes */}
                             {record.notes && (
                                 <>
-                                    <Divider sx={{ my: 3 }} />
-                                    <Stack spacing={2}>
+                                    <hr className="my-6" />
+                                    <Stack gap={4}>
                                         <Typography
                                             variant="h6"
-                                            sx={{ fontWeight: 600 }}
+                                            className="font-semibold"
                                         >
                                             Notes
                                         </Typography>
                                         <Typography
                                             variant="body1"
-                                            sx={{ whiteSpace: 'pre-wrap' }}
+                                            className="whitespace-pre-wrap"
                                         >
                                             {record.notes}
                                         </Typography>
                                     </Stack>
                                 </>
                             )}
-                        </CardContent>
-                    </Card>
-                </Grid>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Sidebar */}
-                <Grid item xs={12} md={4}>
-                    <Stack spacing={3}>
+                <div className="md:col-span-1">
+                    <Stack gap={6}>
                         {/* Business Context */}
-                        <Card>
-                            <CardContent>
+                        <div className="bg-white shadow rounded-lg">
+                            <div className="p-4">
                                 <Typography
                                     variant="h6"
-                                    sx={{ fontWeight: 600, mb: 2 }}
+                                    className="font-semibold mb-4"
                                 >
                                     Business Context
                                 </Typography>
 
                                 {segment && (
-                                    <Box sx={{ mb: 2 }}>
+                                    <Box className="mb-4">
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Business Segment
                                         </Typography>
                                         <Chip
                                             label={segment.label}
                                             size="small"
-                                            sx={{
+                                            style={{
                                                 backgroundColor:
-                                                    segment.color ||
-                                                    theme.palette.grey[300],
-                                                color: theme.palette.getContrastText(
-                                                    segment.color ||
-                                                        theme.palette.grey[300]
-                                                ),
-                                                mt: 0.5,
+                                                    segment.color || '#e0e0e0',
                                             }}
+                                            className="text-black mt-1"
                                         />
                                     </Box>
                                 )}
@@ -493,47 +400,36 @@ const OrganizationShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Primary Distributor
                                         </Typography>
                                         <Chip
                                             label={distributor.label}
                                             size="small"
-                                            sx={{
+                                            style={{
                                                 backgroundColor:
                                                     distributor.color ||
-                                                    theme.palette.grey[300],
-                                                color: theme.palette.getContrastText(
-                                                    distributor.color ||
-                                                        theme.palette.grey[300]
-                                                ),
-                                                mt: 0.5,
+                                                    '#e0e0e0',
                                             }}
+                                            className="text-black mt-1"
                                         />
                                     </Box>
                                 )}
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
 
                         {/* Contacts */}
-                        <Card>
-                            <CardContent>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        mb: 2,
-                                    }}
-                                >
+                        <div className="bg-white shadow rounded-lg">
+                            <div className="p-4">
+                                <Box className="flex justify-between items-center mb-4">
                                     <Typography
                                         variant="h6"
-                                        sx={{ fontWeight: 600 }}
+                                        className="font-semibold"
                                     >
                                         Contacts ({contacts?.length || 0})
                                     </Typography>
-                                    <Button
+                                    <MuiButton
                                         component={Link}
                                         to={`/contacts/create?organizationId=${record.id}`}
                                         variant="outlined"
@@ -542,12 +438,12 @@ const OrganizationShowContent = () => {
                                         sx={{ minHeight: 44, px: 2 }}
                                     >
                                         Add Contact
-                                    </Button>
+                                    </MuiButton>
                                 </Box>
 
                                 {contacts && contacts.length > 0 ? (
-                                    <Stack spacing={2}>
-                                        {contacts.map(contact => (
+                                    <Stack gap={4}>
+                                        {contacts.map((contact) => (
                                             <ContactCard
                                                 key={contact.id}
                                                 contact={contact}
@@ -555,22 +451,15 @@ const OrganizationShowContent = () => {
                                         ))}
                                     </Stack>
                                 ) : (
-                                    <Box sx={{ textAlign: 'center', py: 3 }}>
-                                        <PersonIcon
-                                            sx={{
-                                                fontSize: 48,
-                                                color: 'text.secondary',
-                                                mb: 1,
-                                            }}
-                                        />
+                                    <Box className="text-center py-6">
+                                        <PersonIcon className="text-5xl text-gray-400 mb-2" />
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
-                                            sx={{ mb: 2 }}
+                                            className="text-gray-500 mb-4"
                                         >
                                             No contacts yet
                                         </Typography>
-                                        <Button
+                                        <MuiButton
                                             component={Link}
                                             to={`/contacts/create?organizationId=${record.id}`}
                                             variant="contained"
@@ -578,61 +467,37 @@ const OrganizationShowContent = () => {
                                             sx={{ minHeight: 44 }}
                                         >
                                             Add First Contact
-                                        </Button>
+                                        </MuiButton>
                                     </Box>
                                 )}
-                            </CardContent>
-                        </Card>
-
-                        {/* Recent Interactions - Enhanced */}
-                        <RelatedEntitiesSection
-                            entityType="organization"
-                            title="Recent Interactions"
-                            relatedType="interactions"
-                            filter={{ organizationId: record?.id }}
-                            maxItems={3}
-                            createLink={`/interactions/create?organizationId=${record?.id}`}
-                            viewAllLink={`/interactions?filter=${JSON.stringify({ organizationId: record?.id })}`}
-                            emptyMessage="No interactions logged yet. Log an interaction to start tracking engagement history."
-                        />
-
-                        {/* Related Opportunities */}
-                        <RelatedEntitiesSection
-                            entityType="organization"
-                            title="Opportunities"
-                            relatedType="opportunities"
-                            filter={{ organizationId: record?.id }}
-                            maxItems={3}
-                            createLink={`/opportunities/create?organizationId=${record?.id}`}
-                            viewAllLink={`/opportunities?filter=${JSON.stringify({ organizationId: record?.id })}`}
-                            emptyMessage="No opportunities with this organization yet. Create one to start tracking potential deals."
-                        />
+                            </div>
+                        </div>
                     </Stack>
-                </Grid>
-            </Grid>
+                </div>
+            </div>
         </Box>
     );
 };
 
 // Mini contact card for organization context
 const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
-    const theme = useTheme();
+    const theme = useTwTheme();
 
     // Fetch role setting for display
     const { data: role } = useGetOne<Setting>(
         'settings',
         {
-            id: contact.roleId,
+            id: contact.role as any,
         },
-        { enabled: !!contact.roleId }
+        { enabled: !!contact.role }
     );
 
     const { data: influenceLevel } = useGetOne<Setting>(
         'settings',
         {
-            id: contact.influenceLevelId,
+            id: contact.influenceLevel as any,
         },
-        { enabled: !!contact.influenceLevelId }
+        { enabled: !!contact.influenceLevel }
     );
 
     const getInitials = () => {
@@ -642,7 +507,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
     };
 
     const getInfluenceColor = () => {
-        if (!influenceLevel?.color) return theme.palette.grey[300];
+        if (!influenceLevel?.color) return '#e0e0e0';
         return influenceLevel.color;
     };
 
@@ -662,74 +527,43 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
 
     const handleLinkedInClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (contact.linkedInUrl) {
-            window.open(contact.linkedInUrl, '_blank');
+        if (contact.linkedin_url) {
+            window.open(contact.linkedin_url, '_blank');
         }
     };
 
     return (
-        <Card
-            sx={{
-                border: 1,
-                borderColor: 'divider',
-                '&:hover': {
-                    borderColor: 'primary.main',
-                    boxShadow: 1,
-                },
-                transition: 'all 0.2s ease-in-out',
-            }}
-        >
-            <CardActionArea
-                component={Link}
+        <div className="border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200 ease-in-out">
+            <Link
                 to={`/contacts/${contact.id}/show`}
-                sx={{ p: 2 }}
+                className="block p-4 no-underline text-black"
             >
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar
-                        sx={{
-                            width: 50,
-                            height: 50,
-                            mr: 2,
-                            backgroundColor: getInfluenceColor(),
-                            color: theme.palette.getContrastText(
-                                getInfluenceColor()
-                            ),
-                            fontWeight: 600,
-                            fontSize: '1.1rem',
-                        }}
+                <Box className="flex items-center">
+                    <div
+                        className="w-12 h-12 rounded-full mr-4 flex items-center justify-center text-white font-semibold text-lg"
+                        style={{ backgroundColor: getInfluenceColor() }}
                     >
                         {getInitials()}
-                    </Avatar>
+                    </div>
 
-                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                mb: 0.5,
-                            }}
-                        >
+                    <Box className="flex-grow min-w-0">
+                        <Box className="flex items-center mb-1">
                             <Typography
                                 variant="subtitle1"
-                                sx={{ fontWeight: 600, mr: 1 }}
+                                className="font-semibold mr-2"
                             >
                                 {contact.firstName} {contact.lastName}
                             </Typography>
-                            {contact.isPrimary && (
+                            {contact.status === 'primary' && (
                                 <Chip
-                                    icon={<StarIcon fontSize="small" />}
-                                    label="Primary"
+                                    label={
+                                        <span className="flex items-center">
+                                            <StarIcon className="w-4 h-4 mr-1" />
+                                            Primary
+                                        </span>
+                                    }
                                     size="small"
-                                    sx={{
-                                        height: 20,
-                                        backgroundColor:
-                                            theme.palette.warning.main,
-                                        color: 'white',
-                                        fontWeight: 600,
-                                        '& .MuiChip-icon': {
-                                            color: 'white',
-                                        },
-                                    }}
+                                    className="h-5 bg-yellow-500 text-white font-semibold"
                                 />
                             )}
                         </Box>
@@ -737,94 +571,59 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                         {role && (
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
-                                sx={{ mb: 0.5 }}
+                                className="text-gray-500 mb-1"
                             >
                                 {role.label}
                             </Typography>
                         )}
 
-                        <Box
-                            sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}
-                        >
+                        <Box className="flex gap-1 flex-wrap">
                             {influenceLevel && (
                                 <Chip
                                     label={influenceLevel.label}
                                     size="small"
-                                    sx={{
-                                        height: 20,
-                                        fontSize: '0.7rem',
+                                    className="h-5 text-xs"
+                                    style={{
                                         backgroundColor:
                                             influenceLevel.color ||
-                                            theme.palette.grey[300],
-                                        color: theme.palette.getContrastText(
-                                            influenceLevel.color ||
-                                                theme.palette.grey[300]
-                                        ),
+                                            '#e0e0e0',
                                     }}
                                 />
                             )}
                         </Box>
                     </Box>
 
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    <Box className="flex gap-1">
                         {contact.phone && (
-                            <IconButton
+                            <button
                                 onClick={handlePhoneClick}
-                                size="small"
-                                sx={{
-                                    width: 40,
-                                    height: 40,
-                                    backgroundColor: 'primary.main',
-                                    color: 'white',
-                                    '&:hover': {
-                                        backgroundColor: 'primary.dark',
-                                    },
-                                }}
+                                className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="Call contact"
                             >
-                                <PhoneIcon fontSize="small" />
-                            </IconButton>
+                                <PhoneIcon className="text-sm" />
+                            </button>
                         )}
                         {contact.email && (
-                            <IconButton
+                            <button
                                 onClick={handleEmailClick}
-                                size="small"
-                                sx={{
-                                    width: 40,
-                                    height: 40,
-                                    backgroundColor: 'primary.main',
-                                    color: 'white',
-                                    '&:hover': {
-                                        backgroundColor: 'primary.dark',
-                                    },
-                                }}
+                                className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="Email contact"
                             >
-                                <EmailIcon fontSize="small" />
-                            </IconButton>
+                                <EmailIcon className="text-sm" />
+                            </button>
                         )}
-                        {contact.linkedInUrl && (
-                            <IconButton
+                        {contact.linkedin_url && (
+                            <button
                                 onClick={handleLinkedInClick}
-                                size="small"
-                                sx={{
-                                    width: 40,
-                                    height: 40,
-                                    backgroundColor: 'primary.main',
-                                    color: 'white',
-                                    '&:hover': {
-                                        backgroundColor: 'primary.dark',
-                                    },
-                                }}
+                                className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="LinkedIn profile"
                             >
-                                <LinkedInIcon fontSize="small" />
-                            </IconButton>
+                                <LinkedInIcon className="text-sm" />
+                            </button>
                         )}
                     </Box>
                 </Box>
-            </CardActionArea>
-        </Card>
+            </Link>
+        </div>
     );
 };

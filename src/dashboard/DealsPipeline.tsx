@@ -3,8 +3,8 @@
  * It's currently not used in the application but can be added to the dashboard.
  */
 
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import { Box, Card } from '@mui/material';
+import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { Box, Card } from '../components/ui-kit';
 import {
     Link,
     ReferenceField,
@@ -48,9 +48,9 @@ export const DealsPipeline = () => {
 
     return (
         <>
-            <Box display="flex" alignItems="center" marginBottom="1em">
-                <Box ml={2} mr={2} display="flex">
-                    <MonetizationOnIcon color="disabled" fontSize="large" />
+            <Box className="flex items-center mb-4">
+                <Box className="mx-4 flex">
+                    <CurrencyDollarIcon className="h-8 w-8 text-gray-400" />
                 </Box>
                 <Link
                     underline="none"

@@ -8,27 +8,38 @@ import {
     Chip,
     Stack,
     LinearProgress,
-    useTheme,
-    useMediaQuery,
     IconButton,
-} from '@mui/material';
+} from '../components/ui-kit';
 import {
-    Business as OrganizationIcon,
-    People as ContactIcon,
-    Assignment as InteractionIcon,
-    TrendingUp as OpportunityIcon,
-    AttachMoney as RevenueIcon,
-    Schedule as ScheduleIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Person as PersonIcon,
-    Assessment as ConversionIcon,
-    Refresh as RefreshIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon as OrganizationIcon,
+    UsersIcon as ContactIcon,
+    DocumentTextIcon as InteractionIcon,
+    TrendingUpIcon as OpportunityIcon,
+    CurrencyDollarIcon as RevenueIcon,
+    CalendarIcon as ScheduleIcon,
+    PhoneIcon,
+    EnvelopeIcon as EmailIcon,
+    UserIcon as PersonIcon,
+    ChartBarIcon as ConversionIcon,
+    ArrowPathIcon as RefreshIcon,
+} from '@heroicons/react/24/outline';
 import { format, startOfWeek, startOfMonth, subDays, subMonths } from 'date-fns';
 import { useGetList } from 'react-admin';
 
 import { Organization, Contact, Interaction, Deal, Setting } from '../types';
+
+// Helper function to get theme colors
+const getColorValue = (color: string, variant: string) => {
+    const colorMap: Record<string, Record<string, string>> = {
+        primary: { light: '#e3f2fd', contrastText: '#1976d2', main: '#1976d2' },
+        secondary: { light: '#f3e5f5', contrastText: '#7b1fa2', main: '#7b1fa2' },
+        success: { light: '#e8f5e8', contrastText: '#2e7d32', main: '#2e7d32' },
+        warning: { light: '#fff3e0', contrastText: '#f57c00', main: '#f57c00' },
+        error: { light: '#ffebee', contrastText: '#d32f2f', main: '#d32f2f' },
+        info: { light: '#e1f5fe', contrastText: '#0288d1', main: '#0288d1' },
+    };
+    return colorMap[color]?.[variant] || '#f5f5f5';
+};
 import { useDashboardReport } from '../hooks/useReporting';
 
 interface StatCardProps {
@@ -55,33 +66,22 @@ const StatCard: React.FC<StatCardProps> = ({
     progress,
     onClick,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = window.innerWidth < 640; // Tailwind 'sm' breakpoint
 
     return (
         <Card 
-            sx={{ 
-                height: '100%', 
-                cursor: onClick ? 'pointer' : 'default',
-                '&:hover': onClick ? { 
-                    boxShadow: theme.shadows[4],
-                    transform: 'translateY(-2px)',
-                    transition: 'all 0.2s ease-in-out',
-                } : {},
-            }}
+            className={`h-full transition-all duration-200 ease-in-out ${
+                onClick ? 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5' : 'cursor-default'
+            }`}
             onClick={onClick}
         >
-            <CardContent sx={{ p: isMobile ? 2 : 3 }}>
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+            <CardContent className={isMobile ? 'p-4' : 'p-6'}>
+                <Box className="flex justify-between items-start mb-2">
                     <Box
-                        sx={{
-                            bgcolor: `${color}.light`,
-                            color: `${color}.contrastText`,
-                            borderRadius: 2,
-                            p: 1.5,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                        className="rounded-lg p-3 flex items-center justify-center"
+                        style={{
+                            backgroundColor: getColorValue(color, 'light'),
+                            color: getColorValue(color, 'contrastText'),
                         }}
                     >
                         {icon}
@@ -91,7 +91,7 @@ const StatCard: React.FC<StatCardProps> = ({
                             size="small"
                             label={`${trend.isPositive ? '+' : ''}${trend.value.toFixed(1)}%`}
                             color={trend.isPositive ? 'success' : 'error'}
-                            sx={{ height: 20, fontSize: '0.7rem' }}
+                            className="h-5 text-xs"
                         />
                     )}
                 </Box>
@@ -99,40 +99,35 @@ const StatCard: React.FC<StatCardProps> = ({
                 <Typography
                     variant={isMobile ? 'h5' : 'h4'}
                     component="div"
-                    sx={{ fontWeight: 'bold', mb: 0.5 }}
-                    color={`${color}.main`}
+                    className="font-bold mb-1"
+                    style={{ color: getColorValue(color, 'main') }}
                 >
                     {value}
                 </Typography>
 
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                <Typography variant="body2" className="text-gray-600 mb-2">
                     {title}
                 </Typography>
 
                 {subtitle && (
-                    <Typography variant="caption" color="text.secondary" display="block">
+                    <Typography variant="caption" className="text-gray-600 block">
                         {subtitle}
                     </Typography>
                 )}
 
                 {progress !== undefined && (
-                    <Box sx={{ mt: 1.5 }}>
+                    <Box className="mt-3">
                         <LinearProgress
                             variant="determinate"
                             value={progress}
-                            sx={{ 
-                                height: 6, 
-                                borderRadius: 3,
-                                backgroundColor: `${color}.light`,
-                                '& .MuiLinearProgress-bar': {
-                                    backgroundColor: `${color}.main`,
-                                },
+                            className="h-1.5 rounded"
+                            style={{
+                                backgroundColor: getColorValue(color, 'light'),
                             }}
                         />
                         <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ mt: 0.5, display: 'block' }}
+                            className="text-gray-600 mt-1 block"
                         >
                             {progress}% of monthly target
                         </Typography>
@@ -144,8 +139,7 @@ const StatCard: React.FC<StatCardProps> = ({
 };
 
 export const QuickStatsSection = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = window.innerWidth < 768; // Tailwind 'md' breakpoint
 
     // Use the new reporting API for dashboard data
     const { data: dashboardData, loading: dashboardLoading, fetch: fetchDashboard } = useDashboardReport();

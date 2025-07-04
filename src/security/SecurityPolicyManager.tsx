@@ -16,8 +16,6 @@ import {
     ListItem,
     ListItemText,
     ListItemSecondaryAction,
-    useTheme,
-    useMediaQuery,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -44,6 +42,7 @@ import {
 import { useNotify, useGetIdentity } from 'react-admin';
 
 import { User } from '../types';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface SecuritySetting {
     id: string;
@@ -63,15 +62,16 @@ interface SecurityPolicyManagerProps {
 }
 
 export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
-    onSettingChange
+    onSettingChange,
 }) => {
     const { data: identity } = useGetIdentity();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
     const notify = useNotify();
 
     const [settings, setSettings] = useState<SecuritySetting[]>([]);
-    const [editingSettings, setEditingSettings] = useState<{[key: string]: any}>({});
+    const [editingSettings, setEditingSettings] = useState<{
+        [key: string]: any;
+    }>({});
     const [hasChanges, setHasChanges] = useState(false);
     const [loading, setLoading] = useState(false);
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -88,7 +88,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 5,
             max: 120,
-            unit: 'minutes'
+            unit: 'minutes',
         },
         {
             id: 'session_max_duration',
@@ -99,7 +99,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 1,
             max: 24,
-            unit: 'hours'
+            unit: 'hours',
         },
         {
             id: 'session_concurrent_limit',
@@ -110,7 +110,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 1,
             max: 10,
-            unit: 'sessions'
+            unit: 'sessions',
         },
 
         // Password Policy
@@ -123,7 +123,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 8,
             max: 64,
-            unit: 'characters'
+            unit: 'characters',
         },
         {
             id: 'password_require_uppercase',
@@ -131,7 +131,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             key: 'require_uppercase',
             value: 'true',
             description: 'Require uppercase characters',
-            type: 'boolean'
+            type: 'boolean',
         },
         {
             id: 'password_require_lowercase',
@@ -139,7 +139,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             key: 'require_lowercase',
             value: 'true',
             description: 'Require lowercase characters',
-            type: 'boolean'
+            type: 'boolean',
         },
         {
             id: 'password_require_numbers',
@@ -147,7 +147,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             key: 'require_numbers',
             value: 'true',
             description: 'Require numeric characters',
-            type: 'boolean'
+            type: 'boolean',
         },
         {
             id: 'password_require_symbols',
@@ -155,7 +155,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             key: 'require_symbols',
             value: 'true',
             description: 'Require special characters',
-            type: 'boolean'
+            type: 'boolean',
         },
         {
             id: 'password_expiry_days',
@@ -166,7 +166,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 30,
             max: 365,
-            unit: 'days'
+            unit: 'days',
         },
         {
             id: 'password_history_count',
@@ -177,7 +177,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 1,
             max: 24,
-            unit: 'passwords'
+            unit: 'passwords',
         },
 
         // Security Controls
@@ -186,11 +186,12 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             category: 'security',
             key: 'max_failed_attempts',
             value: '5',
-            description: 'Maximum failed login attempts before lockout',
+            description:
+                'Maximum failed login attempts before lockout',
             type: 'number',
             min: 3,
             max: 10,
-            unit: 'attempts'
+            unit: 'attempts',
         },
         {
             id: 'security_lockout_duration',
@@ -201,7 +202,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 5,
             max: 60,
-            unit: 'minutes'
+            unit: 'minutes',
         },
         {
             id: 'security_require_mfa_admin',
@@ -209,7 +210,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             key: 'require_mfa_admin',
             value: 'true',
             description: 'Require MFA for admin users',
-            type: 'boolean'
+            type: 'boolean',
         },
         {
             id: 'security_require_mfa_all',
@@ -217,7 +218,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             key: 'require_mfa_all',
             value: 'false',
             description: 'Require MFA for all users',
-            type: 'boolean'
+            type: 'boolean',
         },
 
         // Monitoring
@@ -230,7 +231,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 90,
             max: 2555, // 7 years
-            unit: 'days'
+            unit: 'days',
         },
         {
             id: 'monitoring_risk_threshold_high',
@@ -241,7 +242,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 70,
             max: 95,
-            unit: 'score'
+            unit: 'score',
         },
         {
             id: 'monitoring_risk_threshold_medium',
@@ -252,8 +253,8 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             type: 'number',
             min: 30,
             max: 70,
-            unit: 'score'
-        }
+            unit: 'score',
+        },
     ];
 
     useEffect(() => {
@@ -266,10 +267,13 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             // In production, fetch from API
             setSettings(defaultSettings);
             setEditingSettings(
-                defaultSettings.reduce((acc, setting) => ({
-                    ...acc,
-                    [setting.id]: setting.value
-                }), {})
+                defaultSettings.reduce(
+                    (acc, setting) => ({
+                        ...acc,
+                        [setting.id]: setting.value,
+                    }),
+                    {}
+                )
             );
         } catch (error) {
             notify('Failed to load security settings', { type: 'error' });
@@ -279,9 +283,9 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     };
 
     const handleSettingChange = (settingId: string, value: any) => {
-        setEditingSettings(prev => ({
+        setEditingSettings((prev) => ({
             ...prev,
-            [settingId]: value
+            [settingId]: value,
         }));
         setHasChanges(true);
     };
@@ -290,23 +294,25 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
         setLoading(true);
         try {
             // In production, save to API
-            const updatedSettings = settings.map(setting => ({
+            const updatedSettings = settings.map((setting) => ({
                 ...setting,
-                value: editingSettings[setting.id] || setting.value
+                value: editingSettings[setting.id] || setting.value,
             }));
 
             setSettings(updatedSettings);
             setHasChanges(false);
             setSaveDialogOpen(false);
-            
+
             // Notify parent component of changes
-            updatedSettings.forEach(setting => {
+            updatedSettings.forEach((setting) => {
                 if (onSettingChange) {
                     onSettingChange(setting);
                 }
             });
 
-            notify('Security settings saved successfully', { type: 'success' });
+            notify('Security settings saved successfully', {
+                type: 'success',
+            });
         } catch (error) {
             notify('Failed to save security settings', { type: 'error' });
         } finally {
@@ -316,10 +322,13 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
 
     const handleReset = () => {
         setEditingSettings(
-            settings.reduce((acc, setting) => ({
-                ...acc,
-                [setting.id]: setting.value
-            }), {})
+            settings.reduce(
+                (acc, setting) => ({
+                    ...acc,
+                    [setting.id]: setting.value,
+                }),
+                {}
+            )
         );
         setHasChanges(false);
     };
@@ -334,7 +343,12 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                         control={
                             <Switch
                                 checked={currentValue === 'true'}
-                                onChange={(e) => handleSettingChange(setting.id, e.target.checked.toString())}
+                                onChange={(e) =>
+                                    handleSettingChange(
+                                        setting.id,
+                                        e.target.checked.toString()
+                                    )
+                                }
                                 color="primary"
                             />
                         }
@@ -347,12 +361,14 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     <TextField
                         type="number"
                         value={currentValue}
-                        onChange={(e) => handleSettingChange(setting.id, e.target.value)}
+                        onChange={(e) =>
+                            handleSettingChange(setting.id, e.target.value)
+                        }
                         size="small"
                         inputProps={{
                             min: setting.min,
                             max: setting.max,
-                            style: { textAlign: 'center' }
+                            style: { textAlign: 'center' },
                         }}
                         sx={{ width: 100 }}
                     />
@@ -363,9 +379,11 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     <FormControl size="small" sx={{ minWidth: 120 }}>
                         <Select
                             value={currentValue}
-                            onChange={(e) => handleSettingChange(setting.id, e.target.value)}
+                            onChange={(e) =>
+                                handleSettingChange(setting.id, e.target.value)
+                            }
                         >
-                            {setting.options?.map(option => (
+                            {setting.options?.map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {option}
                                 </MenuItem>
@@ -378,7 +396,9 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                 return (
                     <TextField
                         value={currentValue}
-                        onChange={(e) => handleSettingChange(setting.id, e.target.value)}
+                        onChange={(e) =>
+                            handleSettingChange(setting.id, e.target.value)
+                        }
                         size="small"
                         sx={{ width: 200 }}
                     />
@@ -388,21 +408,31 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
 
     const getCategoryIcon = (category: string) => {
         switch (category) {
-            case 'session': return <TimeIcon />;
-            case 'password': return <KeyIcon />;
-            case 'security': return <ShieldIcon />;
-            case 'monitoring': return <WarningIcon />;
-            default: return <SettingsIcon />;
+            case 'session':
+                return <TimeIcon />;
+            case 'password':
+                return <KeyIcon />;
+            case 'security':
+                return <ShieldIcon />;
+            case 'monitoring':
+                return <WarningIcon />;
+            default:
+                return <SettingsIcon />;
         }
     };
 
     const getCategoryColor = (category: string) => {
         switch (category) {
-            case 'session': return 'primary';
-            case 'password': return 'secondary';
-            case 'security': return 'error';
-            case 'monitoring': return 'warning';
-            default: return 'default';
+            case 'session':
+                return 'primary';
+            case 'password':
+                return 'secondary';
+            case 'security':
+                return 'error';
+            case 'monitoring':
+                return 'warning';
+            default:
+                return 'default';
         }
     };
 
@@ -412,7 +442,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
         }
         acc[setting.category].push(setting);
         return acc;
-    }, {} as {[key: string]: SecuritySetting[]});
+    }, {} as { [key: string]: SecuritySetting[] });
 
     // Check if user has admin permissions
     const isAdmin = identity?.role === 'admin';
@@ -422,7 +452,8 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             <Alert severity="error" sx={{ m: 3 }}>
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
-                    You need administrator privileges to access security policy management.
+                    You need administrator privileges to access security policy
+                    management.
                 </Typography>
             </Alert>
         );
@@ -431,7 +462,12 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     return (
         <Box sx={{ p: 3 }}>
             {/* Header */}
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={3}
+            >
                 <Box display="flex" alignItems="center" gap={2}>
                     <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
                     <Box>
@@ -439,7 +475,8 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                             Security Policy Manager
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Configure security policies and access controls for ForkFlow-CRM
+                            Configure security policies and access controls for
+                            ForkFlow-CRM
                         </Typography>
                     </Box>
                 </Box>
@@ -471,9 +508,9 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     <Typography variant="body1" gutterBottom>
                         You have unsaved changes to security settings.
                     </Typography>
-                    <Button 
-                        size="small" 
-                        variant="outlined" 
+                    <Button
+                        size="small"
+                        variant="outlined"
                         onClick={handleReset}
                         sx={{ mt: 1 }}
                     >
@@ -484,74 +521,131 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
 
             {/* Security Settings by Category */}
             <Grid container spacing={3}>
-                {Object.entries(groupedSettings).map(([category, categorySettings]) => (
-                    <Grid item xs={12} lg={6} key={category}>
-                        <Card>
-                            <CardContent>
-                                <Box display="flex" alignItems="center" gap={2} mb={2}>
-                                    {getCategoryIcon(category)}
-                                    <Typography variant="h6" sx={{ textTransform: 'capitalize' }}>
-                                        {category} Settings
-                                    </Typography>
-                                    <Chip 
-                                        label={categorySettings.length} 
-                                        size="small"
-                                        color={getCategoryColor(category) as any}
-                                    />
-                                </Box>
+                {Object.entries(groupedSettings).map(
+                    ([category, categorySettings]) => (
+                        <Grid item xs={12} lg={6} key={category}>
+                            <Card>
+                                <CardContent>
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={2}
+                                        mb={2}
+                                    >
+                                        {getCategoryIcon(category)}
+                                        <Typography
+                                            variant="h6"
+                                            sx={{ textTransform: 'capitalize' }}
+                                        >
+                                            {category} Settings
+                                        </Typography>
+                                        <Chip
+                                            label={categorySettings.length}
+                                            size="small"
+                                            color={
+                                                getCategoryColor(
+                                                    category
+                                                ) as any
+                                            }
+                                        />
+                                    </Box>
 
-                                <List dense>
-                                    {categorySettings.map((setting, index) => (
-                                        <React.Fragment key={setting.id}>
-                                            <ListItem
-                                                sx={{
-                                                    flexDirection: isMobile ? 'column' : 'row',
-                                                    alignItems: isMobile ? 'flex-start' : 'center',
-                                                    py: 2
-                                                }}
-                                            >
-                                                <ListItemText
-                                                    primary={setting.description}
-                                                    secondary={
-                                                        <Box display="flex" alignItems="center" gap={1}>
-                                                            <Typography variant="caption" color="text.secondary">
-                                                                Key: {setting.key}
-                                                            </Typography>
-                                                            {setting.unit && (
-                                                                <Chip 
-                                                                    label={setting.unit} 
-                                                                    size="small" 
-                                                                    variant="outlined"
-                                                                />
-                                                            )}
-                                                        </Box>
-                                                    }
-                                                    sx={{ flex: 1, mr: isMobile ? 0 : 2 }}
-                                                />
-                                                <ListItemSecondaryAction
-                                                    sx={{
-                                                        position: isMobile ? 'static' : 'absolute',
-                                                        right: isMobile ? 'auto' : 16,
-                                                        transform: isMobile ? 'none' : 'translateY(-50%)',
-                                                        mt: isMobile ? 1 : 0
-                                                    }}
+                                    <List dense>
+                                        {categorySettings.map(
+                                            (setting, index) => (
+                                                <React.Fragment
+                                                    key={setting.id}
                                                 >
-                                                    {renderSettingControl(setting)}
-                                                </ListItemSecondaryAction>
-                                            </ListItem>
-                                            {index < categorySettings.length - 1 && <Divider />}
-                                        </React.Fragment>
-                                    ))}
-                                </List>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
+                                                    <ListItem
+                                                        sx={{
+                                                            flexDirection:
+                                                                isMobile
+                                                                    ? 'column'
+                                                                    : 'row',
+                                                            alignItems:
+                                                                isMobile
+                                                                    ? 'flex-start'
+                                                                    : 'center',
+                                                            py: 2,
+                                                        }}
+                                                    >
+                                                        <ListItemText
+                                                            primary={
+                                                                setting.description
+                                                            }
+                                                            secondary={
+                                                                <Box
+                                                                    display="flex"
+                                                                    alignItems="center"
+                                                                    gap={1}
+                                                                >
+                                                                    <Typography
+                                                                        variant="caption"
+                                                                        color="text.secondary"
+                                                                    >
+                                                                        Key:{' '}
+                                                                        {
+                                                                            setting.key
+                                                                        }
+                                                                    </Typography>
+                                                                    {setting.unit && (
+                                                                        <Chip
+                                                                            label={
+                                                                                setting.unit
+                                                                            }
+                                                                            size="small"
+                                                                            variant="outlined"
+                                                                        />
+                                                                    )}
+                                                                </Box>
+                                                            }
+                                                            sx={{
+                                                                flex: 1,
+                                                                mr: isMobile
+                                                                    ? 0
+                                                                    : 2,
+                                                            }}
+                                                        />
+                                                        <ListItemSecondaryAction
+                                                            sx={{
+                                                                position:
+                                                                    isMobile
+                                                                        ? 'static'
+                                                                        : 'absolute',
+                                                                right: isMobile
+                                                                    ? 'auto'
+                                                                    : 16,
+                                                                transform:
+                                                                    isMobile
+                                                                        ? 'none'
+                                                                        : 'translateY(-50%)',
+                                                                mt: isMobile
+                                                                    ? 1
+                                                                    : 0,
+                                                            }}
+                                                        >
+                                                            {renderSettingControl(
+                                                                setting
+                                                            )}
+                                                        </ListItemSecondaryAction>
+                                                    </ListItem>
+                                                    {index <
+                                                        categorySettings.length -
+                                                            1 && <Divider />}
+                                                </React.Fragment>
+                                            )
+                                        )}
+                                    </List>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    )
+                )}
             </Grid>
 
             {/* Save Confirmation Dialog */}
-            <Dialog 
-                open={saveDialogOpen} 
+            <Dialog
+                open={saveDialogOpen}
                 onClose={() => setSaveDialogOpen(false)}
                 maxWidth="sm"
                 fullWidth
@@ -564,26 +658,28 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                 </DialogTitle>
                 <DialogContent>
                     <Typography paragraph>
-                        You are about to update security policies for the entire system. 
-                        These changes will affect all users and may impact system behavior.
+                        You are about to update security policies for the entire
+                        system. These changes will affect all users and may
+                        impact system behavior.
                     </Typography>
                     <Typography paragraph>
                         <strong>Changes will take effect immediately.</strong>
                     </Typography>
                     <Alert severity="info">
-                        Make sure all changes have been reviewed and approved by your security team 
-                        before applying them to the production environment.
+                        Make sure all changes have been reviewed and approved by
+                        your security team before applying them to the
+                        production environment.
                     </Alert>
                 </DialogContent>
                 <DialogActions>
-                    <Button 
+                    <Button
                         onClick={() => setSaveDialogOpen(false)}
                         disabled={loading}
                     >
                         Cancel
                     </Button>
-                    <Button 
-                        variant="contained" 
+                    <Button
+                        variant="contained"
                         onClick={handleSave}
                         disabled={loading}
                         color="warning"

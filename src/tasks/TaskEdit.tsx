@@ -1,10 +1,3 @@
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Stack,
-} from '@mui/material';
 import * as React from 'react';
 import {
     DateInput,
@@ -19,7 +12,8 @@ import {
     useNotify,
 } from 'react-admin';
 import { useConfigurationContext } from '../root/ConfigurationContext';
-import { DialogCloseButton } from '../misc/DialogCloseButton';
+import { Modal } from '../components/ui-kit/Modal';
+import { Button } from '../components/ui-kit/Button';
 
 export const TaskEdit = ({
     open,
@@ -33,17 +27,10 @@ export const TaskEdit = ({
     const { taskTypes } = useConfigurationContext();
     const notify = useNotify();
     return (
-        <Dialog
-            open={open}
-            onClose={close}
-            fullWidth
-            disableRestoreFocus
-            maxWidth="sm"
-        >
+        <Modal isOpen={open} onClose={close} title="Edit task">
             <EditBase
                 id={taskId}
                 resource="tasks"
-                sx={{ '& .RaCreate-main': { mt: 0 } }}
                 mutationOptions={{
                     onSuccess: () => {
                         close();
@@ -56,22 +43,19 @@ export const TaskEdit = ({
                 redirect={false}
             >
                 <Form>
-                    <DialogCloseButton onClose={close} />
-                    <DialogTitle id="form-dialog-title">Edit task</DialogTitle>
-                    <DialogContent>
+                    <div className="p-4">
                         <TextInput
                             autoFocus
                             source="text"
                             label="Description"
                             validate={required()}
                             multiline
-                            helperText={false}
+                            className="w-full"
                         />
-                        <Stack direction="row" spacing={1} mt={2}>
+                        <div className="flex space-x-4 mt-4">
                             <DateInput
                                 source="due_date"
                                 validate={required()}
-                                helperText={false}
                             />
                             <SelectInput
                                 source="type"
@@ -80,18 +64,11 @@ export const TaskEdit = ({
                                     id: type,
                                     name: type,
                                 }))}
-                                helperText={false}
                             />
-                        </Stack>
-                    </DialogContent>
-                    <DialogActions sx={{ p: 0 }}>
-                        <Toolbar
-                            sx={{
-                                width: '100%',
-                                justifyContent: 'space-between',
-                                gap: 1,
-                            }}
-                        >
+                        </div>
+                    </div>
+                    <Toolbar>
+                        <div className="flex justify-between w-full">
                             <SaveButton label="Save" />
                             <DeleteButton
                                 label="Delete"
@@ -106,10 +83,10 @@ export const TaskEdit = ({
                                 }}
                                 redirect={false}
                             />
-                        </Toolbar>
-                    </DialogActions>
+                        </div>
+                    </Toolbar>
                 </Form>
             </EditBase>
-        </Dialog>
+        </Modal>
     );
 };

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-    Button,
     useUpdateMany,
     useNotify,
     useRefresh,
@@ -12,6 +11,7 @@ import {
     CheckCircle as ActivateIcon,
     Cancel as DeactivateIcon,
 } from '@mui/icons-material';
+import { Button } from '../components/Button/Button';
 
 export const ProductBulkActions = () => {
     return (
@@ -55,19 +55,11 @@ const BulkActivateButton = () => {
     return (
         <Button
             onClick={handleActivate}
-            startIcon={<ActivateIcon />}
             disabled={selectedIds.length === 0 || isLoading}
-            sx={{
-                minHeight: '44px',
-                px: 2,
-                color: 'success.main',
-                borderColor: 'success.main',
-                '&:hover': {
-                    backgroundColor: 'success.light',
-                    borderColor: 'success.dark',
-                },
-            }}
+            className="min-h-11 px-2 text-green-600 border-green-600 hover:bg-green-100 hover:border-green-700"
+            variant="secondary"
         >
+            <ActivateIcon className="mr-1" />
             Activate
         </Button>
     );
@@ -106,19 +98,11 @@ const BulkDeactivateButton = () => {
     return (
         <Button
             onClick={handleDeactivate}
-            startIcon={<DeactivateIcon />}
             disabled={selectedIds.length === 0 || isLoading}
-            sx={{
-                minHeight: '44px',
-                px: 2,
-                color: 'warning.main',
-                borderColor: 'warning.main',
-                '&:hover': {
-                    backgroundColor: 'warning.light',
-                    borderColor: 'warning.dark',
-                },
-            }}
+            className="min-h-11 px-2 text-yellow-600 border-yellow-600 hover:bg-yellow-100 hover:border-yellow-700"
+            variant="secondary"
         >
+            <DeactivateIcon className="mr-1" />
             Deactivate
         </Button>
     );

@@ -1,11 +1,10 @@
-import { Chip } from '@mui/material';
 import { useState } from 'react';
+import { Chip } from '../components/DataDisplay/Chip';
 import { Tag } from '../types';
 import { TagEditModal } from './TagEditModal';
 
 type TagChipProps = {
     tag: Tag;
-
     onUnlink: () => Promise<void>;
 };
 
@@ -22,14 +21,21 @@ export function TagChip({ tag, onUnlink }: TagChipProps) {
 
     return (
         <>
-            <Chip
-                size="small"
-                variant="outlined"
-                onDelete={onUnlink}
-                label={tag.name}
-                style={{ backgroundColor: tag.color, border: 0 }}
-                onClick={handleClick}
-            />
+            <div className="relative group">
+                <Chip
+                    size="small"
+                    label={tag.name}
+                    className="cursor-pointer"
+                    style={{ backgroundColor: tag.color }}
+                    onClick={handleClick}
+                />
+                <button
+                    onClick={onUnlink}
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                    &times;
+                </button>
+            </div>
             <TagEditModal tag={tag} open={open} onClose={handleClose} />
         </>
     );

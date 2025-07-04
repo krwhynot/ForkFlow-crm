@@ -1,5 +1,8 @@
-import DealIcon from '@mui/icons-material/MonetizationOn';
-import { AvatarGroup, Box, Paper, Typography } from '@mui/material';
+import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { AvatarGroup } from '../components/ui-kit/AvatarGroup';
+import { Box } from '../components/ui-kit/Box';
+import { Paper } from '../components/ui-kit/Paper';
+import { Typography } from '../components/ui-kit/Typography';
 import { useState } from 'react';
 import {
     Link,
@@ -34,12 +37,12 @@ export const CompanyCard = (props: { record?: Company }) => {
             onMouseLeave={() => setElevation(1)}
         >
             <Paper
-                sx={{
+                style={{
                     height: 200,
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    padding: '1em',
+                    padding: '1rem',
                 }}
                 elevation={elevation}
             >
@@ -72,14 +75,11 @@ export const CompanyCard = (props: { record?: Company }) => {
                     </Box>
                     {record.nb_deals ? (
                         <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                ml: 2,
-                                gap: 0.5,
-                            }}
+                            display="flex"
+                            alignItems="center"
+                            style={{ marginLeft: '0.5rem', gap: '0.125rem' }}
                         >
-                            <DealIcon color="disabled" />
+                            <CurrencyDollarIcon className="h-4 w-4 text-gray-400" />
                             <Typography variant="subtitle2">
                                 {record.nb_deals}
                             </Typography>
@@ -106,13 +106,6 @@ const AvatarGroupIterator = () => {
             max={4}
             total={total}
             spacing="medium"
-            sx={{
-                '& .MuiAvatar-circular': {
-                    width: 20,
-                    height: 20,
-                    fontSize: '0.6rem',
-                },
-            }}
         >
             {data.map((record: any) => (
                 <Avatar

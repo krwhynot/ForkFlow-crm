@@ -1,5 +1,5 @@
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
-import { Box } from '@mui/material';
+import { Box } from '../components/ui-kit';
 import isEqual from 'lodash/isEqual';
 import { useEffect, useState } from 'react';
 import { DataProvider, useDataProvider, useListContext } from 'react-admin';

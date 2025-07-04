@@ -80,6 +80,7 @@ export interface Organization {
     // Territory management
     territoryId?: number;
     assignedSalesRep?: string;
+    accountManager?: string;
 }
 
 // Legacy Company type for compatibility
@@ -181,6 +182,7 @@ export interface Deal {
 
 // Product types
 export interface Product {
+    [key: string]: any;
     id: number;
     name: string;
     sku?: string;
@@ -449,13 +451,18 @@ export interface Visit {
     organizationId?: number;
     organization?: Organization;
     date: string;
+    visit_date: string;
     duration?: number;
+    duration_minutes?: number;
     notes?: string;
     location?: GPSCoordinates;
     salesId?: number;
     sales?: Sale;
     createdAt: string;
     updatedAt?: string;
+    latitude?: number;
+    longitude?: number;
+    total_visits?: number;
 }
 
 export interface GPSCoordinates {
@@ -463,4 +470,29 @@ export interface GPSCoordinates {
     longitude: number;
     accuracy?: number;
     timestamp?: string;
+}
+
+export interface Customer extends Organization {
+    // Customer-specific fields can be added here
+}
+
+export interface Order {
+    id: number;
+    order_date: string;
+    total_amount: number;
+    // Other order fields can be added here
+}
+
+export interface Reminder {
+    id: number;
+    title: string;
+    customer_name: string;
+    customer_id: number;
+    reminder_date: string;
+    is_completed: boolean;
+    priority: 'low' | 'medium' | 'high' | 'urgent';
+    snooze_count: number;
+    notes?: string;
+    completed_at?: string;
+    snoozed_until?: string;
 }

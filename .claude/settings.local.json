@@ -81,7 +81,8 @@
       "mcp__filesystem__list_allowed_directories",
       "mcp__supabase__get_project",
       "mcp__supabase__get_project_url",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(cat:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

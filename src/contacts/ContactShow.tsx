@@ -22,18 +22,16 @@ import {
     IconButton,
     Stack,
     Divider,
-    useTheme,
     Grid,
     Avatar,
-} from '@mui/material';
+} from '../components/ui-kit';
 import {
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LinkedIn as LinkedInIcon,
-    Business as BusinessIcon,
-    Star as StarIcon,
-    Person as PersonIcon,
-} from '@mui/icons-material';
+    PhoneIcon,
+    EnvelopeIcon,
+    BuildingOfficeIcon,
+    StarIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 import { Contact, Setting, Organization } from '../types';
 import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
 import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
@@ -53,7 +51,15 @@ export const ContactShow = () => (
 
 const ContactShowContent = () => {
     const record = useRecordContext<Contact>();
-    const theme = useTheme();
+    const getContrastText = (backgroundColor: string) => {
+        // Simple contrast calculation - use white text for dark colors
+        const hex = backgroundColor.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 155 ? '#000000' : '#ffffff';
+    };
 
     // Fetch Settings for display
     const { data: role } = useGetOne<Setting>(
@@ -116,12 +122,12 @@ const ContactShowContent = () => {
     };
 
     const getInfluenceColor = () => {
-        if (!influenceLevel?.color) return theme.palette.grey[300];
+        if (!influenceLevel?.color) return '#d1d5db'; // gray-300
         return influenceLevel.color;
     };
 
     return (
-        <Box sx={{ p: 2 }}>
+        <Box className="p-4">
             <RelationshipBreadcrumbs
                 currentEntity="contact"
                 showContext={true}
@@ -135,51 +141,34 @@ const ContactShowContent = () => {
                     <Card>
                         <CardContent>
                             {/* Header */}
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    mb: 3,
-                                }}
-                            >
+                            <Box className="flex items-center mb-6">
                                 <Avatar
-                                    sx={{
-                                        width: 80,
-                                        height: 80,
-                                        mr: 3,
+                                    size="2xl"
+                                    className="mr-6 font-semibold text-3xl"
+                                    style={{
                                         backgroundColor: getInfluenceColor(),
-                                        color: theme.palette.getContrastText(
-                                            getInfluenceColor()
-                                        ),
-                                        fontWeight: 600,
-                                        fontSize: '2rem',
+                                        color: getContrastText(getInfluenceColor()),
                                     }}
                                 >
                                     {getInitials()}
                                 </Avatar>
-                                <Box sx={{ flexGrow: 1 }}>
+                                <Box className="flex-grow">
                                     <Typography
                                         variant="h4"
                                         component="h1"
-                                        sx={{ fontWeight: 600, mb: 1 }}
+                                        className="font-semibold mb-2"
                                     >
                                         {record.firstName} {record.lastName}
                                         {record.isPrimary && (
                                             <Chip
                                                 icon={
-                                                    <StarIcon fontSize="small" />
+                                                    <StarIcon className="h-4 w-4 text-white" />
                                                 }
                                                 label="Primary Contact"
-                                                sx={{
-                                                    ml: 2,
-                                                    backgroundColor:
-                                                        theme.palette.warning
-                                                            .main,
+                                                className="ml-4 font-semibold"
+                                                style={{
+                                                    backgroundColor: '#f59e0b', // amber-500
                                                     color: 'white',
-                                                    fontWeight: 600,
-                                                    '& .MuiChip-icon': {
-                                                        color: 'white',
-                                                    },
                                                 }}
                                             />
                                         )}
@@ -187,32 +176,19 @@ const ContactShowContent = () => {
                                     {role && (
                                         <Typography
                                             variant="h6"
-                                            color="text.secondary"
-                                            sx={{ mb: 1 }}
+                                            className="text-gray-600 mb-2"
                                         >
                                             {role.label}
                                         </Typography>
                                     )}
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
+                                    <Box className="flex gap-2 flex-wrap">
                                         {influenceLevel && (
                                             <Chip
                                                 label={`${influenceLevel.label} Influence`}
-                                                sx={{
-                                                    backgroundColor:
-                                                        influenceLevel.color ||
-                                                        theme.palette.grey[300],
-                                                    color: theme.palette.getContrastText(
-                                                        influenceLevel.color ||
-                                                            theme.palette
-                                                                .grey[300]
-                                                    ),
-                                                    fontWeight: 600,
+                                                className="font-semibold"
+                                                style={{
+                                                    backgroundColor: influenceLevel.color || '#d1d5db', // gray-300
+                                                    color: getContrastText(influenceLevel.color || '#d1d5db'),
                                                 }}
                                             />
                                         )}
@@ -220,9 +196,8 @@ const ContactShowContent = () => {
                                             <Chip
                                                 label={decisionRole.label}
                                                 variant="outlined"
-                                                sx={{
-                                                    borderColor:
-                                                        decisionRole.color,
+                                                style={{
+                                                    borderColor: decisionRole.color || '#9ca3af', // gray-400
                                                 }}
                                             />
                                         )}
@@ -233,105 +208,66 @@ const ContactShowContent = () => {
                             {/* Organization */}
                             {organization && (
                                 <>
-                                    <Box sx={{ mb: 3 }}>
+                                    <Box className="mb-6">
                                         <Typography
                                             variant="h6"
-                                            sx={{
-                                                fontWeight: 600,
-                                                mb: 1,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                            }}
+                                            className="font-semibold mb-2 flex items-center"
                                         >
-                                            <BusinessIcon sx={{ mr: 1 }} />
+                                            <BuildingOfficeIcon className="h-5 w-5 mr-2" />
                                             Organization
                                         </Typography>
                                         <Link
                                             to={`/organizations/${organization.id}/show`}
-                                            style={{
-                                                color: theme.palette.primary
-                                                    .main,
-                                                textDecoration: 'none',
-                                                fontWeight: 500,
-                                                fontSize: '1.1rem',
-                                            }}
+                                            className="text-blue-600 no-underline font-medium text-lg hover:text-blue-800"
                                         >
                                             {organization.name}
                                         </Link>
                                     </Box>
-                                    <Divider sx={{ my: 3 }} />
+                                    <Divider className="my-6" />
                                 </>
                             )}
 
                             {/* Quick Actions */}
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    gap: 1,
-                                    mb: 3,
-                                    flexWrap: 'wrap',
-                                }}
-                            >
+                            <Box className="flex gap-2 mb-6 flex-wrap">
                                 {record.phone && (
                                     <IconButton
                                         onClick={handlePhoneClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="min-w-[44px] min-h-[44px] bg-blue-600 text-white hover:bg-blue-700"
                                         aria-label="Call contact"
                                     >
-                                        <PhoneIcon />
+                                        <PhoneIcon className="h-5 w-5" />
                                     </IconButton>
                                 )}
                                 {record.email && (
                                     <IconButton
                                         onClick={handleEmailClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="min-w-[44px] min-h-[44px] bg-blue-600 text-white hover:bg-blue-700"
                                         aria-label="Email contact"
                                     >
-                                        <EmailIcon />
+                                        <EnvelopeIcon className="h-5 w-5" />
                                     </IconButton>
                                 )}
                                 {record.linkedInUrl && (
                                     <IconButton
                                         onClick={handleLinkedInClick}
-                                        sx={{
-                                            minWidth: 44,
-                                            minHeight: 44,
-                                            backgroundColor: 'primary.main',
-                                            color: 'white',
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            },
-                                        }}
+                                        className="min-w-[44px] min-h-[44px] bg-blue-600 text-white hover:bg-blue-700"
                                         aria-label="LinkedIn profile"
                                     >
-                                        <LinkedInIcon />
+                                        {/* Using a generic external link icon since LinkedIn is not in Heroicons */}
+                                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                        </svg>
                                     </IconButton>
                                 )}
                             </Box>
 
-                            <Divider sx={{ my: 3 }} />
+                            <Divider className="my-6" />
 
                             {/* Contact Information */}
                             <Stack spacing={2}>
                                 <Typography
                                     variant="h6"
-                                    sx={{ fontWeight: 600 }}
+                                    className="font-semibold"
                                 >
                                     Contact Information
                                 </Typography>
@@ -340,7 +276,7 @@ const ContactShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             Email
                                         </Typography>
@@ -348,10 +284,7 @@ const ContactShowContent = () => {
                                             variant="body1"
                                             component="a"
                                             href={`mailto:${record.email}`}
-                                            sx={{
-                                                color: 'primary.main',
-                                                textDecoration: 'none',
-                                            }}
+                                            className="text-blue-600 no-underline hover:text-blue-800"
                                         >
                                             {record.email}
                                         </Typography>
@@ -362,7 +295,7 @@ const ContactShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             Phone
                                         </Typography>
@@ -370,10 +303,7 @@ const ContactShowContent = () => {
                                             variant="body1"
                                             component="a"
                                             href={`tel:${record.phone}`}
-                                            sx={{
-                                                color: 'primary.main',
-                                                textDecoration: 'none',
-                                            }}
+                                            className="text-blue-600 no-underline hover:text-blue-800"
                                         >
                                             {record.phone}
                                         </Typography>
@@ -384,7 +314,7 @@ const ContactShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             LinkedIn
                                         </Typography>
@@ -407,17 +337,17 @@ const ContactShowContent = () => {
                             {/* Notes */}
                             {record.notes && (
                                 <>
-                                    <Divider sx={{ my: 3 }} />
+                                    <Divider className="my-6" />
                                     <Stack spacing={2}>
                                         <Typography
                                             variant="h6"
-                                            sx={{ fontWeight: 600 }}
+                                            className="font-semibold"
                                         >
                                             Notes
                                         </Typography>
                                         <Typography
                                             variant="body1"
-                                            sx={{ whiteSpace: 'pre-wrap' }}
+                                            className="whitespace-pre-wrap"
                                         >
                                             {record.notes}
                                         </Typography>
@@ -436,56 +366,46 @@ const ContactShowContent = () => {
                             <CardContent>
                                 <Typography
                                     variant="h6"
-                                    sx={{ fontWeight: 600, mb: 2 }}
+                                    className="font-semibold mb-4"
                                 >
                                     Business Context
                                 </Typography>
 
                                 {role && (
-                                    <Box sx={{ mb: 2 }}>
+                                    <Box className="mb-4">
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             Role/Position
                                         </Typography>
                                         <Chip
                                             label={role.label}
                                             size="small"
-                                            sx={{
-                                                backgroundColor:
-                                                    role.color ||
-                                                    theme.palette.grey[300],
-                                                color: theme.palette.getContrastText(
-                                                    role.color ||
-                                                        theme.palette.grey[300]
-                                                ),
-                                                mt: 0.5,
+                                            className="mt-2"
+                                            style={{
+                                                backgroundColor: role.color || '#d1d5db', // gray-300
+                                                color: getContrastText(role.color || '#d1d5db'),
                                             }}
                                         />
                                     </Box>
                                 )}
 
                                 {influenceLevel && (
-                                    <Box sx={{ mb: 2 }}>
+                                    <Box className="mb-4">
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             Influence Level
                                         </Typography>
                                         <Chip
                                             label={influenceLevel.label}
                                             size="small"
-                                            sx={{
-                                                backgroundColor:
-                                                    influenceLevel.color ||
-                                                    theme.palette.grey[300],
-                                                color: theme.palette.getContrastText(
-                                                    influenceLevel.color ||
-                                                        theme.palette.grey[300]
-                                                ),
-                                                mt: 0.5,
+                                            className="mt-2"
+                                            style={{
+                                                backgroundColor: influenceLevel.color || '#d1d5db', // gray-300
+                                                color: getContrastText(influenceLevel.color || '#d1d5db'),
                                             }}
                                         />
                                     </Box>
@@ -495,22 +415,17 @@ const ContactShowContent = () => {
                                     <Box>
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             Decision Role
                                         </Typography>
                                         <Chip
                                             label={decisionRole.label}
                                             size="small"
-                                            sx={{
-                                                backgroundColor:
-                                                    decisionRole.color ||
-                                                    theme.palette.grey[300],
-                                                color: theme.palette.getContrastText(
-                                                    decisionRole.color ||
-                                                        theme.palette.grey[300]
-                                                ),
-                                                mt: 0.5,
+                                            className="mt-2"
+                                            style={{
+                                                backgroundColor: decisionRole.color || '#d1d5db', // gray-300
+                                                color: getContrastText(decisionRole.color || '#d1d5db'),
                                             }}
                                         />
                                     </Box>

@@ -1,5 +1,5 @@
 import { Draggable } from '@hello-pangea/dnd';
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Card, Typography } from '@/components/ui-kit';
 import { ReferenceField, useRedirect } from 'react-admin';
 import { CompanyAvatar } from '../companies/CompanyAvatar';
 import { Deal } from '../types';
@@ -38,20 +38,22 @@ export const DealCardContent = ({
 
     return (
         <Box
-            sx={{ marginBottom: 1, cursor: 'pointer' }}
+            className="mb-1 cursor-pointer"
             {...provided?.draggableProps}
             {...provided?.dragHandleProps}
             ref={provided?.innerRef}
             onClick={handleClick}
         >
             <Card
+                className={`transition-all duration-200 ease-in-out ${
+                    snapshot?.isDragging ? 'shadow-xl' : 'shadow-md'
+                }`}
                 style={{
                     opacity: snapshot?.isDragging ? 0.9 : 1,
                     transform: snapshot?.isDragging ? 'rotate(-2deg)' : '',
                 }}
-                elevation={snapshot?.isDragging ? 3 : 1}
             >
-                <Box padding={1} display="flex">
+                <Box className="p-1 flex">
                     <ReferenceField
                         source="organizationId"
                         record={deal}
@@ -60,11 +62,11 @@ export const DealCardContent = ({
                     >
                         <CompanyAvatar width={20} height={20} />
                     </ReferenceField>
-                    <Box sx={{ marginLeft: 1 }}>
-                        <Typography variant="body2" gutterBottom>
+                    <Box className="ml-1">
+                        <Typography variant="body2" className="mb-1">
                             {deal.name}
                         </Typography>
-                        <Typography variant="caption" color="textSecondary">
+                        <Typography variant="caption" className="text-gray-500">
                             {(deal.amount ?? 0).toLocaleString('en-US', {
                                 notation: 'compact',
                                 style: 'currency',

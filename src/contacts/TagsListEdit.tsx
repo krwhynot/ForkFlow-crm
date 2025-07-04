@@ -1,6 +1,5 @@
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import EditIcon from '@mui/icons-material/Edit';
-import { Box, Chip, Menu, MenuItem } from '@mui/material';
+import { PlusIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { Box, Chip, Menu, MenuItem } from '../components/ui-kit';
 import * as React from 'react';
 import { useState } from 'react';
 import {
@@ -126,7 +125,7 @@ export const TagsListEdit = () => {
             ))}
             <Box mt={1}>
                 <Chip
-                    icon={<ControlPointIcon />}
+                    icon={<PlusIcon className="h-4 w-4" />}
                     size="small"
                     variant="outlined"
                     onClick={handleMenuOpen}
@@ -155,7 +154,7 @@ export const TagsListEdit = () => {
                 ))}
                 <MenuItem onClick={openTagCreateDialog}>
                     <Chip
-                        icon={<EditIcon />}
+                        icon={<PencilIcon className="h-4 w-4" />}
                         size="small"
                         variant="outlined"
                         onClick={openTagCreateDialog}

@@ -6,8 +6,6 @@ import {
     Box,
     Typography,
     Divider,
-    useMediaQuery,
-    useTheme,
 } from '@mui/material';
 import {
     FilterList,
@@ -27,11 +25,11 @@ import {
 } from '@mui/icons-material';
 
 import { UserRole } from '../types';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export const UserListFilter = () => {
     const { identity } = useGetIdentity();
-    const theme = useTheme();
-    const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+    const isDesktop = useBreakpoint('md');
 
     if (!isDesktop) {
         return null; // Hide filters on mobile to save space
@@ -49,7 +47,7 @@ export const UserListFilter = () => {
             }}
         >
             <CardContent sx={{ pt: 1 }}>
-                <FilterLiveSearch 
+                <FilterLiveSearch
                     placeholder="Search users..."
                     sx={{ mb: 2 }}
                 />
@@ -125,15 +123,15 @@ export const UserListFilter = () => {
                         <FilterListItem
                             label="Logged in this week"
                             icon={<RecentIcon />}
-                            value={{ 
-                                lastLoginAt_gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() 
+                            value={{
+                                lastLoginAt_gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
                             }}
                         />
                         <FilterListItem
                             label="Logged in this month"
                             icon={<RecentIcon />}
-                            value={{ 
-                                lastLoginAt_gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString() 
+                            value={{
+                                lastLoginAt_gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
                             }}
                         />
                         <FilterListItem
@@ -183,4 +181,3 @@ export const UserListFilter = () => {
         </Card>
     );
 };
-

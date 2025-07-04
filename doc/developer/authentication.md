@@ -10,7 +10,7 @@ The system is designed to be modular, with a clear separation of concerns betwee
 
 The core of the system is the `authProvider` in `src/providers/supabase/authProvider.ts`, which extends the base `ra-supabase` provider with custom logic for initialization, identity, and access control.
 
-The UI is built with Material-UI and `react-admin` components, and the login flow is managed by the `LoginPage` and `LoginForm` components.
+The UI is built with Headless UI, Tailwind CSS, and `react-admin` components, and the login flow is managed by the `LoginPage` and `LoginForm` components.
 
 ## File-by-File Breakdown
 

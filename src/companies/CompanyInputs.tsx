@@ -1,10 +1,4 @@
-import {
-    Divider,
-    Stack,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Box } from '../components/ui-kit';
 import {
     ArrayInput,
     ReferenceInput,
@@ -31,35 +25,31 @@ const isUrl = (url: string) => {
 };
 
 export const CompanyInputs = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = window.innerWidth < 768; // md breakpoint
 
     return (
-        <Stack gap={4} p={1}>
+        <Box className="flex flex-col gap-4 p-1">
             <CompanyDisplayInputs />
-            <Stack gap={4} direction={isMobile ? 'column' : 'row'}>
-                <Stack gap={4} flex={1}>
+            <Box className={`flex gap-4 ${isMobile ? 'flex-col' : 'flex-row'}`}>
+                <Box className="flex flex-col gap-4 flex-1">
                     <CompanyContactInputs />
                     <CompanyContextInputs />
-                </Stack>
-                <Divider
-                    orientation={isMobile ? 'horizontal' : 'vertical'}
-                    flexItem
-                />
-                <Stack gap={4} flex={1}>
+                </Box>
+                <div className={`${isMobile ? 'border-t' : 'border-l'} border-gray-200`} />
+                <Box className="flex flex-col gap-4 flex-1">
                     <CompanyAddressInputs />
                     <CompanyAdditionalInformationInputs />
                     <CompanyAccountManagerInput />
-                </Stack>
-            </Stack>
-        </Stack>
+                </Box>
+            </Box>
+        </Box>
     );
 };
 
 const CompanyDisplayInputs = () => {
     const record = useRecordContext<Company>();
     return (
-        <Stack gap={2} flex={1} direction="row">
+        <Box className="flex gap-2 flex-1 flex-row">
             <ImageEditorField
                 source="logo"
                 type="avatar"
@@ -72,18 +62,16 @@ const CompanyDisplayInputs = () => {
                 source="name"
                 validate={required()}
                 helperText={false}
-                sx={{
-                    mt: 0,
-                }}
+                className="mt-0"
             />
-        </Stack>
+        </Box>
     );
 };
 
 const CompanyContactInputs = () => {
     return (
-        <Stack>
-            <Typography variant="h6">Contact</Typography>
+        <Box className="flex flex-col">
+            <h3 className="text-lg font-semibold mb-2">Contact</h3>
             <TextInput source="website" helperText={false} validate={isUrl} />
             <TextInput
                 source="linkedInUrl"
@@ -91,15 +79,15 @@ const CompanyContactInputs = () => {
                 validate={isLinkedinUrl}
             />
             <TextInput source="phoneNumber" helperText={false} />
-        </Stack>
+        </Box>
     );
 };
 
 const CompanyContextInputs = () => {
     const { companySectors } = useConfigurationContext();
     return (
-        <Stack>
-            <Typography variant="h6">Context</Typography>
+        <Box className="flex flex-col">
+            <h3 className="text-lg font-semibold mb-2">Context</h3>
             <SelectInput
                 source="sector"
                 choices={companySectors.map(sector => ({
@@ -111,36 +99,34 @@ const CompanyContextInputs = () => {
             <SelectInput source="size" choices={sizes} helperText={false} />
             <TextInput source="revenue" helperText={false} />
             <TextInput source="taxIdentifier" helperText={false} />
-        </Stack>
+        </Box>
     );
 };
 
 const CompanyAddressInputs = () => {
     return (
-        <Stack>
-            <Typography variant="h6">Address</Typography>
+        <Box className="flex flex-col">
+            <h3 className="text-lg font-semibold mb-2">Address</h3>
             <TextInput source="address" helperText={false} />
             <TextInput source="city" helperText={false} />
             <TextInput source="zipcode" helperText={false} />
             <TextInput source="stateAbbr" helperText={false} />
             <TextInput source="country" helperText={false} />
-        </Stack>
+        </Box>
     );
 };
 
 const CompanyAdditionalInformationInputs = () => {
     return (
-        <Stack>
-            <Typography variant="h6">Additional information</Typography>
+        <Box className="flex flex-col">
+            <h3 className="text-lg font-semibold mb-2">Additional information</h3>
             <TextInput source="description" multiline helperText={false} />
             <ArrayInput source="contextLinks" helperText={false}>
                 <SimpleFormIterator
                     disableReordering
                     fullWidth
                     getItemLabel={false}
-                    sx={{
-                        m: 0,
-                    }}
+                    className="m-0"
                 >
                     <TextInput
                         source=""
@@ -150,14 +136,14 @@ const CompanyAdditionalInformationInputs = () => {
                     />
                 </SimpleFormIterator>
             </ArrayInput>
-        </Stack>
+        </Box>
     );
 };
 
 const CompanyAccountManagerInput = () => {
     return (
-        <Stack>
-            <Typography variant="h6">Account manager</Typography>
+        <Box className="flex flex-col">
+            <h3 className="text-lg font-semibold mb-2">Account manager</h3>
             <ReferenceInput
                 source="accountManager"
                 reference="sales"
@@ -172,7 +158,7 @@ const CompanyAccountManagerInput = () => {
                     validate={required() as any}
                 />
             </ReferenceInput>
-        </Stack>
+        </Box>
     );
 };
 

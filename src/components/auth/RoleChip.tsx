@@ -4,38 +4,49 @@
  */
 
 import React from 'react';
-import { Chip, ChipProps } from '@mui/material';
 import {
-    AdminPanelSettings as AdminIcon,
-    SupervisorAccount as ManagerIcon,
-    Person as BrokerIcon,
-} from '@mui/icons-material';
+    AdjustmentsHorizontalIcon,
+    UserGroupIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 import { UserRole } from '../../types';
 
-interface RoleChipProps extends Omit<ChipProps, 'label' | 'color'> {
+interface RoleChipProps {
     role: UserRole;
     showIcon?: boolean;
     variant?: 'filled' | 'outlined';
+    size?: 'small' | 'medium';
 }
 
-const ROLE_CONFIG = {
+const ROLE_CONFIG: Record<UserRole, {
+    label: string;
+    icon: React.ForwardRefExoticComponent<React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string; } & React.RefAttributes<SVGSVGElement>>;
+    color: string;
+    description: string;
+}> = {
     admin: {
         label: 'Administrator',
-        color: 'error' as const,
-        icon: <AdminIcon />,
+        icon: AdjustmentsHorizontalIcon,
+        color: 'text-red-500 bg-red-100 border-red-500',
         description: 'Full system access',
     },
     manager: {
         label: 'Manager',
-        color: 'warning' as const,
-        icon: <ManagerIcon />,
+        icon: UserGroupIcon,
+        color: 'text-yellow-500 bg-yellow-100 border-yellow-500',
         description: 'Team and territory management',
     },
     broker: {
         label: 'Broker',
-        color: 'primary' as const,
-        icon: <BrokerIcon />,
+        icon: UserIcon,
+        color: 'text-blue-500 bg-blue-100 border-blue-500',
         description: 'Field sales representative',
+    },
+    user: {
+        label: 'User',
+        icon: UserIcon,
+        color: 'text-gray-500 bg-gray-100 border-gray-500',
+        description: 'User',
     },
 };
 
@@ -50,29 +61,31 @@ export const RoleChip: React.FC<RoleChipProps> = ({
     ...props
 }) => {
     const config = ROLE_CONFIG[role];
-    
+
     if (!config) {
         return (
-            <Chip
-                label="Unknown"
-                color="default"
-                size={size}
-                variant={variant}
-                {...props}
-            />
+            <div
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300`}
+            >
+                Unknown
+            </div>
         );
     }
 
+    const Icon = config.icon;
+
     return (
-        <Chip
-            label={config.label}
-            color={config.color}
-            size={size}
-            variant={variant}
-            icon={showIcon ? config.icon : undefined}
+        <div
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                variant === 'filled'
+                    ? config.color
+                    : `border ${config.color.replace(/bg-\w+-\d+/, '')}`
+            }`}
             title={config.description}
-            {...props}
-        />
+        >
+            {showIcon && <Icon className="h-4 w-4 mr-1.5" />}
+            {config.label}
+        </div>
     );
 };
 
@@ -92,21 +105,25 @@ export const RoleIndicator: React.FC<{
     size?: 'small' | 'medium';
 }> = ({ role, showLabel = true, size = 'small' }) => {
     const config = ROLE_CONFIG[role];
-    
+
     if (!config) return null;
 
     if (showLabel) {
         return <RoleChip role={role} size={size} />;
     }
 
+    const Icon = config.icon;
+
     return (
-        <Chip
-            icon={config.icon}
-            color={config.color}
-            size={size}
-            variant="outlined"
+        <div
+            className={`inline-flex items-center p-1.5 rounded-full border ${config.color.replace(
+                /bg-\w+-\d+/,
+                ''
+            )}`}
             title={`${config.label} - ${config.description}`}
-        />
+        >
+            <Icon className="h-5 w-5" />
+        </div>
     );
 };
 

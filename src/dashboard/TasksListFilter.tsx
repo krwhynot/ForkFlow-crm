@@ -1,4 +1,3 @@
-import { Link, Stack, Typography } from '@mui/material';
 import {
     ListContextProvider,
     ResourceContextProvider,
@@ -45,27 +44,28 @@ export const TasksListFilter = ({
     if (isPending || !tasks || !total) return null;
 
     return (
-        <Stack>
-            <Typography variant="overline">{title}</Typography>
+        <div>
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {title}
+            </h3>
             <ResourceContextProvider value="tasks">
                 <ListContextProvider value={listContext}>
-                    <TasksIterator showContact sx={{ pt: 0, pb: 0 }} />
+                    <TasksIterator showContact />
                 </ListContextProvider>
             </ResourceContextProvider>
             {total > listContext.perPage && (
-                <Stack justifyContent="flex-end" direction="row">
-                    <Link
-                        href="#"
+                <div className="flex justify-end mt-2">
+                    <button
                         onClick={e => {
                             listContext.setPerPage(listContext.perPage + 10);
                             e.preventDefault();
                         }}
-                        variant="body2"
+                        className="text-sm text-blue-500 hover:underline"
                     >
                         Load more
-                    </Link>
-                </Stack>
+                    </button>
+                </div>
             )}
-        </Stack>
+        </div>
     );
 };

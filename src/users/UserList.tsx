@@ -41,8 +41,6 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    useMediaQuery,
-    useTheme,
 } from '@mui/material';
 import {
     Person as PersonIcon,
@@ -62,12 +60,13 @@ import { UserListFilter } from './UserListFilter';
 import { TerritoryDisplay } from '../components/TerritoryDisplay';
 import { RoleChip } from '../components/auth/RoleChip';
 import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export const UserList = () => {
     const { identity } = useGetIdentity();
-    
+
     if (!identity) return null;
-    
+
     return (
         <ListBase
             perPage={25}
@@ -83,8 +82,7 @@ const UserListLayout = () => {
     const { data, isPending, filterValues } = useListContext<User>();
     const { identity } = useGetIdentity();
     const { hasRestrictions, territoryDisplayName } = useTerritoryFilter();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
@@ -164,7 +162,7 @@ const UserListDesktop = () => (
 
 const UserListMobile = () => {
     const { data } = useListContext<User>();
-    
+
     return (
         <Box sx={{ p: 1 }}>
             {data?.map((user) => (
@@ -176,7 +174,6 @@ const UserListMobile = () => {
 
 const UserCard: React.FC<{ user: User }> = ({ user }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const theme = useTheme();
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
@@ -200,12 +197,13 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
         >
             <Box display="flex" alignItems="center" gap={2}>
                 <Avatar
-                    src={user.avatar}
+                    src={user.avatar?.src}
                     sx={{ width: 48, height: 48 }}
                 >
-                    {user.firstName[0]}{user.lastName[0]}
+                    {user.firstName?.[0]}
+                    {user.lastName?.[0]}
                 </Avatar>
-                
+
                 <Box flex={1}>
                     <Typography variant="h6" component="div">
                         {user.firstName} {user.lastName}
@@ -213,10 +211,10 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                     <Typography variant="body2" color="text.secondary">
                         {user.email}
                     </Typography>
-                    
+
                     <Box display="flex" gap={1} mt={1} flexWrap="wrap">
-                        <RoleChip role={user.role} size="small" />
-                        {user.isActive ? (
+                        <RoleChip role={user.role || 'user'} size="small" />
+                        {user.administrator ? (
                             <Chip
                                 icon={<CheckCircleIcon />}
                                 label="Active"
@@ -242,10 +240,10 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                             />
                         )}
                     </Box>
-                    
-                    {user.lastLoginAt && (
+
+                    {user.updatedAt && (
                         <Typography variant="caption" color="text.secondary">
-                            Last login: {new Date(user.lastLoginAt).toLocaleDateString()}
+                            Last login: {new Date(user.updatedAt).toLocaleDateString()}
                         </Typography>
                     )}
                 </Box>
@@ -270,7 +268,7 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                     Edit
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
-                    {user.isActive ? (
+                    {user.administrator ? (
                         <>
                             <BlockIcon sx={{ mr: 1 }} />
                             Deactivate
@@ -299,10 +297,11 @@ const UserAvatarField = ({ source }: { source: string }) => {
     return (
         <Box display="flex" alignItems="center" gap={1}>
             <Avatar
-                src={record.avatar}
+                src={record.avatar?.src}
                 sx={{ width: 32, height: 32, fontSize: '0.875rem' }}
             >
-                {record.firstName[0]}{record.lastName[0]}
+                {record.firstName?.[0]}
+                {record.lastName?.[0]}
             </Avatar>
         </Box>
     );
@@ -312,7 +311,7 @@ const RoleField = ({ source }: { source: string }) => {
     const record = useRecordContext<User>();
     if (!record) return null;
 
-    return <RoleChip role={record.role} size="small" />;
+    return <RoleChip role={record.role || 'user'} size="small" />;
 };
 
 const TerritoryField = ({ source }: { source: string }) => {
@@ -341,7 +340,7 @@ const UserStatusField = ({ source }: { source: string }) => {
     const record = useRecordContext<User>();
     if (!record) return null;
 
-    return record.isActive ? (
+    return record.administrator ? (
         <Chip
             icon={<CheckCircleIcon />}
             label="Active"
@@ -396,7 +395,7 @@ const UserActionsField = () => {
                     Edit
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
-                    {record.isActive ? (
+                    {record.administrator ? (
                         <>
                             <BlockIcon sx={{ mr: 1 }} />
                             Deactivate

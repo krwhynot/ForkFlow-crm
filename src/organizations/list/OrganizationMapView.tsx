@@ -6,13 +6,13 @@ import {
     Card,
     CardContent,
     Typography,
-    Chip,
-    IconButton,
     Button,
     Stack,
+} from '../../components/ui-kit';
+import {
+    Chip,
+    IconButton,
     Drawer,
-    useTheme,
-    useMediaQuery,
     Fab,
     FormControl,
     InputLabel,
@@ -44,8 +44,8 @@ import {
     Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 
-import { Organization, Setting } from '../types';
-import { useLocation } from '../components/mobile/LocationProvider';
+import { Organization, Setting } from '../../types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 const libraries: ("places" | "geometry")[] = ["places", "geometry"];
 
@@ -84,10 +84,8 @@ interface OrganizationMapViewProps {
 }
 
 export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClose }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md');
     const notify = useNotify();
-    const { currentLocation, permission, requestLocation } = useLocation();
 
     // State
     const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
@@ -127,53 +125,28 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
             if (!org.latitude || !org.longitude) return false;
 
             // Segment filter
-            if (filters.segmentId && org.segmentId !== parseInt(filters.segmentId)) {
+            if (filters.segmentId && org.segment !== filters.segmentId) {
                 return false;
             }
 
             // Priority filter
-            if (filters.priorityId && org.priorityId !== parseInt(filters.priorityId)) {
+            if (filters.priorityId && org.priority !== filters.priorityId) {
                 return false;
-            }
-
-            // Near me filter
-            if (filters.showNearMeOnly && currentLocation) {
-                const distance = calculateDistance(
-                    currentLocation.latitude,
-                    currentLocation.longitude,
-                    org.latitude,
-                    org.longitude
-                );
-                if (distance > filters.nearMeRadius) {
-                    return false;
-                }
             }
 
             return true;
         });
-    }, [organizations, filters, currentLocation]);
-
-    // Calculate distance between two coordinates (Haversine formula)
-    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-        const R = 6371; // Earth's radius in km
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    };
+    }, [organizations, filters]);
 
     // Get marker color based on segment
     const getMarkerColor = (organization: Organization): string => {
-        const segment = segments?.find(s => s.id === organization.segmentId);
+        const segment = segments?.find(s => s.key === organization.segment);
         return segment?.color || segmentColors[segment?.key || 'default'] || segmentColors.default;
     };
 
     // Get marker size based on priority
     const getMarkerSize = (organization: Organization): number => {
-        const priority = priorities?.find(p => p.id === organization.priorityId);
+        const priority = priorities?.find(p => p.key === organization.priority);
         return priorityMarkerSizes[priority?.label as keyof typeof priorityMarkerSizes] || priorityMarkerSizes.default;
     };
 
@@ -181,21 +154,6 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
     const onMapLoad = useCallback((map: google.maps.Map) => {
         setMapRef(map);
     }, []);
-
-    // Center map on user location
-    const centerOnUserLocation = () => {
-        if (currentLocation && mapRef) {
-            mapRef.panTo({
-                lat: currentLocation.latitude,
-                lng: currentLocation.longitude,
-            });
-            mapRef.setZoom(12);
-        } else if (permission !== 'granted') {
-            requestLocation();
-        } else {
-            notify('Location not available', { type: 'warning' });
-        }
-    };
 
     // Handle marker click
     const handleMarkerClick = (organization: Organization) => {
@@ -266,36 +224,6 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
                     </Select>
                 </FormControl>
 
-                {/* Near Me Toggle */}
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={filters.showNearMeOnly}
-                            onChange={(e) => setFilters(prev => ({ ...prev, showNearMeOnly: e.target.checked }))}
-                            disabled={!currentLocation}
-                        />
-                    }
-                    label={`Show only within ${filters.nearMeRadius}km`}
-                />
-
-                {/* Radius Slider */}
-                {filters.showNearMeOnly && (
-                    <Box>
-                        <Typography gutterBottom>
-                            Radius: {filters.nearMeRadius}km
-                        </Typography>
-                        <Slider
-                            value={filters.nearMeRadius}
-                            onChange={(_, value) => setFilters(prev => ({ ...prev, nearMeRadius: value as number }))}
-                            min={5}
-                            max={200}
-                            step={5}
-                            valueLabelDisplay="auto"
-                            valueLabelFormat={(value) => `${value}km`}
-                        />
-                    </Box>
-                )}
-
                 {/* Results Count */}
                 <Typography variant="body2" color="text.secondary">
                     Showing {filteredOrganizations.length} organizations
@@ -339,21 +267,6 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
                         fullscreenControl: true,
                     }}
                 >
-                    {/* User location marker */}
-                    {currentLocation && (
-                        <Marker
-                            position={{
-                                lat: currentLocation.latitude,
-                                lng: currentLocation.longitude,
-                            }}
-                            icon={{
-                                url: "data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='50' cy='50' r='50' fill='%234285f4'/%3e%3ccircle cx='50' cy='50' r='25' fill='white'/%3e%3c/svg%3e",
-                                scaledSize: (window as any).google?.maps ? new (window as any).google.maps.Size(20, 20) : undefined,
-                            }}
-                            title="Your Location"
-                        />
-                    )}
-
                     {/* Organization markers with clustering */}
                     <MarkerClusterer
                         options={{
@@ -413,17 +326,6 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
             {/* Floating Action Buttons */}
             <Box sx={{ position: 'absolute', bottom: 16, right: 16 }}>
                 <Stack spacing={1}>
-                    {/* My Location FAB */}
-                    <Fab
-                        color="primary"
-                        size="medium"
-                        onClick={centerOnUserLocation}
-                        sx={{ minWidth: 44, minHeight: 44 }}
-                        title="Center on my location"
-                    >
-                        <MyLocationIcon />
-                    </Fab>
-
                     {/* Filter FAB */}
                     <Badge badgeContent={Object.values(filters).filter(Boolean).length} color="secondary">
                         <Fab
@@ -497,8 +399,8 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
     segments,
     priorities,
 }) => {
-    const segment = segments?.find(s => s.id === organization.segmentId);
-    const priority = priorities?.find(p => p.id === organization.priorityId);
+    const segment = segments?.find(s => s.key === organization.segment);
+    const priority = priorities?.find(p => p.key === organization.priority);
 
     return (
         <Box sx={{ maxWidth: 300, p: 1 }}>
@@ -533,7 +435,7 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                     {organization.address}
                     {organization.city && `, ${organization.city}`}
-                    {organization.state && `, ${organization.state}`}
+                    {organization.stateAbbr && `, ${organization.stateAbbr}`}
                 </Typography>
             )}
 

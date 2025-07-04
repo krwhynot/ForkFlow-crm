@@ -6,12 +6,14 @@ import {
     useGetIdentity,
     useGetList,
 } from 'react-admin';
-import { Box, Chip } from '@mui/material';
-import BusinessIcon from '@mui/icons-material/Business';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import StarIcon from '@mui/icons-material/Star';
+import { Box, Chip } from '../components/ui-kit';
+import {
+    BuildingOfficeIcon,
+    UserIcon,
+    TrendingUpIcon,
+    CheckBadgeIcon,
+    StarIcon,
+} from '@heroicons/react/24/outline';
 
 import { Setting } from '../types';
 
@@ -43,17 +45,14 @@ export const ContactListFilter = () => {
     });
 
     return (
-        <Box width="14em" minWidth="14em" order={-1} mr={2} mt={5}>
+        <Box style={{ width: '14rem', minWidth: '14rem', order: -1, marginRight: '0.5rem', marginTop: '1.25rem' }}>
             <FilterLiveSearch
                 hiddenLabel
-                sx={{
-                    display: 'block',
-                    '& .MuiFilledInput-root': { width: '100%' },
-                }}
+                className="block w-full"
                 placeholder="Search contacts..."
             />
 
-            <FilterList label="Organization" icon={<BusinessIcon />}>
+            <FilterList label="Organization" icon={<BuildingOfficeIcon className="h-5 w-5" />}>
                 {organizations
                     ?.slice(0, 10)
                     .map(org => (
@@ -65,7 +64,7 @@ export const ContactListFilter = () => {
                     ))}
             </FilterList>
 
-            <FilterList label="Role" icon={<AssignmentIndIcon />}>
+            <FilterList label="Role" icon={<UserIcon className="h-5 w-5" />}>
                 {roleSettings?.map(role => (
                     <FilterListItem
                         key={role.id}
@@ -73,7 +72,7 @@ export const ContactListFilter = () => {
                             <Chip
                                 label={role.label}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor: role.color || '#e0e0e0',
                                     color: 'white',
                                     border: 0,
@@ -87,7 +86,7 @@ export const ContactListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Influence Level" icon={<TrendingUpIcon />}>
+            <FilterList label="Influence Level" icon={<TrendingUpIcon className="h-5 w-5" />}>
                 {influenceSettings?.map(influence => (
                     <FilterListItem
                         key={influence.id}
@@ -95,7 +94,7 @@ export const ContactListFilter = () => {
                             <Chip
                                 label={influence.label}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor:
                                         influence.color || '#e0e0e0',
                                     color: 'white',
@@ -110,7 +109,7 @@ export const ContactListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Decision Role" icon={<HowToRegIcon />}>
+            <FilterList label="Decision Role" icon={<CheckBadgeIcon className="h-5 w-5" />}>
                 {decisionSettings?.map(decision => (
                     <FilterListItem
                         key={decision.id}
@@ -118,7 +117,7 @@ export const ContactListFilter = () => {
                             <Chip
                                 label={decision.label}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor:
                                         decision.color || '#e0e0e0',
                                     color: 'white',
@@ -133,7 +132,7 @@ export const ContactListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Primary Contact" icon={<StarIcon />}>
+            <FilterList label="Primary Contact" icon={<StarIcon className="h-5 w-5" />}>
                 <FilterListItem
                     label="Primary contacts only"
                     value={{ isPrimary: true }}

@@ -12,7 +12,11 @@ import {
     ReferenceInput,
     useGetList,
 } from 'react-admin';
-import { CardContent, Grid, Typography, Box, Chip, Stack } from '@mui/material';
+import { CardContent } from '../components/Card/CardContent';
+import { Typography } from '../components/Typography/Typography';
+import { Box } from '../components/Layout/Box';
+import { Chip } from '../components/DataDisplay/Chip';
+import { Stack } from '../components/Layout/Stack';
 import {
     Business as BusinessIcon,
     AttachMoney as MoneyIcon,
@@ -23,12 +27,7 @@ import { PriceField, formatPrice } from './PriceField';
 
 const ProductCreateToolbar = () => (
     <Toolbar>
-        <SaveButton
-            sx={{
-                minHeight: 44,
-                px: 3,
-            }}
-        />
+        <SaveButton />
     </Toolbar>
 );
 
@@ -48,15 +47,10 @@ const EnhancedPrincipalSelection = () => {
         >
             <SelectInput
                 optionText={choice => (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box className="flex items-center">
                         <Box
-                            sx={{
-                                width: 12,
-                                height: 12,
-                                borderRadius: '50%',
-                                backgroundColor: choice.color || '#e0e0e0',
-                                mr: 1,
-                            }}
+                            className="w-3 h-3 rounded-full mr-2"
+                            style={{ backgroundColor: choice.color || '#e0e0e0' }}
                         />
                         {choice.label}
                     </Box>
@@ -66,13 +60,6 @@ const EnhancedPrincipalSelection = () => {
                 validate={required() as any}
                 helperText="Food service principal/brand"
                 fullWidth
-                sx={{
-                    '& .MuiSelect-select': {
-                        minHeight: '44px',
-                        display: 'flex',
-                        alignItems: 'center',
-                    },
-                }}
             />
         </ReferenceInput>
     );
@@ -95,21 +82,13 @@ const PriceInputWithPreview = () => {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     setPrice(parseFloat(event.target.value) || 0);
                 }}
-                sx={{
-                    '& .MuiInputBase-root': {
-                        minHeight: '44px',
-                    },
-                }}
             />
             {price > 0 && (
-                <Box sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
-                    <MoneyIcon
-                        sx={{ mr: 1, color: 'success.main', fontSize: 'small' }}
-                    />
+                <Box className="mt-1 flex items-center">
+                    <MoneyIcon className="mr-1 text-green-600 text-sm" />
                     <Typography
                         variant="body2"
-                        color="success.main"
-                        sx={{ fontWeight: 500 }}
+                        className="text-green-600 font-medium"
                     >
                         Preview: {formatPrice(price)}
                     </Typography>
@@ -132,64 +111,54 @@ export const ProductCreate = () => {
         >
             <Form>
                 <CardContent>
-                    <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+                    <Typography variant="h5" className="font-semibold mb-6">
                         Add New Product
                     </Typography>
 
-                    <Grid container spacing={3}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Basic Information Section */}
-                        <Grid item xs={12}>
+                        <div className="col-span-2">
                             <Typography
                                 variant="h6"
-                                sx={{ fontWeight: 600, mb: 2 }}
+                                className="font-semibold mb-4"
                             >
                                 Basic Information
                             </Typography>
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <TextInput
                                 source="name"
                                 label="Product Name"
                                 validate={required()}
                                 helperText="Full product name as it appears in catalogs"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: '44px',
-                                    },
-                                }}
                             />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
+                        </div>
+                        <div>
                             <TextInput
                                 source="sku"
                                 label="SKU"
                                 validate={required()}
                                 helperText="Stock Keeping Unit identifier"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: '44px',
-                                    },
-                                }}
                             />
-                        </Grid>
+                        </div>
 
                         {/* Brand and Category Section */}
-                        <Grid item xs={12}>
+                        <div className="col-span-2">
                             <Typography
                                 variant="h6"
-                                sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                className="font-semibold mb-4 mt-4"
                             >
                                 Brand & Category
                             </Typography>
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <EnhancedPrincipalSelection />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
+                        </div>
+                        <div>
                             <SelectInput
                                 source="category"
                                 label="Category"
@@ -204,90 +173,61 @@ export const ProductCreate = () => {
                                 ]}
                                 helperText="Product category for organization"
                                 fullWidth
-                                sx={{
-                                    '& .MuiSelect-select': {
-                                        minHeight: '44px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    },
-                                }}
                             />
-                        </Grid>
+                        </div>
 
                         {/* Pricing and Packaging Section */}
-                        <Grid item xs={12}>
+                        <div className="col-span-2">
                             <Typography
                                 variant="h6"
-                                sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                className="font-semibold mb-4 mt-4"
                             >
                                 Pricing & Packaging
                             </Typography>
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <PriceInputWithPreview />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
+                        </div>
+                        <div>
                             <TextInput
                                 source="unitOfMeasure"
                                 label="Unit of Measure"
                                 helperText="e.g., case, lb, gallon, each"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: '44px',
-                                    },
-                                }}
                             />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <TextInput
                                 source="packageSize"
                                 label="Package Size"
                                 helperText="e.g., 12/1 lb, 24 count case, 5 lb bag"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: '44px',
-                                    },
-                                }}
                             />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    minHeight: '44px',
-                                }}
-                            >
+                        </div>
+                        <div>
+                            <Box className="flex items-center min-h-11">
                                 <BooleanInput
                                     source="active"
                                     label="Product is Active"
                                     defaultValue={true}
                                     helperText="Whether this product is available for sale"
-                                    sx={{
-                                        '& .MuiCheckbox-root': {
-                                            minWidth: '44px',
-                                            minHeight: '44px',
-                                        },
-                                    }}
                                 />
                             </Box>
-                        </Grid>
+                        </div>
 
                         {/* Description Section */}
-                        <Grid item xs={12}>
+                        <div className="col-span-2">
                             <Typography
                                 variant="h6"
-                                sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                className="font-semibold mb-4 mt-4"
                             >
                                 Description
                             </Typography>
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12}>
+                        <div className="col-span-2">
                             <TextInput
                                 source="description"
                                 label="Product Description"
@@ -295,14 +235,9 @@ export const ProductCreate = () => {
                                 multiline
                                 rows={4}
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: '100px',
-                                    },
-                                }}
                             />
-                        </Grid>
-                    </Grid>
+                        </div>
+                    </div>
                 </CardContent>
                 <ProductCreateToolbar />
             </Form>

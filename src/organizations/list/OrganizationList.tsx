@@ -13,7 +13,11 @@ import {
 
 import { ImageList } from './GridList';
 import { OrganizationListFilter } from './OrganizationListFilter';
-import { Stack, Button, Dialog, DialogContent, useMediaQuery, useTheme, Box, Chip } from '@mui/material';
+import { Stack } from '../../components/Layout/Stack';
+import { Box } from '../../components/Layout/Box';
+import { Chip } from '../../components/DataDisplay/Chip';
+import { Button } from '../../components/Button/Button';
+import { Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
 import { Map as MapIcon, LocationOn as LocationIcon } from '@mui/icons-material';
 import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
@@ -39,18 +43,21 @@ const OrganizationListLayout = () => {
     if (!data?.length && !hasFilters) return <OrganizationEmpty />;
 
     return (
-        <Stack direction="row" component="div">
+        <Stack direction="row">
             <OrganizationListFilter />
-            <Stack sx={{ width: '100%' }}>
-                <Box display="flex" alignItems="center" gap={2} mb={1}>
+            <Stack className="w-full">
+                <Box className="flex items-center gap-2 mb-1">
                     <Title title={'Organizations'} />
                     {hasRestrictions && (
                         <Chip
-                            icon={<LocationIcon />}
-                            label={`Territory: ${territoryDisplayName}`}
-                            variant="outlined"
+                            label={
+                                <span className="flex items-center">
+                                    <LocationIcon className="mr-1" />
+                                    {`Territory: ${territoryDisplayName}`}
+                                </span>
+                            }
                             size="small"
-                            color="primary"
+                            className="border border-blue-500 text-blue-500"
                         />
                     )}
                 </Box>
@@ -73,25 +80,17 @@ const OrganizationListActions = () => {
                 <SortButton fields={['name', 'createdAt', 'city', 'state']} />
                 <ExportButton />
                 <Button
-                    variant="outlined"
-                    startIcon={<MapIcon />}
+                    variant="secondary"
                     onClick={() => setShowMap(true)}
-                    sx={{
-                        marginLeft: 1,
-                        minHeight: 44,
-                        px: 2,
-                    }}
+                    className="ml-1 min-h-11 px-2"
                 >
+                    <MapIcon className="mr-1" />
                     Map View
                 </Button>
                 <CreateButton
                     variant="contained"
                     label="New Organization"
-                    sx={{
-                        marginLeft: 2,
-                        minHeight: 44,
-                        px: 3,
-                    }}
+                    className="ml-2 min-h-11 px-3"
                 />
             </TopToolbar>
 

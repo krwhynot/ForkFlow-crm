@@ -1,20 +1,5 @@
 {
     "mcpServers": {
-        "github.com/supabase-community/supabase-mcp": {
-            "command": "cmd",
-            "args": [
-                "/c",
-                "npx",
-                "-y",
-                "@supabase/mcp-server-supabase@latest",
-                "--project-ref=sbrlujvekkpthwztxfyo"
-            ],
-            "env": {
-                "SUPABASE_ACCESS_TOKEN": "sbp_7590b6e83735dfaef150f2c17017710f6403de48"
-            },
-            "disabled": false,
-            "autoApprove": []
-        },
         "exa": {
             "command": "npx",
             "args": [
@@ -48,18 +33,11 @@
             ],
             "env": {}
         },
-        "Context7": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@upstash/context7-mcp"
-            ]
-        },
         "knowledge": {
             "command": "npx",
             "args": [
                 "-y",
-                "mcp-knowledge-graph"
+                "@modelcontextprotocol/server-memory"
             ],
             "env": {
                 "STORAGE_PATH": "/mnt/c/Projects/ForkFlow-crm/.knowledge",

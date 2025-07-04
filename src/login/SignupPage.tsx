@@ -1,11 +1,3 @@
-import {
-    Button,
-    CircularProgress,
-    Container,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDataProvider, useLogin, useNotify } from 'react-admin';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -13,7 +5,9 @@ import { Navigate } from 'react-router';
 import { CrmDataProvider } from '../providers/types';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { SignUpData } from '../types';
-import { LoginSkeleton } from './LoginSkeleton';
+import { Button } from '../components/ui-kit/Button';
+import { Input } from '../components/ui-kit/Input';
+import { Spinner } from '../components/ui-kit/Spinner';
 
 export const SignupPage = () => {
     const queryClient = useQueryClient();
@@ -61,7 +55,11 @@ export const SignupPage = () => {
     });
 
     if (isPending) {
-        return <LoginSkeleton />;
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Spinner />
+            </div>
+        );
     }
 
     // For the moment, we only allow one user to sign up. Other users must be created by the administrator.
@@ -74,85 +72,56 @@ export const SignupPage = () => {
     };
 
     return (
-        <Stack sx={{ height: '100dvh', p: 2 }}>
-            <Stack direction="row" alignItems="center" gap={1}>
-                <img
-                    src={logo}
-                    alt={title}
-                    width={24}
-                    style={{ filter: 'invert(0.9)' }}
-                />
-                <Typography component="span" variant="h5">
-                    {title}
-                </Typography>
-            </Stack>
-            <Stack sx={{ height: '100%' }}>
-                <Container
-                    maxWidth="xs"
-                    sx={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        gap: 1,
-                    }}
-                >
-                    <Typography variant="h4" component="h1" gutterBottom>
-                        Welcome to Atomic CRM
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
+        <div className="flex flex-col h-screen p-4 bg-gray-100">
+            <div className="flex items-center space-x-2">
+                <img src={logo} alt={title} className="w-6 h-6" />
+                <span className="text-xl font-semibold">{title}</span>
+            </div>
+            <div className="flex-grow flex items-center justify-center">
+                <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+                    <h1 className="text-2xl font-bold mb-2">Welcome to Atomic CRM</h1>
+                    <p className="text-gray-600 mb-6">
                         Create the first user account to complete the setup.
-                    </Typography>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <TextField
+                    </p>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        <Input
                             {...register('first_name', { required: true })}
                             label="First name"
-                            variant="outlined"
                             required
                         />
-                        <TextField
+                        <Input
                             {...register('last_name', { required: true })}
                             label="Last name"
-                            variant="outlined"
                             required
                         />
-                        <TextField
+                        <Input
                             {...register('email', { required: true })}
                             label="Email"
                             type="email"
-                            variant="outlined"
                             required
                         />
-                        <TextField
+                        <Input
                             {...register('password', { required: true })}
                             label="Password"
                             type="password"
-                            variant="outlined"
                             required
                         />
-                        <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            mt={2}
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            disabled={!isValid || isSignUpPending}
+                            className="w-full !h-12 text-lg"
                         >
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                disabled={!isValid || isSignUpPending}
-                                fullWidth
-                            >
-                                {isSignUpPending ? (
-                                    <CircularProgress />
-                                ) : (
-                                    'Create account'
-                                )}
-                            </Button>
-                        </Stack>
+                            {isSignUpPending ? (
+                                <Spinner className="w-6 h-6" />
+                            ) : (
+                                'Create account'
+                            )}
+                        </Button>
                     </form>
-                </Container>
-            </Stack>
-        </Stack>
+                </div>
+            </div>
+        </div>
     );
 };
 

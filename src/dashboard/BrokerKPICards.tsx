@@ -1,20 +1,44 @@
 import {
-    LocationOn as LocationIcon,
-    Assessment as MetricsIcon,
-    People as PeopleIcon,
-    AttachMoney as RevenueIcon,
-    Schedule as TimeIcon,
-} from '@mui/icons-material';
-import {
-    Box,
-    Card,
-    CardContent,
-    Chip,
-    Grid,
-    LinearProgress,
-    Typography,
-} from '@mui/material';
+    MapPinIcon as LocationIcon,
+    ChartBarIcon as MetricsIcon,
+    UsersIcon as PeopleIcon,
+    CurrencyDollarIcon as RevenueIcon,
+    ClockIcon as TimeIcon,
+} from '@heroicons/react/24/outline';
+import { Box } from '../components/Layout/Box';
+import { Card } from '../components/Card/Card';
+import { CardContent } from '../components/Card/CardContent';
+import { Chip } from '../components/DataDisplay/Chip';
+import { LinearProgress } from '../components/Progress/LinearProgress';
+import { Typography } from '../components/Typography/Typography';
 import React from 'react';
+
+// Helper function to get theme colors
+const getColorValue = (color: string, variant: string) => {
+    const colorMap: Record<string, Record<string, string>> = {
+        primary: {
+            light: '#e3f2fd',
+            contrastText: '#1976d2',
+        },
+        success: {
+            light: '#e8f5e8',
+            contrastText: '#2e7d32',
+        },
+        info: {
+            light: '#e1f5fe',
+            contrastText: '#0288d1',
+        },
+        warning: {
+            light: '#fff3e0',
+            contrastText: '#f57c00',
+        },
+        secondary: {
+            light: '#f3e5f5',
+            contrastText: '#7b1fa2',
+        },
+    };
+    return colorMap[color]?.[variant] || '#f5f5f5';
+};
 import { Customer, Order, Visit } from '../types';
 
 interface KPICardProps {
@@ -38,24 +62,14 @@ const KPICard = ({
     trend,
     trendValue,
 }: KPICardProps) => (
-    <Card sx={{ height: '100%' }}>
-        <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
-                    mb: 1,
-                }}
-            >
-                <Box
-                    sx={{
-                        bgcolor: `${color}.light`,
-                        color: `${color}.contrastText`,
-                        borderRadius: 1,
-                        p: 1,
-                        display: 'flex',
-                        alignItems: 'center',
+    <Card className="h-full">
+        <CardContent className="p-4">
+            <Box className="flex items-start justify-between mb-2">
+                <Box 
+                    className="rounded p-2 flex items-center"
+                    style={{
+                        backgroundColor: getColorValue(color, 'light'),
+                        color: getColorValue(color, 'contrastText'),
                     }}
                 >
                     {icon}
@@ -63,15 +77,14 @@ const KPICard = ({
                 {trend && trendValue && (
                     <Chip
                         label={trendValue}
-                        color={
+                        className={`h-5 text-xs ${
                             trend === 'up'
-                                ? 'success'
+                                ? 'bg-green-500 text-white'
                                 : trend === 'down'
-                                  ? 'error'
-                                  : 'default'
-                        }
+                                ? 'bg-red-500 text-white'
+                                : 'bg-gray-200 text-gray-700'
+                        }`}
                         size="small"
-                        sx={{ height: 20, fontSize: '0.7rem' }}
                     />
                 )}
             </Box>
@@ -79,32 +92,31 @@ const KPICard = ({
             <Typography
                 variant="h4"
                 component="div"
-                sx={{ fontWeight: 'bold', mb: 0.5 }}
+                className="font-bold mb-1"
             >
                 {value}
             </Typography>
 
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography variant="body2" className="text-gray-600 mb-2">
                 {title}
             </Typography>
 
             {subtitle && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" className="text-gray-600">
                     {subtitle}
                 </Typography>
             )}
 
             {progress !== undefined && (
-                <Box sx={{ mt: 1 }}>
+                <Box className="mt-2">
                     <LinearProgress
                         variant="determinate"
                         value={progress}
-                        sx={{ height: 4, borderRadius: 2 }}
+                        className="h-1 rounded"
                     />
                     <Typography
                         variant="caption"
-                        color="text.secondary"
-                        sx={{ mt: 0.5, display: 'block' }}
+                        className="text-gray-600 mt-1 block"
                     >
                         {progress}% of target
                     </Typography>
@@ -221,7 +233,7 @@ export const BrokerKPICards = ({
             title: 'Total Customers',
             value: totalCustomers,
             subtitle: `${newCustomersThisMonth} added this month`,
-            icon: <PeopleIcon />,
+            icon: <PeopleIcon className="h-6 w-6" />,
             color: 'primary',
             trend:
                 newCustomersThisMonth >= newCustomersLastMonth
@@ -233,7 +245,7 @@ export const BrokerKPICards = ({
             title: 'Visits This Week',
             value: visitsThisWeek,
             subtitle: `${visitsThisMonth} total this month`,
-            icon: <LocationIcon />,
+            icon: <LocationIcon className="h-6 w-6" />,
             color: 'success',
             trend:
                 visitsThisMonth >= visitsLastMonth ? 'up' : ('down' as const),
@@ -244,14 +256,14 @@ export const BrokerKPICards = ({
             value: `${avgVisitDuration}m`,
             subtitle:
                 avgVisitDuration > 0 ? 'minutes per visit' : 'No duration data',
-            icon: <TimeIcon />,
+            icon: <TimeIcon className="h-6 w-6" />,
             color: 'info',
         },
         {
             title: 'GPS Coverage',
             value: `${gpsCoverage}%`,
             subtitle: `${visitsWithGPS} of ${totalVisits} visits`,
-            icon: <LocationIcon />,
+            icon: <LocationIcon className="h-6 w-6" />,
             color: 'warning',
             progress: gpsCoverage,
         },
@@ -259,7 +271,7 @@ export const BrokerKPICards = ({
             title: 'Customer Engagement',
             value: `${customerEngagement}%`,
             subtitle: `${customersWithVisits} customers visited`,
-            icon: <MetricsIcon />,
+            icon: <MetricsIcon className="h-6 w-6" />,
             color: 'secondary',
             progress: customerEngagement,
         },
@@ -270,7 +282,7 @@ export const BrokerKPICards = ({
                 orders.length > 0
                     ? `$${avgOrderValue} avg value`
                     : 'No orders yet',
-            icon: <RevenueIcon />,
+            icon: <RevenueIcon className="h-6 w-6" />,
             color: 'success',
         },
     ];
@@ -283,12 +295,12 @@ export const BrokerKPICards = ({
     }));
 
     return (
-        <Grid container spacing={2}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {kpiCards.map((kpi, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
+                <div key={index}>
                     <KPICard {...kpi} />
-                </Grid>
+                </div>
             ))}
-        </Grid>
+        </div>
     );
 };

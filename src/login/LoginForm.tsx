@@ -1,121 +1,81 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import {
-    Button,
-    CardActions,
-    CardContent,
-    CircularProgress,
-    Typography,
-} from '@mui/material';
 import { Form, useLogin, useNotify, useSafeSetState } from 'ra-core';
-import { Login, TextInput } from 'react-admin';
-import { SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { ForgotPasswordPage } from 'ra-supabase';
 
-const PREFIX = 'RaLoginForm';
-
-export const LoginFormClasses = {
-    content: `${PREFIX}-content`,
-    button: `${PREFIX}-button`,
-    icon: `${PREFIX}-icon`,
-};
-
-const StyledForm = styled(Form, {
-    name: PREFIX,
-    overridesResolver: (props, styles) => styles.root,
-})(({ theme }) => ({
-    [`& .${LoginFormClasses.content}`]: {
-        width: 300,
-    },
-    [`& .${LoginFormClasses.button}`]: {
-        marginTop: theme.spacing(2),
-    },
-    [`& .${LoginFormClasses.icon}`]: {
-        margin: theme.spacing(0.3),
-    },
-}));
+import { Button } from '../components/ui-kit/Button';
+import { Input } from '../components/ui-kit/Input';
+import { Spinner } from '../components/ui-kit/Spinner';
 
 export const LoginForm = () => {
     const [loading, setLoading] = useSafeSetState(false);
     const login = useLogin();
     const notify = useNotify();
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const submit: SubmitHandler<FieldValues> = values => {
+    const submit: SubmitHandler<FieldValues> = async values => {
         setLoading(true);
-        login(values)
-            .then(() => {
-                setLoading(false);
-            })
-            .catch(error => {
-                setLoading(false);
-                notify(
-                    typeof error === 'string'
-                        ? error
-                        : typeof error === 'undefined' || !error.message
-                          ? 'ra.auth.sign_in_error'
-                          : error.message,
-                    {
-                        type: 'error',
-                        messageArgs: {
-                            _:
-                                typeof error === 'string'
-                                    ? error
-                                    : error && error.message
-                                      ? error.message
-                                      : undefined,
-                        },
-                    }
-                );
+        try {
+            await login(values);
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : typeof error === 'string'
+                      ? error
+                      : 'ra.auth.sign_in_error'; // Default error message
+            notify(errorMessage, {
+                type: 'error',
+                messageArgs: {
+                    _: errorMessage,
+                },
             });
+        }
     };
 
     return (
-        <Login>
-            <StyledForm onSubmit={submit} mode="onChange" noValidate>
-                <CardContent className={LoginFormClasses.content}>
-                    <TextInput
-                        autoFocus
-                        source="email"
-                        label="Email"
-                        autoComplete="email"
-                    />
-                    <TextInput
-                        source="password"
-                        label="Password"
-                        type="password"
-                        autoComplete="current-password"
-                    />
-                </CardContent>
-                <CardActions sx={{ flexDirection: 'column', gap: 1 }}>
-                    <Button
-                        variant="contained"
-                        type="submit"
-                        color="primary"
-                        disabled={loading}
-                        fullWidth
-                        className={LoginFormClasses.button}
-                    >
-                        {loading ? (
-                            <CircularProgress
-                                className={LoginFormClasses.icon}
-                                size={19}
-                                thickness={3}
-                            />
-                        ) : (
-                            'Sign In'
-                        )}
-                    </Button>
-                    <Typography
-                        component={Link}
-                        to={ForgotPasswordPage.path}
-                        variant="caption"
-                    >
-                        Forgot your password?
-                    </Typography>
-                </CardActions>
-            </StyledForm>
-        </Login>
+        <form onSubmit={handleSubmit(submit)} className="flex flex-col items-center p-4 space-y-4">
+            <div className="w-full max-w-xs">
+                <Input
+                    {...register('email', { required: 'Email is required' })}
+                    type="email"
+                    label="Email"
+                    autoComplete="email"
+                    error={errors.email?.message?.toString()}
+                />
+            </div>
+            <div className="w-full max-w-xs">
+                <Input
+                    {...register('password', { required: 'Password is required' })}
+                    type="password"
+                    label="Password"
+                    autoComplete="current-password"
+                    error={errors.password?.message?.toString()}
+                />
+            </div>
+            <div className="w-full max-w-xs flex flex-col items-center mt-4">
+                <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={loading}
+                    className="w-full"
+                >
+                    {loading ? (
+                        <Spinner className="w-5 h-5" />
+                    ) : (
+                        'Sign In'
+                    )}
+                </Button>
+                <Link
+                    to="/forgot-password"
+                    className="text-sm text-blue-500 hover:underline mt-2"
+                >
+                    Forgot your password?
+                </Link>
+            </div>
+        </form>
     );
 };
 

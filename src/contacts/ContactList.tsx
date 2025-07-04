@@ -1,4 +1,4 @@
-import { Card, Stack, Chip, Box, Typography } from '@mui/material';
+import { Card, Stack, Chip, Box, Typography } from '../components/ui-kit';
 import jsonExport from 'jsonexport/dist';
 import type { Exporter } from 'react-admin';
 import {
@@ -22,7 +22,7 @@ import {
     useRefresh,
     useUnselectAll,
 } from 'react-admin';
-import { Star as StarIcon, LocationOn as LocationIcon } from '@mui/icons-material';
+import { StarIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 import { Organization, Contact, Setting } from '../types';
 import { ContactEmpty } from './ContactEmpty';
@@ -66,7 +66,7 @@ const ContactListLayout = () => {
                     <Title title={'Contacts'} />
                     {hasRestrictions && (
                         <Chip
-                            icon={<LocationIcon />}
+                            icon={<MapPinIcon className="h-4 w-4" />}
                             label={`Territory: ${territoryDisplayName}`}
                             variant="outlined"
                             size="small"
@@ -99,10 +99,11 @@ const ContactListActions = () => (
         <CreateButton
             variant="contained"
             label="New Contact"
-            sx={{
-                marginLeft: 2,
+            style={{
+                marginLeft: '0.5rem',
                 minHeight: 44,
-                px: 3,
+                paddingLeft: '0.75rem',
+                paddingRight: '0.75rem',
             }}
         />
     </TopToolbar>
@@ -211,7 +212,7 @@ const BulkSetPrimaryButton = () => {
     return (
         <Button
             onClick={handleSetPrimary}
-            startIcon={<StarIcon />}
+            startIcon={<StarIcon className="h-4 w-4" />}
             disabled={selectedIds.length === 0}
         >
             Set as Primary

@@ -1,4 +1,5 @@
-import { LinearProgress, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '../components/ui-kit';
+import { LinearProgress } from '@mui/material';
 import { CreateButton, useGetList } from 'react-admin';
 import useAppBarHeight from '../misc/useAppBarHeight';
 import { matchPath, useLocation } from 'react-router';

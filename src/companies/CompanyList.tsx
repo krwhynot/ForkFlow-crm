@@ -11,7 +11,7 @@ import {
     useListContext,
 } from 'react-admin';
 
-import { Stack } from '@mui/material';
+import { Box } from '../components/ui-kit';
 import { CompanyEmpty } from './CompanyEmpty';
 import { CompanyListFilter } from './CompanyListFilter';
 import { ImageList } from './GridList';
@@ -34,15 +34,15 @@ const CompanyListLayout = () => {
     if (!data?.length && !hasFilters) return <CompanyEmpty />;
 
     return (
-        <Stack direction="row" component="div">
+        <Box className="flex flex-row">
             <CompanyListFilter />
-            <Stack sx={{ width: '100%' }}>
+            <Box className="w-full">
                 <Title title={'Organizations'} />
                 <ListToolbar actions={<CompanyListActions />} />
                 <ImageList />
                 <Pagination rowsPerPageOptions={[10, 25, 50, 100]} />
-            </Stack>
-        </Stack>
+            </Box>
+        </Box>
     );
 };
 
@@ -54,7 +54,7 @@ const CompanyListActions = () => {
             <CreateButton
                 variant="contained"
                 label="New Organization"
-                sx={{ marginLeft: 2 }}
+                className="ml-2"
             />
         </TopToolbar>
     );

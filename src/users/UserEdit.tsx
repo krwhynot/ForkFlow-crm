@@ -31,8 +31,6 @@ import {
     Chip,
     TextField,
     Button,
-    useMediaQuery,
-    useTheme,
     Divider,
 } from '@mui/material';
 import {
@@ -48,6 +46,7 @@ import { User, UserRole } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
 import { TerritoryDisplay } from '../components/TerritoryDisplay';
 import { validateTerritory } from '../utils/territoryFilter';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const roleChoices = [
     { id: 'admin', name: 'Administrator' },
@@ -56,8 +55,7 @@ const roleChoices = [
 ];
 
 export const UserEdit = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     return (
         <Edit
@@ -78,7 +76,7 @@ export const UserEdit = () => {
 const UserEditTitle = () => {
     const record = useRecordContext<User>();
     if (!record) return null;
-    
+
     return (
         <span>
             Edit User: {record.firstName} {record.lastName}
@@ -96,23 +94,30 @@ const UserEditActions = () => (
 
 const UserEditForm = () => {
     const record = useRecordContext<User>();
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(record?.avatar || null);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(
+        record?.avatar?.src || null
+    );
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
-    const [territory, setTerritory] = useState<string[]>(record?.territory || []);
-    const [principals, setPrincipals] = useState<string[]>(record?.principals || []);
+    const [territory, setTerritory] = useState<string[]>(
+        typeof record?.territory === 'string' ? [record.territory] : record?.territory || []
+    );
+    const [principals, setPrincipals] = useState<string[]>([]);
     const [newTerritory, setNewTerritory] = useState('');
     const [newPrincipal, setNewPrincipal] = useState('');
-    
+
     const notify = useNotify();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     // Update local state when record changes
     useEffect(() => {
         if (record) {
-            setAvatarPreview(record.avatar || null);
-            setTerritory(record.territory || []);
-            setPrincipals(record.principals || []);
+            setAvatarPreview(record.avatar?.src || null);
+            setTerritory(
+                typeof record.territory === 'string'
+                    ? [record.territory]
+                    : record.territory || []
+            );
+            setPrincipals([]);
         }
     }, [record]);
 
@@ -132,7 +137,7 @@ const UserEditForm = () => {
             }
 
             setAvatarFile(file);
-            
+
             // Create preview URL
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -149,30 +154,38 @@ const UserEditForm = () => {
 
     const handleAddTerritory = () => {
         if (newTerritory.trim() && !territory.includes(newTerritory.trim())) {
-            const validation = validateTerritory([...territory, newTerritory.trim()]);
+            const validation = validateTerritory([
+                ...territory,
+                newTerritory.trim(),
+            ]);
             if (!validation.isValid) {
-                notify(validation.errors[validation.errors.length - 1], { type: 'error' });
+                notify(validation.errors[validation.errors.length - 1], {
+                    type: 'error',
+                });
                 return;
             }
-            
+
             setTerritory([...territory, newTerritory.trim()]);
             setNewTerritory('');
         }
     };
 
     const handleRemoveTerritory = (territoryToRemove: string) => {
-        setTerritory(territory.filter(t => t !== territoryToRemove));
+        setTerritory(territory.filter((t) => t !== territoryToRemove));
     };
 
     const handleAddPrincipal = () => {
-        if (newPrincipal.trim() && !principals.includes(newPrincipal.trim())) {
+        if (
+            newPrincipal.trim() &&
+            !principals.includes(newPrincipal.trim())
+        ) {
             setPrincipals([...principals, newPrincipal.trim()]);
             setNewPrincipal('');
         }
     };
 
     const handleRemovePrincipal = (principalToRemove: string) => {
-        setPrincipals(principals.filter(p => p !== principalToRemove));
+        setPrincipals(principals.filter((p) => p !== principalToRemove));
     };
 
     const handleResetPassword = () => {
@@ -210,26 +223,34 @@ const UserEditForm = () => {
                     <Box display="flex" alignItems="center" gap={2} mb={2}>
                         <Avatar
                             src={avatarPreview || undefined}
-                            sx={{ 
-                                width: 60, 
+                            sx={{
+                                width: 60,
                                 height: 60,
-                                fontSize: '1.5rem'
+                                fontSize: '1.5rem',
                             }}
                         >
-                            {record.firstName[0]}{record.lastName[0]}
+                            {record.firstName?.[0]}
+                            {record.lastName?.[0]}
                         </Avatar>
                         <Box flex={1}>
                             <Typography variant="h6">
                                 {record.firstName} {record.lastName}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                            >
                                 {record.email}
                             </Typography>
                             <Box display="flex" gap={1} mt={1}>
-                                <RoleChip role={record.role} size="small" />
+                                <RoleChip role={record.role || 'user'} size="small" />
                                 <Chip
-                                    label={record.isActive ? 'Active' : 'Inactive'}
-                                    color={record.isActive ? 'success' : 'error'}
+                                    label={
+                                        record.administrator ? 'Active' : 'Inactive'
+                                    }
+                                    color={
+                                        record.administrator ? 'success' : 'error'
+                                    }
                                     size="small"
                                     variant="outlined"
                                 />
@@ -237,14 +258,19 @@ const UserEditForm = () => {
                         </Box>
                     </Box>
 
-                    {record.lastLoginAt && (
-                        <Typography variant="body2" color="text.secondary">
-                            Last login: {new Date(record.lastLoginAt).toLocaleDateString()} at {new Date(record.lastLoginAt).toLocaleTimeString()}
+                    {record.updatedAt && (
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                        >
+                            Last login: {new Date(record.updatedAt).toLocaleDateString()} at{' '}
+                            {new Date(record.updatedAt).toLocaleTimeString()}
                         </Typography>
                     )}
-                    
+
                     <Typography variant="body2" color="text.secondary">
-                        Account created: {new Date(record.createdAt).toLocaleDateString()}
+                        Account created:{' '}
+                        {new Date(record.createdAt || '').toLocaleDateString()}
                     </Typography>
                 </CardContent>
             </Card>
@@ -257,16 +283,24 @@ const UserEditForm = () => {
                     </Typography>
 
                     {/* Avatar Section */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            mb: 3,
+                        }}
+                    >
                         <Avatar
                             src={avatarPreview || undefined}
-                            sx={{ 
-                                width: isMobile ? 80 : 100, 
+                            sx={{
+                                width: isMobile ? 80 : 100,
                                 height: isMobile ? 80 : 100,
-                                fontSize: isMobile ? '2rem' : '2.5rem'
+                                fontSize: isMobile ? '2rem' : '2.5rem',
                             }}
                         >
-                            {record.firstName[0]}{record.lastName[0]}
+                            {record.firstName?.[0]}
+                            {record.lastName?.[0]}
                         </Avatar>
                         <Stack>
                             <input
@@ -277,9 +311,9 @@ const UserEditForm = () => {
                                 onChange={handleAvatarChange}
                             />
                             <label htmlFor="avatar-upload">
-                                <IconButton 
-                                    color="primary" 
-                                    aria-label="upload picture" 
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
                                     component="span"
                                     sx={{ minHeight: 44, minWidth: 44 }}
                                 >
@@ -287,8 +321,8 @@ const UserEditForm = () => {
                                 </IconButton>
                             </label>
                             {avatarPreview && (
-                                <IconButton 
-                                    color="error" 
+                                <IconButton
+                                    color="error"
                                     onClick={handleRemoveAvatar}
                                     sx={{ minHeight: 44, minWidth: 44 }}
                                 >
@@ -299,16 +333,20 @@ const UserEditForm = () => {
                     </Box>
 
                     {/* Name Fields */}
-                    <Stack direction={isMobile ? "column" : "row"} spacing={2} sx={{ mb: 3 }}>
+                    <Stack
+                        direction={isMobile ? 'column' : 'row'}
+                        spacing={2}
+                        sx={{ mb: 3 }}
+                    >
                         <TextInput
                             source="firstName"
                             label="First Name"
                             validate={[required(), minLength(2)]}
                             fullWidth
-                            sx={{ 
-                                '& .MuiInputBase-input': { 
-                                    fontSize: isMobile ? '16px' : '14px' 
-                                } 
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    fontSize: isMobile ? '16px' : '14px',
+                                },
                             }}
                         />
                         <TextInput
@@ -316,10 +354,10 @@ const UserEditForm = () => {
                             label="Last Name"
                             validate={[required(), minLength(2)]}
                             fullWidth
-                            sx={{ 
-                                '& .MuiInputBase-input': { 
-                                    fontSize: isMobile ? '16px' : '14px' 
-                                } 
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    fontSize: isMobile ? '16px' : '14px',
+                                },
                             }}
                         />
                     </Stack>
@@ -331,11 +369,11 @@ const UserEditForm = () => {
                         validate={[required(), email()]}
                         fullWidth
                         helperText="Changing email will require user verification"
-                        sx={{ 
+                        sx={{
                             mb: 3,
-                            '& .MuiInputBase-input': { 
-                                fontSize: isMobile ? '16px' : '14px' 
-                            } 
+                            '& .MuiInputBase-input': {
+                                fontSize: isMobile ? '16px' : '14px',
+                            },
                         }}
                     />
 
@@ -352,7 +390,7 @@ const UserEditForm = () => {
 
                     {/* Active Status */}
                     <BooleanInput
-                        source="isActive"
+                        source="administrator"
                         label="Active User"
                         helperText="Inactive users cannot log in"
                         sx={{ mb: 2 }}
@@ -364,11 +402,19 @@ const UserEditForm = () => {
             <Card sx={{ mb: 3, width: '100%' }}>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        <SecurityIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                        <SecurityIcon
+                            sx={{ mr: 1, verticalAlign: 'middle' }}
+                        />
                         Security Management
                     </Typography>
 
-                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 2,
+                            flexWrap: 'wrap',
+                        }}
+                    >
                         <Button
                             variant="outlined"
                             startIcon={<VpnKeyIcon />}
@@ -377,7 +423,7 @@ const UserEditForm = () => {
                         >
                             Send Password Reset
                         </Button>
-                        
+
                         <Button
                             variant="outlined"
                             startIcon={<HistoryIcon />}
@@ -387,14 +433,19 @@ const UserEditForm = () => {
                         </Button>
                     </Box>
 
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                        Password reset emails will be sent to the user's current email address.
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 2 }}
+                    >
+                        Password reset emails will be sent to the user's
+                        current email address.
                     </Typography>
                 </CardContent>
             </Card>
 
             <FormDataConsumer>
-                {({ formData }) => 
+                {({ formData }) =>
                     formData.role === 'broker' && (
                         <>
                             {/* Territory Management */}
@@ -403,51 +454,90 @@ const UserEditForm = () => {
                                     <Typography variant="h6" gutterBottom>
                                         Sales Territory
                                     </Typography>
-                                    
-                                    <Typography variant="body2" color="text.secondary" paragraph>
-                                        Manage territories for this broker. Use state codes (CA, NY), cities (Los Angeles), or ZIP codes (90210).
+
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        paragraph
+                                    >
+                                        Manage territories for this broker. Use
+                                        state codes (CA, NY), cities (Los
+                                        Angeles), or ZIP codes (90210).
                                     </Typography>
 
-                                    <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 1,
+                                            mb: 2,
+                                            flexWrap: 'wrap',
+                                            alignItems: 'center',
+                                        }}
+                                    >
                                         <TextField
                                             label="Add Territory"
                                             value={newTerritory}
-                                            onChange={(e) => setNewTerritory(e.target.value)}
+                                            onChange={(e) =>
+                                                setNewTerritory(e.target.value)
+                                            }
                                             size="small"
-                                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTerritory())}
+                                            onKeyPress={(e) =>
+                                                e.key === 'Enter' &&
+                                                (e.preventDefault(),
+                                                handleAddTerritory())
+                                            }
                                             inputProps={{
-                                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                                style: {
+                                                    fontSize: isMobile
+                                                        ? '16px'
+                                                        : '14px',
+                                                },
                                             }}
                                         />
-                                        <IconButton 
-                                            onClick={handleAddTerritory} 
+                                        <IconButton
+                                            onClick={handleAddTerritory}
                                             color="primary"
                                             disabled={!newTerritory.trim()}
-                                            sx={{ minHeight: 44, minWidth: 44 }}
+                                            sx={{
+                                                minHeight: 44,
+                                                minWidth: 44,
+                                            }}
                                         >
                                             <AddIcon />
                                         </IconButton>
                                     </Box>
-                                    
-                                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 1,
+                                            flexWrap: 'wrap',
+                                            mb: 2,
+                                        }}
+                                    >
                                         {territory.map((area) => (
                                             <Chip
                                                 key={area}
                                                 label={area}
-                                                onDelete={() => handleRemoveTerritory(area)}
+                                                onDelete={() =>
+                                                    handleRemoveTerritory(area)
+                                                }
                                                 color="primary"
                                                 variant="outlined"
                                             />
                                         ))}
                                         {territory.length === 0 && (
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                            >
                                                 No territories assigned
                                             </Typography>
                                         )}
                                     </Box>
 
                                     {territory.length > 0 && (
-                                        <TerritoryDisplay 
+                                        <TerritoryDisplay
                                             territory={territory}
                                             showTooltip={true}
                                         />
@@ -461,44 +551,83 @@ const UserEditForm = () => {
                                     <Typography variant="h6" gutterBottom>
                                         Principals/Brands
                                     </Typography>
-                                    
-                                    <Typography variant="body2" color="text.secondary" paragraph>
-                                        Manage specific food service principals or brands this broker represents.
+
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        paragraph
+                                    >
+                                        Manage specific food service principals
+                                        or brands this broker represents.
                                     </Typography>
 
-                                    <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 1,
+                                            mb: 2,
+                                            flexWrap: 'wrap',
+                                            alignItems: 'center',
+                                        }}
+                                    >
                                         <TextField
                                             label="Add Principal"
                                             value={newPrincipal}
-                                            onChange={(e) => setNewPrincipal(e.target.value)}
+                                            onChange={(e) =>
+                                                setNewPrincipal(e.target.value)
+                                            }
                                             size="small"
-                                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddPrincipal())}
+                                            onKeyPress={(e) =>
+                                                e.key === 'Enter' &&
+                                                (e.preventDefault(),
+                                                handleAddPrincipal())
+                                            }
                                             inputProps={{
-                                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                                style: {
+                                                    fontSize: isMobile
+                                                        ? '16px'
+                                                        : '14px',
+                                                },
                                             }}
                                         />
-                                        <IconButton 
-                                            onClick={handleAddPrincipal} 
+                                        <IconButton
+                                            onClick={handleAddPrincipal}
                                             color="primary"
                                             disabled={!newPrincipal.trim()}
-                                            sx={{ minHeight: 44, minWidth: 44 }}
+                                            sx={{
+                                                minHeight: 44,
+                                                minWidth: 44,
+                                            }}
                                         >
                                             <AddIcon />
                                         </IconButton>
                                     </Box>
-                                    
-                                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 1,
+                                            flexWrap: 'wrap',
+                                        }}
+                                    >
                                         {principals.map((principal) => (
                                             <Chip
                                                 key={principal}
                                                 label={principal}
-                                                onDelete={() => handleRemovePrincipal(principal)}
+                                                onDelete={() =>
+                                                    handleRemovePrincipal(
+                                                        principal
+                                                    )
+                                                }
                                                 color="secondary"
                                                 variant="outlined"
                                             />
                                         ))}
                                         {principals.length === 0 && (
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                            >
                                                 No principals assigned
                                             </Typography>
                                         )}

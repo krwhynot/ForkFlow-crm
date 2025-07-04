@@ -1,4 +1,4 @@
-import { CardContent } from '@mui/material';
+import { Card } from '../components/ui-kit';
 import { Create, Form, Toolbar, useGetIdentity } from 'react-admin';
 
 import { CompanyInputs } from './CompanyInputs';
@@ -18,9 +18,9 @@ export const CompanyCreate = () => {
             }}
         >
             <Form defaultValues={{ salesId: identity?.id }}>
-                <CardContent>
+                <Card className="p-6">
                     <CompanyInputs />
-                </CardContent>
+                </Card>
                 <Toolbar />
             </Form>
         </Create>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Edit, Form, Toolbar } from 'react-admin';
-import { CardContent } from '@mui/material';
+import { Card } from '../components/ui-kit';
 
 import { CompanyInputs } from './CompanyInputs';
 
@@ -20,9 +20,9 @@ export const CompanyEdit = () => (
         }}
     >
         <Form>
-            <CardContent>
+            <Card className="p-6">
                 <CompanyInputs />
-            </CardContent>
+            </Card>
             <Toolbar />
         </Form>
     </Edit>

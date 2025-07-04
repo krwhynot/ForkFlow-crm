@@ -1,10 +1,5 @@
-import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import Alert from '@mui/material/Alert';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import MuiLink from '@mui/material/Link';
+import { Box, CircularProgress, Stack, Typography, Alert, Dialog, DialogActions, DialogContent, DialogTitle } from '../components/ui-kit';
+import { Link as MuiLink } from 'react-router-dom';
 import {
     Button,
     FileField,
@@ -78,24 +73,11 @@ export function ContactImportDialog({
                                 <Alert
                                     severity="info"
                                     action={
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                height: '100%',
-                                                alignItems: 'center',
-                                                padding: '0',
-                                            }}
-                                        >
+                                        <Box className="flex h-full items-center p-0">
                                             <CircularProgress size={20} />
                                         </Box>
                                     }
-                                    sx={{
-                                        alignItems: 'center',
-                                        '& .MuiAlert-action': {
-                                            padding: 0,
-                                            marginRight: 0,
-                                        },
-                                    }}
+                                    className="items-center"
                                 >
                                     The import is running, please do not close
                                     this tab.
@@ -178,13 +160,8 @@ export function ContactImportDialog({
                     </Stack>
                 </Form>
             </DialogContent>
-            <DialogActions
-                sx={{
-                    p: 0,
-                    justifyContent: 'flex-start',
-                }}
-            >
-                <Toolbar sx={{ width: '100%' }}>
+            <DialogActions className="p-0 justify-start">
+                <Toolbar className="w-full">
                     {importer.state === 'idle' ? (
                         <Button
                             label="Import"

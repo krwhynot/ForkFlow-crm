@@ -1,7 +1,4 @@
-import { Button, DialogContent, Stack } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
+import { Button, Stack, Typography, Dialog, DialogTitle, DialogContent } from '@/components/ui-kit';
 import {
     DeleteButton,
     EditBase,
@@ -30,17 +27,7 @@ export const DealEdit = ({ open, id }: { open: boolean; id?: string }) => {
     };
 
     return (
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            fullWidth
-            maxWidth="md"
-            sx={{
-                '& .MuiDialog-container': {
-                    alignItems: 'flex-start',
-                },
-            }}
-        >
+        <Dialog open={open} onClose={handleClose} className="max-w-3xl">
             {!!id ? (
                 <EditBase
                     id={id}
@@ -81,18 +68,13 @@ function EditHeader() {
     }
 
     return (
-        <DialogTitle
-            sx={{
-                paddingBottom: 0,
-            }}
-        >
+        <DialogTitle>
             <Stack
                 direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                spacing={1}
+                className="items-center justify-between"
+                gap={1}
             >
-                <Stack direction="row" alignItems="center" gap={2}>
+                <Stack direction="row" className="items-center" gap={2}>
                     <ReferenceField
                         source="organizationId"
                         reference="companies"
@@ -103,8 +85,9 @@ function EditHeader() {
                     <Typography variant="h6">Edit {deal.name} deal</Typography>
                 </Stack>
 
-                <Stack direction="row" spacing={1} sx={{ pr: 3 }}>
+                <Stack direction="row" gap={1} className="pr-3">
                     <Button
+                        // @ts-ignore
                         component={Link}
                         to={`/deals/${deal.id}/show`}
                         size="small"
@@ -119,7 +102,7 @@ function EditHeader() {
 
 function EditToolbar() {
     return (
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Toolbar className="flex justify-between">
             <SaveButton />
             <DeleteButton mutationMode="undoable" />
         </Toolbar>

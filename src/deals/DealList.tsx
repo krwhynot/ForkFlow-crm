@@ -14,7 +14,7 @@ import {
 } from 'react-admin';
 import { matchPath, useLocation } from 'react-router';
 
-import { Card, Stack } from '@mui/material';
+import { Card, Stack } from '@/components/ui-kit';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { DealArchivedList } from './DealArchivedList';
 import { DealCreate } from './DealCreate';
@@ -75,7 +75,7 @@ const DealLayout = () => {
         );
 
     return (
-        <Stack component="div" sx={{ width: '100%' }}>
+        <Stack className="w-full">
             <Title title={'Deals'} />
             <ListToolbar filters={dealFilters} actions={<DealActions />} />
             <Card>

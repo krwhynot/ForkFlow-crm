@@ -1,4 +1,3 @@
-import { ListItem, Stack, Typography } from '@mui/material';
 import { Link, ReferenceField } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';
@@ -16,56 +15,55 @@ export function ActivityLogDealCreated({
 }: ActivityLogDealCreatedProps) {
     const context = useActivityLogContext();
     const { deal } = activity;
+
+    if (!deal) {
+        return null;
+    }
+
     return (
-        <ListItem disableGutters>
-            <Stack direction="row" spacing={1} alignItems="center" width="100%">
+        <div className="flex items-center space-x-2">
+            <ReferenceField
+                source="entityId"
+                reference="companies"
+                record={activity}
+                link={false}
+            >
+                <CompanyAvatar />
+            </ReferenceField>
+            <p className="text-sm text-gray-500 flex-grow">
                 <ReferenceField
-                    source="organizationId"
-                    reference="companies"
+                    source="userId"
+                    reference="sales"
                     record={activity}
                     link={false}
                 >
-                    <CompanyAvatar width={20} height={20} />
-                </ReferenceField>
-                <Typography
-                    component="p"
-                    variant="body2"
-                    color="text.secondary"
-                    flexGrow={1}
+                    <SaleName />
+                </ReferenceField>{' '}
+                added deal{' '}
+                <Link
+                    to={`/deals/${deal.id}/show`}
+                    className="font-medium text-blue-600 hover:underline"
                 >
-                    <ReferenceField
-                        source="salesId"
-                        reference="sales"
-                        record={activity}
-                        link={false}
-                    >
-                        <SaleName />
-                    </ReferenceField>{' '}
-                    added deal{' '}
-                    <Link to={`/deals/${deal.id}/show`}>{deal.name}</Link>{' '}
-                    {context !== 'company' && (
-                        <>
-                            to company{' '}
-                            <ReferenceField
-                                source="organizationId"
-                                reference="companies"
-                                record={activity}
-                                link="show"
-                            />{' '}
-                            <RelativeDate date={activity.date} />
-                        </>
-                    )}
-                </Typography>
-                {context === 'company' && (
-                    <Typography
-                        color="textSecondary"
-                        variant="body2"
-                        component="span"
-                    >
-                        <RelativeDate date={activity.date} />
-                    </Typography>
+                    {deal.name}
+                </Link>{' '}
+                {context !== 'company' && (
+                    <>
+                        to company{' '}
+                        <ReferenceField
+                            source="entityId"
+                            reference="companies"
+                            record={activity}
+                            link="show"
+                        />{' '}
+                        <RelativeDate date={activity.createdAt} />
+                    </>
                 )}
-            </Stack>
-        </ListItem>
+            </p>
+            {context === 'company' && (
+                <p className="text-sm text-gray-500">
+                    <RelativeDate date={activity.createdAt} />
+                </p>
+            )}
+        </div>
     );
 }

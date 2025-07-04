@@ -4,22 +4,22 @@ import {
     CardContent,
     Typography,
     Box,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
     Chip,
     Button,
-} from '@mui/material';
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+} from '../components/ui-kit';
 import {
-    LocationOn as LocationIcon,
-    Restaurant as RestaurantIcon,
-    Store as StoreIcon,
-    Business as BusinessIcon,
-    LocalShipping as DistributorIcon,
-    TrendingUp as GrowthIcon,
-    Schedule as RecentIcon,
-} from '@mui/icons-material';
+    MapPinIcon as LocationIcon,
+    BuildingStorefrontIcon as RestaurantIcon,
+    BuildingStorefrontIcon as StoreIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    TruckIcon as DistributorIcon,
+    TrendingUpIcon as GrowthIcon,
+    ClockIcon as RecentIcon,
+} from '@heroicons/react/24/outline';
 import { Customer, Visit } from '../types';
 
 interface TerritoryOverviewProps {
@@ -29,12 +29,12 @@ interface TerritoryOverviewProps {
 
 const getBusinessTypeIcon = (type: string) => {
     const iconMap = {
-        restaurant: <RestaurantIcon />,
-        grocery: <StoreIcon />,
-        distributor: <DistributorIcon />,
-        other: <BusinessIcon />,
+        restaurant: <RestaurantIcon className="h-5 w-5" />,
+        grocery: <StoreIcon className="h-5 w-5" />,
+        distributor: <DistributorIcon className="h-5 w-5" />,
+        other: <BusinessIcon className="h-5 w-5" />,
     };
-    return iconMap[type as keyof typeof iconMap] || <BusinessIcon />;
+    return iconMap[type as keyof typeof iconMap] || <BusinessIcon className="h-5 w-5" />;
 };
 
 const getBusinessTypeColor = (type: string) => {
@@ -96,22 +96,15 @@ export const TerritoryOverview = ({
         .slice(0, 5);
 
     return (
-        <Box
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                gap: 2,
-            }}
-        >
+        <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Business Type Distribution */}
             <Card>
                 <CardContent>
                     <Typography
                         variant="h6"
-                        gutterBottom
-                        sx={{ display: 'flex', alignItems: 'center' }}
+                        className="mb-2 flex items-center"
                     >
-                        <BusinessIcon sx={{ mr: 1 }} />
+                        <BusinessIcon className="h-5 w-5 mr-2" />
                         Business Mix
                     </Typography>
 

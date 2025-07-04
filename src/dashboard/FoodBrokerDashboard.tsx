@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Stack, Typography } from '../components/ui-kit';
 import { useGetIdentity, useGetList } from 'react-admin';
 import { ReminderDashboard } from '../reminders/ReminderDashboard';
 import { Customer, Order, Reminder, Visit } from '../types';
@@ -25,28 +25,22 @@ const RecentActivity = () => {
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" className="mb-2">
                     Recent Activity
                 </Typography>
 
                 {recentVisits && recentVisits.length > 0 && (
-                    <Box sx={{ mb: 2 }}>
+                    <Box className="mb-4">
                         <Typography
                             variant="subtitle2"
-                            color="text.secondary"
-                            gutterBottom
+                            className="text-gray-600 mb-2"
                         >
                             Recent Visits
                         </Typography>
                         {recentVisits.slice(0, 3).map(visit => (
                             <Box
                                 key={visit.id}
-                                sx={{
-                                    mb: 1,
-                                    pl: 2,
-                                    borderLeft: '3px solid',
-                                    borderColor: 'primary.main',
-                                }}
+                                className="mb-2 pl-4 border-l-4 border-blue-600"
                             >
                                 <Typography variant="body2">
                                     {visit.customer_name} •{' '}
@@ -54,7 +48,7 @@ const RecentActivity = () => {
                                 </Typography>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     {new Date(
                                         visit.visit_date
@@ -69,27 +63,21 @@ const RecentActivity = () => {
                     <Box>
                         <Typography
                             variant="subtitle2"
-                            color="text.secondary"
-                            gutterBottom
+                            className="text-gray-600 mb-2"
                         >
                             New Customers
                         </Typography>
                         {recentCustomers.slice(0, 3).map(customer => (
                             <Box
                                 key={customer.id}
-                                sx={{
-                                    mb: 1,
-                                    pl: 2,
-                                    borderLeft: '3px solid',
-                                    borderColor: 'success.main',
-                                }}
+                                className="mb-2 pl-4 border-l-4 border-green-600"
                             >
                                 <Typography variant="body2">
                                     {customer.business_name}
                                 </Typography>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     {customer.business_type} •{' '}
                                     {new Date(
@@ -143,28 +131,26 @@ export const FoodBrokerDashboard = () => {
         ordersLoading
     ) {
         return (
-            <Box sx={{ p: 3 }}>
+            <Box className="p-6">
                 <Typography>Loading dashboard...</Typography>
             </Box>
         );
     }
 
     return (
-        <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
-            <Typography variant="h4" gutterBottom>
+        <Box className="p-2 sm:p-4 md:p-6">
+            <Typography variant="h4" className="mb-2">
                 Food Broker Dashboard
             </Typography>
             <Typography
                 variant="subtitle1"
-                color="text.secondary"
-                gutterBottom
-                sx={{ mb: 3 }}
+                className="text-gray-600 mb-6"
             >
                 Welcome back! Here's what's happening in your territory.
             </Typography>
 
             {/* Advanced KPI Cards */}
-            <Box sx={{ mb: 4 }}>
+            <Box className="mb-8">
                 <BrokerKPICards
                     customers={customers || []}
                     visits={visits || []}

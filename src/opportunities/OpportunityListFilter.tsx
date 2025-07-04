@@ -6,7 +6,7 @@ import {
     useGetIdentity,
     useGetList,
 } from 'react-admin';
-import { Box, Chip } from '@mui/material';
+import { Box, Chip } from '../components/ui-kit';
 import BusinessIcon from '@mui/icons-material/Business';
 import PersonIcon from '@mui/icons-material/Person';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -64,13 +64,9 @@ export const OpportunityListFilter = () => {
     ];
 
     return (
-        <Box width="16em" minWidth="16em" order={-1} mr={2} mt={5}>
+        <Box className="w-64 min-w-64 order-last mr-2 mt-5">
             <FilterLiveSearch
                 hiddenLabel
-                sx={{
-                    display: 'block',
-                    '& .MuiFilledInput-root': { width: '100%' },
-                }}
                 placeholder="Search opportunities..."
             />
 
@@ -106,13 +102,10 @@ export const OpportunityListFilter = () => {
                             <Chip
                                 label={stage.name}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor: stage.color,
-                                    color: 'white',
-                                    border: 0,
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
                                 }}
+                                className="text-white border-0 cursor-pointer font-medium"
                             />
                         }
                         value={{ stage: stage.id }}
@@ -128,13 +121,10 @@ export const OpportunityListFilter = () => {
                             <Chip
                                 label={status.name}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor: status.color,
-                                    color: 'white',
-                                    border: 0,
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
                                 }}
+                                className="text-white border-0 cursor-pointer font-medium"
                             />
                         }
                         value={{ status: status.id }}
@@ -150,13 +140,10 @@ export const OpportunityListFilter = () => {
                             <Chip
                                 label={range.name}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor: range.color,
-                                    color: 'white',
-                                    border: 0,
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
                                 }}
+                                className="text-white border-0 cursor-pointer font-medium"
                             />
                         }
                         value={{ 
@@ -175,13 +162,10 @@ export const OpportunityListFilter = () => {
                             <Chip
                                 label={period.name}
                                 size="small"
-                                sx={{
+                                style={{
                                     backgroundColor: period.color,
-                                    color: 'white',
-                                    border: 0,
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
                                 }}
+                                className="text-white border-0 cursor-pointer font-medium"
                             />
                         }
                         value={{ timePeriod: period.id }}

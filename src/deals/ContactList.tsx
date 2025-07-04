@@ -1,4 +1,5 @@
-import { Link, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '../components/ui-kit';
+import { Link } from '@mui/material';
 import { useListContext } from 'react-admin';
 import { Link as RouterLink } from 'react-router-dom';
 import { Avatar } from '../contacts/Avatar';

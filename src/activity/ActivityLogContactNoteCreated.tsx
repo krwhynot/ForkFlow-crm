@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { ReferenceField } from 'react-admin';
 
 import { Avatar } from '../contacts/Avatar';
@@ -17,6 +16,11 @@ export function ActivityLogContactNoteCreated({
 }: ActivityLogContactNoteCreatedProps) {
     const context = useActivityLogContext();
     const { contactNote } = activity;
+
+    if (!contactNote) {
+        return null;
+    }
+
     return (
         <ActivityLogNote
             header={
@@ -27,16 +31,11 @@ export function ActivityLogContactNoteCreated({
                         record={contactNote}
                         link={false}
                     >
-                        <Avatar width={20} height={20} />
+                        <Avatar />
                     </ReferenceField>
-                    <Typography
-                        component="p"
-                        variant="body2"
-                        color="text.secondary"
-                        flexGrow={1}
-                    >
+                    <p className="text-sm text-gray-500 flex-grow">
                         <ReferenceField
-                            source="salesId"
+                            source="userId"
                             reference="sales"
                             record={activity}
                             link={false}
@@ -64,22 +63,18 @@ export function ActivityLogContactNoteCreated({
                                         link="show"
                                     />
                                 </ReferenceField>{' '}
-                                <RelativeDate date={activity.date} />
+                                <RelativeDate date={activity.createdAt} />
                             </>
                         )}
-                    </Typography>
+                    </p>
                     {context === 'company' && (
-                        <Typography
-                            color="textSecondary"
-                            variant="body2"
-                            component="span"
-                        >
-                            <RelativeDate date={activity.date} />
-                        </Typography>
+                        <p className="text-sm text-gray-500">
+                            <RelativeDate date={activity.createdAt} />
+                        </p>
                     )}
                 </>
             }
-            text={contactNote.content}
+            text={contactNote.text}
         />
     );
 }

@@ -1,11 +1,13 @@
 import {
-    Divider,
     Stack,
     Typography,
-    useMediaQuery,
-    useTheme,
     Button,
     Box,
+} from '../../components/ui-kit';
+import {
+    Divider,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import { LocationOn as LocationIcon } from '@mui/icons-material';
 import {

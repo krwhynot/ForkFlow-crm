@@ -1,43 +1,25 @@
-import { Grid, useMediaQuery, useTheme } from '@mui/material';
 import { useListContext, RecordContextProvider } from 'react-admin';
-import { OrganizationCard } from './OrganizationCard';
-import { Organization } from '../types';
+import { OrganizationCard } from '../common/OrganizationCard';
+import { Organization } from '../../types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export const ImageList = () => {
     const { data, isLoading } = useListContext<Organization>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('sm');
+    const isTablet = useBreakpoint('md');
 
     if (isLoading) return null;
 
     // Determine grid spacing and columns based on screen size
-    const getColumns = () => {
-        if (isMobile) return 1;
-        if (isTablet) return 2;
-        return 3;
-    };
-
     return (
-        <Grid container spacing={2} sx={{ mt: 1, mb: 2, px: 1 }}>
-            {data?.map(record => (
-                <Grid
-                    item
-                    key={record.id}
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    lg={4}
-                    xl={3}
-                    sx={{
-                        display: 'flex',
-                    }}
-                >
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-1 mb-2 px-1">
+            {data?.map((record) => (
+                <div key={record.id} className="flex">
                     <RecordContextProvider value={record}>
                         <OrganizationCard />
                     </RecordContextProvider>
-                </Grid>
+                </div>
             ))}
-        </Grid>
+        </div>
     );
 };

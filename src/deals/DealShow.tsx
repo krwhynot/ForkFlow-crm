@@ -1,12 +1,14 @@
 import {
-    Box,
     Button,
+    Stack,
+    Typography,
+} from '../components/ui-kit';
+import {
+    Box,
     Chip,
     Dialog,
     DialogContent,
     Divider,
-    Stack,
-    Typography,
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import {

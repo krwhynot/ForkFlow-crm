@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Create, Form, Toolbar, useGetIdentity } from 'react-admin';
-import { CardContent, Typography, Box, Chip } from '@mui/material';
+import { CardContent, Typography, Box } from '../components/ui-kit';
 import { useLocation } from 'react-router-dom';
-import { Business as BusinessIcon } from '@mui/icons-material';
+import { BuildingOfficeIcon } from '@heroicons/react/24/outline';
 
 import { ContactInputs } from './ContactInputs';
 
@@ -34,34 +34,22 @@ export const ContactCreate = () => {
                 <CardContent>
                     {organizationId && (
                         <Box
-                            sx={{
-                                mb: 3,
-                                p: 2,
-                                backgroundColor: 'primary.light',
-                                borderRadius: 1,
-                            }}
+                            className="mb-6 p-4 bg-blue-50 rounded-lg"
                         >
                             <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    mb: 1,
-                                }}
+                                display="flex"
+                                alignItems="center"
+                                className="mb-2"
                             >
-                                <BusinessIcon
-                                    sx={{ mr: 1, color: 'primary.main' }}
-                                />
+                                <BuildingOfficeIcon className="h-5 w-5 mr-2 text-blue-600" />
                                 <Typography
                                     variant="h6"
-                                    sx={{
-                                        fontWeight: 600,
-                                        color: 'primary.main',
-                                    }}
+                                    className="font-semibold text-blue-600"
                                 >
                                     Adding Contact to Organization
                                 </Typography>
                             </Box>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" color="textSecondary">
                                 This contact will be automatically linked to the
                                 selected organization.
                             </Typography>

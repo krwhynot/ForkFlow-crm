@@ -1,33 +1,17 @@
-import { Card, CardContent, Typography, Box } from '@mui/material';
 import {
-    FilterList,
-    FilterListItem,
-    SearchInput,
-    SelectInput,
-    BooleanInput,
-} from 'react-admin';
-import {
-    Restaurant as RestaurantIcon,
-    Store as StoreIcon,
-    LocalShipping as DistributorIcon,
-    Business as OtherIcon,
-    Schedule as ScheduleIcon,
-    Place as PlaceIcon,
-} from '@mui/icons-material';
+    BuildingStorefrontIcon,
+    TruckIcon,
+    BuildingOfficeIcon,
+    ClockIcon,
+    MapPinIcon,
+} from '@heroicons/react/24/outline';
+import { SearchInput } from 'react-admin';
+import { Card, CardContent } from '../components/ui-kit/Card';
+import { Filter, FilterItem } from '../components/ui-kit/Filter';
 
 export const CustomerListFilter = () => {
     return (
-        <Box
-            sx={{
-                display: {
-                    xs: 'none', // Hide on mobile
-                    sm: 'block',
-                },
-                order: -1,
-                width: '15em',
-                marginRight: '1em',
-            }}
-        >
+        <div className="hidden sm:block order-first w-60 mr-4">
             <Card>
                 <CardContent>
                     <SearchInput
@@ -36,65 +20,59 @@ export const CustomerListFilter = () => {
                         alwaysOn
                     />
 
-                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                        Business Type
-                    </Typography>
-                    <FilterList label="Business Type" icon={<RestaurantIcon />}>
-                        <FilterListItem
-                            label="Restaurants"
-                            value={{ business_type: 'restaurant' }}
-                            icon={<RestaurantIcon />}
-                        />
-                        <FilterListItem
-                            label="Grocery Stores"
-                            value={{ business_type: 'grocery' }}
-                            icon={<StoreIcon />}
-                        />
-                        <FilterListItem
-                            label="Distributors"
-                            value={{ business_type: 'distributor' }}
-                            icon={<DistributorIcon />}
-                        />
-                        <FilterListItem
-                            label="Other"
-                            value={{ business_type: 'other' }}
-                            icon={<OtherIcon />}
-                        />
-                    </FilterList>
+                    <div className="space-y-4 mt-4">
+                        <Filter
+                            label="Business Type"
+                            icon={<BuildingStorefrontIcon className="h-5 w-5" />}
+                        >
+                            <FilterItem
+                                label="Restaurants"
+                                value={{ business_type: 'restaurant' }}
+                            />
+                            <FilterItem
+                                label="Grocery Stores"
+                                value={{ business_type: 'grocery' }}
+                            />
+                            <FilterItem
+                                label="Distributors"
+                                value={{ business_type: 'distributor' }}
+                            />
+                            <FilterItem
+                                label="Other"
+                                value={{ business_type: 'other' }}
+                            />
+                        </Filter>
 
-                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                        Visit Status
-                    </Typography>
-                    <FilterList label="Visit Status" icon={<ScheduleIcon />}>
-                        <FilterListItem
-                            label="Needs Visit (30+ days)"
-                            value={{ needs_visit: true }}
-                            icon={<ScheduleIcon />}
-                        />
-                        <FilterListItem
-                            label="Recently Visited"
-                            value={{ recently_visited: true }}
-                            icon={<ScheduleIcon />}
-                        />
-                    </FilterList>
+                        <Filter
+                            label="Visit Status"
+                            icon={<ClockIcon className="h-5 w-5" />}
+                        >
+                            <FilterItem
+                                label="Needs Visit (30+ days)"
+                                value={{ needs_visit: true }}
+                            />
+                            <FilterItem
+                                label="Recently Visited"
+                                value={{ recently_visited: true }}
+                            />
+                        </Filter>
 
-                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                        Location
-                    </Typography>
-                    <FilterList label="Location" icon={<PlaceIcon />}>
-                        <FilterListItem
-                            label="Has GPS Coordinates"
-                            value={{ has_location: true }}
-                            icon={<PlaceIcon />}
-                        />
-                        <FilterListItem
-                            label="Missing Location"
-                            value={{ has_location: false }}
-                            icon={<PlaceIcon />}
-                        />
-                    </FilterList>
+                        <Filter
+                            label="Location"
+                            icon={<MapPinIcon className="h-5 w-5" />}
+                        >
+                            <FilterItem
+                                label="Has GPS Coordinates"
+                                value={{ has_location: true }}
+                            />
+                            <FilterItem
+                                label="Missing Location"
+                                value={{ has_location: false }}
+                            />
+                        </Filter>
+                    </div>
                 </CardContent>
             </Card>
-        </Box>
+        </div>
     );
 };

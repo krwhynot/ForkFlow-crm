@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is **ForkFlow-CRM**, a food broker CRM system built with React + react-admin + Supabase. It's designed as a mobile-first, website-friendly CRM for food brokers who visit restaurants and stores.
 
 ### Tech Stack
-- **Frontend**: React 18 + TypeScript + react-admin 5.4 + Material-UI
+- **Frontend**: React 18 + TypeScript + react-admin 5.4 + Headless UI + Tailwind CSS
 - **Backend**: Supabase (PostgreSQL, Auth, Storage, REST API, Edge Functions)
 - **Data Visualization**: Nivo charts (@nivo/bar, @nivo/core)
 - **Maps**: Google Maps JavaScript API integration
@@ -180,8 +180,8 @@ Unit tests use Vitest and are located alongside source files with `.test.ts` or 
 
 ### Critical Error Categories & Prevention
 
-**1. Missing Material-UI Icons (TS2305)**
-- **Prevention**: Always verify icon names at [mui.com/material-ui/material-icons/](https://mui.com/material-ui/material-icons/) before importing
+**1. Missing Heroicons Icons (TS2305)**
+- **Prevention**: Always verify icon names at [heroicons.com](https://heroicons.com) before importing
 - **Common Replacements**: 
   - `Presentation` → `Slideshow`
   - `Opportunity` → `TrendingUp` 
@@ -293,7 +293,7 @@ interface Extended extends Omit<BaseType, 'conflictingField'> {
 // ✅ File input accept prop
 accept={{'image/*': [], 'application/pdf': []} as any}
 
-// ✅ Use ReactElement for icon props in Material-UI
+// ✅ Use ReactElement for icon props
 const icons: Record<string, React.ReactElement> = {
   demo: <SlideshowIcon />
 };

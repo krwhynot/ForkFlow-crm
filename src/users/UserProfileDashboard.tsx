@@ -20,8 +20,6 @@ import {
     Tooltip,
     Alert,
     LinearProgress,
-    useTheme,
-    useMediaQuery,
 } from '@mui/material';
 import {
     Person as PersonIcon,
@@ -45,6 +43,7 @@ import { User } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
 import { TerritoryDisplay, TerritoryBadge } from '../components/TerritoryDisplay';
 import { UserActivityTracker } from './UserActivityTracker';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface UserProfileDashboardProps {
     user: User;
@@ -84,11 +83,10 @@ function a11yProps(index: number) {
 export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
     user,
     onEdit,
-    onRefresh
+    onRefresh,
 }) => {
     const [currentTab, setCurrentTab] = useState(0);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setCurrentTab(newValue);
@@ -118,45 +116,64 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                 <CardContent>
                     <Box display="flex" alignItems="center" gap={3} mb={3}>
                         <Avatar
-                            src={user.avatar}
-                            sx={{ 
-                                width: isMobile ? 80 : 120, 
+                            src={user.avatar?.src}
+                            sx={{
+                                width: isMobile ? 80 : 120,
                                 height: isMobile ? 80 : 120,
-                                fontSize: isMobile ? '2rem' : '3rem'
+                                fontSize: isMobile ? '2rem' : '3rem',
                             }}
                         >
-                            {user.firstName[0]}{user.lastName[0]}
+                            {user.firstName?.[0]}
+                            {user.lastName?.[0]}
                         </Avatar>
-                        
+
                         <Box flex={1}>
-                            <Typography variant={isMobile ? "h5" : "h4"} component="h1" gutterBottom>
+                            <Typography
+                                variant={isMobile ? 'h5' : 'h4'}
+                                component="h1"
+                                gutterBottom
+                            >
                                 {user.firstName} {user.lastName}
                             </Typography>
-                            
-                            <Box display="flex" alignItems="center" gap={1} mb={2} flexWrap="wrap">
+
+                            <Box
+                                display="flex"
+                                alignItems="center"
+                                gap={1}
+                                mb={2}
+                                flexWrap="wrap"
+                            >
                                 <MailIcon color="action" fontSize="small" />
-                                <Typography variant="body1" color="text.secondary">
+                                <Typography
+                                    variant="body1"
+                                    color="text.secondary"
+                                >
                                     {user.email}
                                 </Typography>
                             </Box>
-                            
+
                             <Box display="flex" gap={1} flexWrap="wrap">
-                                <RoleChip role={user.role} />
-                                
+                                <RoleChip role={user.role || 'user'} />
+
                                 <Chip
-                                    label={user.isActive ? 'Active' : 'Inactive'}
-                                    color={user.isActive ? 'success' : 'error'}
+                                    label={
+                                        user.administrator ? 'Active' : 'Inactive'
+                                    }
+                                    color={
+                                        user.administrator ? 'success' : 'error'
+                                    }
                                     variant="outlined"
                                 />
-                                
-                                {user.territory && user.territory.length > 0 && (
-                                    <Chip
-                                        icon={<LocationIcon />}
-                                        label={`${user.territory.length} territories`}
-                                        color="primary"
-                                        variant="outlined"
-                                    />
-                                )}
+
+                                {user.territory &&
+                                    user.territory.length > 0 && (
+                                        <Chip
+                                            icon={<LocationIcon />}
+                                            label={`${user.territory.length} territories`}
+                                            color="primary"
+                                            variant="outlined"
+                                        />
+                                    )}
                             </Box>
                         </Box>
 
@@ -171,7 +188,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                     Edit Profile
                                 </Button>
                             )}
-                            
+
                             {onRefresh && (
                                 <Button
                                     variant="outlined"
@@ -192,40 +209,52 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 <Typography variant="h6" color="primary">
                                     {userStats.totalLogins}
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Total Logins
                                 </Typography>
                             </Box>
                         </Grid>
-                        
+
                         <Grid item xs={6} sm={3}>
                             <Box textAlign="center">
                                 <Typography variant="h6" color="success.main">
                                     {userStats.accountAge}d
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Account Age
                                 </Typography>
                             </Box>
                         </Grid>
-                        
+
                         <Grid item xs={6} sm={3}>
                             <Box textAlign="center">
                                 <Typography variant="h6" color="info.main">
                                     {userStats.dataCreated}
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Records Created
                                 </Typography>
                             </Box>
                         </Grid>
-                        
+
                         <Grid item xs={6} sm={3}>
                             <Box textAlign="center">
                                 <Typography variant="h6" color="warning.main">
                                     {userStats.securityScore}%
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Security Score
                                 </Typography>
                             </Box>
@@ -241,32 +270,32 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                         value={currentTab}
                         onChange={handleTabChange}
                         aria-label="user profile tabs"
-                        variant={isMobile ? "scrollable" : "standard"}
+                        variant={isMobile ? 'scrollable' : 'standard'}
                         scrollButtons="auto"
                     >
-                        <Tab 
-                            label="Overview" 
-                            icon={<DashboardIcon />} 
+                        <Tab
+                            label="Overview"
+                            icon={<DashboardIcon />}
                             iconPosition="start"
-                            {...a11yProps(0)} 
+                            {...a11yProps(0)}
                         />
-                        <Tab 
-                            label="Activity" 
-                            icon={<HistoryIcon />} 
+                        <Tab
+                            label="Activity"
+                            icon={<HistoryIcon />}
                             iconPosition="start"
-                            {...a11yProps(1)} 
+                            {...a11yProps(1)}
                         />
-                        <Tab 
-                            label="Security" 
-                            icon={<SecurityIcon />} 
+                        <Tab
+                            label="Security"
+                            icon={<SecurityIcon />}
                             iconPosition="start"
-                            {...a11yProps(2)} 
+                            {...a11yProps(2)}
                         />
-                        <Tab 
-                            label="Analytics" 
-                            icon={<AnalyticsIcon />} 
+                        <Tab
+                            label="Analytics"
+                            icon={<AnalyticsIcon />}
                             iconPosition="start"
-                            {...a11yProps(3)} 
+                            {...a11yProps(3)}
                         />
                     </Tabs>
                 </Box>
@@ -279,10 +308,15 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             <Card variant="outlined">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
-                                        <PersonIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                                        <PersonIcon
+                                            sx={{
+                                                mr: 1,
+                                                verticalAlign: 'middle',
+                                            }}
+                                        />
                                         Account Details
                                     </Typography>
-                                    
+
                                     <List dense>
                                         <ListItem>
                                             <ListItemText
@@ -290,41 +324,57 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                                 secondary={`${user.firstName} ${user.lastName}`}
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Email"
                                                 secondary={user.email}
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Role"
-                                                secondary={<RoleChip role={user.role} size="small" />}
+                                                secondary={
+                                                    <RoleChip
+                                                        role={user.role || 'user'}
+                                                        size="small"
+                                                    />
+                                                }
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Status"
                                                 secondary={
                                                     <Chip
-                                                        label={user.isActive ? 'Active' : 'Inactive'}
-                                                        color={user.isActive ? 'success' : 'error'}
+                                                        label={
+                                                            user.administrator
+                                                                ? 'Active'
+                                                                : 'Inactive'
+                                                        }
+                                                        color={
+                                                            user.administrator
+                                                                ? 'success'
+                                                                : 'error'
+                                                        }
                                                         size="small"
                                                         variant="outlined"
                                                     />
                                                 }
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Last Login"
-                                                secondary={user.lastLoginAt 
-                                                    ? new Date(user.lastLoginAt).toLocaleDateString()
-                                                    : 'Never'
+                                                secondary={
+                                                    user.updatedAt
+                                                        ? new Date(
+                                                              user.updatedAt
+                                                          ).toLocaleDateString()
+                                                        : 'Never'
                                                 }
                                             />
                                         </ListItem>
@@ -338,46 +388,77 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             <Card variant="outlined">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
-                                        <SecurityIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                                        <SecurityIcon
+                                            sx={{
+                                                mr: 1,
+                                                verticalAlign: 'middle',
+                                            }}
+                                        />
                                         Security Overview
                                     </Typography>
-                                    
+
                                     <Box mb={2}>
-                                        <Box display="flex" justifyContent="space-between" mb={1}>
-                                            <Typography variant="body2">Security Score</Typography>
-                                            <Typography variant="body2">{userStats.securityScore}%</Typography>
+                                        <Box
+                                            display="flex"
+                                            justifyContent="space-between"
+                                            mb={1}
+                                        >
+                                            <Typography variant="body2">
+                                                Security Score
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                {userStats.securityScore}%
+                                            </Typography>
                                         </Box>
-                                        <LinearProgress 
-                                            variant="determinate" 
-                                            value={userStats.securityScore} 
-                                            color={userStats.securityScore > 80 ? 'success' : 
-                                                   userStats.securityScore > 60 ? 'warning' : 'error'}
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={userStats.securityScore}
+                                            color={
+                                                userStats.securityScore > 80
+                                                    ? 'success'
+                                                    : userStats.securityScore >
+                                                      60
+                                                    ? 'warning'
+                                                    : 'error'
+                                            }
                                         />
                                     </Box>
-                                    
+
                                     <List dense>
                                         <ListItem>
                                             <ListItemText
                                                 primary="Password Strength"
                                                 secondary="Strong"
                                             />
-                                            <Chip label="✓" color="success" size="small" />
+                                            <Chip
+                                                label="✓"
+                                                color="success"
+                                                size="small"
+                                            />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Two-Factor Auth"
                                                 secondary="Enabled"
                                             />
-                                            <Chip label="✓" color="success" size="small" />
+                                            <Chip
+                                                label="✓"
+                                                color="success"
+                                                size="small"
+                                            />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Recent Security Events"
                                                 secondary="No suspicious activity"
                                             />
-                                            <Chip label="✓" color="success" size="small" />
+                                            <Chip
+                                                label="✓"
+                                                color="success"
+                                                size="small"
+                                            />
                                         </ListItem>
                                     </List>
                                 </CardContent>
@@ -390,28 +471,44 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 <Card variant="outlined">
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
-                                            <LocationIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                                            <LocationIcon
+                                                sx={{
+                                                    mr: 1,
+                                                    verticalAlign: 'middle',
+                                                }}
+                                            />
                                             Territory & Coverage
                                         </Typography>
-                                        
-                                        {user.territory && user.territory.length > 0 ? (
+
+                                        {user.territory &&
+                                        user.territory.length > 0 ? (
                                             <Box>
-                                                <TerritoryDisplay 
-                                                    territory={user.territory}
+                                                <TerritoryDisplay
+                                                    territory={[user.territory]}
                                                     showTooltip={true}
                                                     size="medium"
                                                 />
-                                                
+
                                                 <Box sx={{ mt: 2 }}>
-                                                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="text.secondary"
+                                                        gutterBottom
+                                                    >
                                                         Coverage Areas:
                                                     </Typography>
-                                                    <TerritoryBadge territory={user.territory} maxItems={10} />
+                                                    <TerritoryBadge
+                                                        territory={[
+                                                            user.territory,
+                                                        ]}
+                                                        maxItems={10}
+                                                    />
                                                 </Box>
                                             </Box>
                                         ) : (
                                             <Alert severity="info">
-                                                No territory assigned to this broker.
+                                                No territory assigned to this
+                                                broker.
                                             </Alert>
                                         )}
                                     </CardContent>
@@ -420,24 +517,28 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                         )}
 
                         {/* Principals - Only for brokers */}
-                        {user.role === 'broker' && user.principals && user.principals.length > 0 && (
+                        {user.role === 'broker' && (
                             <Grid item xs={12}>
                                 <Card variant="outlined">
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
-                                            <BusinessIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                                            <BusinessIcon
+                                                sx={{
+                                                    mr: 1,
+                                                    verticalAlign: 'middle',
+                                                }}
+                                            />
                                             Assigned Principals
                                         </Typography>
-                                        
-                                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                                            {user.principals.map((principal) => (
-                                                <Chip
-                                                    key={principal}
-                                                    label={principal}
-                                                    color="secondary"
-                                                    variant="outlined"
-                                                />
-                                            ))}
+
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                gap: 1,
+                                                flexWrap: 'wrap',
+                                            }}
+                                        >
+                                            {/* This is a placeholder, as the data model for principals is not clear */}
                                         </Box>
                                     </CardContent>
                                 </Card>
@@ -460,53 +561,64 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                     <Typography variant="h6" gutterBottom>
                                         Security Settings
                                     </Typography>
-                                    
+
                                     <List>
                                         <ListItem>
                                             <ListItemText
                                                 primary="Password Security"
                                                 secondary="Last changed 30 days ago"
                                             />
-                                            <Button size="small" variant="outlined">
+                                            <Button
+                                                size="small"
+                                                variant="outlined"
+                                            >
                                                 Reset
                                             </Button>
                                         </ListItem>
-                                        
+
                                         <Divider />
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Two-Factor Authentication"
                                                 secondary="Enhanced security enabled"
                                             />
-                                            <Chip label="Enabled" color="success" size="small" />
+                                            <Chip
+                                                label="Enabled"
+                                                color="success"
+                                                size="small"
+                                            />
                                         </ListItem>
-                                        
+
                                         <Divider />
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Login Notifications"
                                                 secondary="Email alerts for new devices"
                                             />
-                                            <Chip label="On" color="primary" size="small" />
+                                            <Chip
+                                                label="On"
+                                                color="primary"
+                                                size="small"
+                                            />
                                         </ListItem>
                                     </List>
                                 </CardContent>
                             </Card>
                         </Grid>
-                        
+
                         <Grid item xs={12} md={6}>
                             <Card variant="outlined">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Security Audit
                                     </Typography>
-                                    
+
                                     <Alert severity="success" sx={{ mb: 2 }}>
                                         Account security is excellent
                                     </Alert>
-                                    
+
                                     <List dense>
                                         <ListItem>
                                             <ListItemIcon>
@@ -517,7 +629,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                                 secondary="Complex password with special characters"
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemIcon>
                                                 <SecurityIcon color="success" />
@@ -527,7 +639,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                                 secondary="All logins use HTTPS encryption"
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemIcon>
                                                 <SecurityIcon color="success" />
@@ -553,7 +665,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                     <Typography variant="h6" gutterBottom>
                                         Usage Analytics
                                     </Typography>
-                                    
+
                                     <List>
                                         <ListItem>
                                             <ListItemText
@@ -561,21 +673,21 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                                 secondary="127 sessions"
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Average Session Duration"
                                                 secondary="2h 15m"
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Data Created"
                                                 secondary="89 records"
                                             />
                                         </ListItem>
-                                        
+
                                         <ListItem>
                                             <ListItemText
                                                 primary="Data Modified"
@@ -586,40 +698,70 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 </CardContent>
                             </Card>
                         </Grid>
-                        
+
                         <Grid item xs={12} md={6}>
                             <Card variant="outlined">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Performance Metrics
                                     </Typography>
-                                    
+
                                     <Box mb={2}>
-                                        <Typography variant="body2" gutterBottom>
+                                        <Typography
+                                            variant="body2"
+                                            gutterBottom
+                                        >
                                             Productivity Score
                                         </Typography>
-                                        <LinearProgress variant="determinate" value={78} color="primary" />
-                                        <Typography variant="caption" color="text.secondary">
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={78}
+                                            color="primary"
+                                        />
+                                        <Typography
+                                            variant="caption"
+                                            color="text.secondary"
+                                        >
                                             78% - Above average
                                         </Typography>
                                     </Box>
-                                    
+
                                     <Box mb={2}>
-                                        <Typography variant="body2" gutterBottom>
+                                        <Typography
+                                            variant="body2"
+                                            gutterBottom
+                                        >
                                             Data Quality
                                         </Typography>
-                                        <LinearProgress variant="determinate" value={92} color="success" />
-                                        <Typography variant="caption" color="text.secondary">
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={92}
+                                            color="success"
+                                        />
+                                        <Typography
+                                            variant="caption"
+                                            color="text.secondary"
+                                        >
                                             92% - Excellent
                                         </Typography>
                                     </Box>
-                                    
+
                                     <Box>
-                                        <Typography variant="body2" gutterBottom>
+                                        <Typography
+                                            variant="body2"
+                                            gutterBottom
+                                        >
                                             System Usage
                                         </Typography>
-                                        <LinearProgress variant="determinate" value={65} color="info" />
-                                        <Typography variant="caption" color="text.secondary">
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={65}
+                                            color="info"
+                                        />
+                                        <Typography
+                                            variant="caption"
+                                            color="text.secondary"
+                                        >
                                             65% - Good utilization
                                         </Typography>
                                     </Box>

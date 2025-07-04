@@ -1,6 +1,5 @@
-import { Avatar } from '@mui/material';
 import { useRecordContext } from 'react-admin';
-
+import { Avatar } from '../components/ui-kit/Avatar';
 import { Company } from '../types';
 
 export const CompanyAvatar = (props: {
@@ -15,15 +14,8 @@ export const CompanyAvatar = (props: {
         <Avatar
             src={record.logo}
             alt={record.name}
-            sx={{
-                '& img': { objectFit: 'contain' },
-                width,
-                height,
-                fontSize: height !== 40 ? '0.6rem' : undefined,
-                '&.MuiAvatar-colorDefault': {
-                    color: 'primary.contrastText',
-                },
-            }}
+            width={width}
+            height={height}
         >
             {record.name ? record.name.charAt(0) : '?'}
         </Avatar>

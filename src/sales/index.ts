@@ -1,7 +1,7 @@
-import SalesIcon from '@mui/icons-material/People';
+import { PresentationChartLineIcon } from '@heroicons/react/24/outline';
 import { ListGuesser } from 'react-admin';
 
 export default {
     list: ListGuesser,
-    icon: SalesIcon,
+    icon: PresentationChartLineIcon,
 };

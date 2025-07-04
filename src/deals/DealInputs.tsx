@@ -1,7 +1,6 @@
+import { Stack, Typography } from '../components/ui-kit';
 import {
     Divider,
-    Stack,
-    Typography,
     useMediaQuery,
     useTheme,
 } from '@mui/material';

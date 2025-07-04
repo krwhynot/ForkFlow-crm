@@ -8,7 +8,7 @@ import {
     DeleteButton,
     useRecordContext,
 } from 'react-admin';
-import { Box, Card, CardContent, Grid, Typography, Chip } from '@mui/material';
+import { Box, Chip, Typography } from '../components/ui-kit';
 import { Setting } from '../types';
 
 const SettingsShowActions = () => (
@@ -24,17 +24,12 @@ const ColorDisplay = () => {
     if (!record?.color) return <span>-</span>;
 
     return (
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box className="flex items-center gap-1">
             <Box
-                sx={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '50%',
-                    backgroundColor: record.color,
-                    border: '2px solid #ccc',
-                }}
+                className="w-6 h-6 rounded-full border-2 border-gray-300"
+                style={{ backgroundColor: record.color }}
             />
-            <Typography variant="body2" fontFamily="monospace">
+            <Typography variant="body2" className="font-mono">
                 {record.color}
             </Typography>
         </Box>
@@ -58,12 +53,10 @@ const CategoryDisplay = () => {
     return (
         <Chip
             label={record.category}
-            sx={{
+            style={{
                 backgroundColor: categoryColors[record.category] || '#9E9E9E',
-                color: 'white',
-                textTransform: 'capitalize',
-                fontWeight: 'bold',
             }}
+            className="text-white capitalize font-bold"
         />
     );
 };
@@ -71,107 +64,103 @@ const CategoryDisplay = () => {
 export const SettingsShow = () => {
     return (
         <Show actions={<SettingsShowActions />}>
-            <Card sx={{ mt: 2 }}>
-                <CardContent>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <Typography variant="h6" gutterBottom>
+            <div className="mt-2">
+                <div className="p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="col-span-2">
+                            <Typography variant="h6" className="mb-4">
                                 Setting Details
                             </Typography>
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Category
                             </Typography>
                             <CategoryDisplay />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Status
                             </Typography>
                             <BooleanField source="active" />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Label
                             </Typography>
                             <TextField source="label" />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Key
                             </Typography>
                             <TextField source="key" />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Color
                             </Typography>
                             <ColorDisplay />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Sort Order
                             </Typography>
                             <TextField source="sortOrder" />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12}>
-                            <Typography
-                                variant="h6"
-                                gutterBottom
-                                sx={{ mt: 2 }}
-                            >
+                        <div className="col-span-2">
+                            <Typography variant="h6" className="mb-4 mt-2">
                                 Audit Information
                             </Typography>
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Created At
                             </Typography>
                             <DateField source="createdAt" showTime />
-                        </Grid>
+                        </div>
 
-                        <Grid item xs={12} md={6}>
+                        <div>
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
+                                className="text-gray-500"
                             >
                                 Updated At
                             </Typography>
                             <DateField source="updatedAt" showTime />
-                        </Grid>
-                    </Grid>
-                </CardContent>
-            </Card>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </Show>
     );
 };

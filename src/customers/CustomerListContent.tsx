@@ -1,37 +1,30 @@
 /* eslint-disable import/no-anonymous-default-export */
 import {
-    Business as BusinessIcon,
-    Phone as PhoneIcon,
-    Place as PlaceIcon,
-} from '@mui/icons-material';
-import type { Theme } from '@mui/material';
-import {
-    Box,
-    Checkbox,
-    IconButton,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemIcon,
-    ListItemSecondaryAction,
-    ListItemText,
-    Typography,
-    useMediaQuery,
-} from '@mui/material';
+    BuildingOffice2Icon,
+    PhoneIcon,
+    MapPinIcon,
+} from '@heroicons/react/24/outline';
 import { formatRelative } from 'date-fns';
 import {
-    Datagrid,
     DateField,
     RecordContextProvider,
-    SimpleListLoading,
     TextField,
     useListContext,
 } from 'react-admin';
 import { Link } from 'react-router-dom';
 
-import { Customer } from '../types';
+import { Organization as Customer } from '../types';
 import { BusinessTypeChip } from './BusinessTypeChip';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '../components/ui-kit/Table';
+import { Spinner } from '../components/ui-kit/Spinner';
+import { Checkbox } from '../components/ui-kit';
 
 export const CustomerListContent = () => {
     const {
@@ -42,12 +35,16 @@ export const CustomerListContent = () => {
         selectedIds,
     } = useListContext<Customer>();
 
-    const isSmall = useMediaQuery((theme: Theme) =>
-        theme.breakpoints.down('md')
-    );
+    // For now, we'll just use a simple check for mobile.
+    // A more robust solution would use a custom hook with window.matchMedia.
+    const isSmall = window.innerWidth < 768;
 
     if (isPending) {
-        return <SimpleListLoading hasLeftAvatarOrIcon hasSecondaryText />;
+        return (
+            <div className="flex justify-center my-8">
+                <Spinner />
+            </div>
+        );
     }
 
     if (error) {
@@ -67,14 +64,47 @@ export const CustomerListContent = () => {
 
     // Desktop view - Table layout
     return (
-        <Datagrid>
-            <TextField source="business_name" label="Business Name" />
-            <TextField source="contact_person" label="Contact" />
-            <BusinessTypeChip source="business_type" />
-            <TextField source="phone" label="Phone" />
-            <TextField source="address" label="Address" />
-            <DateField source="created_at" label="Added" />
-        </Datagrid>
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead></TableHead>
+                    <TableHead>Business Name</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Added</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {customers.map(customer => (
+                    <RecordContextProvider key={customer.id} value={customer}>
+                        <TableRow>
+                            <TableCell>
+                                <Checkbox
+                                    checked={selectedIds.includes(customer.id)}
+                                    onCheckedChange={() => onToggleItem(customer.id)}
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <Link to={`/customers/${customer.id}/show`}>
+                                    {customer.business_name}
+                                </Link>
+                            </TableCell>
+                            <TableCell>{customer.contact_person}</TableCell>
+                            <TableCell>
+                                <BusinessTypeChip source="business_type" />
+                            </TableCell>
+                            <TableCell>{customer.phone}</TableCell>
+                            <TableCell>{customer.address}</TableCell>
+                            <TableCell>
+                                <DateField source="createdAt" />
+                            </TableCell>
+                        </TableRow>
+                    </RecordContextProvider>
+                ))}
+            </TableBody>
+        </Table>
     );
 };
 
@@ -90,131 +120,52 @@ const MobileCustomerList = ({
     const now = Date.now();
 
     return (
-        <List dense>
+        <ul className="divide-y divide-gray-200">
             {customers.map(customer => (
                 <RecordContextProvider key={customer.id} value={customer}>
-                    <ListItem
-                        disablePadding
-                        sx={{
-                            minHeight: 72, // 44px+ touch target
-                            '&:hover': { backgroundColor: 'action.hover' },
-                        }}
-                    >
-                        <ListItemButton
-                            component={Link}
-                            to={`/customers/${customer.id}/show`}
-                            sx={{
-                                padding: 2,
-                                minHeight: 72,
-                            }}
-                        >
-                            <ListItemIcon sx={{ minWidth: '2.5em' }}>
-                                <Checkbox
-                                    edge="start"
-                                    checked={selectedIds.includes(customer.id)}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        onToggleItem(customer.id);
-                                    }}
-                                    sx={{ padding: 1.5 }} // Larger touch target
-                                />
-                            </ListItemIcon>
-
-                            <ListItemAvatar>
-                                <BusinessIcon
-                                    sx={{
-                                        fontSize: 40,
-                                        color: 'primary.main',
-                                        backgroundColor: 'primary.light',
-                                        borderRadius: '50%',
-                                        padding: 1,
-                                    }}
-                                />
-                            </ListItemAvatar>
-
-                            <ListItemText
-                                primary={
-                                    <Typography variant="h6" component="div">
-                                        {customer.business_name}
-                                    </Typography>
-                                }
-                                secondary={
-                                    <Box>
-                                        {customer.contact_person && (
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                            >
-                                                Contact:{' '}
-                                                {customer.contact_person}
-                                            </Typography>
-                                        )}
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 1,
-                                                mt: 0.5,
-                                            }}
-                                        >
-                                            <BusinessTypeChip source="business_type" />
-                                            {customer.phone && (
-                                                <IconButton
-                                                    size="small"
-                                                    href={`tel:${customer.phone}`}
-                                                    onClick={e =>
-                                                        e.stopPropagation()
-                                                    }
-                                                    sx={{ padding: 1 }}
-                                                >
-                                                    <PhoneIcon fontSize="small" />
-                                                </IconButton>
-                                            )}
-                                            {customer.latitude &&
-                                                customer.longitude && (
-                                                    <PlaceIcon
-                                                        fontSize="small"
-                                                        color="action"
-                                                        sx={{ ml: 0.5 }}
-                                                    />
-                                                )}
-                                        </Box>
-                                    </Box>
-                                }
-                            />
-
-                            {customer.created_at && (
-                                <ListItemSecondaryAction
-                                    sx={{
-                                        top: '16px',
-                                        transform: 'none',
-                                    }}
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        color="textSecondary"
-                                        title={customer.created_at}
-                                    >
-                                        Added{' '}
-                                        {formatRelative(
-                                            customer.created_at,
-                                            now
-                                        )}
-                                    </Typography>
-                                </ListItemSecondaryAction>
-                            )}
-                        </ListItemButton>
-                    </ListItem>
+                    <li className="flex items-center p-4">
+                        <Checkbox
+                            checked={selectedIds.includes(customer.id)}
+                            onCheckedChange={() => onToggleItem(customer.id)}
+                            className="mr-4"
+                        />
+                        <BuildingOffice2Icon className="h-10 w-10 p-2 rounded-full bg-blue-100 text-blue-500" />
+                        <div className="ml-4 flex-1">
+                            <Link
+                                to={`/customers/${customer.id}/show`}
+                                className="font-medium text-gray-900 hover:underline"
+                            >
+                                {customer.business_name}
+                            </Link>
+                            <p className="text-sm text-gray-500">
+                                Contact: {customer.contact_person}
+                            </p>
+                            <div className="flex items-center space-x-2 mt-1">
+                                <BusinessTypeChip source="business_type" />
+                                {customer.phone && (
+                                    <a href={`tel:${customer.phone}`}>
+                                        <PhoneIcon className="h-5 w-5 text-gray-400" />
+                                    </a>
+                                )}
+                                {customer.latitude && customer.longitude && (
+                                    <MapPinIcon className="h-5 w-5 text-gray-400" />
+                                )}
+                            </div>
+                        </div>
+                        {customer.createdAt && (
+                            <p className="text-xs text-gray-500">
+                                Added{' '}
+                                {formatRelative(new Date(customer.createdAt), now)}
+                            </p>
+                        )}
+                    </li>
                 </RecordContextProvider>
             ))}
-
             {customers.length === 0 && (
-                <ListItem sx={{ minHeight: 72 }}>
-                    <ListItemText primary="No customers found" />
-                </ListItem>
+                <li className="p-4 text-center">
+                    <p className="text-sm text-gray-500">No customers found</p>
+                </li>
             )}
-        </List>
+        </ul>
     );
 };

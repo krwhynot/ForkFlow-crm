@@ -4,68 +4,74 @@
  */
 
 import React from 'react';
-import { Grid, Stack, Typography, Card, CardContent, Alert } from '@mui/material';
 import {
-    AdminPanelSettings as AdminIcon,
-    SupervisorAccount as ManagerIcon,
-    Person as BrokerIcon,
-} from '@mui/icons-material';
+    AdjustmentsHorizontalIcon,
+    UserGroupIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity } from 'react-admin';
+
 import { User } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
 import { DealsChart } from './DealsChart';
 import { HotContacts } from './HotContacts';
 import { TasksList } from './TasksList';
 import { DashboardActivityLog } from './DashboardActivityLog';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from '../components/ui-kit/Card';
 
 /**
  * Admin Dashboard - System overview and management tools
  */
 export const AdminDashboard: React.FC = () => {
     return (
-        <Grid container spacing={3}>
-            <Grid item xs={12}>
+        <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12">
                 <Card>
-                    <CardContent>
-                        <Stack direction="row" alignItems="center" spacing={2}>
-                            <AdminIcon color="error" />
-                            <Typography variant="h5">
-                                Administrator Dashboard
-                            </Typography>
+                    <CardHeader>
+                        <div className="flex items-center space-x-2">
+                            <AdjustmentsHorizontalIcon className="h-6 w-6 text-red-500" />
+                            <CardTitle>Administrator Dashboard</CardTitle>
                             <RoleChip role="admin" />
-                        </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        </div>
+                        <CardDescription>
                             Complete system access and management capabilities
-                        </Typography>
-                    </CardContent>
+                        </CardDescription>
+                    </CardHeader>
                 </Card>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <DealsChart />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <HotContacts />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <TasksList />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <DashboardActivityLog />
-            </Grid>
-            
-            <Grid item xs={12}>
-                <Alert severity="info">
-                    <Typography variant="body2">
-                        <strong>Admin Features:</strong> User management, system settings, 
-                        global analytics, and full data access across all territories.
-                    </Typography>
-                </Alert>
-            </Grid>
-        </Grid>
+            </div>
+
+            <div className="col-span-12">
+                <div className="p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700">
+                    <p className="font-bold">Admin Features:</p>
+                    <p>
+                        User management, system settings, global analytics, and
+                        full data access across all territories.
+                    </p>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -74,49 +80,48 @@ export const AdminDashboard: React.FC = () => {
  */
 export const ManagerDashboard: React.FC = () => {
     return (
-        <Grid container spacing={3}>
-            <Grid item xs={12}>
+        <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12">
                 <Card>
-                    <CardContent>
-                        <Stack direction="row" alignItems="center" spacing={2}>
-                            <ManagerIcon color="warning" />
-                            <Typography variant="h5">
-                                Manager Dashboard
-                            </Typography>
+                    <CardHeader>
+                        <div className="flex items-center space-x-2">
+                            <UserGroupIcon className="h-6 w-6 text-yellow-500" />
+                            <CardTitle>Manager Dashboard</CardTitle>
                             <RoleChip role="manager" />
-                        </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        </div>
+                        <CardDescription>
                             Team performance monitoring and territory management
-                        </Typography>
-                    </CardContent>
+                        </CardDescription>
+                    </CardHeader>
                 </Card>
-            </Grid>
-            
-            <Grid item xs={12} md={8}>
+            </div>
+
+            <div className="col-span-12 md:col-span-8">
                 <DealsChart />
-            </Grid>
-            
-            <Grid item xs={12} md={4}>
+            </div>
+
+            <div className="col-span-12 md:col-span-4">
                 <HotContacts />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <TasksList />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <DashboardActivityLog />
-            </Grid>
-            
-            <Grid item xs={12}>
-                <Alert severity="info">
-                    <Typography variant="body2">
-                        <strong>Manager Features:</strong> Team analytics, territory performance, 
-                        user creation, and cross-territory visibility.
-                    </Typography>
-                </Alert>
-            </Grid>
-        </Grid>
+            </div>
+
+            <div className="col-span-12">
+                <div className="p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700">
+                    <p className="font-bold">Manager Features:</p>
+                    <p>
+                        Team analytics, territory performance, user creation,
+                        and cross-territory visibility.
+                    </p>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -125,56 +130,57 @@ export const ManagerDashboard: React.FC = () => {
  */
 export const BrokerDashboard: React.FC = () => {
     const { data: identity } = useGetIdentity();
-    
+
     return (
-        <Grid container spacing={3}>
-            <Grid item xs={12}>
+        <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12">
                 <Card>
-                    <CardContent>
-                        <Stack direction="row" alignItems="center" spacing={2}>
-                            <BrokerIcon color="primary" />
-                            <Typography variant="h5">
-                                Field Sales Dashboard
-                            </Typography>
+                    <CardHeader>
+                        <div className="flex items-center space-x-2">
+                            <UserIcon className="h-6 w-6 text-blue-500" />
+                            <CardTitle>Field Sales Dashboard</CardTitle>
                             <RoleChip role="broker" />
-                        </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        </div>
+                        <CardDescription>
                             Personal performance and territory management
-                        </Typography>
-                        {identity?.territory && identity.territory.length > 0 && (
-                            <Typography variant="body2" sx={{ mt: 1 }}>
-                                <strong>Territory:</strong> {identity.territory.join(', ')}
-                            </Typography>
-                        )}
-                    </CardContent>
+                        </CardDescription>
+                        {identity?.territory &&
+                            identity.territory.length > 0 && (
+                                <p className="text-sm mt-2">
+                                    <strong>Territory:</strong>{' '}
+                                    {identity.territory.join(', ')}
+                                </p>
+                            )}
+                    </CardHeader>
                 </Card>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <HotContacts />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <TasksList />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <DealsChart />
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
+            </div>
+
+            <div className="col-span-12 md:col-span-6">
                 <DashboardActivityLog />
-            </Grid>
-            
-            <Grid item xs={12}>
-                <Alert severity="info">
-                    <Typography variant="body2">
-                        <strong>Broker Features:</strong> Territory-specific contacts and deals, 
-                        visit tracking, personal task management, and mobile field tools.
-                    </Typography>
-                </Alert>
-            </Grid>
-        </Grid>
+            </div>
+
+            <div className="col-span-12">
+                <div className="p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700">
+                    <p className="font-bold">Broker Features:</p>
+                    <p>
+                        Territory-specific contacts and deals, visit tracking,
+                        personal task management, and mobile field tools.
+                    </p>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -183,29 +189,29 @@ export const BrokerDashboard: React.FC = () => {
  */
 export const RoleDashboard: React.FC = () => {
     const { data: identity, isPending } = useGetIdentity();
-    
+
     if (isPending) {
         return (
             <Card>
                 <CardContent>
-                    <Typography>Loading dashboard...</Typography>
+                    <p>Loading dashboard...</p>
                 </CardContent>
             </Card>
         );
     }
-    
+
     if (!identity) {
         return (
             <Card>
                 <CardContent>
-                    <Alert severity="error">
-                        Unable to load user information
-                    </Alert>
+                    <div className="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+                        <p>Unable to load user information</p>
+                    </div>
                 </CardContent>
             </Card>
         );
     }
-    
+
     switch (identity.role) {
         case 'admin':
             return <AdminDashboard />;
@@ -217,9 +223,9 @@ export const RoleDashboard: React.FC = () => {
             return (
                 <Card>
                     <CardContent>
-                        <Alert severity="warning">
-                            Unknown user role: {identity.role}
-                        </Alert>
+                        <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                            <p>Unknown user role: {identity.role}</p>
+                        </div>
                     </CardContent>
                 </Card>
             );

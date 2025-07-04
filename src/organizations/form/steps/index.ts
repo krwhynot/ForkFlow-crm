@@ -3,11 +3,17 @@ export { BasicInfoStep } from './BasicInfoStep';
 export { ContactDetailsStep } from './ContactDetailsStep';
 export { BusinessDetailsStep } from './BusinessDetailsStep';
 
+// Enhanced validation components and hooks
+export { ValidationProvider, ValidationSummary, FieldValidationIndicator, ValidationModeToggle } from './ValidationProvider';
+export { useRealTimeValidation } from './useRealTimeValidation';
+
 // Validation functions
 export { 
     validateBasicInfo,
     validateContactDetails,
     validateBusinessDetails,
+    validateCompleteForm,
+    validateDuplicateOrganization,
 } from './validation';
 
 // Types

@@ -1,11 +1,9 @@
+import { Button, Stack, Typography } from '../components/ui-kit';
 import {
-    Button,
     Dialog,
     DialogContent,
     DialogTitle,
     Grid,
-    Stack,
-    Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useGetIdentity, useGetList } from 'react-admin';

@@ -1,6 +1,5 @@
-import { Avatar as MuiAvatar } from '@mui/material';
 import { useRecordContext } from 'react-admin';
-
+import { Avatar as UIAvatar } from '../components/ui-kit/Avatar';
 import { Contact } from '../types';
 
 export const Avatar = (props: {
@@ -17,17 +16,13 @@ export const Avatar = (props: {
     }
 
     return (
-        <MuiAvatar
-            src={undefined}
-            sx={{
-                width: props.width,
-                height: props.height,
-                fontSize: props.height ? '0.6rem' : undefined,
-            }}
+        <UIAvatar
+            width={props.width}
+            height={props.height}
             title={props.title}
         >
             {record.firstName?.charAt(0).toUpperCase()}
             {record.lastName?.charAt(0).toUpperCase()}
-        </MuiAvatar>
+        </UIAvatar>
     );
 };

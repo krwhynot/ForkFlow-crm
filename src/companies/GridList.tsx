@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper } from '../components/ui-kit';
 import { RecordContextProvider, useListContext } from 'react-admin';
 
 import { CompanyCard } from './CompanyCard';
@@ -9,16 +9,10 @@ const times = (nbChildren: number, fn: (key: number) => any) =>
     Array.from({ length: nbChildren }, (_, key) => fn(key));
 
 const LoadingGridList = () => (
-    <Box display="flex" flexWrap="wrap" width={1008} gap={1}>
+    <Box className="flex flex-wrap gap-1" style={{ width: 1008 }}>
         {times(15, key => (
             <Paper
-                sx={{
-                    height: 200,
-                    width: 194,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    backgroundColor: 'grey[200]',
-                }}
+                className="h-50 w-48 flex flex-col bg-gray-200"
                 key={key}
             />
         ))}
@@ -32,10 +26,10 @@ const LoadedGridList = () => {
 
     return (
         <Box
-            width="100%"
-            gap={1}
-            display="grid"
-            gridTemplateColumns="repeat(auto-fill, minmax(180px, 1fr))"
+            className="w-full gap-1 grid"
+            style={{
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))'
+            }}
         >
             {data.map(record => (
                 <RecordContextProvider key={record.id} value={record}>
@@ -44,7 +38,7 @@ const LoadedGridList = () => {
             ))}
 
             {data.length === 0 && (
-                <Typography p={2}>No companies found</Typography>
+                <p className="p-2">No companies found</p>
             )}
         </Box>
     );

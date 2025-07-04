@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Create, Form, Toolbar, useGetIdentity } from 'react-admin';
-import { CardContent } from '@mui/material';
+import { CardContent } from '../../components/ui-kit';
 
 import { OrganizationInputs } from './OrganizationInputs';
 

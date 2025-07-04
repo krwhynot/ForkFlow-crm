@@ -7,25 +7,21 @@ import {
     Box,
     Chip,
     IconButton,
-    useTheme,
-    useMediaQuery,
     Avatar,
-} from '@mui/material';
+} from '../components/ui-kit';
 import {
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LinkedIn as LinkedInIcon,
-    Business as BusinessIcon,
-    Edit as EditIcon,
-    Star as StarIcon,
-} from '@mui/icons-material';
+    PhoneIcon,
+    EnvelopeIcon,
+    BuildingOfficeIcon,
+    PencilIcon,
+    StarIcon,
+} from '@heroicons/react/24/outline';
 import { useRecordContext, useGetOne, Link } from 'react-admin';
 import { Contact, Setting, Organization } from '../types';
 
 export const ContactCard = () => {
     const record = useRecordContext<Contact>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = window.innerWidth < 640; // Tailwind 'sm' breakpoint
 
     // Fetch Settings for display
     const { data: role } = useGetOne<Setting>(
@@ -88,83 +84,66 @@ export const ContactCard = () => {
     };
 
     const getInfluenceColor = () => {
-        if (!influenceLevel?.color) return theme.palette.grey[300];
+        if (!influenceLevel?.color) return '#d1d5db'; // gray-300
         return influenceLevel.color;
+    };
+
+    const getContrastText = (backgroundColor: string) => {
+        // Simple contrast calculation - use white text for dark colors
+        const hex = backgroundColor.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 155 ? '#000000' : '#ffffff';
     };
 
     return (
         <Card
-            sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                cursor: 'pointer',
-                '&:hover': {
-                    boxShadow: theme.shadows[4],
-                },
+            className="h-full flex flex-col cursor-pointer hover:shadow-lg relative transition-shadow"
+            style={{
                 minHeight: isMobile ? '220px' : '260px',
-                position: 'relative',
             }}
         >
             {/* Primary Contact Badge */}
             {record.isPrimary && (
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        zIndex: 1,
-                    }}
-                >
+                <Box className="absolute top-2 right-2 z-10">
                     <Chip
-                        icon={<StarIcon fontSize="small" />}
+                        icon={<StarIcon className="h-4 w-4 text-white" />}
                         label="Primary"
                         size="small"
-                        sx={{
-                            backgroundColor: theme.palette.warning.main,
+                        className="font-semibold"
+                        style={{
+                            backgroundColor: '#f59e0b', // amber-500 (warning color)
                             color: 'white',
-                            fontWeight: 600,
-                            '& .MuiChip-icon': {
-                                color: 'white',
-                            },
                         }}
                     />
                 </Box>
             )}
 
-            <CardContent sx={{ flexGrow: 1, pb: 1 }}>
+            <CardContent className="flex-grow pb-2">
                 {/* Contact Header */}
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box className="flex items-center mb-4">
                     <Avatar
-                        sx={{
-                            width: 48,
-                            height: 48,
-                            mr: 2,
+                        size="lg"
+                        className="mr-4 font-semibold"
+                        style={{
                             backgroundColor: getInfluenceColor(),
-                            color: theme.palette.getContrastText(
-                                getInfluenceColor()
-                            ),
-                            fontWeight: 600,
+                            color: getContrastText(getInfluenceColor()),
                         }}
                     >
                         {getInitials()}
                     </Avatar>
-                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Box className="flex-grow min-w-0">
                         <Typography
                             variant="h6"
                             component="h2"
-                            sx={{
-                                fontWeight: 600,
-                                lineHeight: 1.2,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                            }}
+                            className="font-semibold leading-tight overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                             {record.firstName} {record.lastName}
                         </Typography>
                         {role && (
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 {role.label}
                             </Typography>
                         )}
@@ -173,24 +152,15 @@ export const ContactCard = () => {
 
                 {/* Organization */}
                 {organization && (
-                    <Box sx={{ mb: 2 }}>
+                    <Box className="mb-4">
                         <Typography
                             variant="body2"
-                            color="text.secondary"
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                mb: 0.5,
-                            }}
+                            className="text-gray-600 flex items-center mb-2"
                         >
-                            <BusinessIcon fontSize="small" sx={{ mr: 0.5 }} />
+                            <BuildingOfficeIcon className="h-4 w-4 mr-2" />
                             <Link
                                 to={`/organizations/${organization.id}/show`}
-                                style={{
-                                    color: theme.palette.primary.main,
-                                    textDecoration: 'none',
-                                    fontWeight: 500,
-                                }}
+                                className="text-blue-600 no-underline font-medium hover:text-blue-800"
                             >
                                 {organization.name}
                             </Link>
@@ -199,41 +169,32 @@ export const ContactCard = () => {
                 )}
 
                 {/* Contact Information */}
-                <Box sx={{ mb: 2 }}>
+                <Box className="mb-4">
                     {record.email && (
                         <Typography
                             variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 0.5 }}
+                            className="text-gray-600 mb-2"
                         >
                             {record.email}
                         </Typography>
                     )}
                     {record.phone && (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-600">
                             {record.phone}
                         </Typography>
                     )}
                 </Box>
 
                 {/* Business Context Chips */}
-                <Box
-                    sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}
-                >
+                <Box className="flex flex-wrap gap-2 mb-4">
                     {influenceLevel && (
                         <Chip
                             label={influenceLevel.label}
                             size="small"
-                            sx={{
-                                backgroundColor:
-                                    influenceLevel.color ||
-                                    theme.palette.grey[300],
-                                color: theme.palette.getContrastText(
-                                    influenceLevel.color ||
-                                        theme.palette.grey[300]
-                                ),
-                                fontSize: '0.7rem',
-                                height: 24,
+                            className="text-xs h-6"
+                            style={{
+                                backgroundColor: influenceLevel.color || '#d1d5db', // gray-300
+                                color: getContrastText(influenceLevel.color || '#d1d5db'),
                             }}
                         />
                     )}
@@ -242,15 +203,10 @@ export const ContactCard = () => {
                             label={decisionRole.label}
                             size="small"
                             variant="outlined"
-                            sx={{
-                                borderColor:
-                                    decisionRole.color ||
-                                    theme.palette.grey[400],
-                                color:
-                                    decisionRole.color ||
-                                    theme.palette.text.secondary,
-                                fontSize: '0.7rem',
-                                height: 24,
+                            className="text-xs h-6"
+                            style={{
+                                borderColor: decisionRole.color || '#9ca3af', // gray-400
+                                color: decisionRole.color || '#6b7280', // gray-500
                             }}
                         />
                     )}
@@ -260,14 +216,12 @@ export const ContactCard = () => {
                 {record.notes && (
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{
+                        className="text-gray-600 overflow-hidden leading-relaxed"
+                        style={{
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            lineHeight: 1.4,
                         }}
                     >
                         {record.notes}
@@ -276,48 +230,39 @@ export const ContactCard = () => {
             </CardContent>
 
             {/* Quick Actions */}
-            <CardActions sx={{ pt: 0, justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <CardActions className="pt-0 justify-between">
+                <Box className="flex gap-2">
                     {record.phone && (
                         <IconButton
                             size="small"
                             onClick={handlePhoneClick}
-                            sx={{
-                                minWidth: 44,
-                                minHeight: 44,
-                                color: theme.palette.primary.main,
-                            }}
+                            className="min-w-[44px] min-h-[44px] text-blue-600 hover:text-blue-800"
                             aria-label="Call contact"
                         >
-                            <PhoneIcon fontSize="small" />
+                            <PhoneIcon className="h-4 w-4" />
                         </IconButton>
                     )}
                     {record.email && (
                         <IconButton
                             size="small"
                             onClick={handleEmailClick}
-                            sx={{
-                                minWidth: 44,
-                                minHeight: 44,
-                                color: theme.palette.primary.main,
-                            }}
+                            className="min-w-[44px] min-h-[44px] text-blue-600 hover:text-blue-800"
                             aria-label="Email contact"
                         >
-                            <EmailIcon fontSize="small" />
+                            <EnvelopeIcon className="h-4 w-4" />
                         </IconButton>
                     )}
                     {record.linkedInUrl && (
                         <IconButton
                             size="small"
                             onClick={handleLinkedInClick}
-                            sx={{
-                                minWidth: 44,
-                                minHeight: 44,
-                                color: theme.palette.primary.main,
-                            }}
+                            className="min-w-[44px] min-h-[44px] text-blue-600 hover:text-blue-800"
                             aria-label="LinkedIn profile"
                         >
-                            <LinkedInIcon fontSize="small" />
+                            {/* Using a generic external link icon since LinkedIn is not in Heroicons */}
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
                         </IconButton>
                     )}
                 </Box>
@@ -325,14 +270,10 @@ export const ContactCard = () => {
                     size="small"
                     component={Link}
                     to={`/contacts/${record.id}/edit`}
-                    sx={{
-                        minWidth: 44,
-                        minHeight: 44,
-                        color: theme.palette.text.secondary,
-                    }}
+                    className="min-w-[44px] min-h-[44px] text-gray-500 hover:text-gray-700"
                     aria-label="Edit contact"
                 >
-                    <EditIcon fontSize="small" />
+                    <PencilIcon className="h-4 w-4" />
                 </IconButton>
             </CardActions>
         </Card>

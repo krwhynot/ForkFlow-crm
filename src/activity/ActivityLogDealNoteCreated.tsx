@@ -1,4 +1,3 @@
-import Typography from '@mui/material/Typography';
 import { ReferenceField } from 'react-admin';
 
 import { CompanyAvatar } from '../companies/CompanyAvatar';
@@ -17,6 +16,11 @@ export function ActivityLogDealNoteCreated({
 }: ActivityLogDealNoteCreatedProps) {
     const context = useActivityLogContext();
     const { dealNote } = activity;
+
+    if (!dealNote) {
+        return null;
+    }
+
     return (
         <ActivityLogNote
             header={
@@ -32,17 +36,12 @@ export function ActivityLogDealNoteCreated({
                             reference="companies"
                             link={false}
                         >
-                            <CompanyAvatar width={20} height={20} />
+                            <CompanyAvatar />
                         </ReferenceField>
                     </ReferenceField>
-                    <Typography
-                        component="p"
-                        variant="body2"
-                        color="text.secondary"
-                        flexGrow={1}
-                    >
+                    <p className="text-sm text-gray-500 flex-grow">
                         <ReferenceField
-                            source="salesId"
+                            source="userId"
                             reference="sales"
                             record={activity}
                             link={false}
@@ -71,22 +70,18 @@ export function ActivityLogDealNoteCreated({
                                         link="show"
                                     />
                                 </ReferenceField>{' '}
-                                <RelativeDate date={activity.date} />
+                                <RelativeDate date={activity.createdAt} />
                             </>
                         )}
-                    </Typography>
+                    </p>
                     {context === 'company' && (
-                        <Typography
-                            color="textSecondary"
-                            variant="body2"
-                            component="span"
-                        >
-                            <RelativeDate date={activity.date} />
-                        </Typography>
+                        <p className="text-sm text-gray-500">
+                            <RelativeDate date={activity.createdAt} />
+                        </p>
                     )}
                 </>
             }
-            text={dealNote.content}
+            text={dealNote.text}
         />
     );
 }

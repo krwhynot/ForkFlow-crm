@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { useGetIdentity, useGetList } from 'react-admin';
 
 export const TasksListEmpty = () => {
@@ -18,8 +17,8 @@ export const TasksListEmpty = () => {
     if (total) return null;
 
     return (
-        <Typography variant="body2">
+        <p className="text-sm text-gray-500">
             Tasks added to your contacts will appear here.
-        </Typography>
+        </p>
     );
 };

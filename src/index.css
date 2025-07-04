@@ -3,102 +3,138 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom touch target utilities for ForkFlow CRM */
-@layer utilities {
-  .touch-target-interactive {
-    @apply touch-target focus-ring touch-feedback;
-  }
-  
-  .priority-high {
-    @apply text-priority-high border-priority-high;
-  }
-  
-  .priority-medium {
-    @apply text-priority-medium border-priority-medium;
-  }
-  
-  .priority-low {
-    @apply text-priority-low border-priority-low;
-  }
-  
-  .status-prospect {
-    @apply text-status-prospect bg-status-prospect/10;
-  }
-  
-  .status-active {
-    @apply text-status-active bg-status-active/10;
-  }
-  
-  .status-inactive {
-    @apply text-status-inactive bg-status-inactive/10;
-  }
-  
-  .status-closed {
-    @apply text-status-closed bg-status-closed/10;
-  }
+/* Custom utilities for ForkFlow CRM */
+.touch-target-interactive {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+}
+.touch-target-interactive:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+.touch-target-interactive:active {
+    transform: scale(0.98);
+}
+
+.priority-high {
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.priority-medium {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.priority-low {
+    color: #22c55e;
+    border-color: #22c55e;
+}
+
+.status-prospect {
+    color: #8b5cf6;
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+.status-active {
+    color: #22c55e;
+    background-color: rgba(34, 197, 94, 0.1);
+}
+
+.status-inactive {
+    color: #6b7280;
+    background-color: rgba(107, 114, 128, 0.1);
+}
+
+.status-closed {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Mobile-first responsive design utilities */
-@layer components {
-  .organization-card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 
-           hover:shadow-md transition-shadow duration-200
-           touch-target-interactive;
-  }
-  
-  .organization-card-mobile {
-    @apply organization-card w-full mb-3;
-  }
-  
-  .organization-card-desktop {
-    @apply organization-card w-80 m-2;
-  }
-  
-  .form-step {
-    @apply space-y-4 p-4;
-  }
-  
-  .form-navigation {
-    @apply flex justify-between items-center p-4 bg-gray-50 border-t;
-  }
-  
-  .filter-container {
-    @apply flex flex-wrap gap-2 p-4 bg-gray-50 border-b;
-  }
-  
-  .search-input {
-    @apply flex-1 min-w-0 touch-target focus-ring;
-  }
+.organization-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border-width: 1px;
+    border-color: #e5e7eb;
+    padding: 1rem;
+    transition-property: box-shadow;
+    transition-duration: 200ms;
+}
+.organization-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.organization-card-mobile {
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.organization-card-desktop {
+    width: 20rem;
+    margin: 0.5rem;
+}
+
+.form-step {
+    padding: 1rem;
+}
+.form-step > * + * {
+    margin-top: 1rem;
+}
+
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-top-width: 1px;
+}
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-bottom-width: 1px;
+}
+
+.search-input {
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 44px;
+    outline: none;
+}
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
 
 /* Accessibility enhancements */
-@layer base {
-  /* Ensure proper focus visibility */
-  *:focus {
+*:focus {
     outline-offset: 2px;
-  }
-  
-  /* Improve text readability */
-  body {
-    @apply text-gray-900;
-  }
-  
-  /* High contrast mode support */
-  @media (prefers-contrast: high) {
+}
+
+body {
+    color: #111827;
+}
+
+@media (prefers-contrast: high) {
     .organization-card {
-      @apply border-2 border-gray-800;
+        border-width: 2px;
+        border-color: #1f2937;
     }
-    
-    .touch-target {
-      @apply border border-gray-800;
-    }
-  }
-  
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+}
+
+@media (prefers-reduced-motion: reduce) {
     .touch-feedback,
     .organization-card {
-      @apply transition-none;
+        transition-property: none;
     }
-  }
 }

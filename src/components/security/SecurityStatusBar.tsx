@@ -5,23 +5,18 @@
 
 import React, { useState } from 'react';
 import {
-    Box,
-    Chip,
-    Tooltip,
-    useTheme,
-    useMediaQuery,
-    Badge,
-} from '@mui/material';
-import {
-    Shield as SecurityIcon,
-    ShieldOutlined as SecurityOutlinedIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    CheckCircle as CheckIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon,
+    ShieldExclamationIcon,
+    ExclamationTriangleIcon,
+    XCircleIcon,
+    CheckCircleIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity } from 'react-admin';
 import { User } from '../../types';
 import { RoleChip } from '../auth/RoleChip';
+import { Badge } from '../ui-kit/Badge';
+import { Chip } from '../ui-kit/Chip';
+import { Tooltip } from '../ui-kit/Tooltip';
 
 interface SecurityStatusBarProps {
     showDetails?: boolean;
@@ -40,8 +35,7 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
     compact = false,
 }) => {
     const { data: identity } = useGetIdentity();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = window.innerWidth < 640; // Tailwind 'sm' breakpoint
 
     const getSecurityStatus = (): SecurityStatus => {
         if (!identity) {
@@ -118,15 +112,15 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
     const getStatusIcon = () => {
         switch (securityStatus.level) {
             case 'high':
-                return <CheckIcon color="success" />;
+                return <CheckCircleIcon className="h-4 w-4 text-green-600" />;
             case 'medium':
-                return <SecurityIcon color="warning" />;
+                return <ShieldCheckIcon className="h-4 w-4 text-yellow-600" />;
             case 'low':
-                return <SecurityOutlinedIcon color="warning" />;
+                return <ShieldExclamationIcon className="h-4 w-4 text-yellow-600" />;
             case 'critical':
-                return <ErrorIcon color="error" />;
+                return <XCircleIcon className="h-4 w-4 text-red-600" />;
             default:
-                return <WarningIcon color="action" />;
+                return <ExclamationTriangleIcon className="h-4 w-4 text-gray-600" />;
         }
     };
 
@@ -141,7 +135,7 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
             case 'critical':
                 return 'error' as const;
             default:
-                return 'primary' as const;
+                return 'secondary' as const;
         }
     };
 
@@ -162,37 +156,37 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
 
     const getTooltipContent = () => {
         return (
-            <Box sx={{ p: 1 }}>
-                <Box sx={{ mb: 1 }}>
+            <div className="p-2">
+                <div className="mb-2">
                     <strong>Security Score: {securityStatus.score}/100</strong>
-                </Box>
+                </div>
                 {securityStatus.issues.length > 0 && (
-                    <Box sx={{ mb: 1 }}>
+                    <div className="mb-2">
                         <strong>Issues:</strong>
-                        <ul style={{ margin: 0, paddingLeft: 16 }}>
+                        <ul className="m-0 pl-4">
                             {securityStatus.issues.map((issue, index) => (
                                 <li key={index}>{issue}</li>
                             ))}
                         </ul>
-                    </Box>
+                    </div>
                 )}
                 {securityStatus.recommendations.length > 0 && (
-                    <Box>
+                    <div>
                         <strong>Recommendations:</strong>
-                        <ul style={{ margin: 0, paddingLeft: 16 }}>
+                        <ul className="m-0 pl-4">
                             {securityStatus.recommendations.map((rec, index) => (
                                 <li key={index}>{rec}</li>
                             ))}
                         </ul>
-                    </Box>
+                    </div>
                 )}
-            </Box>
+            </div>
         );
     };
 
     if (compact || isMobile) {
         return (
-            <Tooltip title={getTooltipContent()}>
+            <Tooltip content={getTooltipContent()}>
                 <Badge
                     badgeContent={securityStatus.issues.length || null}
                     color="error"
@@ -212,12 +206,12 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
     }
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <div className="flex items-center gap-2">
             {showDetails && identity && (
                 <RoleChip role={identity.role} size="small" variant="outlined" />
             )}
             
-            <Tooltip title={getTooltipContent()}>
+            <Tooltip content={getTooltipContent()}>
                 <Badge
                     badgeContent={securityStatus.issues.length || null}
                     color="error"
@@ -230,16 +224,11 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
                         color={getStatusColor()}
                         size="small"
                         variant="outlined"
-                        sx={{
-                            cursor: 'help',
-                            '&:hover': {
-                                backgroundColor: theme => theme.palette[getStatusColor()].light + '20',
-                            },
-                        }}
+                        className="cursor-help hover:scale-105 transition-transform"
                     />
                 </Badge>
             </Tooltip>
-        </Box>
+        </div>
     );
 };
 

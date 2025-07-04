@@ -354,7 +354,7 @@ npm run dev
 
 ### Code Style
 - Follow existing TypeScript patterns
-- Use Material-UI components consistently
+- Use Headless UI and Tailwind CSS components consistently
 - Maintain 44px+ touch targets for mobile
 - Write comprehensive tests for new features
 

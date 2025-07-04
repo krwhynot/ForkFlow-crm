@@ -1,4 +1,5 @@
-import { Box, FormControlLabel, Switch } from '@mui/material';
+import { Box } from '../components/ui-kit';
+import { FormControlLabel, Switch } from '@mui/material';
 import { useGetIdentity, useListFilterContext } from 'react-admin';
 
 export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {

@@ -1,7 +1,7 @@
-import CompanyIcon from '@mui/icons-material/Business';
+import { BuildingOfficeIcon } from '@heroicons/react/24/outline';
 import { ListGuesser } from 'react-admin';
 
 export default {
     list: ListGuesser,
-    icon: CompanyIcon,
+    icon: BuildingOfficeIcon,
 };

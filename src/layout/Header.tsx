@@ -1,127 +1,87 @@
-import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import {
-    AppBar,
-    Box,
-    ListItemIcon,
-    ListItemText,
-    MenuItem,
-    Tab,
-    Tabs,
-    Toolbar,
-    Typography,
-} from '@mui/material';
+    UserCircleIcon,
+    CogIcon,
+    ChartBarIcon,
+    UsersIcon,
+    ArrowRightOnRectangleIcon,
+} from '@heroicons/react/24/outline';
 import {
     CanAccess,
     LoadingIndicator,
-    Logout,
-    UserMenu,
-    useUserMenu,
+    useGetIdentity,
+    useLogout,
 } from 'react-admin';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import { useConfigurationContext } from '../root/ConfigurationContext';
-import { useUserRole } from '../components/auth/RoleBasedComponent';
 import { SecurityStatusBar } from '../components/security/SecurityStatusBar';
+import { Dropdown, DropdownItem } from '../components/ui-kit/Dropdown';
 
 const Header = () => {
     const { logo, title } = useConfigurationContext();
     const location = useLocation();
+    const { identity } = useGetIdentity();
 
-    let currentPath: string | boolean = '/';
-    if (!!matchPath('/', location.pathname)) {
-        currentPath = '/';
-    } else if (!!matchPath('/contacts/*', location.pathname)) {
-        currentPath = '/contacts';
-    } else if (!!matchPath('/organizations/*', location.pathname)) {
-        currentPath = '/organizations';
-    } else if (!!matchPath('/interactions/*', location.pathname)) {
-        currentPath = '/interactions';
-    } else if (!!matchPath('/opportunities/*', location.pathname)) {
-        currentPath = '/opportunities';
-    } else if (!!matchPath('/products/*', location.pathname)) {
-        currentPath = '/products';
-    } else {
-        currentPath = false;
-    }
+    const tabs = [
+        { label: 'Dashboard', to: '/' },
+        { label: 'Contacts', to: '/contacts' },
+        { label: 'Organizations', to: '/organizations' },
+        { label: 'Interactions', to: '/interactions' },
+        { label: 'Opportunities', to: '/opportunities' },
+        { label: 'Products', to: '/products' },
+    ];
 
     return (
-        <Box component="nav" sx={{ flexGrow: 1 }}>
-            <AppBar position="static" color="primary">
-                <Toolbar variant="dense">
-                    <Box flex={1} display="flex" justifyContent="space-between">
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            component={Link}
-                            to="/"
-                            sx={{
-                                color: 'inherit',
-                                textDecoration: 'inherit',
-                            }}
-                            gap={1.5}
-                        >
-                            <Box
-                                component="img"
-                                sx={{ height: 24 }}
-                                src={logo}
-                                alt={title}
-                            />
-                            <Typography component="span" variant="h5">
-                                {title}
-                            </Typography>
-                        </Box>
-                        <Box>
-                            <Tabs
-                                value={currentPath}
-                                aria-label="Navigation Tabs"
-                                indicatorColor="secondary"
-                                textColor="inherit"
-                            >
-                                <Tab
-                                    label={'Dashboard'}
-                                    component={Link}
-                                    to="/"
-                                    value="/"
+        <nav className="bg-gray-800">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="flex h-16 items-center justify-between">
+                    <div className="flex items-center">
+                        <div className="flex-shrink-0">
+                            <Link to="/">
+                                <img
+                                    className="h-8 w-8"
+                                    src={logo}
+                                    alt={title}
                                 />
-                                <Tab
-                                    label={'Contacts'}
-                                    component={Link}
-                                    to="/contacts"
-                                    value="/contacts"
-                                />
-                                <Tab
-                                    label={'Organizations'}
-                                    component={Link}
-                                    to="/organizations"
-                                    value="/organizations"
-                                />
-                                <Tab
-                                    label={'Interactions'}
-                                    component={Link}
-                                    to="/interactions"
-                                    value="/interactions"
-                                />
-                                <Tab
-                                    label={'Opportunities'}
-                                    component={Link}
-                                    to="/opportunities"
-                                    value="/opportunities"
-                                />
-                                <Tab
-                                    label={'Products'}
-                                    component={Link}
-                                    to="/products"
-                                    value="/products"
-                                />
-                            </Tabs>
-                        </Box>
-                        <Box display="flex" alignItems="center" gap={1}>
+                            </Link>
+                        </div>
+                        <div className="hidden md:block">
+                            <div className="ml-10 flex items-baseline space-x-4">
+                                {tabs.map(tab => (
+                                    <Link
+                                        key={tab.to}
+                                        to={tab.to}
+                                        className={`rounded-md px-3 py-2 text-sm font-medium ${
+                                            matchPath(
+                                                `${tab.to}/*`,
+                                                location.pathname
+                                            )
+                                                ? 'bg-gray-900 text-white'
+                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                                        }`}
+                                    >
+                                        {tab.label}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="hidden md:block">
+                        <div className="ml-4 flex items-center md:ml-6">
                             <SecurityStatusBar compact />
                             <LoadingIndicator />
-                            <UserMenu>
+                            <Dropdown
+                                button={
+                                    <button className="p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                                        <span className="sr-only">
+                                            Open user menu
+                                        </span>
+                                        <UserCircleIcon
+                                            className="h-6 w-6"
+                                            aria-hidden="true"
+                                        />
+                                    </button>
+                                }
+                            >
                                 <ProfileMenu />
                                 <CanAccess resource="analytics" action="list">
                                     <AnalyticsMenu />
@@ -130,61 +90,69 @@ const Header = () => {
                                 <CanAccess resource="users" action="list">
                                     <UsersMenu />
                                 </CanAccess>
-                                <Logout />
-                            </UserMenu>
-                        </Box>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-        </Box>
+                                <LogoutButton />
+                            </Dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
     );
 };
 
 const ProfileMenu = () => {
-    const { onClose } = useUserMenu() ?? {};
     return (
-        <MenuItem component={Link} to="/profile" onClick={onClose}>
-            <ListItemIcon>
-                <AccountCircleIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>My Profile</ListItemText>
-        </MenuItem>
+        <DropdownItem onClick={() => {}}>
+            <Link to="/profile" className="flex items-center w-full">
+                <UserCircleIcon className="mr-3 h-5 w-5 text-gray-400" />
+                <span>My Profile</span>
+            </Link>
+        </DropdownItem>
     );
 };
 
 const AnalyticsMenu = () => {
-    const { onClose } = useUserMenu() ?? {};
     return (
-        <MenuItem component={Link} to="/analytics" onClick={onClose}>
-            <ListItemIcon>
-                <AnalyticsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Analytics</ListItemText>
-        </MenuItem>
+        <DropdownItem onClick={() => {}}>
+            <Link to="/analytics" className="flex items-center w-full">
+                <ChartBarIcon className="mr-3 h-5 w-5 text-gray-400" />
+                <span>Analytics</span>
+            </Link>
+        </DropdownItem>
     );
 };
 
 const UsersMenu = () => {
-    const { onClose } = useUserMenu() ?? {};
     return (
-        <MenuItem component={Link} to="/sales" onClick={onClose}>
-            <ListItemIcon>
-                <PeopleIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Users</ListItemText>
-        </MenuItem>
+        <DropdownItem onClick={() => {}}>
+            <Link to="/sales" className="flex items-center w-full">
+                <UsersIcon className="mr-3 h-5 w-5 text-gray-400" />
+                <span>Users</span>
+            </Link>
+        </DropdownItem>
     );
 };
 
 const ConfigurationMenu = () => {
-    const { onClose } = useUserMenu() ?? {};
     return (
-        <MenuItem component={Link} to="/settings" onClick={onClose}>
-            <ListItemIcon>
-                <SettingsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>My info</ListItemText>
-        </MenuItem>
+        <DropdownItem onClick={() => {}}>
+            <Link to="/settings" className="flex items-center w-full">
+                <CogIcon className="mr-3 h-5 w-5 text-gray-400" />
+                <span>My info</span>
+            </Link>
+        </DropdownItem>
     );
 };
+
+const LogoutButton = () => {
+    const logout = useLogout();
+    const handleClick = () => logout();
+    return (
+        <DropdownItem onClick={handleClick}>
+            <ArrowRightOnRectangleIcon className="mr-3 h-5 w-5 text-gray-400" />
+            <span>Logout</span>
+        </DropdownItem>
+    );
+};
+
 export default Header;

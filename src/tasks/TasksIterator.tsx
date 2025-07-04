@@ -1,16 +1,13 @@
 import * as React from 'react';
 import { useListContext } from 'react-admin';
 import { isAfter } from 'date-fns';
-import { List, SxProps } from '@mui/material';
 
 import { Task } from './Task';
 
 export const TasksIterator = ({
     showContact,
-    sx,
 }: {
     showContact?: boolean;
-    sx?: SxProps;
 }) => {
     const { data, error, isPending } = useListContext();
     if (isPending || error || data.length === 0) return null;
@@ -26,10 +23,10 @@ export const TasksIterator = ({
     );
 
     return (
-        <List dense sx={sx}>
+        <ul className="divide-y divide-gray-200">
             {tasks.map(task => (
                 <Task task={task} showContact={showContact} key={task.id} />
             ))}
-        </List>
+        </ul>
     );
 };
