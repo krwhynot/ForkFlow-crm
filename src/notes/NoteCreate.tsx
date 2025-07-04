@@ -13,7 +13,7 @@ import {
 } from 'react-admin';
 import { useFormContext } from 'react-hook-form';
 
-import { Stack } from '@mui/material';
+import { Stack } from '@/components/ui-kit';
 import { NoteInputs } from './NoteInputs';
 import { getCurrentDate } from './utils';
 
@@ -38,7 +38,7 @@ export const NoteCreate = ({
         <CreateBase resource={resource} redirect={false}>
             <Form>
                 <NoteInputs showStatus={showStatus} />
-                <Stack direction="row">
+                <Stack className="flex-row">
                     <NoteCreateButton reference={reference} record={record} />
                 </Stack>
             </Form>

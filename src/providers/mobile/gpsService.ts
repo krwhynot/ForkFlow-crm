@@ -23,7 +23,7 @@ export class GPSService {
     private currentPosition: GPSCoordinates | null = null;
     private permissionStatus: LocationPermission = 'prompt';
     private locationWatchers: Map<string, number> = new Map();
-    
+
     // Default GPS options optimized for mobile battery life
     private defaultOptions: GPSOptions = {
         enableHighAccuracy: true,
@@ -64,7 +64,7 @@ export class GPSService {
 
         try {
             const position = await this.getPositionPromise(mergedOptions);
-            
+
             const coordinates: GPSCoordinates = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
@@ -128,7 +128,7 @@ export class GPSService {
         const mergedOptions = { ...this.defaultOptions, ...options };
 
         const watcherId = navigator.geolocation.watchPosition(
-            (position) => {
+            position => {
                 const coordinates: GPSCoordinates = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
@@ -144,7 +144,7 @@ export class GPSService {
                     permission: 'granted',
                 });
             },
-            (error) => {
+            error => {
                 const gpsError = this.handleLocationError(error);
                 callback({
                     error: gpsError.message,
@@ -173,7 +173,7 @@ export class GPSService {
      * Clear all position watches
      */
     clearAllWatches(): void {
-        this.locationWatchers.forEach((watcherId) => {
+        this.locationWatchers.forEach(watcherId => {
             navigator.geolocation.clearWatch(watcherId);
         });
         this.locationWatchers.clear();
@@ -190,7 +190,9 @@ export class GPSService {
         // Try to use the Permissions API if available
         if ('permissions' in navigator) {
             try {
-                const permission = await navigator.permissions.query({ name: 'geolocation' });
+                const permission = await navigator.permissions.query({
+                    name: 'geolocation',
+                });
                 switch (permission.state) {
                     case 'granted':
                         this.permissionStatus = 'granted';
@@ -233,15 +235,15 @@ export class GPSService {
         coords2: GPSCoordinates
     ): number {
         const R = 6371e3; // Earth's radius in meters
-        const φ1 = coords1.latitude * Math.PI / 180;
-        const φ2 = coords2.latitude * Math.PI / 180;
-        const Δφ = (coords2.latitude - coords1.latitude) * Math.PI / 180;
-        const Δλ = (coords2.longitude - coords1.longitude) * Math.PI / 180;
+        const φ1 = (coords1.latitude * Math.PI) / 180;
+        const φ2 = (coords2.latitude * Math.PI) / 180;
+        const Δφ = ((coords2.latitude - coords1.latitude) * Math.PI) / 180;
+        const Δλ = ((coords2.longitude - coords1.longitude) * Math.PI) / 180;
 
-        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                  Math.cos(φ1) * Math.cos(φ2) *
-                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const a =
+            Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return R * c;
     }
@@ -249,14 +251,23 @@ export class GPSService {
     /**
      * Check if coordinates are within reasonable accuracy bounds
      */
-    isLocationAccurate(coordinates: GPSCoordinates, maxAccuracy: number = 50): boolean {
-        return coordinates.accuracy !== undefined && coordinates.accuracy <= maxAccuracy;
+    isLocationAccurate(
+        coordinates: GPSCoordinates,
+        maxAccuracy: number = 50
+    ): boolean {
+        return (
+            coordinates.accuracy !== undefined &&
+            coordinates.accuracy <= maxAccuracy
+        );
     }
 
     /**
      * Format coordinates for display
      */
-    formatCoordinates(coordinates: GPSCoordinates, precision: number = 6): string {
+    formatCoordinates(
+        coordinates: GPSCoordinates,
+        precision: number = 6
+    ): string {
         return `${coordinates.latitude.toFixed(precision)}, ${coordinates.longitude.toFixed(precision)}`;
     }
 
@@ -264,23 +275,30 @@ export class GPSService {
         this.permissionStatus = await this.checkPermission();
     }
 
-    private getPositionPromise(options: GPSOptions): Promise<GeolocationPosition> {
+    private getPositionPromise(
+        options: GPSOptions
+    ): Promise<GeolocationPosition> {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, options);
         });
     }
 
-    private handleLocationError(error: GeolocationPositionError): { message: string; permission: LocationPermission } {
+    private handleLocationError(error: GeolocationPositionError): {
+        message: string;
+        permission: LocationPermission;
+    } {
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 this.permissionStatus = 'denied';
                 return {
-                    message: 'Location access denied. Please enable location services in your browser settings.',
+                    message:
+                        'Location access denied. Please enable location services in your browser settings.',
                     permission: 'denied',
                 };
             case error.POSITION_UNAVAILABLE:
                 return {
-                    message: 'Location information is unavailable. Please check your connection and try again.',
+                    message:
+                        'Location information is unavailable. Please check your connection and try again.',
                     permission: this.permissionStatus,
                 };
             case error.TIMEOUT:
@@ -290,7 +308,8 @@ export class GPSService {
                 };
             default:
                 return {
-                    message: 'An unknown error occurred while retrieving location.',
+                    message:
+                        'An unknown error occurred while retrieving location.',
                     permission: this.permissionStatus,
                 };
         }

@@ -35,7 +35,7 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Security as SecurityIcon,
     Visibility as ViewIcon,
@@ -314,8 +314,8 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
             viewType === 'audit'
                 ? auditLogs
                 : viewType === 'security'
-                ? securityEvents
-                : [...securityEvents, ...auditLogs];
+                  ? securityEvents
+                  : [...securityEvents, ...auditLogs];
 
         console.log('Exporting data:', data);
         // Implement actual export functionality
@@ -370,11 +370,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                 <Typography variant="caption" color="text.secondary">
                     {key}:
                 </Typography>
-                <Typography
-                    variant="body2"
-                    component="span"
-                    sx={{ ml: 1 }}
-                >
+                <Typography variant="body2" component="span" sx={{ ml: 1 }}>
                     {typeof value === 'object'
                         ? JSON.stringify(value)
                         : String(value)}
@@ -403,14 +399,10 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                             page * rowsPerPage,
                             page * rowsPerPage + rowsPerPage
                         )
-                        .map((event) => (
+                        .map(event => (
                             <TableRow key={event.id}>
                                 <TableCell>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
+                                    <div className="flex items-center gap-1">
                                         {getEventIcon(
                                             event.eventType,
                                             event.eventCategory
@@ -428,7 +420,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                                 variant="outlined"
                                             />
                                         </Box>
-                                    </Box>
+                                    </div>
                                 </TableCell>
                                 <TableCell>
                                     <Typography variant="body2">
@@ -475,7 +467,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 <TableCell>
                                     <Typography
                                         variant="body2"
-                                        sx={{ fontFamily: 'monospace' }}
+                                        className="font-mono"
                                     >
                                         {event.ipAddress || 'N/A'}
                                     </Typography>
@@ -527,19 +519,15 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                             page * rowsPerPage,
                             page * rowsPerPage + rowsPerPage
                         )
-                        .map((log) => (
+                        .map(log => (
                             <TableRow key={log.id}>
                                 <TableCell>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
+                                    <div className="flex items-center gap-1">
                                         {getOperationIcon(log.operation)}
                                         <Typography variant="body2">
                                             {log.operation}
                                         </Typography>
-                                    </Box>
+                                    </div>
                                 </TableCell>
                                 <TableCell>
                                     <Typography variant="body2">
@@ -549,7 +537,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 <TableCell>
                                     <Typography
                                         variant="body2"
-                                        sx={{ fontFamily: 'monospace' }}
+                                        className="font-mono"
                                     >
                                         {log.recordId}
                                     </Typography>
@@ -566,14 +554,10 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Box
-                                        display="flex"
-                                        gap={0.5}
-                                        flexWrap="wrap"
-                                    >
+                                    <div className="flex gap-0.5 flex-wrap">
                                         {log.changedFields
                                             .slice(0, 3)
-                                            .map((field) => (
+                                            .map(field => (
                                                 <Chip
                                                     key={field}
                                                     label={field}
@@ -591,7 +575,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                                 color="primary"
                                             />
                                         )}
-                                    </Box>
+                                    </div>
                                 </TableCell>
                                 <TableCell>
                                     <Typography variant="body2">
@@ -625,7 +609,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" sx={{ m: 3 }}>
+            <Alert severity="error" className="m-8">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access security audit
@@ -636,48 +620,38 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
     }
 
     return (
-        <Box sx={{ p: compactView ? 1 : 3 }}>
+        <Box className={`${compactView ? 'p-1' : 'p-8'}`}>
             {!compactView && (
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={3}
-                >
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
+                <div className="flex justify-between items-center mb-3">
+                    <div className="flex items-center gap-2">
+                        <SecurityIcon color="primary" className="text-[32px]" />
                         <Box>
                             <Typography variant="h4" component="h1">
                                 Security Audit Log
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Monitor security events and data changes across
                                 the system
                             </Typography>
                         </Box>
-                    </Box>
+                    </div>
 
                     <Button
                         variant="outlined"
                         startIcon={<DownloadIcon />}
                         onClick={handleExport}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-[44px]"
                     >
                         Export
                     </Button>
-                </Box>
+                </div>
             )}
 
             {/* Filters */}
-            <Card sx={{ mb: 3 }}>
+            <Card className="mb-8">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        <FilterIcon
-                            sx={{ mr: 1, verticalAlign: 'middle' }}
-                        />
+                        <FilterIcon className="mr-1 align-middle" />
                         Filters
                     </Typography>
                     <Grid container spacing={2}>
@@ -686,8 +660,8 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 label="Date From"
                                 type="date"
                                 value={filters.dateFrom}
-                                onChange={(e) =>
-                                    setFilters((prev) => ({
+                                onChange={e =>
+                                    setFilters(prev => ({
                                         ...prev,
                                         dateFrom: e.target.value,
                                     }))
@@ -702,8 +676,8 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 label="Date To"
                                 type="date"
                                 value={filters.dateTo}
-                                onChange={(e) =>
-                                    setFilters((prev) => ({
+                                onChange={e =>
+                                    setFilters(prev => ({
                                         ...prev,
                                         dateTo: e.target.value,
                                     }))
@@ -718,17 +692,15 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 <InputLabel>Event Category</InputLabel>
                                 <Select
                                     value={filters.eventCategory}
-                                    onChange={(e) =>
-                                        setFilters((prev) => ({
+                                    onChange={e =>
+                                        setFilters(prev => ({
                                             ...prev,
                                             eventCategory: e.target.value,
                                         }))
                                     }
                                     label="Event Category"
                                 >
-                                    <MenuItem value="">
-                                        All Categories
-                                    </MenuItem>
+                                    <MenuItem value="">All Categories</MenuItem>
                                     <MenuItem value="authentication">
                                         Authentication
                                     </MenuItem>
@@ -752,8 +724,8 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                 <InputLabel>Success</InputLabel>
                                 <Select
                                     value={filters.success}
-                                    onChange={(e) =>
-                                        setFilters((prev) => ({
+                                    onChange={e =>
+                                        setFilters(prev => ({
                                             ...prev,
                                             success: e.target.value,
                                         }))
@@ -761,9 +733,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                     label="Success"
                                 >
                                     <MenuItem value="">All</MenuItem>
-                                    <MenuItem value="true">
-                                        Successful
-                                    </MenuItem>
+                                    <MenuItem value="true">Successful</MenuItem>
                                     <MenuItem value="false">Failed</MenuItem>
                                 </Select>
                             </FormControl>
@@ -828,13 +798,13 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     viewType === 'audit'
                         ? auditLogs.length
                         : viewType === 'security'
-                        ? securityEvents.length
-                        : securityEvents.length + auditLogs.length
+                          ? securityEvents.length
+                          : securityEvents.length + auditLogs.length
                 }
                 page={page}
                 onPageChange={(_, newPage) => setPage(newPage)}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={(e) =>
+                onRowsPerPageChange={e =>
                     setRowsPerPage(parseInt(e.target.value, 10))
                 }
                 rowsPerPageOptions={[10, 25, 50, 100]}
@@ -909,7 +879,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                         <ListItemText
                                             primary="Details"
                                             secondary={
-                                                <Box sx={{ mt: 1 }}>
+                                                <Box className="mt-1">
                                                     {formatDetails(
                                                         selectedEvent.details
                                                     )}
@@ -964,7 +934,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                             secondary={
                                                 <Box sx={{ mt: 1 }}>
                                                     {selectedEvent.changedFields.map(
-                                                        (field) => (
+                                                        field => (
                                                             <Chip
                                                                 key={field}
                                                                 label={field}
@@ -986,7 +956,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                             <ListItemText
                                                 primary="Old Values"
                                                 secondary={
-                                                    <Box sx={{ mt: 1 }}>
+                                                    <Box className="mt-1">
                                                         {formatDetails(
                                                             selectedEvent.oldValues
                                                         )}
@@ -1000,7 +970,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                             <ListItemText
                                                 primary="New Values"
                                                 secondary={
-                                                    <Box sx={{ mt: 1 }}>
+                                                    <Box className="mt-1">
                                                         {formatDetails(
                                                             selectedEvent.newValues
                                                         )}
@@ -1015,9 +985,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDetailsOpen(false)}>
-                        Close
-                    </Button>
+                    <Button onClick={() => setDetailsOpen(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
         </Box>

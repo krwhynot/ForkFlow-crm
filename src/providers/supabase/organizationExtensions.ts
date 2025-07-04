@@ -110,9 +110,7 @@ export const searchOrganizations = async (
 ): Promise<{ data: OrganizationSearchResult[]; total: number }> => {
     try {
         // Build the search query
-        let searchQuery = supabase
-            .from('organizations')
-            .select(`
+        let searchQuery = supabase.from('organizations').select(`
                 *,
                 priority:settings!priorityId(id, label, color),
                 segment:settings!segmentId(id, label, color),
@@ -145,7 +143,8 @@ export const searchOrganizations = async (
         if (options.location && options.radiusKm) {
             // Using PostGIS for radius search (assuming PostGIS extension is enabled)
             const radiusMeters = options.radiusKm * 1000;
-            searchQuery = searchQuery.not('latitude', 'is', null)
+            searchQuery = searchQuery
+                .not('latitude', 'is', null)
                 .not('longitude', 'is', null);
             // Note: This would need PostGIS function in production
             // For now, we'll filter after retrieval
@@ -157,7 +156,9 @@ export const searchOrganizations = async (
                 searchQuery = searchQuery.order('name');
                 break;
             case 'lastActivity':
-                searchQuery = searchQuery.order('updatedAt', { ascending: false });
+                searchQuery = searchQuery.order('updatedAt', {
+                    ascending: false,
+                });
                 break;
             default:
                 searchQuery = searchQuery.order('name');
@@ -198,8 +199,10 @@ export const searchOrganizations = async (
 
         // Filter by radius if needed (client-side for now)
         if (options.location && options.radiusKm) {
-            results = results.filter(org => 
-                org.distance !== undefined && org.distance <= options.radiusKm!
+            results = results.filter(
+                org =>
+                    org.distance !== undefined &&
+                    org.distance <= options.radiusKm!
             );
         }
 
@@ -214,34 +217,41 @@ export const searchOrganizations = async (
         }
 
         // Log audit event
-        await logAuditEvent('data.read', {
-            resource: 'organizations',
-            action: 'search',
-            query: query,
-            resultCount: results.length,
-            filters: options.filters,
-            location: options.location ? 'proximity_search' : 'text_search',
-        }, {
-            outcome: 'success',
-            message: `Organization search completed: ${results.length} results`
-        });
+        await logAuditEvent(
+            'data.read',
+            {
+                resource: 'organizations',
+                action: 'search',
+                query: query,
+                resultCount: results.length,
+                filters: options.filters,
+                location: options.location ? 'proximity_search' : 'text_search',
+            },
+            {
+                outcome: 'success',
+                message: `Organization search completed: ${results.length} results`,
+            }
+        );
 
         return {
             data: results,
-            total: count || results.length
+            total: count || results.length,
         };
-
     } catch (error: any) {
         // Log audit event for failure
-        await logAuditEvent('data.read', {
-            resource: 'organizations',
-            action: 'search_failed',
-            query: query,
-            error: error.message,
-        }, {
-            outcome: 'failure',
-            message: 'Organization search failed'
-        });
+        await logAuditEvent(
+            'data.read',
+            {
+                resource: 'organizations',
+                action: 'search_failed',
+                query: query,
+                error: error.message,
+            },
+            {
+                outcome: 'failure',
+                message: 'Organization search failed',
+            }
+        );
 
         throw error;
     }
@@ -285,7 +295,7 @@ export const getTerritoryOrganizations = async (
 ): Promise<{ data: Organization[]; total: number }> => {
     // For now, implement basic territory logic
     // In production, this would use PostGIS geometric queries
-    
+
     if (!territory) {
         // Get all organizations assigned to user
         const result = await dataProvider.getList('organizations', {
@@ -293,7 +303,7 @@ export const getTerritoryOrganizations = async (
             sort: { field: 'name', order: 'ASC' },
             filter: { accountManager: userId },
         });
-        
+
         return {
             data: result.data,
             total: result.total ?? 0,
@@ -311,24 +321,27 @@ export const getTerritoryOrganizations = async (
         // Simple circle-based territory (would use PostGIS in production)
         const { lat, lng } = territory.boundaries.center;
         const radiusKm = territory.boundaries.radius || 50;
-        
+
         // This is a simplified implementation
         // Production would use: ST_DWithin(ST_Point(longitude, latitude), ST_Point(lng, lat), radius)
-        query = query.gte('latitude', lat - radiusKm * 0.009)
-                   .lte('latitude', lat + radiusKm * 0.009)
-                   .gte('longitude', lng - radiusKm * 0.009)
-                   .lte('longitude', lng + radiusKm * 0.009);
+        query = query
+            .gte('latitude', lat - radiusKm * 0.009)
+            .lte('latitude', lat + radiusKm * 0.009)
+            .gte('longitude', lng - radiusKm * 0.009)
+            .lte('longitude', lng + radiusKm * 0.009);
     }
 
     const { data, error } = await query.order('name');
 
     if (error) {
-        throw new Error(`Territory organizations query failed: ${error.message}`);
+        throw new Error(
+            `Territory organizations query failed: ${error.message}`
+        );
     }
 
     return {
         data: data || [],
-        total: data?.length || 0
+        total: data?.length || 0,
     };
 };
 
@@ -366,7 +379,7 @@ export const importOrganizationsFromCSV = async (
                     row: i + 1,
                     field: 'name',
                     message: 'Organization name is required',
-                    data: row
+                    data: row,
                 });
                 continue;
             }
@@ -378,7 +391,7 @@ export const importOrganizationsFromCSV = async (
                     result.duplicates.push({
                         row: i + 1,
                         existingId: existingOrg.id,
-                        reason: 'Name and address match existing organization'
+                        reason: 'Name and address match existing organization',
                     });
                     result.skipped++;
                     continue;
@@ -407,7 +420,10 @@ export const importOrganizationsFromCSV = async (
                     row.longitude = coordinates.longitude;
                 } catch (geocodeError) {
                     // Log but don't fail import
-                    console.warn(`Geocoding failed for row ${i + 1}:`, geocodeError);
+                    console.warn(
+                        `Geocoding failed for row ${i + 1}:`,
+                        geocodeError
+                    );
                 }
             }
 
@@ -422,13 +438,12 @@ export const importOrganizationsFromCSV = async (
             });
 
             result.created++;
-
         } catch (error: any) {
             result.errors.push({
                 row: i + 1,
                 field: 'general',
                 message: error.message,
-                data: row
+                data: row,
             });
         }
     }
@@ -436,18 +451,22 @@ export const importOrganizationsFromCSV = async (
     result.success = result.errors.length === 0;
 
     // Log audit event
-    await logAuditEvent('data.import', {
-        resource: 'organizations',
-        totalRows: csvData.length,
-        processed: result.processed,
-        created: result.created,
-        updated: result.updated,
-        errors: result.errors.length,
-        duplicates: result.duplicates.length,
-    }, {
-        outcome: result.success ? 'success' : 'warning',
-        message: `CSV import completed: ${result.created} created, ${result.updated} updated, ${result.errors.length} errors`
-    });
+    await logAuditEvent(
+        'data.import',
+        {
+            resource: 'organizations',
+            totalRows: csvData.length,
+            processed: result.processed,
+            created: result.created,
+            updated: result.updated,
+            errors: result.errors.length,
+            duplicates: result.duplicates.length,
+        },
+        {
+            outcome: result.success ? 'success' : 'warning',
+            message: `CSV import completed: ${result.created} created, ${result.updated} updated, ${result.errors.length} errors`,
+        }
+    );
 
     return result;
 };
@@ -463,7 +482,7 @@ export const getOrganizationSummary = async (
     const orgResult = await dataProvider.getOne('organizations', {
         id: organizationId,
     });
-    
+
     const organization = orgResult.data;
 
     // Get contacts count and primary contact
@@ -500,19 +519,23 @@ export const getOrganizationSummary = async (
     const summary: OrganizationSummary = {
         ...organization,
         contactCount: contacts.length,
-        primaryContact: primaryContact ? {
-            id: primaryContact.id,
-            name: `${primaryContact.firstName} ${primaryContact.lastName}`,
-            email: primaryContact.email,
-            phone: primaryContact.phone,
-        } : undefined,
-        recentInteractions: (interactionsResult.data || []).map(interaction => ({
-            id: interaction.id,
-            type: interaction.typeId ? 'Unknown' : interaction.typeId, // Would lookup type label
-            subject: interaction.subject,
-            date: interaction.scheduledDate || interaction.createdAt,
-            outcome: interaction.outcome,
-        })),
+        primaryContact: primaryContact
+            ? {
+                  id: primaryContact.id,
+                  name: `${primaryContact.firstName} ${primaryContact.lastName}`,
+                  email: primaryContact.email,
+                  phone: primaryContact.phone,
+              }
+            : undefined,
+        recentInteractions: (interactionsResult.data || []).map(
+            interaction => ({
+                id: interaction.id,
+                type: interaction.typeId ? 'Unknown' : interaction.typeId, // Would lookup type label
+                subject: interaction.subject,
+                date: interaction.scheduledDate || interaction.createdAt,
+                outcome: interaction.outcome,
+            })
+        ),
         activeDeals: (dealsResult.data || []).map(deal => ({
             id: deal.id,
             name: deal.name || `Deal #${deal.id}`,
@@ -529,15 +552,22 @@ export const getOrganizationSummary = async (
 /**
  * Calculate distance between two GPS coordinates using Haversine formula
  */
-const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+): number => {
     const R = 6371; // Earth's radius in kilometers
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 };
 
@@ -603,7 +633,9 @@ const getMatchReasons = (org: Organization, query: string): string[] => {
 /**
  * Find duplicate organization based on name and address similarity
  */
-const findDuplicateOrganization = async (row: any): Promise<Organization | null> => {
+const findDuplicateOrganization = async (
+    row: any
+): Promise<Organization | null> => {
     if (!row.name) return null;
 
     const { data, error } = await supabase
@@ -616,9 +648,14 @@ const findDuplicateOrganization = async (row: any): Promise<Organization | null>
 
     // Simple duplicate detection - in production would use fuzzy matching
     for (const org of data) {
-        const nameMatch = org.name.toLowerCase().trim() === row.name.toLowerCase().trim();
-        const addressMatch = org.address && row.address && 
-            org.address.toLowerCase().includes(row.address.toLowerCase().substring(0, 20));
+        const nameMatch =
+            org.name.toLowerCase().trim() === row.name.toLowerCase().trim();
+        const addressMatch =
+            org.address &&
+            row.address &&
+            org.address
+                .toLowerCase()
+                .includes(row.address.toLowerCase().substring(0, 20));
 
         if (nameMatch && (addressMatch || !row.address)) {
             return org;
@@ -631,7 +668,9 @@ const findDuplicateOrganization = async (row: any): Promise<Organization | null>
 /**
  * Geocode address to GPS coordinates (mock implementation)
  */
-const geocodeAddress = async (address: string): Promise<{ latitude: number; longitude: number }> => {
+const geocodeAddress = async (
+    address: string
+): Promise<{ latitude: number; longitude: number }> => {
     // This would integrate with Google Maps Geocoding API in production
     // For now, return mock coordinates
     throw new Error('Geocoding service not implemented yet');
@@ -650,8 +689,8 @@ const calculateOrganizationAnalytics = async (
     const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
     // Calculate interaction trends
-    const recentInteractions = interactions.filter(i => 
-        new Date(i.scheduledDate || i.createdAt) >= thirtyDaysAgo
+    const recentInteractions = interactions.filter(
+        i => new Date(i.scheduledDate || i.createdAt) >= thirtyDaysAgo
     );
     const previousInteractions = interactions.filter(i => {
         const date = new Date(i.scheduledDate || i.createdAt);
@@ -666,31 +705,49 @@ const calculateOrganizationAnalytics = async (
     }
 
     // Calculate engagement score (0-100)
-    const daysSinceLastInteraction = interactions.length > 0 
-        ? Math.floor((now.getTime() - new Date(interactions[0].scheduledDate || interactions[0].createdAt).getTime()) / (1000 * 60 * 60 * 24))
-        : 365;
-    
+    const daysSinceLastInteraction =
+        interactions.length > 0
+            ? Math.floor(
+                  (now.getTime() -
+                      new Date(
+                          interactions[0].scheduledDate ||
+                              interactions[0].createdAt
+                      ).getTime()) /
+                      (1000 * 60 * 60 * 24)
+              )
+            : 365;
+
     let engagementScore = Math.max(0, 100 - daysSinceLastInteraction * 2);
     engagementScore += Math.min(30, interactions.length * 2); // Bonus for interaction count
     engagementScore = Math.min(100, engagementScore);
 
     // Calculate pipeline health
     const activeDeals = deals.filter(d => d.status === 'active');
-    const totalValue = activeDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
-    const averageCloseRate = activeDeals.length > 0 
-        ? activeDeals.reduce((sum, deal) => sum + (deal.probability || 0), 0) / activeDeals.length
-        : 0;
+    const totalValue = activeDeals.reduce(
+        (sum, deal) => sum + (deal.amount || 0),
+        0
+    );
+    const averageCloseRate =
+        activeDeals.length > 0
+            ? activeDeals.reduce(
+                  (sum, deal) => sum + (deal.probability || 0),
+                  0
+              ) / activeDeals.length
+            : 0;
 
     // Identify risk factors
     const riskFactors: string[] = [];
-    if (daysSinceLastInteraction > 30) riskFactors.push('No recent interactions');
+    if (daysSinceLastInteraction > 30)
+        riskFactors.push('No recent interactions');
     if (activeDeals.length === 0) riskFactors.push('No active deals');
     if (averageCloseRate < 25) riskFactors.push('Low deal probability');
-    if (interactionTrend === 'decreasing') riskFactors.push('Declining engagement');
+    if (interactionTrend === 'decreasing')
+        riskFactors.push('Declining engagement');
 
     // Identify opportunities
     const opportunities: string[] = [];
-    if (interactionTrend === 'increasing') opportunities.push('Increasing engagement');
+    if (interactionTrend === 'increasing')
+        opportunities.push('Increasing engagement');
     if (averageCloseRate > 75) opportunities.push('High probability deals');
     if (totalValue > 50000) opportunities.push('High value pipeline');
     if (interactions.filter(i => i.outcome === 'positive').length > 3) {
@@ -700,7 +757,8 @@ const calculateOrganizationAnalytics = async (
     return {
         organizationId: Number(organizationId),
         engagementScore,
-        lastInteractionDate: interactions[0]?.scheduledDate || interactions[0]?.createdAt,
+        lastInteractionDate:
+            interactions[0]?.scheduledDate || interactions[0]?.createdAt,
         interactionCount: interactions.length,
         interactionTrend,
         pipelineHealth: {
@@ -743,16 +801,22 @@ export const calculateDetailedEngagementScore = async (
     const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
     const lastInteraction = interactions?.[0];
-    const daysSinceLastInteraction = lastInteraction 
-        ? Math.floor((now.getTime() - new Date(lastInteraction.scheduledDate || lastInteraction.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+    const daysSinceLastInteraction = lastInteraction
+        ? Math.floor(
+              (now.getTime() -
+                  new Date(
+                      lastInteraction.scheduledDate || lastInteraction.createdAt
+                  ).getTime()) /
+                  (1000 * 60 * 60 * 24)
+          )
         : 365;
 
     // Base score calculation
     let score = Math.max(0, 100 - daysSinceLastInteraction * 2);
-    
+
     // Activity bonus
-    const recentInteractions = (interactions || []).filter(i => 
-        new Date(i.scheduledDate || i.createdAt) >= thirtyDaysAgo
+    const recentInteractions = (interactions || []).filter(
+        i => new Date(i.scheduledDate || i.createdAt) >= thirtyDaysAgo
     );
     const previousInteractions = (interactions || []).filter(i => {
         const date = new Date(i.scheduledDate || i.createdAt);
@@ -762,7 +826,9 @@ export const calculateDetailedEngagementScore = async (
     score += Math.min(20, recentInteractions.length * 5);
 
     // Quality bonus
-    const positiveOutcomes = (interactions || []).filter(i => i.outcome === 'positive').length;
+    const positiveOutcomes = (interactions || []).filter(
+        i => i.outcome === 'positive'
+    ).length;
     score += Math.min(10, positiveOutcomes * 2);
 
     score = Math.min(100, score);
@@ -790,7 +856,8 @@ export const calculateDetailedEngagementScore = async (
             positiveOutcomes,
             totalInteractions: interactions?.length || 0,
         },
-        lastInteractionDate: lastInteraction?.scheduledDate || lastInteraction?.createdAt,
+        lastInteractionDate:
+            lastInteraction?.scheduledDate || lastInteraction?.createdAt,
     };
 };
 
@@ -805,11 +872,18 @@ export const calculateOrganizationRisk = async (
     factors: string[];
     recommendations: string[];
 }> => {
-    const [engagementData, { data: deals }, { count: contactCount }] = await Promise.all([
-        calculateDetailedEngagementScore(organizationId),
-        supabase.from('deals').select('*').eq('organizationId', organizationId),
-        supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('organizationId', organizationId)
-    ]);
+    const [engagementData, { data: deals }, { count: contactCount }] =
+        await Promise.all([
+            calculateDetailedEngagementScore(organizationId),
+            supabase
+                .from('deals')
+                .select('*')
+                .eq('organizationId', organizationId),
+            supabase
+                .from('contacts')
+                .select('*', { count: 'exact', head: true })
+                .eq('organizationId', organizationId),
+        ]);
 
     let riskScore = 0;
     const factors: string[] = [];
@@ -840,7 +914,11 @@ export const calculateOrganizationRisk = async (
         factors.push('No active opportunities');
         recommendations.push('Explore new opportunity development');
     } else {
-        const avgCloseRate = activeDeals.reduce((sum, deal) => sum + (deal.probability || 0), 0) / activeDeals.length;
+        const avgCloseRate =
+            activeDeals.reduce(
+                (sum, deal) => sum + (deal.probability || 0),
+                0
+            ) / activeDeals.length;
         if (avgCloseRate < 25) {
             riskScore += 15;
             factors.push('Low deal probability');
@@ -880,11 +958,18 @@ export const calculateAdvancedOpportunityScore = async (
     confidence: 'low' | 'medium' | 'high';
     nextBestAction: string;
 }> => {
-    const [engagementData, { data: deals }, { count: contactCount }] = await Promise.all([
-        calculateDetailedEngagementScore(organizationId),
-        supabase.from('deals').select('*').eq('organizationId', organizationId),
-        supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('organizationId', organizationId)
-    ]);
+    const [engagementData, { data: deals }, { count: contactCount }] =
+        await Promise.all([
+            calculateDetailedEngagementScore(organizationId),
+            supabase
+                .from('deals')
+                .select('*')
+                .eq('organizationId', organizationId),
+            supabase
+                .from('contacts')
+                .select('*', { count: 'exact', head: true })
+                .eq('organizationId', organizationId),
+        ]);
 
     let score = 0;
     const factors: string[] = [];
@@ -904,10 +989,17 @@ export const calculateAdvancedOpportunityScore = async (
 
     // Pipeline factors
     const activeDeals = (deals || []).filter(d => d.status === 'active');
-    const avgCloseRate = activeDeals.length > 0 
-        ? activeDeals.reduce((sum, deal) => sum + (deal.probability || 0), 0) / activeDeals.length
-        : 0;
-    const totalValue = activeDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+    const avgCloseRate =
+        activeDeals.length > 0
+            ? activeDeals.reduce(
+                  (sum, deal) => sum + (deal.probability || 0),
+                  0
+              ) / activeDeals.length
+            : 0;
+    const totalValue = activeDeals.reduce(
+        (sum, deal) => sum + (deal.amount || 0),
+        0
+    );
 
     if (avgCloseRate > 75) {
         score += 30;

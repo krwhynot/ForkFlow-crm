@@ -69,7 +69,10 @@ export const Task = ({
                             task.done_date ? 'line-through text-gray-500' : ''
                         }`}
                     >
-                        <label htmlFor={labelId} className="font-medium text-gray-900">
+                        <label
+                            htmlFor={labelId}
+                            className="font-medium text-gray-900"
+                        >
                             {task.type && task.type !== 'None' && (
                                 <span className="font-bold">{task.type} </span>
                             )}
@@ -79,7 +82,8 @@ export const Task = ({
                             due <DateField source="due_date" record={task} />
                             {showContact && (
                                 <>
-                                    {' '}(Re:{' '}
+                                    {' '}
+                                    (Re:{' '}
                                     <ReferenceField
                                         source="contact_id"
                                         reference="contacts"
@@ -95,7 +99,10 @@ export const Task = ({
                 <Menu as="div" className="relative flex-shrink-0">
                     <Menu.Button className="p-1 rounded-full text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <span className="sr-only">Open options</span>
-                        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+                        <EllipsisVerticalIcon
+                            className="h-5 w-5"
+                            aria-hidden="true"
+                        />
                     </Menu.Button>
                     <Transition
                         as={Fragment}

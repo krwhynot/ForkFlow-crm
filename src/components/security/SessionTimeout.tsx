@@ -16,7 +16,10 @@ import {
     Box,
 } from '@mui/material';
 import { useLogout, useNotify } from 'react-admin';
-import { Timer as TimerIcon, Warning as WarningIcon } from '@mui/icons-material';
+import {
+    Timer as TimerIcon,
+    Warning as WarningIcon,
+} from '@mui/icons-material';
 
 interface SessionTimeoutProps {
     timeoutMinutes?: number;
@@ -60,8 +63,15 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
     useEffect(() => {
         if (!enabled) return;
 
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-        
+        const events = [
+            'mousedown',
+            'mousemove',
+            'keypress',
+            'scroll',
+            'touchstart',
+            'click',
+        ];
+
         const handleActivity = () => {
             resetActivity();
         };
@@ -100,7 +110,14 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [enabled, lastActivity, timeoutMs, warningMs, isWarningOpen, handleAutoLogout]);
+    }, [
+        enabled,
+        lastActivity,
+        timeoutMs,
+        warningMs,
+        isWarningOpen,
+        handleAutoLogout,
+    ]);
 
     const formatTime = (ms: number) => {
         const minutes = Math.floor(ms / 60000);
@@ -128,37 +145,51 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
                     </Typography>
                 </Box>
             </DialogTitle>
-            
+
             <DialogContent>
                 <Alert severity="warning" sx={{ mb: 2 }}>
                     <Typography variant="body1" gutterBottom>
-                        Your session will expire in <strong>{formatTime(remainingTime)}</strong> due to inactivity.
+                        Your session will expire in{' '}
+                        <strong>{formatTime(remainingTime)}</strong> due to
+                        inactivity.
                     </Typography>
                     <Typography variant="body2">
-                        Click "Stay Logged In" to extend your session, or "Logout Now" to end your session safely.
+                        Click "Stay Logged In" to extend your session, or
+                        "Logout Now" to end your session safely.
                     </Typography>
                 </Alert>
 
                 <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                    >
                         Time Remaining:
                     </Typography>
-                    <LinearProgress 
-                        variant="determinate" 
+                    <LinearProgress
+                        variant="determinate"
                         value={warningProgress}
-                        color={warningProgress > 50 ? "warning" : "error"}
+                        color={warningProgress > 50 ? 'warning' : 'error'}
                         sx={{ height: 8, borderRadius: 4 }}
                     />
                 </Box>
 
-                <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                    sx={{
+                        mt: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                    }}
+                >
                     <TimerIcon fontSize="small" color="action" />
                     <Typography variant="caption" color="text.secondary">
                         Automatic logout in {formatTime(remainingTime)}
                     </Typography>
                 </Box>
             </DialogContent>
-            
+
             <DialogActions sx={{ p: 2, gap: 1 }}>
                 <Button
                     onClick={() => logout()}

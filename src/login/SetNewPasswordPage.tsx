@@ -51,13 +51,15 @@ export const SetNewPasswordPage = () => {
             if ('confirmPasswordReset' in dataProvider) {
                 return (dataProvider as any).confirmPasswordReset(data);
             }
-            throw new Error('Password reset confirmation not supported by this data provider');
+            throw new Error(
+                'Password reset confirmation not supported by this data provider'
+            );
         },
-        onSuccess: async (data) => {
-            notify('Password updated successfully! Signing you in...', { 
-                type: 'success' 
+        onSuccess: async data => {
+            notify('Password updated successfully! Signing you in...', {
+                type: 'success',
             });
-            
+
             // Attempt to auto-login the user with their new password
             try {
                 const credentials: LoginCredentials = {
@@ -67,14 +69,22 @@ export const SetNewPasswordPage = () => {
                 };
                 await login(credentials);
             } catch (loginError) {
-                console.error('Auto-login failed after password reset:', loginError);
-                notify('Password updated! Please log in with your new password.', { 
-                    type: 'success' 
-                });
+                console.error(
+                    'Auto-login failed after password reset:',
+                    loginError
+                );
+                notify(
+                    'Password updated! Please log in with your new password.',
+                    {
+                        type: 'success',
+                    }
+                );
             }
         },
         onError: (error: any) => {
-            const errorMessage = error?.message || 'Failed to update password. Please try again.';
+            const errorMessage =
+                error?.message ||
+                'Failed to update password. Please try again.';
             notify(errorMessage, { type: 'error' });
         },
     });
@@ -107,14 +117,22 @@ export const SetNewPasswordPage = () => {
     if (isSuccess) {
         return (
             <Stack sx={{ height: '100dvh', p: 2 }}>
-                <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 2 }}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    gap={1}
+                    sx={{ mb: 2 }}
+                >
                     <img
                         src={logo}
                         alt={title}
                         width={isMobile ? 20 : 24}
                         style={{ filter: 'invert(0.9)' }}
                     />
-                    <Typography component="span" variant={isMobile ? "h6" : "h5"}>
+                    <Typography
+                        component="span"
+                        variant={isMobile ? 'h6' : 'h5'}
+                    >
                         {title}
                     </Typography>
                 </Stack>
@@ -130,23 +148,29 @@ export const SetNewPasswordPage = () => {
                         }}
                     >
                         <Box sx={{ textAlign: 'center', mb: 2 }}>
-                            <Typography 
-                                variant={isMobile ? "h5" : "h4"} 
-                                component="h1" 
+                            <Typography
+                                variant={isMobile ? 'h5' : 'h4'}
+                                component="h1"
                                 gutterBottom
                                 sx={{ fontWeight: 600 }}
                             >
                                 Password Updated!
                             </Typography>
-                            <Typography variant="body1" color="text.secondary" gutterBottom>
+                            <Typography
+                                variant="body1"
+                                color="text.secondary"
+                                gutterBottom
+                            >
                                 Your password has been successfully updated.
                             </Typography>
                         </Box>
 
                         <Alert severity="success" sx={{ mb: 2 }}>
                             <Typography variant="body2">
-                                <strong>Success!</strong><br />
-                                You're being signed in automatically with your new password.
+                                <strong>Success!</strong>
+                                <br />
+                                You're being signed in automatically with your
+                                new password.
                             </Typography>
                         </Alert>
 
@@ -156,7 +180,7 @@ export const SetNewPasswordPage = () => {
                             variant="contained"
                             size="large"
                             fullWidth
-                            sx={{ 
+                            sx={{
                                 minHeight: 48,
                                 fontSize: '1.1rem',
                                 fontWeight: 600,
@@ -179,7 +203,7 @@ export const SetNewPasswordPage = () => {
                     width={isMobile ? 20 : 24}
                     style={{ filter: 'invert(0.9)' }}
                 />
-                <Typography component="span" variant={isMobile ? "h6" : "h5"}>
+                <Typography component="span" variant={isMobile ? 'h6' : 'h5'}>
                     {title}
                 </Typography>
             </Stack>
@@ -195,45 +219,53 @@ export const SetNewPasswordPage = () => {
                     }}
                 >
                     <Box sx={{ textAlign: 'center', mb: 2 }}>
-                        <Typography 
-                            variant={isMobile ? "h5" : "h4"} 
-                            component="h1" 
+                        <Typography
+                            variant={isMobile ? 'h5' : 'h4'}
+                            component="h1"
                             gutterBottom
                             sx={{ fontWeight: 600 }}
                         >
                             Set New Password
                         </Typography>
-                        <Typography variant="body1" color="text.secondary" gutterBottom>
+                        <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            gutterBottom
+                        >
                             Choose a strong password for your account.
                         </Typography>
                     </Box>
 
                     {error && (
                         <Alert severity="error" sx={{ mb: 2 }}>
-                            {error instanceof Error ? error.message : 'An error occurred while updating your password'}
+                            {error instanceof Error
+                                ? error.message
+                                : 'An error occurred while updating your password'}
                         </Alert>
                     )}
 
-                    <Box 
-                        component="form" 
+                    <Box
+                        component="form"
                         onSubmit={handleSubmit(onSubmit)}
-                        sx={{ 
+                        sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 2,
                         }}
                     >
                         <TextField
-                            {...register('newPassword', { 
+                            {...register('newPassword', {
                                 required: 'Password is required',
-                                minLength: { 
-                                    value: 8, 
-                                    message: 'Password must be at least 8 characters' 
+                                minLength: {
+                                    value: 8,
+                                    message:
+                                        'Password must be at least 8 characters',
                                 },
                                 pattern: {
                                     value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-                                    message: 'Password must contain uppercase, lowercase, and number'
-                                }
+                                    message:
+                                        'Password must contain uppercase, lowercase, and number',
+                                },
                             })}
                             label="New Password"
                             type="password"
@@ -242,17 +274,21 @@ export const SetNewPasswordPage = () => {
                             autoComplete="new-password"
                             autoFocus={!isMobile}
                             error={!!errors.newPassword}
-                            helperText={errors.newPassword?.message || 'Minimum 8 characters with uppercase, lowercase, and number'}
+                            helperText={
+                                errors.newPassword?.message ||
+                                'Minimum 8 characters with uppercase, lowercase, and number'
+                            }
                             inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                style: { fontSize: isMobile ? '16px' : '14px' },
                             }}
                         />
 
                         <TextField
-                            {...register('confirmPassword', { 
+                            {...register('confirmPassword', {
                                 required: 'Please confirm your password',
-                                validate: value => 
-                                    value === newPassword || 'Passwords do not match'
+                                validate: value =>
+                                    value === newPassword ||
+                                    'Passwords do not match',
                             })}
                             label="Confirm New Password"
                             type="password"
@@ -262,17 +298,17 @@ export const SetNewPasswordPage = () => {
                             error={!!errors.confirmPassword}
                             helperText={errors.confirmPassword?.message}
                             inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                style: { fontSize: isMobile ? '16px' : '14px' },
                             }}
                         />
-                        
+
                         <Button
                             type="submit"
                             variant="contained"
                             size="large"
                             disabled={!isValid || isPending}
                             fullWidth
-                            sx={{ 
+                            sx={{
                                 mt: 2,
                                 minHeight: 48,
                                 fontSize: '1.1rem',
@@ -285,10 +321,10 @@ export const SetNewPasswordPage = () => {
                                 'Update Password'
                             )}
                         </Button>
-                        
-                        <Typography 
-                            variant="body2" 
-                            color="text.secondary" 
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
                             align="center"
                             sx={{ mt: 2 }}
                         >
@@ -298,9 +334,9 @@ export const SetNewPasswordPage = () => {
                                 to="/login"
                                 variant="body2"
                                 color="primary"
-                                sx={{ 
+                                sx={{
                                     textDecoration: 'none',
-                                    '&:hover': { textDecoration: 'underline' }
+                                    '&:hover': { textDecoration: 'underline' },
                                 }}
                             >
                                 Back to Sign In

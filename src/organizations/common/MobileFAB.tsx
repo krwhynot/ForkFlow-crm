@@ -70,11 +70,11 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
             case 'bottom-left':
                 return { ...baseStyles, bottom: 16, left: 16 };
             case 'bottom-center':
-                return { 
-                    ...baseStyles, 
-                    bottom: 16, 
-                    left: '50%', 
-                    transform: 'translateX(-50%)' 
+                return {
+                    ...baseStyles,
+                    bottom: 16,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
                 };
             case 'bottom-right':
             default:
@@ -83,16 +83,19 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
     }, [position, theme.zIndex.speedDial]);
 
     // Haptic feedback for supported devices
-    const triggerHapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
-        if ('vibrate' in navigator) {
-            const patterns = {
-                light: [10],
-                medium: [20],
-                heavy: [50],
-            };
-            navigator.vibrate(patterns[type]);
-        }
-    }, []);
+    const triggerHapticFeedback = useCallback(
+        (type: 'light' | 'medium' | 'heavy' = 'light') => {
+            if ('vibrate' in navigator) {
+                const patterns = {
+                    light: [10],
+                    medium: [20],
+                    heavy: [50],
+                };
+                navigator.vibrate(patterns[type]);
+            }
+        },
+        []
+    );
 
     // Handle speed dial open/close
     const handleOpen = useCallback(() => {
@@ -124,15 +127,21 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
     }, []);
 
     // Touch event handlers for mobile
-    const handleTouchStart = useCallback((e: React.TouchEvent) => {
-        e.preventDefault();
-        handleMouseDown();
-    }, [handleMouseDown]);
+    const handleTouchStart = useCallback(
+        (e: React.TouchEvent) => {
+            e.preventDefault();
+            handleMouseDown();
+        },
+        [handleMouseDown]
+    );
 
-    const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-        e.preventDefault();
-        handleMouseUp();
-    }, [handleMouseUp]);
+    const handleTouchEnd = useCallback(
+        (e: React.TouchEvent) => {
+            e.preventDefault();
+            handleMouseUp();
+        },
+        [handleMouseUp]
+    );
 
     // Cleanup on unmount
     useEffect(() => {
@@ -155,36 +164,48 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
             },
             color: 'primary' as const,
         },
-        ...(onVoiceCreate ? [{
-            icon: <MicIcon />,
-            name: 'Voice Input',
-            onClick: () => {
-                handleClose();
-                triggerHapticFeedback('medium');
-                onVoiceCreate();
-            },
-            color: 'secondary' as const,
-        }] : []),
-        ...(onQuickScan ? [{
-            icon: <QrIcon />,
-            name: 'Scan Business Card',
-            onClick: () => {
-                handleClose();
-                triggerHapticFeedback('medium');
-                onQuickScan();
-            },
-            color: 'info' as const,
-        }] : []),
-        ...(onPhotoCapture ? [{
-            icon: <CameraIcon />,
-            name: 'Photo Capture',
-            onClick: () => {
-                handleClose();
-                triggerHapticFeedback('medium');
-                onPhotoCapture();
-            },
-            color: 'success' as const,
-        }] : []),
+        ...(onVoiceCreate
+            ? [
+                  {
+                      icon: <MicIcon />,
+                      name: 'Voice Input',
+                      onClick: () => {
+                          handleClose();
+                          triggerHapticFeedback('medium');
+                          onVoiceCreate();
+                      },
+                      color: 'secondary' as const,
+                  },
+              ]
+            : []),
+        ...(onQuickScan
+            ? [
+                  {
+                      icon: <QrIcon />,
+                      name: 'Scan Business Card',
+                      onClick: () => {
+                          handleClose();
+                          triggerHapticFeedback('medium');
+                          onQuickScan();
+                      },
+                      color: 'info' as const,
+                  },
+              ]
+            : []),
+        ...(onPhotoCapture
+            ? [
+                  {
+                      icon: <CameraIcon />,
+                      name: 'Photo Capture',
+                      onClick: () => {
+                          handleClose();
+                          triggerHapticFeedback('medium');
+                          onPhotoCapture();
+                      },
+                      color: 'success' as const,
+                  },
+              ]
+            : []),
     ];
 
     // Don't render on desktop or when hidden
@@ -252,7 +273,7 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
                     onTouchEnd: handleTouchEnd,
                 }}
             >
-                {actions.map((action) => (
+                {actions.map(action => (
                     <SpeedDialAction
                         key={action.name}
                         icon={action.icon}

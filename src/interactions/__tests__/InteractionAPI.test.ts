@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CrmDataProvider } from '../../providers/types';
-import { gpsService, offlineService, fileUploadService } from '../../providers/mobile';
+import {
+    gpsService,
+    offlineService,
+    fileUploadService,
+} from '../../providers/mobile';
 import { performanceMonitor } from '../../providers/monitoring/performanceMonitor';
 import { interactionValidator } from '../../providers/fakerest/interactionValidator';
 
@@ -38,9 +42,17 @@ vi.mock('../../providers/monitoring/performanceMonitor', () => ({
 vi.mock('../../providers/fakerest/interactionValidator', () => ({
     interactionValidator: {
         updateSettings: vi.fn(),
-        sanitizeInteraction: vi.fn((data) => data),
-        validateInteraction: vi.fn(() => ({ isValid: true, errors: [], warnings: [] })),
-        validateAttachment: vi.fn(() => ({ isValid: true, errors: [], warnings: [] })),
+        sanitizeInteraction: vi.fn(data => data),
+        validateInteraction: vi.fn(() => ({
+            isValid: true,
+            errors: [],
+            warnings: [],
+        })),
+        validateAttachment: vi.fn(() => ({
+            isValid: true,
+            errors: [],
+            warnings: [],
+        })),
     },
 }));
 
@@ -62,57 +74,87 @@ describe('Interaction API', () => {
     beforeEach(() => {
         // Reset all mocks
         vi.clearAllMocks();
-        
+
         // Setup common mock responses
         mockBaseDataProvider.getList.mockResolvedValue({
-            data: [{ id: 'type1', category: 'interaction_type', key: 'in_person', label: 'In Person' }],
+            data: [
+                {
+                    id: 'type1',
+                    category: 'interaction_type',
+                    key: 'in_person',
+                    label: 'In Person',
+                },
+            ],
             total: 1,
         });
-        
+
         mockBaseDataProvider.create.mockResolvedValue({
-            data: { id: 'interaction1', subject: 'Test Interaction', createdAt: new Date().toISOString() },
+            data: {
+                id: 'interaction1',
+                subject: 'Test Interaction',
+                createdAt: new Date().toISOString(),
+            },
         });
-        
+
         mockBaseDataProvider.update.mockResolvedValue({
-            data: { id: 'interaction1', subject: 'Updated Interaction', updatedAt: new Date().toISOString() },
+            data: {
+                id: 'interaction1',
+                subject: 'Updated Interaction',
+                updatedAt: new Date().toISOString(),
+            },
         });
-        
+
         mockBaseDataProvider.getOne.mockResolvedValue({
-            data: { id: 'interaction1', subject: 'Test Interaction', attachments: [] },
+            data: {
+                id: 'interaction1',
+                subject: 'Test Interaction',
+                attachments: [],
+            },
         });
-        
+
         // Mock GPS service responses
         (gpsService.getCurrentLocation as any).mockResolvedValue({
-            coordinates: { latitude: 37.7749, longitude: -122.4194, accuracy: 10 },
+            coordinates: {
+                latitude: 37.7749,
+                longitude: -122.4194,
+                accuracy: 10,
+            },
         });
-        
+
         (gpsService.getCachedLocation as any).mockReturnValue(null);
-        
+
         // Mock offline service responses
-        (offlineService.queueInteraction as any).mockResolvedValue('offline-id-123');
-        
+        (offlineService.queueInteraction as any).mockResolvedValue(
+            'offline-id-123'
+        );
+
         // Import the data provider with enhanced methods
         // This would normally import from the actual dataProvider file
         dataProvider = {
             ...mockBaseDataProvider,
-            
+
             // Enhanced interaction methods
             async createInteraction(params: any) {
                 const startTime = Date.now();
-                
+
                 try {
                     // Validation
                     interactionValidator.updateSettings([]);
-                    const sanitizedData = interactionValidator.sanitizeInteraction(params.data);
-                    const validation = interactionValidator.validateInteraction(sanitizedData);
-                    
+                    const sanitizedData =
+                        interactionValidator.sanitizeInteraction(params.data);
+                    const validation =
+                        interactionValidator.validateInteraction(sanitizedData);
+
                     if (!validation.isValid) {
                         throw new Error('Validation failed');
                     }
-                    
+
                     // Check if offline
                     if (!navigator.onLine) {
-                        const queuedId = await offlineService.queueInteraction('create', params.data);
+                        const queuedId = await offlineService.queueInteraction(
+                            'create',
+                            params.data
+                        );
                         return {
                             data: {
                                 ...params.data,
@@ -121,16 +163,19 @@ describe('Interaction API', () => {
                             },
                         };
                     }
-                    
-                    const result = await mockBaseDataProvider.create('interactions', params);
-                    
+
+                    const result = await mockBaseDataProvider.create(
+                        'interactions',
+                        params
+                    );
+
                     performanceMonitor.trackApiCall(
                         'createInteraction',
                         'POST',
                         startTime,
                         true
                     );
-                    
+
                     return result;
                 } catch (error: any) {
                     performanceMonitor.trackApiCall(
@@ -143,13 +188,13 @@ describe('Interaction API', () => {
                     throw error;
                 }
             },
-            
+
             async getCurrentLocation() {
                 const startTime = Date.now();
-                
+
                 try {
                     const result = await gpsService.getCurrentLocation();
-                    
+
                     if (result.coordinates) {
                         performanceMonitor.trackGPSAcquisition(
                             startTime,
@@ -164,7 +209,7 @@ describe('Interaction API', () => {
                             result.error
                         );
                     }
-                    
+
                     return result;
                 } catch (error: any) {
                     performanceMonitor.trackGPSAcquisition(
@@ -176,28 +221,35 @@ describe('Interaction API', () => {
                     throw error;
                 }
             },
-            
-            async uploadInteractionAttachment(interactionId: string, file: File) {
+
+            async uploadInteractionAttachment(
+                interactionId: string,
+                file: File
+            ) {
                 const startTime = Date.now();
-                
+
                 try {
-                    const validation = interactionValidator.validateAttachment(file);
-                    
+                    const validation =
+                        interactionValidator.validateAttachment(file);
+
                     if (!validation.isValid) {
                         throw new Error('File validation failed');
                     }
-                    
-                    const result = await mockBaseDataProvider.update('interactions', {
-                        id: interactionId,
-                        data: { attachments: ['test-file.jpg'] },
-                    });
-                    
+
+                    const result = await mockBaseDataProvider.update(
+                        'interactions',
+                        {
+                            id: interactionId,
+                            data: { attachments: ['test-file.jpg'] },
+                        }
+                    );
+
                     performanceMonitor.trackFileUpload(
                         file.size,
                         startTime,
                         true
                     );
-                    
+
                     return result;
                 } catch (error: any) {
                     performanceMonitor.trackFileUpload(
@@ -255,7 +307,9 @@ describe('Interaction API', () => {
                 warnings: [],
             });
 
-            await expect(dataProvider.createInteraction(params)).rejects.toThrow('Validation failed');
+            await expect(
+                dataProvider.createInteraction(params)
+            ).rejects.toThrow('Validation failed');
             expect(performanceMonitor.trackApiCall).toHaveBeenCalledWith(
                 'createInteraction',
                 'POST',
@@ -284,7 +338,10 @@ describe('Interaction API', () => {
 
             expect(result.data._offline).toBe(true);
             expect(result.data.id).toBe('offline-id-123');
-            expect(offlineService.queueInteraction).toHaveBeenCalledWith('create', params.data);
+            expect(offlineService.queueInteraction).toHaveBeenCalledWith(
+                'create',
+                params.data
+            );
         });
     });
 
@@ -323,9 +380,13 @@ describe('Interaction API', () => {
         });
 
         it('should handle GPS service exceptions', async () => {
-            (gpsService.getCurrentLocation as any).mockRejectedValue(new Error('GPS timeout'));
+            (gpsService.getCurrentLocation as any).mockRejectedValue(
+                new Error('GPS timeout')
+            );
 
-            await expect(dataProvider.getCurrentLocation()).rejects.toThrow('GPS timeout');
+            await expect(dataProvider.getCurrentLocation()).rejects.toThrow(
+                'GPS timeout'
+            );
             expect(performanceMonitor.trackGPSAcquisition).toHaveBeenCalledWith(
                 expect.any(Number),
                 0,
@@ -337,13 +398,20 @@ describe('Interaction API', () => {
 
     describe('uploadInteractionAttachment', () => {
         it('should upload file successfully', async () => {
-            const file = new File(['test content'], 'test.jpg', { type: 'image/jpeg' });
+            const file = new File(['test content'], 'test.jpg', {
+                type: 'image/jpeg',
+            });
             Object.defineProperty(file, 'size', { value: 1024 });
 
-            const result = await dataProvider.uploadInteractionAttachment('interaction1', file);
+            const result = await dataProvider.uploadInteractionAttachment(
+                'interaction1',
+                file
+            );
 
             expect(result.data.attachments).toContain('test-file.jpg');
-            expect(interactionValidator.validateAttachment).toHaveBeenCalledWith(file);
+            expect(
+                interactionValidator.validateAttachment
+            ).toHaveBeenCalledWith(file);
             expect(performanceMonitor.trackFileUpload).toHaveBeenCalledWith(
                 1024,
                 expect.any(Number),
@@ -352,7 +420,9 @@ describe('Interaction API', () => {
         });
 
         it('should handle file validation errors', async () => {
-            const file = new File(['test content'], 'test.exe', { type: 'application/exe' });
+            const file = new File(['test content'], 'test.exe', {
+                type: 'application/exe',
+            });
             Object.defineProperty(file, 'size', { value: 1024 });
 
             (interactionValidator.validateAttachment as any).mockReturnValue({
@@ -364,7 +434,7 @@ describe('Interaction API', () => {
             await expect(
                 dataProvider.uploadInteractionAttachment('interaction1', file)
             ).rejects.toThrow('File validation failed');
-            
+
             expect(performanceMonitor.trackFileUpload).toHaveBeenCalledWith(
                 1024,
                 expect.any(Number),
@@ -375,10 +445,19 @@ describe('Interaction API', () => {
         });
 
         it('should handle large files', async () => {
-            const largeFile = new File(['x'.repeat(10 * 1024 * 1024)], 'large.jpg', { type: 'image/jpeg' });
-            Object.defineProperty(largeFile, 'size', { value: 10 * 1024 * 1024 });
+            const largeFile = new File(
+                ['x'.repeat(10 * 1024 * 1024)],
+                'large.jpg',
+                { type: 'image/jpeg' }
+            );
+            Object.defineProperty(largeFile, 'size', {
+                value: 10 * 1024 * 1024,
+            });
 
-            const result = await dataProvider.uploadInteractionAttachment('interaction1', largeFile);
+            const result = await dataProvider.uploadInteractionAttachment(
+                'interaction1',
+                largeFile
+            );
 
             expect(result.data.attachments).toContain('test-file.jpg');
             expect(performanceMonitor.trackFileUpload).toHaveBeenCalledWith(
@@ -401,12 +480,17 @@ describe('Interaction API', () => {
 
             await dataProvider.createInteraction(params);
             await dataProvider.getCurrentLocation();
-            
+
             const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-            await dataProvider.uploadInteractionAttachment('interaction1', file);
+            await dataProvider.uploadInteractionAttachment(
+                'interaction1',
+                file
+            );
 
             expect(performanceMonitor.trackApiCall).toHaveBeenCalledTimes(1);
-            expect(performanceMonitor.trackGPSAcquisition).toHaveBeenCalledTimes(1);
+            expect(
+                performanceMonitor.trackGPSAcquisition
+            ).toHaveBeenCalledTimes(1);
             expect(performanceMonitor.trackFileUpload).toHaveBeenCalledTimes(1);
         });
 
@@ -420,8 +504,10 @@ describe('Interaction API', () => {
 
             const params = { data: { subject: 'Test' } };
 
-            await expect(dataProvider.createInteraction(params)).rejects.toThrow();
-            
+            await expect(
+                dataProvider.createInteraction(params)
+            ).rejects.toThrow();
+
             expect(performanceMonitor.trackApiCall).toHaveBeenCalledWith(
                 'createInteraction',
                 'POST',
@@ -452,7 +538,10 @@ describe('Interaction API', () => {
             const result = await dataProvider.createInteraction(params);
 
             expect(result.data._offline).toBe(true);
-            expect(offlineService.queueInteraction).toHaveBeenCalledWith('create', params.data);
+            expect(offlineService.queueInteraction).toHaveBeenCalledWith(
+                'create',
+                params.data
+            );
         });
 
         it('should handle offline queue errors gracefully', async () => {
@@ -468,7 +557,9 @@ describe('Interaction API', () => {
                 },
             };
 
-            await expect(dataProvider.createInteraction(params)).rejects.toThrow('Storage quota exceeded');
+            await expect(
+                dataProvider.createInteraction(params)
+            ).rejects.toThrow('Storage quota exceeded');
         });
     });
 
@@ -493,13 +584,20 @@ describe('Interaction API', () => {
             expect(locationResult.coordinates).toBeDefined();
 
             // Upload attachment
-            const file = new File(['test content'], 'test.jpg', { type: 'image/jpeg' });
-            const uploadResult = await dataProvider.uploadInteractionAttachment(createResult.data.id, file);
+            const file = new File(['test content'], 'test.jpg', {
+                type: 'image/jpeg',
+            });
+            const uploadResult = await dataProvider.uploadInteractionAttachment(
+                createResult.data.id,
+                file
+            );
             expect(uploadResult.data.attachments).toContain('test-file.jpg');
 
             // Verify all performance metrics were tracked
             expect(performanceMonitor.trackApiCall).toHaveBeenCalledTimes(1);
-            expect(performanceMonitor.trackGPSAcquisition).toHaveBeenCalledTimes(1);
+            expect(
+                performanceMonitor.trackGPSAcquisition
+            ).toHaveBeenCalledTimes(1);
             expect(performanceMonitor.trackFileUpload).toHaveBeenCalledTimes(1);
         });
 
@@ -517,11 +615,17 @@ describe('Interaction API', () => {
             expect(createResult.data.id).toBeDefined();
 
             // GPS fails
-            (gpsService.getCurrentLocation as any).mockRejectedValue(new Error('GPS unavailable'));
-            await expect(dataProvider.getCurrentLocation()).rejects.toThrow('GPS unavailable');
+            (gpsService.getCurrentLocation as any).mockRejectedValue(
+                new Error('GPS unavailable')
+            );
+            await expect(dataProvider.getCurrentLocation()).rejects.toThrow(
+                'GPS unavailable'
+            );
 
             // File upload fails due to validation
-            const file = new File(['test'], 'invalid.exe', { type: 'application/exe' });
+            const file = new File(['test'], 'invalid.exe', {
+                type: 'application/exe',
+            });
             (interactionValidator.validateAttachment as any).mockReturnValue({
                 isValid: false,
                 errors: [{ message: 'Invalid file type' }],
@@ -529,7 +633,10 @@ describe('Interaction API', () => {
             });
 
             await expect(
-                dataProvider.uploadInteractionAttachment(createResult.data.id, file)
+                dataProvider.uploadInteractionAttachment(
+                    createResult.data.id,
+                    file
+                )
             ).rejects.toThrow('File validation failed');
 
             // Verify mixed results were tracked correctly

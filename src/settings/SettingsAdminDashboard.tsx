@@ -168,11 +168,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                             {category.label}
                         </Typography>
                     </Box>
-                    <Badge
-                        badgeContent={stats.total}
-                        color="primary"
-                        max={99}
-                    >
+                    <Badge badgeContent={stats.total} color="primary" max={99}>
                         <SettingsIcon fontSize="small" />
                     </Badge>
                 </Box>
@@ -210,7 +206,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                     <Box display="flex" gap={0.5}>
                         <IconButton
                             size="small"
-                            onClick={(e) => {
+                            onClick={e => {
                                 e.stopPropagation();
                                 // Navigate to create new setting
                                 window.location.href = `/settings/create?category=${category.key}`;
@@ -241,9 +237,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => (
 export const SettingsAdminDashboard: React.FC = () => {
     const isMobile = useBreakpoint('md');
     const [activeTab, setActiveTab] = useState(0);
-    const [categoryStats, setCategoryStats] = useState<Record<string, any>>(
-        {}
-    );
+    const [categoryStats, setCategoryStats] = useState<Record<string, any>>({});
 
     const { data: settings, isLoading } = useGetList<Setting>('settings', {
         pagination: { page: 1, perPage: 1000 },
@@ -253,19 +247,22 @@ export const SettingsAdminDashboard: React.FC = () => {
     // Calculate statistics for each category
     useEffect(() => {
         if (settings) {
-            const stats = settings.reduce((acc, setting) => {
-                const category = setting.category;
-                if (!acc[category]) {
-                    acc[category] = { total: 0, active: 0, inactive: 0 };
-                }
-                acc[category].total++;
-                if (setting.active) {
-                    acc[category].active++;
-                } else {
-                    acc[category].inactive++;
-                }
-                return acc;
-            }, {} as Record<string, any>);
+            const stats = settings.reduce(
+                (acc, setting) => {
+                    const category = setting.category;
+                    if (!acc[category]) {
+                        acc[category] = { total: 0, active: 0, inactive: 0 };
+                    }
+                    acc[category].total++;
+                    if (setting.active) {
+                        acc[category].active++;
+                    } else {
+                        acc[category].inactive++;
+                    }
+                    return acc;
+                },
+                {} as Record<string, any>
+            );
             setCategoryStats(stats);
         }
     }, [settings]);
@@ -276,15 +273,12 @@ export const SettingsAdminDashboard: React.FC = () => {
         })}`;
     };
 
-    const handleTabChange = (
-        event: React.SyntheticEvent,
-        newValue: number
-    ) => {
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
     };
 
     const totalSettings = settings?.length || 0;
-    const activeSettings = settings?.filter((s) => s.active).length || 0;
+    const activeSettings = settings?.filter(s => s.active).length || 0;
     const categories = Object.keys(CATEGORY_CONFIG);
 
     if (isLoading) {
@@ -342,7 +336,7 @@ export const SettingsAdminDashboard: React.FC = () => {
             <TabPanel value={activeTab} index={0}>
                 {/* Overview - Category Cards Grid */}
                 <Grid container spacing={3}>
-                    {categories.map((categoryKey) => {
+                    {categories.map(categoryKey => {
                         const category = CATEGORY_CONFIG[categoryKey];
                         const stats = categoryStats[categoryKey] || {
                             total: 0,
@@ -380,7 +374,7 @@ export const SettingsAdminDashboard: React.FC = () => {
                 </Typography>
 
                 <Grid container spacing={2}>
-                    {categories.map((categoryKey) => {
+                    {categories.map(categoryKey => {
                         const category = CATEGORY_CONFIG[categoryKey];
                         const stats = categoryStats[categoryKey] || {
                             total: 0,
@@ -417,9 +411,7 @@ export const SettingsAdminDashboard: React.FC = () => {
                                                         variant="body2"
                                                         color="text.secondary"
                                                     >
-                                                        {
-                                                            category.description
-                                                        }
+                                                        {category.description}
                                                     </Typography>
                                                 </Box>
                                             </Box>

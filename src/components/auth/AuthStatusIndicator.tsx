@@ -8,7 +8,6 @@ import {
     Box,
     Chip,
     IconButton,
-    Popover,
     Typography,
     Alert,
     List,
@@ -16,9 +15,9 @@ import {
     ListItemIcon,
     ListItemText,
     Divider,
-    useTheme,
-    useMediaQuery,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { Popover } from '@headlessui/react';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
     Wifi as OnlineIcon,
     WifiOff as OfflineIcon,
@@ -34,13 +33,12 @@ import { isOnline, getOfflineAuthStatus } from '../../utils/offlineAuth';
 import { getSessionSummary } from '../../utils/sessionPersistence';
 
 export const AuthStatusIndicator: React.FC = () => {
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isConnected, setIsConnected] = useState(isOnline());
     const [offlineStatus, setOfflineStatus] = useState(getOfflineAuthStatus());
     const [sessionSummary, setSessionSummary] = useState(getSessionSummary());
     const { authenticated } = useAuthState();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     useEffect(() => {
         const updateStatus = () => {
@@ -51,11 +49,11 @@ export const AuthStatusIndicator: React.FC = () => {
 
         // Update status periodically
         const interval = setInterval(updateStatus, 30000); // Every 30 seconds
-        
+
         // Listen to online/offline events
         const handleOnline = () => updateStatus();
         const handleOffline = () => updateStatus();
-        
+
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
 
@@ -66,15 +64,13 @@ export const AuthStatusIndicator: React.FC = () => {
         };
     }, []);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+    const handleToggle = () => {
+        setIsPopoverOpen(!isPopoverOpen);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setIsPopoverOpen(false);
     };
-
-    const open = Boolean(anchorEl);
 
     if (!authenticated) {
         return null;
@@ -88,85 +84,76 @@ export const AuthStatusIndicator: React.FC = () => {
 
     const getStatusIcon = () => {
         if (!isConnected) {
-            return offlineStatus.hasCredentials ? <UnsyncedIcon /> : <OfflineIcon />;
+            return offlineStatus.hasCredentials ? (
+                <UnsyncedIcon />
+            ) : (
+                <OfflineIcon />
+            );
         }
         return <SyncedIcon />;
     };
 
     const getStatusText = () => {
         if (!isConnected) {
-            return offlineStatus.hasCredentials ? 'Offline Mode' : 'No Connection';
+            return offlineStatus.hasCredentials
+                ? 'Offline Mode'
+                : 'No Connection';
         }
         return 'Connected';
     };
 
     return (
-        <>
-            <IconButton
-                onClick={handleClick}
-                size={isMobile ? 'medium' : 'small'}
-                sx={{
-                    color: (theme) => theme.palette[getStatusColor()].main,
-                    '&:hover': {
-                        backgroundColor: (theme) => theme.palette[getStatusColor()].light + '20',
-                    },
-                }}
+        <Popover className="relative">
+            <Popover.Button
+                as={IconButton}
+                onClick={handleToggle}
+                className={`${isMobile ? 'p-3' : 'p-2'} ${
+                    getStatusColor() === 'success'
+                        ? 'text-green-600 hover:bg-green-50'
+                        : getStatusColor() === 'warning'
+                          ? 'text-yellow-600 hover:bg-yellow-50'
+                          : 'text-red-600 hover:bg-red-50'
+                }`}
             >
                 {getStatusIcon()}
-            </IconButton>
+            </Popover.Button>
 
-            <Popover
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                PaperProps={{
-                    sx: {
-                        width: isMobile ? '90vw' : 320,
-                        maxWidth: 400,
-                        p: 2,
-                    },
-                }}
+            <Popover.Panel
+                className={`absolute right-0 top-full z-50 mt-2 ${
+                    isMobile ? 'w-[90vw]' : 'w-80'
+                } max-w-96 p-4 bg-white border border-gray-200 rounded-lg shadow-lg`}
             >
                 <Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box className="flex items-center mb-4">
                         {getStatusIcon()}
-                        <Typography variant="h6" sx={{ ml: 1 }}>
+                        <Typography variant="h6" className="ml-2">
                             {getStatusText()}
                         </Typography>
                     </Box>
 
                     {/* Connection Status */}
                     <Alert
-                        severity={getStatusColor()}
-                        icon={isConnected ? <OnlineIcon /> : <OfflineIcon />}
-                        sx={{ mb: 2 }}
+                        variant={getStatusColor()}
+                        className="mb-4 flex items-center gap-2"
                     >
+                        {isConnected ? <OnlineIcon /> : <OfflineIcon />}
                         <Typography variant="body2">
                             {isConnected
                                 ? 'Connected to server - full functionality available'
                                 : offlineStatus.hasCredentials
-                                ? 'Offline mode active - limited functionality'
-                                : 'No connection - please connect to use the app'
-                            }
+                                  ? 'Offline mode active - limited functionality'
+                                  : 'No connection - please connect to use the app'}
                         </Typography>
                     </Alert>
 
-                    <Divider sx={{ my: 2 }} />
+                    <Divider className="my-4" />
 
                     {/* Session Information */}
                     {sessionSummary.isValid && (
                         <List dense>
                             <ListItem>
                                 <ListItemIcon>
-                                    <SecurityIcon fontSize="small" />
+                                    <SecurityIcon className="text-sm" />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Current User"
@@ -176,7 +163,7 @@ export const AuthStatusIndicator: React.FC = () => {
 
                             <ListItem>
                                 <ListItemIcon>
-                                    <SessionIcon fontSize="small" />
+                                    <SessionIcon className="text-sm" />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Last Activity"
@@ -187,12 +174,13 @@ export const AuthStatusIndicator: React.FC = () => {
                             {sessionSummary.deviceInfo?.isMobile && (
                                 <ListItem>
                                     <ListItemIcon>
-                                        <MobileIcon fontSize="small" />
+                                        <MobileIcon className="text-sm" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Mobile Device"
                                         secondary={
-                                            sessionSummary.deviceInfo.isStandalone
+                                            sessionSummary.deviceInfo
+                                                .isStandalone
                                                 ? 'PWA Mode Active'
                                                 : 'Browser Mode'
                                         }
@@ -205,15 +193,15 @@ export const AuthStatusIndicator: React.FC = () => {
                     {/* Offline Authentication Status */}
                     {offlineStatus.isEnabled && (
                         <>
-                            <Divider sx={{ my: 2 }} />
+                            <Divider className="my-4" />
                             <Typography variant="subtitle2" gutterBottom>
                                 Offline Authentication
                             </Typography>
-                            
+
                             <List dense>
                                 <ListItem>
                                     <ListItemIcon>
-                                        <InfoIcon fontSize="small" />
+                                        <InfoIcon className="text-sm" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Status"
@@ -225,17 +213,20 @@ export const AuthStatusIndicator: React.FC = () => {
                                     />
                                 </ListItem>
 
-                                {offlineStatus.hasCredentials && offlineStatus.lastSync && (
-                                    <ListItem>
-                                        <ListItemIcon>
-                                            <SyncedIcon fontSize="small" />
-                                        </ListItemIcon>
-                                        <ListItemText
-                                            primary="Last Sync"
-                                            secondary={offlineStatus.lastSync}
-                                        />
-                                    </ListItem>
-                                )}
+                                {offlineStatus.hasCredentials &&
+                                    offlineStatus.lastSync && (
+                                        <ListItem>
+                                            <ListItemIcon>
+                                                <SyncedIcon className="text-sm" />
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary="Last Sync"
+                                                secondary={
+                                                    offlineStatus.lastSync
+                                                }
+                                            />
+                                        </ListItem>
+                                    )}
 
                                 {offlineStatus.isLocked && (
                                     <ListItem>
@@ -243,7 +234,10 @@ export const AuthStatusIndicator: React.FC = () => {
                                             primary={
                                                 <Alert severity="error">
                                                     <Typography variant="caption">
-                                                        Account locked until {offlineStatus.lockoutUntil}
+                                                        Account locked until{' '}
+                                                        {
+                                                            offlineStatus.lockoutUntil
+                                                        }
                                                     </Typography>
                                                 </Alert>
                                             }
@@ -257,16 +251,18 @@ export const AuthStatusIndicator: React.FC = () => {
                     {/* Tips for Mobile Users */}
                     {isMobile && (
                         <>
-                            <Divider sx={{ my: 2 }} />
-                            <Alert severity="info">
+                            <Divider className="my-4" />
+                            <Alert variant="info">
                                 <Typography variant="caption">
-                                    <strong>Field Sales Tip:</strong> Keep "Remember Me" enabled for reliable offline access
+                                    <strong>Field Sales Tip:</strong> Keep
+                                    "Remember Me" enabled for reliable offline
+                                    access
                                 </Typography>
                             </Alert>
                         </>
                     )}
                 </Box>
-            </Popover>
-        </>
+            </Popover.Panel>
+        </Popover>
     );
 };

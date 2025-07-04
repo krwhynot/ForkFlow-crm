@@ -38,12 +38,7 @@ interface VirtualizedOrganizationTableProps {
  */
 export const VirtualizedOrganizationTable: React.FC<
     VirtualizedOrganizationTableProps
-> = ({
-    viewMode,
-    height = 600,
-    itemHeight = 80,
-    overscan = 10,
-}) => {
+> = ({ viewMode, height = 600, itemHeight = 80, overscan = 10 }) => {
     const isMobile = useBreakpoint('md');
 
     const {
@@ -143,9 +138,7 @@ export const VirtualizedOrganizationTable: React.FC<
                                             | 'asc'
                                             | 'desc'
                                     }
-                                    onClick={() =>
-                                        handleSort('business_type')
-                                    }
+                                    onClick={() => handleSort('business_type')}
                                 >
                                     Type
                                 </TableSortLabel>
@@ -215,10 +208,7 @@ export const VirtualizedOrganizationTable: React.FC<
                                 borderColor: 'divider',
                             }}
                         >
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Loading...
                             </Typography>
                         </Box>
@@ -430,8 +420,7 @@ export const VirtualizedOrganizationTable: React.FC<
                 }}
             >
                 <Typography variant="body2" color="text.secondary">
-                    {metrics.loadedItems} of {metrics.totalItems}{' '}
-                    organizations
+                    {metrics.loadedItems} of {metrics.totalItems} organizations
                 </Typography>
                 <Box sx={{ flexGrow: 1, maxWidth: 200 }}>
                     <LinearProgress
@@ -464,7 +453,7 @@ export const VirtualizedOrganizationTable: React.FC<
                             height={height}
                             itemCount={itemCount}
                             itemSize={itemHeight}
-                            onItemsRendered={(props) => {
+                            onItemsRendered={props => {
                                 onItemsRendered(props);
                                 handleItemsRendered(props);
                             }}

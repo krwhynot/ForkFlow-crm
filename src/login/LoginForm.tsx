@@ -11,7 +11,11 @@ export const LoginForm = () => {
     const [loading, setLoading] = useSafeSetState(false);
     const login = useLogin();
     const notify = useNotify();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
     const submit: SubmitHandler<FieldValues> = async values => {
         setLoading(true);
@@ -36,7 +40,10 @@ export const LoginForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-col items-center p-4 space-y-4">
+        <form
+            onSubmit={handleSubmit(submit)}
+            className="flex flex-col items-center p-4 space-y-4"
+        >
             <div className="w-full max-w-xs">
                 <Input
                     {...register('email', { required: 'Email is required' })}
@@ -48,7 +55,9 @@ export const LoginForm = () => {
             </div>
             <div className="w-full max-w-xs">
                 <Input
-                    {...register('password', { required: 'Password is required' })}
+                    {...register('password', {
+                        required: 'Password is required',
+                    })}
                     type="password"
                     label="Password"
                     autoComplete="current-password"
@@ -62,11 +71,7 @@ export const LoginForm = () => {
                     disabled={loading}
                     className="w-full"
                 >
-                    {loading ? (
-                        <Spinner className="w-5 h-5" />
-                    ) : (
-                        'Sign In'
-                    )}
+                    {loading ? <Spinner className="w-5 h-5" /> : 'Sign In'}
                 </Button>
                 <Link
                     to="/forgot-password"

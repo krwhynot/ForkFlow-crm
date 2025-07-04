@@ -73,21 +73,32 @@ export const FollowUpRemindersWidget = () => {
 
         return reminders
             .map((reminder): ReminderWithDetails => {
-                const organization = organizations.find(org => org.id === reminder.customer_id);
-                const contact = contacts.find(c => c.id === reminder.contact_id);
+                const organization = organizations.find(
+                    org => org.id === reminder.customer_id
+                );
+                const contact = contacts.find(
+                    c => c.id === reminder.contact_id
+                );
                 const reminderDate = new Date(reminder.reminder_date);
                 const isOverdue = isPast(reminderDate);
-                
+
                 // Calculate urgency level
-                let urgencyLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
+                let urgencyLevel: 'low' | 'medium' | 'high' | 'critical' =
+                    'low';
                 if (isOverdue) {
-                    const daysPast = Math.floor((now.getTime() - reminderDate.getTime()) / (1000 * 60 * 60 * 24));
+                    const daysPast = Math.floor(
+                        (now.getTime() - reminderDate.getTime()) /
+                            (1000 * 60 * 60 * 24)
+                    );
                     if (daysPast > 7) urgencyLevel = 'critical';
                     else if (daysPast > 3) urgencyLevel = 'high';
                     else if (daysPast > 1) urgencyLevel = 'medium';
                     else urgencyLevel = 'medium';
                 } else {
-                    const daysUntil = Math.floor((reminderDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                    const daysUntil = Math.floor(
+                        (reminderDate.getTime() - now.getTime()) /
+                            (1000 * 60 * 60 * 24)
+                    );
                     if (daysUntil <= 1) urgencyLevel = 'high';
                     else if (daysUntil <= 3) urgencyLevel = 'medium';
                     else urgencyLevel = 'low';
@@ -95,7 +106,8 @@ export const FollowUpRemindersWidget = () => {
 
                 // Increase urgency based on priority
                 if (reminder.priority === 'urgent') urgencyLevel = 'critical';
-                else if (reminder.priority === 'high' && urgencyLevel === 'low') urgencyLevel = 'medium';
+                else if (reminder.priority === 'high' && urgencyLevel === 'low')
+                    urgencyLevel = 'medium';
 
                 return {
                     ...reminder,
@@ -107,11 +119,20 @@ export const FollowUpRemindersWidget = () => {
             })
             .sort((a, b) => {
                 // Sort by urgency first, then by date
-                const urgencyOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-                const urgencyDiff = urgencyOrder[b.urgencyLevel] - urgencyOrder[a.urgencyLevel];
+                const urgencyOrder = {
+                    critical: 4,
+                    high: 3,
+                    medium: 2,
+                    low: 1,
+                };
+                const urgencyDiff =
+                    urgencyOrder[b.urgencyLevel] - urgencyOrder[a.urgencyLevel];
                 if (urgencyDiff !== 0) return urgencyDiff;
-                
-                return new Date(a.reminder_date).getTime() - new Date(b.reminder_date).getTime();
+
+                return (
+                    new Date(a.reminder_date).getTime() -
+                    new Date(b.reminder_date).getTime()
+                );
             })
             .slice(0, isMobile ? 5 : 8); // Show fewer on mobile
     }, [reminders, organizations, contacts, isMobile]);
@@ -125,8 +146,11 @@ export const FollowUpRemindersWidget = () => {
 
         return {
             total: reminders.length,
-            overdue: reminders.filter(r => isPast(new Date(r.reminder_date))).length,
-            today: reminders.filter(r => format(new Date(r.reminder_date), 'yyyy-MM-dd') === today).length,
+            overdue: reminders.filter(r => isPast(new Date(r.reminder_date)))
+                .length,
+            today: reminders.filter(
+                r => format(new Date(r.reminder_date), 'yyyy-MM-dd') === today
+            ).length,
             thisWeek: reminders.filter(r => {
                 const reminderDate = new Date(r.reminder_date);
                 return reminderDate >= now && reminderDate <= weekFromNow;
@@ -136,10 +160,14 @@ export const FollowUpRemindersWidget = () => {
 
     const getUrgencyColor = (urgencyLevel: string) => {
         switch (urgencyLevel) {
-            case 'critical': return theme.palette.error.main;
-            case 'high': return theme.palette.warning.main;
-            case 'medium': return theme.palette.info.main;
-            default: return theme.palette.success.main;
+            case 'critical':
+                return theme.palette.error.main;
+            case 'high':
+                return theme.palette.warning.main;
+            case 'medium':
+                return theme.palette.info.main;
+            default:
+                return theme.palette.success.main;
         }
     };
 
@@ -147,7 +175,11 @@ export const FollowUpRemindersWidget = () => {
         if (reminder.urgencyLevel === 'critical' || reminder.isOverdue) {
             return <WarningIcon color="error" />;
         }
-        return <ScheduleIcon color={reminder.urgencyLevel === 'high' ? 'warning' : 'primary'} />;
+        return (
+            <ScheduleIcon
+                color={reminder.urgencyLevel === 'high' ? 'warning' : 'primary'}
+            />
+        );
     };
 
     const handleReminderClick = (reminder: ReminderWithDetails) => {
@@ -172,10 +204,13 @@ export const FollowUpRemindersWidget = () => {
     return (
         <Card>
             <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography variant="h6">
-                        Follow-up Reminders
-                    </Typography>
+                <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={2}
+                >
+                    <Typography variant="h6">Follow-up Reminders</Typography>
                     <Link to="/reminders" style={{ textDecoration: 'none' }}>
                         <Button size="small" color="primary">
                             View All
@@ -210,7 +245,10 @@ export const FollowUpRemindersWidget = () => {
 
                 {enrichedReminders.length === 0 ? (
                     <Box textAlign="center" py={3}>
-                        <TaskIcon color="disabled" sx={{ fontSize: 48, mb: 1 }} />
+                        <TaskIcon
+                            color="disabled"
+                            sx={{ fontSize: 48, mb: 1 }}
+                        />
                         <Typography variant="body2" color="textSecondary">
                             No pending follow-ups
                         </Typography>
@@ -221,60 +259,119 @@ export const FollowUpRemindersWidget = () => {
                             <React.Fragment key={reminder.id}>
                                 <ListItem
                                     button
-                                    onClick={() => handleReminderClick(reminder)}
+                                    onClick={() =>
+                                        handleReminderClick(reminder)
+                                    }
                                     sx={{
                                         borderLeft: `4px solid ${getUrgencyColor(reminder.urgencyLevel)}`,
                                         mb: 1,
                                         borderRadius: 1,
-                                        backgroundColor: reminder.isOverdue 
-                                            ? theme.palette.error.main + '08' 
+                                        backgroundColor: reminder.isOverdue
+                                            ? theme.palette.error.main + '08'
                                             : 'transparent',
                                     }}
                                 >
                                     <ListItemIcon sx={{ minWidth: 36 }}>
                                         {getUrgencyIcon(reminder)}
                                     </ListItemIcon>
-                                    
+
                                     <ListItemText
                                         primary={
-                                            <Box display="flex" alignItems="center" gap={1}>
-                                                <Typography 
-                                                    variant={isMobile ? "body2" : "subtitle2"}
+                                            <Box
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={1}
+                                            >
+                                                <Typography
+                                                    variant={
+                                                        isMobile
+                                                            ? 'body2'
+                                                            : 'subtitle2'
+                                                    }
                                                     noWrap={isMobile}
                                                 >
                                                     {reminder.title}
                                                 </Typography>
-                                                {reminder.priority === 'urgent' && (
-                                                    <Chip size="small" label="URGENT" color="error" />
+                                                {reminder.priority ===
+                                                    'urgent' && (
+                                                    <Chip
+                                                        size="small"
+                                                        label="URGENT"
+                                                        color="error"
+                                                    />
                                                 )}
                                             </Box>
                                         }
                                         secondary={
                                             <Stack spacing={0.5}>
-                                                <Box display="flex" alignItems="center" gap={1}>
-                                                    <BusinessIcon sx={{ fontSize: 14 }} />
-                                                    <Typography variant="caption" noWrap={isMobile}>
-                                                        {reminder.organization?.name || 'Unknown Organization'}
+                                                <Box
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    gap={1}
+                                                >
+                                                    <BusinessIcon
+                                                        sx={{ fontSize: 14 }}
+                                                    />
+                                                    <Typography
+                                                        variant="caption"
+                                                        noWrap={isMobile}
+                                                    >
+                                                        {reminder.organization
+                                                            ?.name ||
+                                                            'Unknown Organization'}
                                                     </Typography>
                                                 </Box>
-                                                
+
                                                 {reminder.contact && (
-                                                    <Box display="flex" alignItems="center" gap={1}>
-                                                        <PersonIcon sx={{ fontSize: 14 }} />
-                                                        <Typography variant="caption" noWrap={isMobile}>
-                                                            {reminder.contact.firstName} {reminder.contact.lastName}
+                                                    <Box
+                                                        display="flex"
+                                                        alignItems="center"
+                                                        gap={1}
+                                                    >
+                                                        <PersonIcon
+                                                            sx={{
+                                                                fontSize: 14,
+                                                            }}
+                                                        />
+                                                        <Typography
+                                                            variant="caption"
+                                                            noWrap={isMobile}
+                                                        >
+                                                            {
+                                                                reminder.contact
+                                                                    .firstName
+                                                            }{' '}
+                                                            {
+                                                                reminder.contact
+                                                                    .lastName
+                                                            }
                                                         </Typography>
                                                     </Box>
                                                 )}
-                                                
-                                                <Typography 
-                                                    variant="caption" 
-                                                    color={reminder.isOverdue ? 'error' : 'textSecondary'}
-                                                    fontWeight={reminder.isOverdue ? 'bold' : 'normal'}
+
+                                                <Typography
+                                                    variant="caption"
+                                                    color={
+                                                        reminder.isOverdue
+                                                            ? 'error'
+                                                            : 'textSecondary'
+                                                    }
+                                                    fontWeight={
+                                                        reminder.isOverdue
+                                                            ? 'bold'
+                                                            : 'normal'
+                                                    }
                                                 >
-                                                    {reminder.isOverdue ? 'Overdue by ' : 'Due '}
-                                                    {formatDistanceToNow(new Date(reminder.reminder_date))}
-                                                    {!reminder.isOverdue && ' from now'}
+                                                    {reminder.isOverdue
+                                                        ? 'Overdue by '
+                                                        : 'Due '}
+                                                    {formatDistanceToNow(
+                                                        new Date(
+                                                            reminder.reminder_date
+                                                        )
+                                                    )}
+                                                    {!reminder.isOverdue &&
+                                                        ' from now'}
                                                 </Typography>
                                             </Stack>
                                         }
@@ -283,30 +380,42 @@ export const FollowUpRemindersWidget = () => {
                                     <ListItemSecondaryAction>
                                         <Stack direction="row" spacing={0.5}>
                                             {reminder.organization?.phone && (
-                                                <IconButton 
-                                                    size="small" 
+                                                <IconButton
+                                                    size="small"
                                                     href={`tel:${reminder.organization.phone}`}
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
-                                                    <PhoneIcon sx={{ fontSize: 16 }} />
+                                                    <PhoneIcon
+                                                        sx={{ fontSize: 16 }}
+                                                    />
                                                 </IconButton>
                                             )}
                                             {reminder.contact?.email && (
-                                                <IconButton 
+                                                <IconButton
                                                     size="small"
                                                     href={`mailto:${reminder.contact.email}`}
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
-                                                    <EmailIcon sx={{ fontSize: 16 }} />
+                                                    <EmailIcon
+                                                        sx={{ fontSize: 16 }}
+                                                    />
                                                 </IconButton>
                                             )}
                                             <IconButton size="small">
-                                                <MoreVertIcon sx={{ fontSize: 16 }} />
+                                                <MoreVertIcon
+                                                    sx={{ fontSize: 16 }}
+                                                />
                                             </IconButton>
                                         </Stack>
                                     </ListItemSecondaryAction>
                                 </ListItem>
-                                {index < enrichedReminders.length - 1 && <Divider />}
+                                {index < enrichedReminders.length - 1 && (
+                                    <Divider />
+                                )}
                             </React.Fragment>
                         ))}
                     </List>
@@ -314,9 +423,12 @@ export const FollowUpRemindersWidget = () => {
 
                 {/* Quick Action Button */}
                 <Box mt={2}>
-                    <Link to="/reminders/create" style={{ textDecoration: 'none', width: '100%' }}>
-                        <Button 
-                            variant="outlined" 
+                    <Link
+                        to="/reminders/create"
+                        style={{ textDecoration: 'none', width: '100%' }}
+                    >
+                        <Button
+                            variant="outlined"
                             fullWidth={isMobile}
                             size="small"
                             startIcon={<TaskIcon />}

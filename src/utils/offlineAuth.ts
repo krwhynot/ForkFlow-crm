@@ -36,7 +36,11 @@ const DEFAULT_CONFIG: OfflineAuthConfig = {
  * Note: In production, use proper hashing on the server side
  */
 const simpleHash = async (text: string): Promise<string> => {
-    if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+    if (
+        typeof window !== 'undefined' &&
+        window.crypto &&
+        window.crypto.subtle
+    ) {
         const encoder = new TextEncoder();
         const data = encoder.encode(text);
         const hash = await window.crypto.subtle.digest('SHA-256', data);
@@ -47,7 +51,7 @@ const simpleHash = async (text: string): Promise<string> => {
         let hash = 0;
         for (let i = 0; i < text.length; i++) {
             const char = text.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
+            hash = (hash << 5) - hash + char;
             hash = hash & hash; // Convert to 32-bit integer
         }
         return Math.abs(hash).toString(16);
@@ -57,7 +61,10 @@ const simpleHash = async (text: string): Promise<string> => {
 /**
  * Store credentials for offline use (only after successful online login)
  */
-export const storeOfflineCredentials = async (email: string, password: string): Promise<void> => {
+export const storeOfflineCredentials = async (
+    email: string,
+    password: string
+): Promise<void> => {
     try {
         const config = getOfflineConfig();
         if (!config.enableOfflineMode) return;
@@ -80,13 +87,16 @@ export const storeOfflineCredentials = async (email: string, password: string): 
 /**
  * Verify credentials against stored offline hash
  */
-export const verifyOfflineCredentials = async (email: string, password: string): Promise<boolean> => {
+export const verifyOfflineCredentials = async (
+    email: string,
+    password: string
+): Promise<boolean> => {
     try {
         const stored = localStorage.getItem(OFFLINE_CREDS_KEY);
         if (!stored) return false;
 
         const credentials: OfflineCredentials = JSON.parse(stored);
-        
+
         // Check if credentials match the email
         if (credentials.email !== email) return false;
 
@@ -106,7 +116,7 @@ export const verifyOfflineCredentials = async (email: string, password: string):
         } else {
             credentials.attempts += 1;
             const config = getOfflineConfig();
-            
+
             if (credentials.attempts >= config.maxAttempts) {
                 credentials.lockoutUntil = Date.now() + config.lockoutDuration;
             }
@@ -138,11 +148,16 @@ export const getOfflineConfig = (): OfflineAuthConfig => {
 /**
  * Update offline authentication configuration
  */
-export const updateOfflineConfig = (config: Partial<OfflineAuthConfig>): void => {
+export const updateOfflineConfig = (
+    config: Partial<OfflineAuthConfig>
+): void => {
     try {
         const currentConfig = getOfflineConfig();
         const newConfig = { ...currentConfig, ...config };
-        localStorage.setItem('forkflow_offline_config', JSON.stringify(newConfig));
+        localStorage.setItem(
+            'forkflow_offline_config',
+            JSON.stringify(newConfig)
+        );
     } catch (error) {
         console.error('Failed to update offline config:', error);
     }
@@ -179,20 +194,27 @@ export const getOfflineUser = (): User | null => {
 /**
  * Perform offline login
  */
-export const performOfflineLogin = async (credentials: LoginCredentials): Promise<User> => {
+export const performOfflineLogin = async (
+    credentials: LoginCredentials
+): Promise<User> => {
     const config = getOfflineConfig();
-    
+
     if (!config.enableOfflineMode) {
         throw new Error('Offline authentication is disabled');
     }
 
     // Check if offline credentials are available
     if (!isOfflineAuthAvailable(credentials.email)) {
-        throw new Error('No offline credentials available. Please login online first.');
+        throw new Error(
+            'No offline credentials available. Please login online first.'
+        );
     }
 
     // Verify credentials
-    const isValid = await verifyOfflineCredentials(credentials.email, credentials.password);
+    const isValid = await verifyOfflineCredentials(
+        credentials.email,
+        credentials.password
+    );
     if (!isValid) {
         throw new Error('Invalid credentials');
     }
@@ -217,7 +239,7 @@ export const needsCredentialSync = (): boolean => {
 
         const credentials: OfflineCredentials = JSON.parse(stored);
         const config = getOfflineConfig();
-        
+
         return Date.now() - credentials.lastSync > config.syncInterval;
     } catch (error) {
         return false;
@@ -249,7 +271,7 @@ export const getOfflineAuthStatus = (): {
     lockoutUntil?: string;
 } => {
     const config = getOfflineConfig();
-    
+
     if (!config.enableOfflineMode) {
         return { isEnabled: false, hasCredentials: false };
     }
@@ -261,15 +283,22 @@ export const getOfflineAuthStatus = (): {
         }
 
         const credentials: OfflineCredentials = JSON.parse(stored);
-        const isLocked = credentials.lockoutUntil ? Date.now() < credentials.lockoutUntil : false;
-        
+        const isLocked = credentials.lockoutUntil
+            ? Date.now() < credentials.lockoutUntil
+            : false;
+
         return {
             isEnabled: true,
             hasCredentials: true,
             lastSync: new Date(credentials.lastSync).toLocaleString(),
-            attemptsRemaining: Math.max(0, config.maxAttempts - credentials.attempts),
+            attemptsRemaining: Math.max(
+                0,
+                config.maxAttempts - credentials.attempts
+            ),
             isLocked,
-            lockoutUntil: credentials.lockoutUntil ? new Date(credentials.lockoutUntil).toLocaleString() : undefined,
+            lockoutUntil: credentials.lockoutUntil
+                ? new Date(credentials.lockoutUntil).toLocaleString()
+                : undefined,
         };
     } catch (error) {
         return { isEnabled: true, hasCredentials: false };
@@ -299,7 +328,7 @@ export const setupOfflineAuth = (): (() => void) => {
     if (typeof window !== 'undefined') {
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
-        
+
         return () => {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);

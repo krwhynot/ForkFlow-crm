@@ -10,10 +10,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         return (
             <Component
                 ref={ref}
-                className={twMerge(
-                    'bg-white shadow-md rounded-lg',
-                    className
-                )}
+                className={twMerge('bg-white shadow-md rounded-lg', className)}
                 {...props}
             />
         );

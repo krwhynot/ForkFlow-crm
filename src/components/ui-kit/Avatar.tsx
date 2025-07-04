@@ -64,7 +64,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     const customSize = width && height;
     const sizeClasses = customSize ? '' : SIZE_VARIANTS[size];
 
-    const avatarStyle = customSize 
+    const avatarStyle = customSize
         ? { width: `${width}px`, height: `${height}px` }
         : {};
 
@@ -90,12 +90,14 @@ export const Avatar: React.FC<AvatarProps> = ({
                     )}
                 />
             )}
-            
+
             {showFallback && (
-                <span className={cn(
-                    'select-none font-semibold uppercase',
-                    customSize && 'text-xs' // smaller text for custom sizes
-                )}>
+                <span
+                    className={cn(
+                        'select-none font-semibold uppercase',
+                        customSize && 'text-xs' // smaller text for custom sizes
+                    )}
+                >
                     {children}
                 </span>
             )}

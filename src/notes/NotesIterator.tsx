@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Box, Divider, Stack } from '@mui/material';
+import { Box, Stack } from '@/components/ui-kit';
+import { Divider } from '@mui/material';
 import { useListContext } from 'react-admin';
 
 import { Note } from './Note';
@@ -15,10 +16,10 @@ export const NotesIterator = ({
     const { data, error, isPending } = useListContext();
     if (isPending || error) return null;
     return (
-        <Box mt={2}>
+        <Box className="mt-2">
             <NoteCreate showStatus={showStatus} reference={reference} />
             {data && (
-                <Stack mt={2} gap={1}>
+                <Stack className="mt-2 gap-1">
                     {data.map((note, index) => (
                         <React.Fragment key={index}>
                             <Note

@@ -12,7 +12,12 @@ export const Welcome = () => (
                 Your CRM Starter Kit
             </Typography>
             <Typography variant="body2" className="mb-2">
-                <a href="https://marmelab.com/atomic-crm" className="text-blue-600 hover:text-blue-800 underline">Atomic CRM</a>{' '}
+                <a
+                    href="https://marmelab.com/atomic-crm"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                >
+                    Atomic CRM
+                </a>{' '}
                 is a template designed to help you quickly build your own CRM.
             </Typography>
             <Typography variant="body2" className="mb-2">
@@ -22,9 +27,17 @@ export const Welcome = () => (
             </Typography>
             <Typography variant="body2">
                 Powered by{' '}
-                <a href="https://marmelab.com/react-admin" className="text-blue-600 hover:text-blue-800 underline">react-admin</a>
+                <a
+                    href="https://marmelab.com/react-admin"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                >
+                    react-admin
+                </a>
                 , Atomic CRM is fully open-source. You can find the code at{' '}
-                <a href="https://github.com/marmelab/atomic-crm" className="text-blue-600 hover:text-blue-800 underline">
+                <a
+                    href="https://github.com/marmelab/atomic-crm"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                >
                     marmelab/atomic-crm
                 </a>
                 .

@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Chip } from '@mui/material';
+import { Box, Card, CardContent, Chip } from '@/components/ui-kit';
 import {
     FilterContext,
     FilterForm,
@@ -43,29 +43,14 @@ export const OrganizationListFilter = () => {
 
     return (
         <Card
-            sx={{
-                order: -1,
-                mr: 2,
-                mt: 9,
-                width: 250,
-                minWidth: 250,
-                display: {
-                    xs:
-                        displayedFilters.priority ||
-                        displayedFilters.segment ||
-                        displayedFilters.distributor
-                            ? 'block'
-                            : 'none',
-                    sm: 'block',
-                },
-            }}
+            className={`order-first mr-4 mt-20 w-62 min-w-62 ${displayedFilters.priority || displayedFilters.segment || displayedFilters.distributor ? 'block' : 'hidden'} sm:block`}
         >
             <CardContent>
                 <FilterContext.Provider value={organizationFilters}>
                     <FilterForm />
                 </FilterContext.Provider>
 
-                <Box sx={{ mt: 2 }}>
+                <Box className="mt-4">
                     <SelectInput
                         source="priorityId"
                         label="Priority"
@@ -76,7 +61,7 @@ export const OrganizationListFilter = () => {
                             })) || []
                         }
                         helperText={false}
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                     />
 
                     <SelectInput
@@ -89,7 +74,7 @@ export const OrganizationListFilter = () => {
                             })) || []
                         }
                         helperText={false}
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                     />
 
                     <SelectInput
@@ -109,15 +94,8 @@ export const OrganizationListFilter = () => {
                 {(filterValues.priorityId ||
                     filterValues.segmentId ||
                     filterValues.distributorId) && (
-                    <Box
-                        sx={{
-                            mt: 2,
-                            pt: 2,
-                            borderTop: 1,
-                            borderColor: 'divider',
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    <Box className="mt-4 pt-4 border-t border-gray-200">
+                        <Box className="flex flex-wrap gap-2">
                             {filterValues.priorityId && (
                                 <Chip
                                     size="small"
@@ -128,7 +106,7 @@ export const OrganizationListFilter = () => {
                                         )?.label || 'Priority'
                                     }
                                     onDelete={() => removeFilter('priorityId')}
-                                    sx={{
+                                    style={{
                                         backgroundColor: prioritySettings?.find(
                                             s =>
                                                 s.id === filterValues.priorityId
@@ -146,7 +124,7 @@ export const OrganizationListFilter = () => {
                                         )?.label || 'Segment'
                                     }
                                     onDelete={() => removeFilter('segmentId')}
-                                    sx={{
+                                    style={{
                                         backgroundColor: segmentSettings?.find(
                                             s => s.id === filterValues.segmentId
                                         )?.color,
@@ -167,7 +145,7 @@ export const OrganizationListFilter = () => {
                                     onDelete={() =>
                                         removeFilter('distributorId')
                                     }
-                                    sx={{
+                                    style={{
                                         backgroundColor:
                                             distributorSettings?.find(
                                                 s =>

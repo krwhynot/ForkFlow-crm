@@ -38,15 +38,22 @@ export const PasswordResetPage = () => {
             if ('requestPasswordReset' in dataProvider) {
                 return (dataProvider as any).requestPasswordReset(data);
             }
-            throw new Error('Password reset not supported by this data provider');
+            throw new Error(
+                'Password reset not supported by this data provider'
+            );
         },
         onSuccess: () => {
-            notify('Password reset email sent! Check your inbox for instructions.', { 
-                type: 'success' 
-            });
+            notify(
+                'Password reset email sent! Check your inbox for instructions.',
+                {
+                    type: 'success',
+                }
+            );
         },
         onError: (error: any) => {
-            const errorMessage = error?.message || 'Failed to send password reset email. Please try again.';
+            const errorMessage =
+                error?.message ||
+                'Failed to send password reset email. Please try again.';
             notify(errorMessage, { type: 'error' });
         },
     });
@@ -69,14 +76,22 @@ export const PasswordResetPage = () => {
     if (isSuccess) {
         return (
             <Stack sx={{ height: '100dvh', p: 2 }}>
-                <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 2 }}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    gap={1}
+                    sx={{ mb: 2 }}
+                >
                     <img
                         src={logo}
                         alt={title}
                         width={isMobile ? 20 : 24}
                         style={{ filter: 'invert(0.9)' }}
                     />
-                    <Typography component="span" variant={isMobile ? "h6" : "h5"}>
+                    <Typography
+                        component="span"
+                        variant={isMobile ? 'h6' : 'h5'}
+                    >
                         {title}
                     </Typography>
                 </Stack>
@@ -92,23 +107,30 @@ export const PasswordResetPage = () => {
                         }}
                     >
                         <Box sx={{ textAlign: 'center', mb: 2 }}>
-                            <Typography 
-                                variant={isMobile ? "h5" : "h4"} 
-                                component="h1" 
+                            <Typography
+                                variant={isMobile ? 'h5' : 'h4'}
+                                component="h1"
                                 gutterBottom
                                 sx={{ fontWeight: 600 }}
                             >
                                 Check Your Email
                             </Typography>
-                            <Typography variant="body1" color="text.secondary" gutterBottom>
-                                We've sent password reset instructions to your email address.
+                            <Typography
+                                variant="body1"
+                                color="text.secondary"
+                                gutterBottom
+                            >
+                                We've sent password reset instructions to your
+                                email address.
                             </Typography>
                         </Box>
 
                         <Alert severity="success" sx={{ mb: 2 }}>
                             <Typography variant="body2">
-                                <strong>Email Sent!</strong><br />
-                                If an account with that email exists, you'll receive reset instructions within a few minutes.
+                                <strong>Email Sent!</strong>
+                                <br />
+                                If an account with that email exists, you'll
+                                receive reset instructions within a few minutes.
                             </Typography>
                         </Alert>
 
@@ -119,7 +141,7 @@ export const PasswordResetPage = () => {
                                 variant="contained"
                                 size="large"
                                 fullWidth
-                                sx={{ 
+                                sx={{
                                     minHeight: 48,
                                     fontSize: '1.1rem',
                                     fontWeight: 600,
@@ -128,9 +150,9 @@ export const PasswordResetPage = () => {
                                 Back to Sign In
                             </Button>
 
-                            <Typography 
-                                variant="body2" 
-                                color="text.secondary" 
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
                                 align="center"
                             >
                                 Didn't receive the email?{' '}
@@ -139,12 +161,12 @@ export const PasswordResetPage = () => {
                                     onClick={() => window.location.reload()}
                                     variant="body2"
                                     color="primary"
-                                    sx={{ 
+                                    sx={{
                                         border: 'none',
                                         background: 'none',
                                         cursor: 'pointer',
                                         textDecoration: 'underline',
-                                        '&:hover': { textDecoration: 'none' }
+                                        '&:hover': { textDecoration: 'none' },
                                     }}
                                 >
                                     Try again
@@ -166,7 +188,7 @@ export const PasswordResetPage = () => {
                     width={isMobile ? 20 : 24}
                     style={{ filter: 'invert(0.9)' }}
                 />
-                <Typography component="span" variant={isMobile ? "h6" : "h5"}>
+                <Typography component="span" variant={isMobile ? 'h6' : 'h5'}>
                     {title}
                 </Typography>
             </Stack>
@@ -182,41 +204,49 @@ export const PasswordResetPage = () => {
                     }}
                 >
                     <Box sx={{ textAlign: 'center', mb: 2 }}>
-                        <Typography 
-                            variant={isMobile ? "h5" : "h4"} 
-                            component="h1" 
+                        <Typography
+                            variant={isMobile ? 'h5' : 'h4'}
+                            component="h1"
                             gutterBottom
                             sx={{ fontWeight: 600 }}
                         >
                             Reset Your Password
                         </Typography>
-                        <Typography variant="body1" color="text.secondary" gutterBottom>
-                            Enter your email address and we'll send you instructions to reset your password.
+                        <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            gutterBottom
+                        >
+                            Enter your email address and we'll send you
+                            instructions to reset your password.
                         </Typography>
                     </Box>
 
                     {error && (
                         <Alert severity="error" sx={{ mb: 2 }}>
-                            {error instanceof Error ? error.message : 'An error occurred while sending the reset email'}
+                            {error instanceof Error
+                                ? error.message
+                                : 'An error occurred while sending the reset email'}
                         </Alert>
                     )}
 
-                    <Box 
-                        component="form" 
+                    <Box
+                        component="form"
                         onSubmit={handleSubmit(onSubmit)}
-                        sx={{ 
+                        sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 2,
                         }}
                     >
                         <TextField
-                            {...register('email', { 
+                            {...register('email', {
                                 required: 'Email is required',
                                 pattern: {
                                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'Please enter a valid email address'
-                                }
+                                    message:
+                                        'Please enter a valid email address',
+                                },
                             })}
                             label="Email address"
                             type="email"
@@ -228,17 +258,17 @@ export const PasswordResetPage = () => {
                             error={!!errors.email}
                             helperText={errors.email?.message}
                             inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                style: { fontSize: isMobile ? '16px' : '14px' },
                             }}
                         />
-                        
+
                         <Button
                             type="submit"
                             variant="contained"
                             size="large"
                             disabled={!isValid || isPending}
                             fullWidth
-                            sx={{ 
+                            sx={{
                                 mt: 2,
                                 minHeight: 48,
                                 fontSize: '1.1rem',
@@ -251,10 +281,10 @@ export const PasswordResetPage = () => {
                                 'Send Reset Instructions'
                             )}
                         </Button>
-                        
-                        <Typography 
-                            variant="body2" 
-                            color="text.secondary" 
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
                             align="center"
                             sx={{ mt: 2 }}
                         >
@@ -264,9 +294,9 @@ export const PasswordResetPage = () => {
                                 to="/login"
                                 variant="body2"
                                 color="primary"
-                                sx={{ 
+                                sx={{
                                     textDecoration: 'none',
-                                    '&:hover': { textDecoration: 'underline' }
+                                    '&:hover': { textDecoration: 'underline' },
                                 }}
                             >
                                 Back to Sign In

@@ -135,10 +135,10 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
                 bgcolor: record.is_completed
                     ? 'grey.100'
                     : isOverdue
-                    ? 'error.light'
-                    : isDueToday
-                    ? 'warning.light'
-                    : 'background.paper',
+                      ? 'error.light'
+                      : isDueToday
+                        ? 'warning.light'
+                        : 'background.paper',
                 opacity: record.is_completed ? 0.7 : 1,
             }}
         >
@@ -261,8 +261,7 @@ const MobileReminderList = () => {
         return (
             <Box sx={{ p: 2, textAlign: 'center' }}>
                 <Typography variant="body1" color="text.secondary">
-                    No reminders set yet. Create your first follow-up
-                    reminder!
+                    No reminders set yet. Create your first follow-up reminder!
                 </Typography>
             </Box>
         );
@@ -270,7 +269,7 @@ const MobileReminderList = () => {
 
     return (
         <Box sx={{ p: 1 }}>
-            {reminders.map((reminder) => (
+            {reminders.map(reminder => (
                 <MobileReminderCard key={reminder.id} record={reminder} />
             ))}
         </Box>
@@ -300,8 +299,8 @@ const DesktopReminderList = () => (
                         record.priority === 'high'
                             ? 'error'
                             : record.priority === 'medium'
-                            ? 'warning'
-                            : 'info'
+                              ? 'warning'
+                              : 'info'
                     }
                     size="small"
                 />
@@ -315,32 +314,21 @@ const DesktopReminderList = () => (
             render={(record: Reminder) => {
                 if (record.is_completed) {
                     return (
-                        <Chip
-                            label="Completed"
-                            color="success"
-                            size="small"
-                        />
+                        <Chip label="Completed" color="success" size="small" />
                     );
                 }
 
-                const isOverdue =
-                    new Date(record.reminder_date) < new Date();
+                const isOverdue = new Date(record.reminder_date) < new Date();
                 const isDueToday =
                     new Date(record.reminder_date).toDateString() ===
                     new Date().toDateString();
 
                 if (isOverdue) {
-                    return (
-                        <Chip label="Overdue" color="error" size="small" />
-                    );
+                    return <Chip label="Overdue" color="error" size="small" />;
                 }
                 if (isDueToday) {
                     return (
-                        <Chip
-                            label="Due Today"
-                            color="warning"
-                            size="small"
-                        />
+                        <Chip label="Due Today" color="warning" size="small" />
                     );
                 }
                 return <Chip label="Pending" color="info" size="small" />;

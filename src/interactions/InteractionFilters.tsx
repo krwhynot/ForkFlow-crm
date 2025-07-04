@@ -9,7 +9,8 @@ import {
     AutocompleteInput,
     useGetList,
 } from 'react-admin';
-import { Stack, Typography, Divider } from '@mui/material';
+import { Stack, Typography } from '@/components/ui-kit';
+import { Divider } from '@mui/material';
 
 export const InteractionFilters = () => {
     // Get interaction types from settings
@@ -19,33 +20,34 @@ export const InteractionFilters = () => {
         sort: { field: 'sortOrder', order: 'ASC' },
     });
 
-    const interactionTypeChoices = interactionTypes?.map(type => ({
-        id: type.id,
-        name: type.label,
-    })) || [];
+    const interactionTypeChoices =
+        interactionTypes?.map(type => ({
+            id: type.id,
+            name: type.label,
+        })) || [];
 
     return (
         <Filter>
-            <Stack spacing={2} sx={{ p: 2, minWidth: 250 }}>
+            <Stack className="space-y-2 p-2 min-w-60">
                 <Typography variant="subtitle1" gutterBottom>
                     Filter Interactions
                 </Typography>
-                
-                <TextInput 
-                    source="q" 
-                    label="Search" 
-                    alwaysOn 
+
+                <TextInput
+                    source="q"
+                    label="Search"
+                    alwaysOn
                     variant="outlined"
                     size="small"
                     helperText="Search subject, description, or outcome"
                 />
-                
+
                 <Divider />
-                
+
                 <Typography variant="subtitle2" color="text.secondary">
                     Type & Status
                 </Typography>
-                
+
                 <SelectInput
                     source="typeId"
                     label="Interaction Type"
@@ -54,50 +56,47 @@ export const InteractionFilters = () => {
                     size="small"
                     emptyText="All types"
                 />
-                
-                <BooleanInput
-                    source="isCompleted"
-                    label="Completed Only"
-                />
-                
+
+                <BooleanInput source="isCompleted" label="Completed Only" />
+
                 <BooleanInput
                     source="followUpRequired"
                     label="Follow-up Required"
                 />
-                
+
                 <Divider />
-                
+
                 <Typography variant="subtitle2" color="text.secondary">
                     Date Range
                 </Typography>
-                
+
                 <DateInput
                     source="scheduledDate_gte"
                     label="Scheduled After"
                     variant="outlined"
                     size="small"
                 />
-                
+
                 <DateInput
                     source="scheduledDate_lte"
                     label="Scheduled Before"
                     variant="outlined"
                     size="small"
                 />
-                
+
                 <DateInput
                     source="completedDate_gte"
                     label="Completed After"
                     variant="outlined"
                     size="small"
                 />
-                
+
                 <Divider />
-                
+
                 <Typography variant="subtitle2" color="text.secondary">
                     Relationships
                 </Typography>
-                
+
                 <ReferenceInput
                     source="organizationId"
                     reference="organizations"
@@ -110,22 +109,24 @@ export const InteractionFilters = () => {
                         emptyText="All organizations"
                     />
                 </ReferenceInput>
-                
+
                 <ReferenceInput
                     source="contactId"
                     reference="contacts"
                     label="Contact"
                 >
                     <AutocompleteInput
-                        optionText={(choice: any) => 
-                            choice ? `${choice.firstName} ${choice.lastName}` : ''
+                        optionText={(choice: any) =>
+                            choice
+                                ? `${choice.firstName} ${choice.lastName}`
+                                : ''
                         }
                         size="small"
                         variant="outlined"
                         emptyText="All contacts"
                     />
                 </ReferenceInput>
-                
+
                 <ReferenceInput
                     source="opportunityId"
                     reference="deals"

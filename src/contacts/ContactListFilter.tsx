@@ -45,14 +45,25 @@ export const ContactListFilter = () => {
     });
 
     return (
-        <Box style={{ width: '14rem', minWidth: '14rem', order: -1, marginRight: '0.5rem', marginTop: '1.25rem' }}>
+        <Box
+            style={{
+                width: '14rem',
+                minWidth: '14rem',
+                order: -1,
+                marginRight: '0.5rem',
+                marginTop: '1.25rem',
+            }}
+        >
             <FilterLiveSearch
                 hiddenLabel
                 className="block w-full"
                 placeholder="Search contacts..."
             />
 
-            <FilterList label="Organization" icon={<BuildingOfficeIcon className="h-5 w-5" />}>
+            <FilterList
+                label="Organization"
+                icon={<BuildingOfficeIcon className="h-5 w-5" />}
+            >
                 {organizations
                     ?.slice(0, 10)
                     .map(org => (
@@ -86,7 +97,10 @@ export const ContactListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Influence Level" icon={<TrendingUpIcon className="h-5 w-5" />}>
+            <FilterList
+                label="Influence Level"
+                icon={<TrendingUpIcon className="h-5 w-5" />}
+            >
                 {influenceSettings?.map(influence => (
                     <FilterListItem
                         key={influence.id}
@@ -109,7 +123,10 @@ export const ContactListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Decision Role" icon={<CheckBadgeIcon className="h-5 w-5" />}>
+            <FilterList
+                label="Decision Role"
+                icon={<CheckBadgeIcon className="h-5 w-5" />}
+            >
                 {decisionSettings?.map(decision => (
                     <FilterListItem
                         key={decision.id}
@@ -132,7 +149,10 @@ export const ContactListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Primary Contact" icon={<StarIcon className="h-5 w-5" />}>
+            <FilterList
+                label="Primary Contact"
+                icon={<StarIcon className="h-5 w-5" />}
+            >
                 <FilterListItem
                     label="Primary contacts only"
                     value={{ isPrimary: true }}

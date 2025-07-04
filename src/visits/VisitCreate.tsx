@@ -17,8 +17,10 @@ import {
     Typography,
     Box,
     Chip,
-    Alert,
     Button,
+} from '@/components/ui-kit';
+import {
+    Alert,
     CircularProgress,
 } from '@mui/material';
 import {
@@ -96,33 +98,25 @@ export const VisitCreate = () => {
     return (
         <Create transform={transform} redirect="list">
             <SimpleForm>
-                <Box sx={{ width: '100%', mb: 2 }}>
+                <Box className="w-full mb-2">
                     <Typography variant="h6" gutterBottom>
                         Log New Visit
                     </Typography>
 
                     {/* GPS Location Card */}
                     <Card
-                        sx={{
-                            mb: 2,
-                            bgcolor: currentLocation
-                                ? 'success.light'
-                                : 'grey.100',
-                        }}
+                        className={`mb-2 ${
+                            currentLocation
+                                ? 'bg-green-50'
+                                : 'bg-gray-100'
+                        }`}
                     >
                         <CardContent>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    mb: 1,
-                                }}
-                            >
+                            <Box className="flex items-center mb-1">
                                 <LocationIcon
-                                    color={
-                                        currentLocation ? 'success' : 'disabled'
-                                    }
-                                    sx={{ mr: 1 }}
+                                    className={`mr-1 ${
+                                        currentLocation ? 'text-green-600' : 'text-gray-400'
+                                    }`}
                                 />
                                 <Typography variant="subtitle1">
                                     GPS Location
@@ -130,7 +124,7 @@ export const VisitCreate = () => {
                                 {gpsLoading && (
                                     <CircularProgress
                                         size={20}
-                                        sx={{ ml: 1 }}
+                                        className="ml-1"
                                     />
                                 )}
                             </Box>
@@ -139,14 +133,14 @@ export const VisitCreate = () => {
                                 <Box>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         Latitude:{' '}
                                         {currentLocation.latitude.toFixed(6)}
                                     </Typography>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         Longitude:{' '}
                                         {currentLocation.longitude.toFixed(6)}
@@ -154,7 +148,7 @@ export const VisitCreate = () => {
                                     {currentLocation.accuracy && (
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Accuracy: ±
                                             {Math.round(
@@ -168,15 +162,14 @@ export const VisitCreate = () => {
                                         label="Location Captured"
                                         color="success"
                                         size="small"
-                                        sx={{ mt: 1 }}
+                                        className="mt-1"
                                     />
                                 </Box>
                             ) : (
                                 <Box>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
-                                        sx={{ mb: 1 }}
+                                        className="text-gray-500 mb-1"
                                     >
                                         {permission === 'denied'
                                             ? 'Location permission denied. Please enable GPS in browser settings.'
@@ -217,7 +210,7 @@ export const VisitCreate = () => {
                         <SelectInput
                             optionText="business_name"
                             fullWidth
-                            sx={{ mb: 2 }}
+                            className="mb-2"
                         />
                     </ReferenceInput>
 
@@ -226,7 +219,7 @@ export const VisitCreate = () => {
                         label="Visit Type"
                         choices={visitTypes}
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                         defaultValue="sales_call"
                     />
 
@@ -234,7 +227,7 @@ export const VisitCreate = () => {
                         source="visit_date"
                         label="Visit Date & Time"
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                         defaultValue={new Date().toISOString()}
                         onChange={value =>
                             setVisitData(prev => ({
@@ -248,7 +241,7 @@ export const VisitCreate = () => {
                         source="duration_minutes"
                         label="Duration (minutes)"
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                         min={1}
                         max={480}
                         onChange={value =>
@@ -266,13 +259,13 @@ export const VisitCreate = () => {
                         rows={4}
                         fullWidth
                         placeholder="What was discussed? Any follow-up actions needed?"
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                     />
 
                     {/* Time Tracking Alert */}
-                    <Alert severity="info" sx={{ mt: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <TimeIcon sx={{ mr: 1 }} />
+                    <Alert severity="info" className="mt-2">
+                        <Box className="flex items-center">
+                            <TimeIcon className="mr-1" />
                             <Typography variant="body2">
                                 Visit time is automatically recorded. GPS
                                 location helps track your territory coverage.

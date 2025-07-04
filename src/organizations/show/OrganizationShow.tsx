@@ -13,11 +13,7 @@ import {
     Link,
     Button,
 } from 'react-admin';
-import {
-    Button as MuiButton,
-    Dialog,
-    DialogContent,
-} from '@mui/material';
+import { Button as MuiButton, Dialog, DialogContent } from '@mui/material';
 import { Box, Stack, Chip, Typography } from '../../components/ui-kit';
 import {
     Phone as PhoneIcon,
@@ -443,7 +439,7 @@ const OrganizationShowContent = () => {
 
                                 {contacts && contacts.length > 0 ? (
                                     <Stack gap={4}>
-                                        {contacts.map((contact) => (
+                                        {contacts.map(contact => (
                                             <ContactCard
                                                 key={contact.id}
                                                 contact={contact}
@@ -585,8 +581,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                     className="h-5 text-xs"
                                     style={{
                                         backgroundColor:
-                                            influenceLevel.color ||
-                                            '#e0e0e0',
+                                            influenceLevel.color || '#e0e0e0',
                                     }}
                                 />
                             )}

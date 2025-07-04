@@ -1,13 +1,10 @@
 import ContentSave from '@mui/icons-material/Save';
 import {
-    Box,
     Button,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
-    TextField,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import { FormEvent, useEffect, useState } from 'react';
 import { Toolbar } from 'react-admin';
 import { DialogCloseButton } from '../misc/DialogCloseButton';
@@ -72,14 +69,14 @@ export function TagDialog({
                 <DialogCloseButton onClose={handleClose} />
                 <DialogTitle id="form-dialog-title">{title}</DialogTitle>
                 <DialogContent>
-                    <TextField
+                    <input
                         autoFocus
-                        label="Tag name"
+                        placeholder="Tag name"
                         value={newTagName}
                         onChange={handleNewTagNameChange}
-                        sx={{ mt: 1 }}
+                        className="mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
                     />
-                    <Box display="flex" flexWrap="wrap" width={230} mt={2}>
+                    <div className="flex flex-wrap w-58 mt-2">
                         {colors.map(color => (
                             <RoundButton
                                 key={color}
@@ -90,30 +87,19 @@ export function TagDialog({
                                 }}
                             />
                         ))}
-                    </Box>
+                    </div>
                 </DialogContent>
-                <DialogActions
-                    sx={{
-                        justifyContent: 'flex-start',
-                        p: 0,
-                    }}
-                >
-                    <Toolbar
-                        sx={{
-                            width: '100%',
-                        }}
+                <div className="flex justify-start p-4 border-t border-gray-200">
+                    <Button
+                        type="submit"
+                        color="primary"
+                        disabled={disabled}
+                        variant="contained"
+                        startIcon={<ContentSave />}
                     >
-                        <Button
-                            type="submit"
-                            color="primary"
-                            disabled={disabled}
-                            variant="contained"
-                            startIcon={<ContentSave />}
-                        >
-                            Save
-                        </Button>
-                    </Toolbar>
-                </DialogActions>
+                        Save
+                    </Button>
+                </div>
             </form>
         </Dialog>
     );

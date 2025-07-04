@@ -52,14 +52,20 @@ const OpportunityForm = () => {
             <Box maxWidth="lg" sx={{ mx: 'auto', p: 2 }}>
                 <Card>
                     <CardContent>
-                        <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+                        <Typography
+                            variant="h5"
+                            sx={{ fontWeight: 600, mb: 3 }}
+                        >
                             Create New Opportunity
                         </Typography>
 
                         <Grid container spacing={3}>
                             {/* Basic Information */}
                             <Grid item xs={12}>
-                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 600, mb: 2 }}
+                                >
                                     Opportunity Details
                                 </Typography>
                             </Grid>
@@ -78,10 +84,12 @@ const OpportunityForm = () => {
                                 <SelectInput
                                     source="stage"
                                     label="Pipeline Stage"
-                                    choices={FOOD_SERVICE_PIPELINE_STAGES.map(stage => ({
-                                        id: stage.id,
-                                        name: stage.name,
-                                    }))}
+                                    choices={FOOD_SERVICE_PIPELINE_STAGES.map(
+                                        stage => ({
+                                            id: stage.id,
+                                            name: stage.name,
+                                        })
+                                    )}
                                     defaultValue="lead_discovery"
                                     fullWidth
                                 />
@@ -89,14 +97,17 @@ const OpportunityForm = () => {
 
                             {/* Organization & Contact */}
                             <Grid item xs={12}>
-                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                >
                                     Customer Information
                                 </Typography>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <ReferenceInput 
-                                    source="organizationId" 
+                                <ReferenceInput
+                                    source="organizationId"
                                     reference="organizations"
                                 >
                                     <AutocompleteInput
@@ -110,9 +121,12 @@ const OpportunityForm = () => {
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <ReferenceInput source="contactId" reference="contacts">
+                                <ReferenceInput
+                                    source="contactId"
+                                    reference="contacts"
+                                >
                                     <AutocompleteInput
-                                        optionText={(choice: any) => 
+                                        optionText={(choice: any) =>
                                             `${choice.firstName} ${choice.lastName}`
                                         }
                                         label="Primary Contact"
@@ -124,13 +138,19 @@ const OpportunityForm = () => {
 
                             {/* Product Information */}
                             <Grid item xs={12}>
-                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                >
                                     Product Information
                                 </Typography>
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <ReferenceInput source="productId" reference="products">
+                                <ReferenceInput
+                                    source="productId"
+                                    reference="products"
+                                >
                                     <AutocompleteInput
                                         optionText="name"
                                         label="Primary Product"
@@ -142,7 +162,10 @@ const OpportunityForm = () => {
 
                             {/* Financial Information */}
                             <Grid item xs={12}>
-                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                >
                                     Financial Details
                                 </Typography>
                             </Grid>
@@ -172,7 +195,10 @@ const OpportunityForm = () => {
 
                             {/* Description */}
                             <Grid item xs={12}>
-                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 600, mb: 2, mt: 2 }}
+                                >
                                     Additional Information
                                 </Typography>
                             </Grid>

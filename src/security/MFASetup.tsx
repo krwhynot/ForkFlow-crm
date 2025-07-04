@@ -26,7 +26,7 @@ import {
     Tooltip,
     Paper,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Security as SecurityIcon,
     Smartphone as PhoneIcon,
@@ -168,14 +168,14 @@ export const MFASetup: React.FC<MFASetupProps> = ({
 
             // Mock successful verification
             if (selectedMethod) {
-                const updatedMethods = mfaMethods.map((method) =>
+                const updatedMethods = mfaMethods.map(method =>
                     method.id === selectedMethod.id
                         ? {
                               ...method,
                               isEnabled: true,
                               setupAt: new Date().toISOString(),
                               isDefault: !mfaMethods.some(
-                                  (m) => m.isEnabled && m.isDefault
+                                  m => m.isEnabled && m.isDefault
                               ),
                           }
                         : method
@@ -203,7 +203,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
     const handleDisableMethod = async (methodId: string) => {
         try {
             // Check if this is the only enabled method
-            const enabledMethods = mfaMethods.filter((m) => m.isEnabled);
+            const enabledMethods = mfaMethods.filter(m => m.isEnabled);
             if (enabledMethods.length <= 1) {
                 notify('You must have at least one MFA method enabled', {
                     type: 'error',
@@ -211,7 +211,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 return;
             }
 
-            const updatedMethods = mfaMethods.map((method) =>
+            const updatedMethods = mfaMethods.map(method =>
                 method.id === methodId
                     ? { ...method, isEnabled: false, isDefault: false }
                     : method
@@ -219,10 +219,10 @@ export const MFASetup: React.FC<MFASetupProps> = ({
 
             // If we disabled the default method, make another one default
             const hasDefault = updatedMethods.some(
-                (m) => m.isEnabled && m.isDefault
+                m => m.isEnabled && m.isDefault
             );
             if (!hasDefault) {
-                const firstEnabled = updatedMethods.find((m) => m.isEnabled);
+                const firstEnabled = updatedMethods.find(m => m.isEnabled);
                 if (firstEnabled) {
                     firstEnabled.isDefault = true;
                 }
@@ -237,7 +237,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
 
     const handleSetDefault = async (methodId: string) => {
         try {
-            const updatedMethods = mfaMethods.map((method) => ({
+            const updatedMethods = mfaMethods.map(method => ({
                 ...method,
                 isDefault: method.id === methodId,
             }));
@@ -300,11 +300,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                             <Typography paragraph>
                                 Scan this QR code with your authenticator app:
                             </Typography>
-                            <Box
-                                display="flex"
-                                justifyContent="center"
-                                mb={2}
-                            >
+                            <Box display="flex" justifyContent="center" mb={2}>
                                 <Paper sx={{ p: 2, textAlign: 'center' }}>
                                     <QrCodeIcon
                                         sx={{
@@ -364,10 +360,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                 onClick={() => {
                                     // In production, generate and download a file
                                     const text = backupCodes.join('\n');
-                                    console.log(
-                                        'Download backup codes:',
-                                        text
-                                    );
+                                    console.log('Download backup codes:', text);
                                 }}
                             >
                                 Download
@@ -406,7 +399,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                         <TextField
                             label="Verification Code"
                             value={verificationCode}
-                            onChange={(e) =>
+                            onChange={e =>
                                 setVerificationCode(
                                     e.target.value
                                         .replace(/\D/g, '')
@@ -423,7 +416,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                     fontFamily: 'monospace',
                                 },
                             }}
-                            sx={{ mb: 2 }}
+                            className="mb-2"
                         />
                     </Box>
                 ),
@@ -433,18 +426,18 @@ export const MFASetup: React.FC<MFASetupProps> = ({
         return steps;
     };
 
-    const enabledMethods = mfaMethods.filter((m) => m.isEnabled);
-    const availableMethods = mfaMethods.filter((m) => !m.isEnabled);
+    const enabledMethods = mfaMethods.filter(m => m.isEnabled);
+    const availableMethods = mfaMethods.filter(m => !m.isEnabled);
 
     // Check if user is admin or if MFA is required for their role
     const isAdmin = identity?.role === 'admin';
     const mfaRequired = isAdmin; // In production, check security settings
 
     return (
-        <Box sx={{ p: compactView ? 1 : 3 }}>
+        <Box className={`${compactView ? 'p-1' : 'p-8'}`}>
             {!compactView && (
-                <Box display="flex" alignItems="center" gap={2} mb={3}>
-                    <ShieldIcon color="primary" sx={{ fontSize: 32 }} />
+                <Box className="flex items-center gap-2 mb-8">
+                    <ShieldIcon color="primary" className="text-[32px]" />
                     <Box>
                         <Typography variant="h4" component="h1">
                             Multi-Factor Authentication
@@ -484,7 +477,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                         </Typography>
 
                         <List>
-                            {enabledMethods.map((method) => (
+                            {enabledMethods.map(method => (
                                 <ListItem key={method.id} divider>
                                     <ListItemIcon>
                                         {getMethodIcon(method.type)}
@@ -578,7 +571,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                         </Typography>
 
                         <List>
-                            {availableMethods.map((method) => (
+                            {availableMethods.map(method => (
                                 <ListItem key={method.id} divider>
                                     <ListItemIcon>
                                         {getMethodIcon(method.type)}
@@ -619,10 +612,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 </DialogTitle>
                 <DialogContent>
                     {selectedMethod && (
-                        <Stepper
-                            activeStep={activeStep}
-                            orientation="vertical"
-                        >
+                        <Stepper activeStep={activeStep} orientation="vertical">
                             {renderSetupSteps()?.map((step, index) => (
                                 <Step key={index}>
                                     <StepLabel>{step.label}</StepLabel>

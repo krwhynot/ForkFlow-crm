@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-    Breadcrumbs,
-    Link,
-    Typography,
-    Box,
-    Chip,
-    useTheme,
-} from '@mui/material';
+import { Typography, Box, Chip } from '@/components/ui-kit';
+import { Breadcrumbs, Link } from '@mui/material';
 import {
     Business as OrganizationIcon,
     Person as ContactIcon,
@@ -22,13 +16,18 @@ interface RelationshipBreadcrumbsProps {
     /**
      * Current entity type being viewed
      */
-    currentEntity: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction';
-    
+    currentEntity:
+        | 'organization'
+        | 'contact'
+        | 'product'
+        | 'opportunity'
+        | 'interaction';
+
     /**
      * Show relationship context - displays parent/related entities
      */
     showContext?: boolean;
-    
+
     /**
      * Custom relationships to display
      */
@@ -41,45 +40,59 @@ interface RelationshipBreadcrumbsProps {
     };
 }
 
-export const RelationshipBreadcrumbs: React.FC<RelationshipBreadcrumbsProps> = ({
-    currentEntity,
-    showContext = true,
-    relationships = {},
-}) => {
-    const theme = useTheme();
+export const RelationshipBreadcrumbs: React.FC<
+    RelationshipBreadcrumbsProps
+> = ({ currentEntity, showContext = true, relationships = {} }) => {
     const record = useRecordContext();
 
     const getEntityIcon = (entityType: string) => {
         switch (entityType) {
             case 'organization':
-                return <OrganizationIcon sx={{ fontSize: 16, mr: 0.5 }} />;
+                return <OrganizationIcon className="text-base mr-1" />;
             case 'contact':
-                return <ContactIcon sx={{ fontSize: 16, mr: 0.5 }} />;
+                return <ContactIcon className="text-base mr-1" />;
             case 'product':
-                return <ProductIcon sx={{ fontSize: 16, mr: 0.5 }} />;
+                return <ProductIcon className="text-base mr-1" />;
             case 'opportunity':
-                return <OpportunityIcon sx={{ fontSize: 16, mr: 0.5 }} />;
+                return <OpportunityIcon className="text-base mr-1" />;
             case 'interaction':
-                return <InteractionIcon sx={{ fontSize: 16, mr: 0.5 }} />;
+                return <InteractionIcon className="text-base mr-1" />;
             default:
                 return null;
         }
     };
 
-    const getEntityColor = (entityType: string) => {
+    const getEntityColorClass = (entityType: string) => {
         switch (entityType) {
             case 'organization':
-                return theme.palette.primary.main;
+                return 'text-blue-600 border-blue-600';
             case 'contact':
-                return theme.palette.secondary.main;
+                return 'text-gray-600 border-gray-600';
             case 'product':
-                return theme.palette.success.main;
+                return 'text-green-600 border-green-600';
             case 'opportunity':
-                return theme.palette.warning.main;
+                return 'text-yellow-600 border-yellow-600';
             case 'interaction':
-                return theme.palette.info.main;
+                return 'text-blue-500 border-blue-500';
             default:
-                return theme.palette.grey[500];
+                return 'text-gray-500 border-gray-500';
+        }
+    };
+
+    const getEntityBgClass = (entityType: string) => {
+        switch (entityType) {
+            case 'organization':
+                return 'bg-blue-600';
+            case 'contact':
+                return 'bg-gray-600';
+            case 'product':
+                return 'bg-green-600';
+            case 'opportunity':
+                return 'bg-yellow-600';
+            case 'interaction':
+                return 'bg-blue-500';
+            default:
+                return 'bg-gray-500';
         }
     };
 
@@ -92,7 +105,10 @@ export const RelationshipBreadcrumbs: React.FC<RelationshipBreadcrumbsProps> = (
         }> = [];
 
         // Build relationship chain based on current entity and available relationships
-        if (currentEntity === 'contact' && (relationships.organization || record?.organizationId)) {
+        if (
+            currentEntity === 'contact' &&
+            (relationships.organization || record?.organizationId)
+        ) {
             const org = relationships.organization;
             if (org) {
                 breadcrumbs.push({
@@ -204,49 +220,30 @@ export const RelationshipBreadcrumbs: React.FC<RelationshipBreadcrumbsProps> = (
     }
 
     return (
-        <Box
-            sx={{
-                mb: 2,
-                p: 2,
-                backgroundColor: theme.palette.grey[50],
-                borderRadius: 1,
-                border: `1px solid ${theme.palette.grey[200]}`,
-            }}
-        >
+        <Box className="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
             <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
+                separator={
+                    <NavigateNextIcon className="text-sm text-gray-400" />
+                }
                 aria-label="relationship breadcrumbs"
-                sx={{
-                    '& .MuiBreadcrumbs-separator': {
-                        color: theme.palette.grey[400],
-                    },
-                }}
+                className="[&_.MuiBreadcrumbs-separator]:text-gray-400"
             >
                 {breadcrumbPath.map((crumb, index) => {
                     const isLast = index === breadcrumbPath.length - 1;
-                    const color = getEntityColor(crumb.entity);
+                    const colorClass = getEntityColorClass(crumb.entity);
+                    const bgClass = getEntityBgClass(crumb.entity);
 
                     if (isLast || !crumb.link) {
                         return (
                             <Chip
                                 key={`${crumb.entity}-${index}`}
-                                icon={getEntityIcon(crumb.entity) || undefined}
                                 label={crumb.label}
-                                variant={isLast ? 'filled' : 'outlined'}
                                 size="small"
-                                sx={{
-                                    backgroundColor: isLast ? color : 'transparent',
-                                    color: isLast ? 'white' : color,
-                                    borderColor: color,
-                                    '& .MuiChip-icon': {
-                                        color: isLast ? 'white' : color,
-                                    },
-                                    maxWidth: 200,
-                                    '& .MuiChip-label': {
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                    },
-                                }}
+                                className={`max-w-50 ${
+                                    isLast
+                                        ? `${bgClass} text-white`
+                                        : `bg-transparent ${colorClass}`
+                                } [&_.MuiChip-label]:overflow-hidden [&_.MuiChip-label]:text-ellipsis`}
                             />
                         );
                     }
@@ -257,29 +254,12 @@ export const RelationshipBreadcrumbs: React.FC<RelationshipBreadcrumbsProps> = (
                             component={RouterLink}
                             to={crumb.link}
                             underline="none"
-                            sx={{ textDecoration: 'none' }}
+                            className="no-underline"
                         >
                             <Chip
-                                icon={getEntityIcon(crumb.entity) || undefined}
                                 label={crumb.label}
-                                variant="outlined"
                                 size="small"
-                                clickable
-                                sx={{
-                                    color: color,
-                                    borderColor: color,
-                                    '& .MuiChip-icon': {
-                                        color: color,
-                                    },
-                                    '&:hover': {
-                                        backgroundColor: `${color}10`,
-                                    },
-                                    maxWidth: 200,
-                                    '& .MuiChip-label': {
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                    },
-                                }}
+                                className={`max-w-50 cursor-pointer ${colorClass} bg-transparent hover:bg-gray-100 [&_.MuiChip-label]:overflow-hidden [&_.MuiChip-label]:text-ellipsis`}
                             />
                         </Link>
                     );

@@ -77,13 +77,11 @@ export const DealCreate = ({ open }: { open: boolean }) => {
             <Create<Deal>
                 resource="deals"
                 mutationOptions={{ onSuccess }}
-                sx={{ '& .RaCreate-main': { mt: 0 } }}
+                className="[&_.RaCreate-main]:mt-0"
             >
                 <DialogCloseButton onClose={handleClose} />
                 <DialogTitle
-                    sx={{
-                        paddingBottom: 0,
-                    }}
+                    className="pb-0"
                 >
                     Create a new deal
                 </DialogTitle>

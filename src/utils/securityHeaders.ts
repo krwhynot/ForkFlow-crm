@@ -51,7 +51,7 @@ export const generateCSP = (options?: {
         allowInlineStyles = false,
         allowInlineScripts = false,
         allowEval = false,
-        additionalDomains = []
+        additionalDomains = [],
     } = options || {};
 
     const basePolicy = {
@@ -62,57 +62,67 @@ export const generateCSP = (options?: {
             "'unsafe-eval'", // Required for development
             'https://maps.googleapis.com',
             'https://maps.gstatic.com',
-            ...additionalDomains
+            ...additionalDomains,
         ],
         'style-src': [
             "'self'",
             "'unsafe-inline'", // Required for Material-UI
             'https://fonts.googleapis.com',
-            ...additionalDomains
+            ...additionalDomains,
         ],
         'img-src': [
             "'self'",
             'data:', // For base64 images
             'blob:', // For generated images
             'https:', // Allow all HTTPS images
-            ...additionalDomains
+            ...additionalDomains,
         ],
         'font-src': [
             "'self'",
             'https://fonts.gstatic.com',
             'data:', // For embedded fonts
-            ...additionalDomains
+            ...additionalDomains,
         ],
         'connect-src': [
             "'self'",
             'https://*.supabase.co',
             'https://maps.googleapis.com',
             'wss:', // WebSocket connections
-            ...additionalDomains
+            ...additionalDomains,
         ],
         'media-src': ["'self'", 'data:', 'blob:', ...additionalDomains],
         'object-src': ["'none'"],
         'child-src': ["'self'", ...additionalDomains],
-        'frame-src': ["'self'", 'https://maps.google.com', ...additionalDomains],
+        'frame-src': [
+            "'self'",
+            'https://maps.google.com',
+            ...additionalDomains,
+        ],
         'worker-src': ["'self'", 'blob:', ...additionalDomains],
         'manifest-src': ["'self'"],
         'base-uri': ["'self'"],
         'form-action': ["'self'"],
         'frame-ancestors': ["'none'"], // Prevent embedding in frames
-        'upgrade-insecure-requests': []
+        'upgrade-insecure-requests': [],
     };
 
     // Adjust policy based on options
     if (!allowInlineStyles) {
-        basePolicy['style-src'] = basePolicy['style-src'].filter(src => src !== "'unsafe-inline'");
+        basePolicy['style-src'] = basePolicy['style-src'].filter(
+            src => src !== "'unsafe-inline'"
+        );
     }
 
     if (!allowInlineScripts) {
-        basePolicy['script-src'] = basePolicy['script-src'].filter(src => src !== "'unsafe-inline'");
+        basePolicy['script-src'] = basePolicy['script-src'].filter(
+            src => src !== "'unsafe-inline'"
+        );
     }
 
     if (!allowEval) {
-        basePolicy['script-src'] = basePolicy['script-src'].filter(src => src !== "'unsafe-eval'");
+        basePolicy['script-src'] = basePolicy['script-src'].filter(
+            src => src !== "'unsafe-eval'"
+        );
     }
 
     // Convert to CSP string
@@ -170,7 +180,8 @@ export const generateSecurityHeaders = (
 
     // Strict Transport Security (HSTS)
     if (finalConfig.strictTransportSecurity) {
-        headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload';
+        headers['Strict-Transport-Security'] =
+            'max-age=31536000; includeSubDomains; preload';
     }
 
     // X-Content-Type-Options
@@ -219,7 +230,7 @@ export const applySecurityHeaders = (
     customHeaders?: Record<string, string>
 ): RequestInit => {
     const securityHeaders = generateSecurityHeaders();
-    
+
     return {
         ...init,
         headers: {
@@ -233,9 +244,11 @@ export const applySecurityHeaders = (
 /**
  * Security headers middleware for Express-like frameworks
  */
-export const securityHeadersMiddleware = (config?: Partial<SecurityHeadersConfig>) => {
+export const securityHeadersMiddleware = (
+    config?: Partial<SecurityHeadersConfig>
+) => {
     const headers = generateSecurityHeaders(config);
-    
+
     return (req: any, res: any, next: any) => {
         Object.entries(headers).forEach(([name, value]) => {
             if (value === 'remove') {
@@ -244,7 +257,7 @@ export const securityHeadersMiddleware = (config?: Partial<SecurityHeadersConfig
                 res.setHeader(name, value);
             }
         });
-        
+
         if (next) next();
     };
 };
@@ -253,42 +266,47 @@ export const securityHeadersMiddleware = (config?: Partial<SecurityHeadersConfig
  * Check if current environment requires strict security
  */
 export const isProductionEnvironment = (): boolean => {
-    return process.env.NODE_ENV === 'production' || 
-           window.location.protocol === 'https:' ||
-           window.location.hostname !== 'localhost';
+    return (
+        process.env.NODE_ENV === 'production' ||
+        window.location.protocol === 'https:' ||
+        window.location.hostname !== 'localhost'
+    );
 };
 
 /**
  * Get environment-specific security configuration
  */
-export const getEnvironmentSecurityConfig = (): Partial<SecurityHeadersConfig> => {
-    const isProduction = isProductionEnvironment();
-    
-    if (isProduction) {
-        // Strict security for production
-        return {
-            contentSecurityPolicy: true,
-            crossOriginEmbedderPolicy: true,
-            crossOriginOpenerPolicy: true,
-            crossOriginResourcePolicy: true,
-            strictTransportSecurity: true,
-            xFrameOptions: true,
-        };
-    } else {
-        // Relaxed security for development
-        return {
-            contentSecurityPolicy: false, // Disable CSP in development
-            crossOriginEmbedderPolicy: false,
-            crossOriginOpenerPolicy: false,
-            strictTransportSecurity: false,
-        };
-    }
-};
+export const getEnvironmentSecurityConfig =
+    (): Partial<SecurityHeadersConfig> => {
+        const isProduction = isProductionEnvironment();
+
+        if (isProduction) {
+            // Strict security for production
+            return {
+                contentSecurityPolicy: true,
+                crossOriginEmbedderPolicy: true,
+                crossOriginOpenerPolicy: true,
+                crossOriginResourcePolicy: true,
+                strictTransportSecurity: true,
+                xFrameOptions: true,
+            };
+        } else {
+            // Relaxed security for development
+            return {
+                contentSecurityPolicy: false, // Disable CSP in development
+                crossOriginEmbedderPolicy: false,
+                crossOriginOpenerPolicy: false,
+                strictTransportSecurity: false,
+            };
+        }
+    };
 
 /**
  * Validate security headers implementation
  */
-export const validateSecurityHeaders = async (url: string): Promise<{
+export const validateSecurityHeaders = async (
+    url: string
+): Promise<{
     implemented: string[];
     missing: string[];
     recommendations: string[];
@@ -296,44 +314,56 @@ export const validateSecurityHeaders = async (url: string): Promise<{
     try {
         const response = await fetch(url, { method: 'HEAD' });
         const headers = response.headers;
-        
+
         const requiredHeaders = [
             'Content-Security-Policy',
             'X-Content-Type-Options',
             'X-Frame-Options',
             'X-XSS-Protection',
-            'Referrer-Policy'
+            'Referrer-Policy',
         ];
-        
+
         const recommendedHeaders = [
             'Strict-Transport-Security',
             'Cross-Origin-Opener-Policy',
-            'Cross-Origin-Resource-Policy'
+            'Cross-Origin-Resource-Policy',
         ];
-        
-        const implemented = requiredHeaders.filter(header => headers.has(header));
+
+        const implemented = requiredHeaders.filter(header =>
+            headers.has(header)
+        );
         const missing = requiredHeaders.filter(header => !headers.has(header));
-        
+
         const recommendations: string[] = [];
-        
-        if (!headers.has('Strict-Transport-Security') && url.startsWith('https:')) {
+
+        if (
+            !headers.has('Strict-Transport-Security') &&
+            url.startsWith('https:')
+        ) {
             recommendations.push('Implement HSTS for HTTPS sites');
         }
-        
+
         if (!headers.has('Content-Security-Policy')) {
-            recommendations.push('Implement Content Security Policy to prevent XSS attacks');
+            recommendations.push(
+                'Implement Content Security Policy to prevent XSS attacks'
+            );
         }
-        
-        if (headers.get('X-Frame-Options') !== 'DENY' && headers.get('X-Frame-Options') !== 'SAMEORIGIN') {
+
+        if (
+            headers.get('X-Frame-Options') !== 'DENY' &&
+            headers.get('X-Frame-Options') !== 'SAMEORIGIN'
+        ) {
             recommendations.push('Set X-Frame-Options to DENY or SAMEORIGIN');
         }
-        
+
         return { implemented, missing, recommendations };
     } catch (error) {
         return {
             implemented: [],
             missing: [],
-            recommendations: ['Could not validate headers - ensure URL is accessible']
+            recommendations: [
+                'Could not validate headers - ensure URL is accessible',
+            ],
         };
     }
 };
@@ -345,5 +375,5 @@ export default {
     securityHeadersMiddleware,
     isProductionEnvironment,
     getEnvironmentSecurityConfig,
-    validateSecurityHeaders
+    validateSecurityHeaders,
 };

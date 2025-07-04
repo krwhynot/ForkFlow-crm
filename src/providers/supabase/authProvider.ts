@@ -35,7 +35,9 @@ export async function getIsInitialized() {
 
 export function clearInitializationCache() {
     getIsInitialized._is_initialized_cache = null;
-    console.log('🔄 Initialization cache cleared - next check will query database');
+    console.log(
+        '🔄 Initialization cache cleared - next check will query database'
+    );
 }
 
 export function clearAllCaches() {

@@ -1,11 +1,6 @@
 import React from 'react';
 import { SelectInput, useGetList } from 'react-admin';
-import { 
-    Box, 
-    Typography,
-    Avatar,
-    Stack,
-} from '@mui/material';
+import { Box, Typography, Avatar, Stack } from '@/components/ui-kit';
 import {
     Email as EmailIcon,
     Phone as PhoneIcon,
@@ -69,35 +64,44 @@ export const InteractionTypeSelector = ({
         sort: { field: 'sortOrder', order: 'ASC' },
     });
 
-    const interactionTypeChoices = interactionTypes?.map(type => ({
-        id: type.id,
-        name: type.label,
-        key: type.key,
-    })) || [];
+    const interactionTypeChoices =
+        interactionTypes?.map(type => ({
+            id: type.id,
+            name: type.label,
+            key: type.key,
+        })) || [];
 
     const optionRenderer = (choice: any) => {
         if (!choice) return null;
-        
-        const Icon = interactionTypeIcons[choice.key as keyof typeof interactionTypeIcons] || FollowUpIcon;
-        const color = interactionTypeColors[choice.key as keyof typeof interactionTypeColors] || '#455a64';
-        const description = interactionTypeDescriptions[choice.key as keyof typeof interactionTypeDescriptions] || '';
+
+        const Icon =
+            interactionTypeIcons[
+                choice.key as keyof typeof interactionTypeIcons
+            ] || FollowUpIcon;
+        const color =
+            interactionTypeColors[
+                choice.key as keyof typeof interactionTypeColors
+            ] || '#455a64';
+        const description =
+            interactionTypeDescriptions[
+                choice.key as keyof typeof interactionTypeDescriptions
+            ] || '';
 
         return (
-            <Stack direction="row" spacing={1.5} alignItems="center">
+            <Stack className="flex-row space-x-1.5 items-center">
                 <Avatar
-                    sx={{
-                        bgcolor: color,
-                        width: 32,
-                        height: 32,
+                    className="w-8 h-8"
+                    style={{
+                        backgroundColor: color,
                     }}
                 >
                     <Icon fontSize="small" />
                 </Avatar>
                 <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    <Typography variant="body2" className="font-medium">
                         {choice.name}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" className="text-gray-500">
                         {description}
                     </Typography>
                 </Box>

@@ -29,7 +29,15 @@ import {
 import { TextInput, TextInputProps } from 'react-admin';
 
 interface SmartKeyboardProps extends Omit<TextInputProps, 'type'> {
-    fieldType: 'text' | 'email' | 'phone' | 'url' | 'number' | 'password' | 'search' | 'address';
+    fieldType:
+        | 'text'
+        | 'email'
+        | 'phone'
+        | 'url'
+        | 'number'
+        | 'password'
+        | 'search'
+        | 'address';
     autoComplete?: string;
     suggestions?: string[];
     showClearButton?: boolean;
@@ -72,7 +80,9 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [showPassword, setShowPassword] = useState(false);
-    const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+    const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(
+        []
+    );
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [isValid, setIsValid] = useState(true);
@@ -130,29 +140,32 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                 autoComplete: autoComplete || 'street-address',
             },
         };
-        
+
         return configs[fieldType] || configs.text;
     }, [fieldType, showPassword, autoComplete]);
 
     // Format input value based on field type
-    const formatInputValue = useCallback((value: string) => {
-        if (formatValue) {
-            return formatValue(value);
-        }
+    const formatInputValue = useCallback(
+        (value: string) => {
+            if (formatValue) {
+                return formatValue(value);
+            }
 
-        switch (fieldType) {
-            case 'phone':
-                return formatPhoneNumber(value);
-            case 'email':
-                return value.toLowerCase().trim();
-            case 'url':
-                return formatURL(value);
-            case 'number':
-                return value.replace(/[^0-9.-]/g, '');
-            default:
-                return value;
-        }
-    }, [fieldType, formatValue]);
+            switch (fieldType) {
+                case 'phone':
+                    return formatPhoneNumber(value);
+                case 'email':
+                    return value.toLowerCase().trim();
+                case 'url':
+                    return formatURL(value);
+                case 'number':
+                    return value.replace(/[^0-9.-]/g, '');
+                default:
+                    return value;
+            }
+        },
+        [fieldType, formatValue]
+    );
 
     // Phone number formatting
     const formatPhoneNumber = useCallback((value: string) => {
@@ -168,92 +181,113 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
     // URL formatting
     const formatURL = useCallback((value: string) => {
         const trimmed = value.trim();
-        if (trimmed && !trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+        if (
+            trimmed &&
+            !trimmed.startsWith('http://') &&
+            !trimmed.startsWith('https://')
+        ) {
             return `https://${trimmed}`;
         }
         return trimmed;
     }, []);
 
     // Validate input format
-    const validateInput = useCallback((value: string) => {
-        if (validateFormat) {
-            return validateFormat(value);
-        }
+    const validateInput = useCallback(
+        (value: string) => {
+            if (validateFormat) {
+                return validateFormat(value);
+            }
 
-        if (!value) return true; // Empty values are valid
+            if (!value) return true; // Empty values are valid
 
-        switch (fieldType) {
-            case 'email':
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-            case 'phone':
-                return /^\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}$/.test(value);
-            case 'url':
-                try {
-                    new URL(value.startsWith('http') ? value : `https://${value}`);
+            switch (fieldType) {
+                case 'email':
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                case 'phone':
+                    return /^\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}$/.test(
+                        value
+                    );
+                case 'url':
+                    try {
+                        new URL(
+                            value.startsWith('http')
+                                ? value
+                                : `https://${value}`
+                        );
+                        return true;
+                    } catch {
+                        return false;
+                    }
+                case 'number':
+                    return !isNaN(Number(value));
+                default:
                     return true;
-                } catch {
-                    return false;
-                }
-            case 'number':
-                return !isNaN(Number(value));
-            default:
-                return true;
-        }
-    }, [fieldType, validateFormat]);
+            }
+        },
+        [fieldType, validateFormat]
+    );
 
     // Handle input change
-    const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        let value = event.target.value;
-        
-        // Apply max length
-        if (maxLength && value.length > maxLength) {
-            value = value.slice(0, maxLength);
-        }
+    const handleInputChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            let value = event.target.value;
 
-        // Format value
-        const formattedValue = formatInputValue(value);
-        setInputValue(formattedValue);
-        
-        // Validate
-        const valid = validateInput(formattedValue);
-        setIsValid(valid);
+            // Apply max length
+            if (maxLength && value.length > maxLength) {
+                value = value.slice(0, maxLength);
+            }
 
-        // Update suggestions
-        if (enableSmartSuggestions && suggestions.length > 0) {
-            const filtered = suggestions.filter(suggestion =>
-                suggestion.toLowerCase().includes(value.toLowerCase())
-            ).slice(0, 5);
-            setFilteredSuggestions(filtered);
-            setShowSuggestions(filtered.length > 0 && value.length > 0);
-        }
+            // Format value
+            const formattedValue = formatInputValue(value);
+            setInputValue(formattedValue);
 
-        // Call parent onChange
-        if (textInputProps.onChange) {
-            textInputProps.onChange({
-                ...event,
-                target: { ...event.target, value: formattedValue }
-            });
-        }
-    }, [
-        maxLength,
-        formatInputValue,
-        validateInput,
-        enableSmartSuggestions,
-        suggestions,
-        textInputProps.onChange
-    ]);
+            // Validate
+            const valid = validateInput(formattedValue);
+            setIsValid(valid);
+
+            // Update suggestions
+            if (enableSmartSuggestions && suggestions.length > 0) {
+                const filtered = suggestions
+                    .filter(suggestion =>
+                        suggestion.toLowerCase().includes(value.toLowerCase())
+                    )
+                    .slice(0, 5);
+                setFilteredSuggestions(filtered);
+                setShowSuggestions(filtered.length > 0 && value.length > 0);
+            }
+
+            // Call parent onChange
+            if (textInputProps.onChange) {
+                textInputProps.onChange({
+                    ...event,
+                    target: { ...event.target, value: formattedValue },
+                });
+            }
+        },
+        [
+            maxLength,
+            formatInputValue,
+            validateInput,
+            enableSmartSuggestions,
+            suggestions,
+            textInputProps.onChange,
+        ]
+    );
 
     // Handle suggestion click
-    const handleSuggestionClick = useCallback((suggestion: string) => {
-        const formattedValue = formatInputValue(suggestion);
-        setInputValue(formattedValue);
-        setShowSuggestions(false);
-        
-        if (inputRef.current) {
-            inputRef.current.value = formattedValue;
-            inputRef.current.focus();
-        }
-    }, [formatInputValue]);
+    const handleSuggestionClick = useCallback(
+        (suggestion: string) => {
+            const formattedValue = formatInputValue(suggestion);
+            setInputValue(formattedValue);
+            setShowSuggestions(false);
+
+            if (inputRef.current) {
+                inputRef.current.value = formattedValue;
+                inputRef.current.focus();
+            }
+        },
+        [formatInputValue]
+    );
 
     // Clear input
     const handleClear = useCallback(() => {
@@ -284,8 +318,11 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
 
     // Get field icon
     const getFieldIcon = useCallback(() => {
-        const iconProps = { fontSize: 'small' as const, color: 'action' as const };
-        
+        const iconProps = {
+            fontSize: 'small' as const,
+            color: 'action' as const,
+        };
+
         switch (fieldType) {
             case 'email':
                 return <EmailIcon {...iconProps} />;
@@ -309,7 +346,12 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
         const generateSuggestions = () => {
             switch (fieldType) {
                 case 'email':
-                    return ['@gmail.com', '@yahoo.com', '@hotmail.com', '@outlook.com'];
+                    return [
+                        '@gmail.com',
+                        '@yahoo.com',
+                        '@hotmail.com',
+                        '@outlook.com',
+                    ];
                 case 'url':
                     return ['https://www.', 'https://', 'www.'];
                 case 'phone':
@@ -342,7 +384,9 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                         <InputAdornment position="start">
                             {fieldIcon}
                         </InputAdornment>
-                    ) : textInputProps.InputProps?.startAdornment,
+                    ) : (
+                        textInputProps.InputProps?.startAdornment
+                    ),
                     endAdornment: (
                         <InputAdornment position="end">
                             {/* QR Code Scanner */}
@@ -357,20 +401,22 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                     <QrCodeIcon fontSize="small" />
                                 </IconButton>
                             )}
-                            
+
                             {/* Copy Button */}
-                            {showCopyButton && inputValue && fieldType !== 'password' && (
-                                <IconButton
-                                    size="small"
-                                    onClick={handleCopy}
-                                    edge="end"
-                                    sx={{ mr: 0.5 }}
-                                    aria-label="Copy to clipboard"
-                                >
-                                    <CopyIcon fontSize="small" />
-                                </IconButton>
-                            )}
-                            
+                            {showCopyButton &&
+                                inputValue &&
+                                fieldType !== 'password' && (
+                                    <IconButton
+                                        size="small"
+                                        onClick={handleCopy}
+                                        edge="end"
+                                        sx={{ mr: 0.5 }}
+                                        aria-label="Copy to clipboard"
+                                    >
+                                        <CopyIcon fontSize="small" />
+                                    </IconButton>
+                                )}
+
                             {/* Password Visibility Toggle */}
                             {fieldType === 'password' && (
                                 <IconButton
@@ -378,12 +424,20 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                     onClick={togglePasswordVisibility}
                                     edge="end"
                                     sx={{ mr: 0.5 }}
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    aria-label={
+                                        showPassword
+                                            ? 'Hide password'
+                                            : 'Show password'
+                                    }
                                 >
-                                    {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                                    {showPassword ? (
+                                        <VisibilityOffIcon fontSize="small" />
+                                    ) : (
+                                        <VisibilityIcon fontSize="small" />
+                                    )}
                                 </IconButton>
                             )}
-                            
+
                             {/* Clear Button */}
                             {showClearButton && inputValue && (
                                 <IconButton
@@ -395,13 +449,21 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                     <ClearIcon fontSize="small" />
                                 </IconButton>
                             )}
-                            
+
                             {textInputProps.InputProps?.endAdornment}
                         </InputAdornment>
                     ),
                     autoCorrect: preventAutocorrect ? 'off' : 'on',
-                    autoCapitalize: fieldType === 'email' || fieldType === 'url' ? 'off' : 'on',
-                    spellCheck: fieldType === 'email' || fieldType === 'url' || fieldType === 'number' ? false : true,
+                    autoCapitalize:
+                        fieldType === 'email' || fieldType === 'url'
+                            ? 'off'
+                            : 'on',
+                    spellCheck:
+                        fieldType === 'email' ||
+                        fieldType === 'url' ||
+                        fieldType === 'number'
+                            ? false
+                            : true,
                 }}
                 sx={{
                     ...textInputProps.sx,
@@ -423,7 +485,10 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                         position: 'absolute',
                         right: 8,
                         bottom: -20,
-                        color: inputValue.length > maxLength * 0.9 ? 'warning.main' : 'text.secondary',
+                        color:
+                            inputValue.length > maxLength * 0.9
+                                ? 'warning.main'
+                                : 'text.secondary',
                     }}
                 >
                     {inputValue.length}/{maxLength}
@@ -450,7 +515,9 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                             <ListItem
                                 key={index}
                                 button
-                                onClick={() => handleSuggestionClick(suggestion)}
+                                onClick={() =>
+                                    handleSuggestionClick(suggestion)
+                                }
                                 sx={{
                                     py: 1,
                                     minHeight: 44, // Touch target
@@ -483,8 +550,10 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                         fontSize: '0.75rem',
                     }}
                 >
-                    {fieldType === 'email' && 'Please enter a valid email address'}
-                    {fieldType === 'phone' && 'Please enter a valid phone number'}
+                    {fieldType === 'email' &&
+                        'Please enter a valid email address'}
+                    {fieldType === 'phone' &&
+                        'Please enter a valid phone number'}
                     {fieldType === 'url' && 'Please enter a valid URL'}
                     {fieldType === 'number' && 'Please enter a valid number'}
                 </Typography>

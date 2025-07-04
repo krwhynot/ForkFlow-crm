@@ -49,8 +49,20 @@ export const OpportunityListFilter = () => {
 
     // Probability ranges for sales forecasting
     const probabilityRanges = [
-        { id: 'high', name: 'High (80-100%)', min: 80, max: 100, color: '#4caf50' },
-        { id: 'medium', name: 'Medium (50-79%)', min: 50, max: 79, color: '#ff9800' },
+        {
+            id: 'high',
+            name: 'High (80-100%)',
+            min: 80,
+            max: 100,
+            color: '#4caf50',
+        },
+        {
+            id: 'medium',
+            name: 'Medium (50-79%)',
+            min: 50,
+            max: 79,
+            color: '#ff9800',
+        },
         { id: 'low', name: 'Low (0-49%)', min: 0, max: 49, color: '#f44336' },
     ];
 
@@ -146,9 +158,9 @@ export const OpportunityListFilter = () => {
                                 className="text-white border-0 cursor-pointer font-medium"
                             />
                         }
-                        value={{ 
+                        value={{
                             'probability@gte': range.min,
-                            'probability@lte': range.max
+                            'probability@lte': range.max,
                         }}
                     />
                 ))}
@@ -183,10 +195,7 @@ export const OpportunityListFilter = () => {
                         label="Unassigned opportunities"
                         value={{ 'createdBy@is': null }}
                     />
-                    <FilterListItem
-                        label="All opportunities"
-                        value={{}}
-                    />
+                    <FilterListItem label="All opportunities" value={{}} />
                 </FilterList>
             )}
         </Box>

@@ -19,15 +19,14 @@ import {
 } from 'react-admin';
 import {
     Box,
-    useMediaQuery,
-    useTheme,
     Card,
     CardContent,
     Typography,
     Chip,
     Stack,
     Avatar,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 // Timeline components alternative - using simple layout instead
 import {
     Email as EmailIcon,
@@ -59,50 +58,50 @@ const ListActions = () => (
 );
 
 const InteractionListDesktop = () => (
-    <Datagrid 
+    <Datagrid
         rowClick="show"
-        sx={{
-            '& .RaDatagrid-headerRow': {
-                borderLeft: '1px solid rgba(224, 224, 224, 1)',
-            },
-        }}
+        className="[&_.RaDatagrid-headerRow]:border-l [&_.RaDatagrid-headerRow]:border-gray-300"
     >
-        <ReferenceField 
-            source="organizationId" 
-            reference="organizations" 
+        <ReferenceField
+            source="organizationId"
+            reference="organizations"
             link="show"
             label="Organization"
         >
             <TextField source="name" />
         </ReferenceField>
         <TextField source="subject" />
-        <ReferenceField 
-            source="typeId" 
-            reference="settings" 
+        <ReferenceField
+            source="typeId"
+            reference="settings"
             link={false}
             label="Type"
         >
-            <FunctionField render={(record: any) => (
-                <Chip
-                    label={record?.label || 'Unknown'}
-                    size="small"
-                    variant="outlined"
-                    sx={{ minWidth: 80 }}
-                />
-            )} />
+            <FunctionField
+                render={(record: any) => (
+                    <Chip
+                        label={record?.label || 'Unknown'}
+                        size="small"
+                        variant="outlined"
+                        className="min-w-20"
+                    />
+                )}
+            />
         </ReferenceField>
         <DateField source="scheduledDate" label="Scheduled" showTime />
         <BooleanField source="isCompleted" label="Completed" />
-        <ReferenceField 
-            source="contactId" 
-            reference="contacts" 
+        <ReferenceField
+            source="contactId"
+            reference="contacts"
             link="show"
             label="Contact"
             emptyText="-"
         >
-            <FunctionField render={(record: any) => 
-                record ? `${record.firstName} ${record.lastName}` : '-'
-            } />
+            <FunctionField
+                render={(record: any) =>
+                    record ? `${record.firstName} ${record.lastName}` : '-'
+                }
+            />
         </ReferenceField>
         <DateField source="createdAt" label="Created" showTime />
     </Datagrid>
@@ -110,17 +109,17 @@ const InteractionListDesktop = () => (
 
 const InteractionListMobile = () => {
     const { data, isLoading } = useListContext<Interaction>();
-    
+
     if (isLoading) return <div>Loading...</div>;
     if (!data || data.length === 0) return <InteractionEmpty />;
 
     return (
-        <Box sx={{ px: 2, py: 1 }}>
-            <Stack spacing={2}>
-                {data.map((interaction) => (
-                    <InteractionCard 
+        <Box className="px-2 py-1">
+            <Stack className="space-y-2">
+                {data.map(interaction => (
+                    <InteractionCard
                         key={interaction.id}
-                        interaction={interaction} 
+                        interaction={interaction}
                         showTimeline={false}
                     />
                 ))}
@@ -130,10 +129,9 @@ const InteractionListMobile = () => {
 };
 
 const InteractionListContent = () => {
-    const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
-    
-    return isSmall ? <InteractionListMobile /> : <InteractionListDesktop />;
+    const isMobile = useBreakpoint('md');
+
+    return isMobile ? <InteractionListMobile /> : <InteractionListDesktop />;
 };
 
 export const InteractionList = () => {
@@ -143,23 +141,24 @@ export const InteractionList = () => {
         sort: { field: 'sortOrder', order: 'ASC' },
     });
 
-    const interactionTypeChoices = settings?.map(setting => ({
-        id: setting.id,
-        name: setting.label,
-    })) || [];
+    const interactionTypeChoices =
+        settings?.map(setting => ({
+            id: setting.id,
+            name: setting.label,
+        })) || [];
 
     return (
         <List
             actions={<ListActions />}
             aside={
-                <Box sx={{ width: 250, p: 2 }}>
-                    <FilterForm 
+                <Box className="w-64 p-2">
+                    <FilterForm
                         filters={[
-                            <TextInput 
+                            <TextInput
                                 key="search"
-                                source="q" 
-                                label="Search" 
-                                alwaysOn 
+                                source="q"
+                                label="Search"
+                                alwaysOn
                                 variant="outlined"
                                 size="small"
                             />,
@@ -189,20 +188,12 @@ export const InteractionList = () => {
                                 label="Scheduled Before"
                                 variant="outlined"
                                 size="small"
-                            />
+                            />,
                         ]}
                     />
                 </Box>
             }
-            sx={{
-                '& .RaList-main': {
-                    display: 'flex',
-                    flexDirection: 'row',
-                },
-                '& .RaList-content': {
-                    flex: 1,
-                },
-            }}
+            className="[&_.RaList-main]:flex [&_.RaList-main]:flex-row [&_.RaList-content]:flex-1"
         >
             <InteractionListContent />
         </List>

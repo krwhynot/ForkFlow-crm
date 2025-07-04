@@ -17,8 +17,8 @@ import {
     Box,
     Chip,
     Button,
-    Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { Divider } from '@mui/material';
 import {
     LocationOn as LocationIcon,
     AccessTime as TimeIcon,
@@ -37,12 +37,12 @@ const VisitShowActions = () => (
 const LocationCard = ({ visit }: { visit: Visit }) => {
     if (!visit.latitude || !visit.longitude) {
         return (
-            <Card sx={{ mb: 2 }}>
+            <Card className="mb-2">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Location
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography className="text-gray-500">
                         No GPS location recorded for this visit
                     </Typography>
                 </CardContent>
@@ -56,16 +56,9 @@ const LocationCard = ({ visit }: { visit: Visit }) => {
     };
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-2">
             <CardContent>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                    }}
-                >
+                <Box className="flex items-center justify-between mb-2">
                     <Typography variant="h6">GPS Location</Typography>
                     <Chip
                         icon={<LocationIcon />}
@@ -75,11 +68,11 @@ const LocationCard = ({ visit }: { visit: Visit }) => {
                     />
                 </Box>
 
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2" color="text.secondary">
+                <Box className="mb-2">
+                    <Typography variant="body2" className="text-gray-500">
                         Latitude: {visit.latitude.toFixed(6)}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" className="text-gray-500">
                         Longitude: {visit.longitude.toFixed(6)}
                     </Typography>
                 </Box>
@@ -120,14 +113,14 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
     };
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-2">
             <CardContent>
                 <Typography variant="h6" gutterBottom>
                     Visit Details
                 </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PersonIcon sx={{ mr: 1, color: 'text.secondary' }} />
+                <Box className="flex items-center mb-2">
+                    <PersonIcon className="mr-1 text-gray-500" />
                     <Typography variant="body1">
                         Customer:{' '}
                         {visit.customer_name ||
@@ -135,11 +128,10 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box className="flex items-center mb-2">
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{ mr: 2 }}
+                        className="text-gray-500 mr-2"
                     >
                         Visit Type:
                     </Typography>
@@ -150,8 +142,8 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
                     />
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TimeIcon sx={{ mr: 1, color: 'text.secondary' }} />
+                <Box className="flex items-center mb-2">
+                    <TimeIcon className="mr-1 text-gray-500" />
                     <Box>
                         <Typography variant="body1">
                             {new Date(visit.visit_date).toLocaleDateString(
@@ -164,7 +156,7 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
                                 }
                             )}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-500">
                             {new Date(visit.visit_date).toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit',
@@ -173,11 +165,10 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
                     </Box>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box className="flex items-center">
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{ mr: 2 }}
+                        className="text-gray-500 mr-2"
                     >
                         Duration:
                     </Typography>
@@ -198,7 +189,7 @@ const NotesCard = ({ visit }: { visit: Visit }) => {
                     <Typography variant="h6" gutterBottom>
                         Visit Notes
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography className="text-gray-500">
                         No notes recorded for this visit
                     </Typography>
                 </CardContent>
@@ -212,7 +203,7 @@ const NotesCard = ({ visit }: { visit: Visit }) => {
                 <Typography variant="h6" gutterBottom>
                     Visit Notes
                 </Typography>
-                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                <Typography variant="body1" className="whitespace-pre-wrap">
                     {visit.notes}
                 </Typography>
             </CardContent>
@@ -225,7 +216,7 @@ export const VisitShow = () => (
         <SimpleShowLayout>
             <FunctionField
                 render={(record: Visit) => (
-                    <Box sx={{ p: 2 }}>
+                    <Box className="p-2">
                         <VisitDetailsCard visit={record} />
                         <LocationCard visit={record} />
                         <NotesCard visit={record} />

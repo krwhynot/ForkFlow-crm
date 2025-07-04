@@ -114,7 +114,9 @@ export const UniversalLoginPage = () => {
                             <Checkbox
                                 id="rememberMe"
                                 checked={rememberMe}
-                                onCheckedChange={() => setRememberMe(!rememberMe)}
+                                onCheckedChange={() =>
+                                    setRememberMe(!rememberMe)
+                                }
                                 disabled={loading}
                             />
                             <label

@@ -36,11 +36,13 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
     const overflowCount = total ? total - max : childrenArray.length - max;
 
     return (
-        <div className={cn(
-            'flex items-center',
-            SPACING_VARIANTS[spacing],
-            className
-        )}>
+        <div
+            className={cn(
+                'flex items-center',
+                SPACING_VARIANTS[spacing],
+                className
+            )}
+        >
             {visibleChildren.map((child, index) => (
                 <div
                     key={index}
@@ -50,7 +52,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                     {child}
                 </div>
             ))}
-            
+
             {hasOverflow && overflowCount > 0 && (
                 <div
                     className="relative ring-2 ring-white rounded-full bg-gray-100 text-gray-600 font-medium text-xs flex items-center justify-center h-8 w-8"

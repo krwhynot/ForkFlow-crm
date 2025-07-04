@@ -32,7 +32,10 @@ export function generateContact(seed: number = Date.now()): ContactTestData {
  * @param data ContactTestData
  * @returns The created contact's ID (if available)
  */
-export async function createContact(page: Page, data: ContactTestData): Promise<string | undefined> {
+export async function createContact(
+    page: Page,
+    data: ContactTestData
+): Promise<string | undefined> {
     // TODO: Implement contact creation (UI or API)
     // Example: await page.goto('/contacts/create');
     // Fill form fields, submit, and return new contact ID
@@ -45,7 +48,10 @@ export async function createContact(page: Page, data: ContactTestData): Promise<
  * @param page Playwright page
  * @param contactId Contact ID
  */
-export async function deleteContact(page: Page, contactId: string): Promise<void> {
+export async function deleteContact(
+    page: Page,
+    contactId: string
+): Promise<void> {
     // TODO: Implement contact deletion (UI or API)
     // Example: await page.goto(`/contacts/${contactId}`); await page.click('Delete');
-} 
+}

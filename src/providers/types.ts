@@ -1,4 +1,4 @@
-import { DataProvider } from "react-admin";
+import { DataProvider } from 'react-admin';
 
 export type CrmDataProvider = DataProvider & {
     isInitialized: () => Promise<boolean>;

@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {
-    SpeedDial,
-    SpeedDialAction,
-    Backdrop,
-} from '../components/ui-kit';
+import { SpeedDial, SpeedDialAction, Backdrop } from '../components/ui-kit';
 import {
     PlusIcon as AddIcon,
     BuildingOfficeIcon as OrganizationIcon,
@@ -65,19 +61,22 @@ export const QuickActionsFAB = () => {
 
     return (
         <>
-            <Backdrop 
-                open={open} 
-                onClick={() => setOpen(false)}
-            />
+            <Backdrop open={open} onClick={() => setOpen(false)} />
             <SpeedDial
                 aria-label="Quick Actions"
-                icon={open ? <CloseIcon className="h-6 w-6" /> : <AddIcon className="h-6 w-6" />}
+                icon={
+                    open ? (
+                        <CloseIcon className="h-6 w-6" />
+                    ) : (
+                        <AddIcon className="h-6 w-6" />
+                    )
+                }
                 onClose={() => setOpen(false)}
                 onOpen={() => setOpen(true)}
                 open={open}
                 direction="up"
             >
-                {actions.map((action) => (
+                {actions.map(action => (
                     <SpeedDialAction
                         key={action.name}
                         icon={action.icon}

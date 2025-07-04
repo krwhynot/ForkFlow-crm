@@ -1,6 +1,6 @@
 /**
  * SessionTimeoutRoute Component
- * 
+ *
  * A route wrapper that renders SessionTimeout as a persistent overlay
  * across all pages within the React Router context.
  */
@@ -18,11 +18,11 @@ interface SessionTimeoutRouteProps {
 /**
  * SessionTimeoutRoute renders SessionTimeout as a persistent overlay
  * that appears on all pages within the application.
- * 
+ *
  * This component is designed to be used within React-Admin's CustomRoutes
  * to ensure SessionTimeout has access to Router context while remaining
  * visible across all application pages.
- * 
+ *
  * Uses React Portal to render outside the normal component tree
  * but maintains Router context access.
  */
@@ -39,7 +39,7 @@ export const SessionTimeoutRoute: React.FC<SessionTimeoutRouteProps> = ({
     // Use createPortal to render SessionTimeout at document body level
     // This ensures it appears as an overlay on all pages
     return createPortal(
-        <SessionTimeout 
+        <SessionTimeout
             timeoutMinutes={timeoutMinutes}
             warningMinutes={warningMinutes}
             enabled={enabled}

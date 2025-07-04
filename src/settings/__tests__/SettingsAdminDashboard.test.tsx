@@ -89,7 +89,9 @@ describe('SettingsAdminDashboard', () => {
         );
 
         expect(screen.getByText('Settings Management')).toBeInTheDocument();
-        expect(screen.getByText(/Manage all system configuration settings/)).toBeInTheDocument();
+        expect(
+            screen.getByText(/Manage all system configuration settings/)
+        ).toBeInTheDocument();
     });
 
     it('displays category cards in overview tab', async () => {
@@ -116,7 +118,9 @@ describe('SettingsAdminDashboard', () => {
 
         await waitFor(() => {
             // Should show priority stats: 2 total, 1 active, 1 inactive
-            const prioritySection = screen.getByText('Priorities').closest('.MuiCard-root');
+            const prioritySection = screen
+                .getByText('Priorities')
+                .closest('.MuiCard-root');
             expect(prioritySection).toBeInTheDocument();
         });
     });
@@ -129,7 +133,9 @@ describe('SettingsAdminDashboard', () => {
         );
 
         await waitFor(() => {
-            const priorityCard = screen.getByText('Priorities').closest('.MuiCard-root');
+            const priorityCard = screen
+                .getByText('Priorities')
+                .closest('.MuiCard-root');
             if (priorityCard) {
                 fireEvent.click(priorityCard);
                 expect(window.location.href).toContain('settings');
@@ -187,10 +193,10 @@ describe('SettingsAdminDashboard', () => {
 
         await waitFor(() => {
             const addButtons = screen.getAllByRole('button');
-            const categoryAddButton = addButtons.find(button => 
+            const categoryAddButton = addButtons.find(button =>
                 button.querySelector('svg[data-testid="AddIcon"]')
             );
-            
+
             if (categoryAddButton) {
                 fireEvent.click(categoryAddButton);
                 expect(window.location.href).toContain('/settings/create');

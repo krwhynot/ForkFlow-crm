@@ -40,8 +40,8 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions,
-} from '@mui/material';
+    Button,
+} from '@/components/ui-kit';
 import {
     Person as PersonIcon,
     MoreVert as MoreVertIcon,
@@ -93,8 +93,8 @@ const UserListLayout = () => {
     return (
         <Stack direction="row">
             <UserListFilter />
-            <Stack sx={{ width: '100%' }}>
-                <Box display="flex" alignItems="center" gap={2} mb={1}>
+            <Stack className="w-full">
+                <Box className="flex items-center gap-4 mb-2">
                     <Title title="User Management" />
                     {hasRestrictions && (
                         <TerritoryDisplay
@@ -123,30 +123,20 @@ const UserListLayout = () => {
 
 const UserListActions = () => (
     <TopToolbar>
-        <SortButton fields={['lastName', 'firstName', 'email', 'role', 'createdAt']} />
+        <SortButton
+            fields={['lastName', 'firstName', 'email', 'role', 'createdAt']}
+        />
         <ExportButton />
         <CreateButton
             variant="contained"
             label="Add User"
-            sx={{
-                marginLeft: 2,
-                minHeight: 44,
-                px: 3,
-            }}
+            className="ml-4 min-h-11 px-6"
         />
     </TopToolbar>
 );
 
 const UserListDesktop = () => (
-    <Datagrid
-        bulkActionButtons={false}
-        rowClick="edit"
-        sx={{
-            '& .RaDatagrid-headerCell': {
-                backgroundColor: 'background.default',
-            },
-        }}
-    >
+    <Datagrid bulkActionButtons={false} rowClick="edit" className="bg-gray-50">
         <UserAvatarField source="avatar" />
         <TextField source="firstName" label="First Name" />
         <TextField source="lastName" label="Last Name" />
@@ -164,10 +154,8 @@ const UserListMobile = () => {
     const { data } = useListContext<User>();
 
     return (
-        <Box sx={{ p: 1 }}>
-            {data?.map((user) => (
-                <UserCard key={user.id} user={user} />
-            ))}
+        <Box className="p-2">
+            {data?.map(user => <UserCard key={user.id} user={user} />)}
         </Box>
     );
 };
@@ -185,26 +173,14 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
     };
 
     return (
-        <Card
-            sx={{
-                p: 2,
-                mb: 1,
-                cursor: 'pointer',
-                '&:hover': {
-                    backgroundColor: 'action.hover',
-                },
-            }}
-        >
-            <Box display="flex" alignItems="center" gap={2}>
-                <Avatar
-                    src={user.avatar?.src}
-                    sx={{ width: 48, height: 48 }}
-                >
+        <Card className="p-4 mb-2 cursor-pointer hover:bg-gray-50">
+            <Box className="flex items-center gap-4">
+                <Avatar src={user.avatar?.src} className="w-12 h-12">
                     {user.firstName?.[0]}
                     {user.lastName?.[0]}
                 </Avatar>
 
-                <Box flex={1}>
+                <Box className="flex-1">
                     <Typography variant="h6" component="div">
                         {user.firstName} {user.lastName}
                     </Typography>
@@ -212,45 +188,41 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                         {user.email}
                     </Typography>
 
-                    <Box display="flex" gap={1} mt={1} flexWrap="wrap">
+                    <Box className="flex gap-2 mt-2 flex-wrap">
                         <RoleChip role={user.role || 'user'} size="small" />
                         {user.administrator ? (
                             <Chip
-                                icon={<CheckCircleIcon />}
                                 label="Active"
-                                color="success"
+                                className="border-green-500 text-green-500"
                                 size="small"
-                                variant="outlined"
                             />
                         ) : (
                             <Chip
-                                icon={<BlockIcon />}
                                 label="Inactive"
-                                color="error"
+                                className="border-red-500 text-red-500"
                                 size="small"
-                                variant="outlined"
                             />
                         )}
                         {user.territory && user.territory.length > 0 && (
                             <Chip
-                                icon={<LocationIcon />}
                                 label={`${user.territory.length} areas`}
+                                className="border-gray-400 text-gray-600"
                                 size="small"
-                                variant="outlined"
                             />
                         )}
                     </Box>
 
                     {user.updatedAt && (
                         <Typography variant="caption" color="text.secondary">
-                            Last login: {new Date(user.updatedAt).toLocaleDateString()}
+                            Last login:{' '}
+                            {new Date(user.updatedAt).toLocaleDateString()}
                         </Typography>
                     )}
                 </Box>
 
                 <IconButton
                     onClick={handleMenuOpen}
-                    sx={{ minHeight: 44, minWidth: 44 }}
+                    className="min-h-11 min-w-11"
                 >
                     <MoreVertIcon />
                 </IconButton>
@@ -264,24 +236,24 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
                 <MenuItem onClick={handleMenuClose}>
-                    <EditIcon sx={{ mr: 1 }} />
+                    <EditIcon className="mr-2" />
                     Edit
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                     {user.administrator ? (
                         <>
-                            <BlockIcon sx={{ mr: 1 }} />
+                            <BlockIcon className="mr-2" />
                             Deactivate
                         </>
                     ) : (
                         <>
-                            <CheckCircleIcon sx={{ mr: 1 }} />
+                            <CheckCircleIcon className="mr-2" />
                             Activate
                         </>
                     )}
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose} sx={{ color: 'error.main' }}>
-                    <DeleteIcon sx={{ mr: 1 }} />
+                <MenuItem onClick={handleMenuClose} className="text-red-600">
+                    <DeleteIcon className="mr-2" />
                     Delete
                 </MenuItem>
             </Menu>
@@ -295,11 +267,8 @@ const UserAvatarField = ({ source }: { source: string }) => {
     if (!record) return null;
 
     return (
-        <Box display="flex" alignItems="center" gap={1}>
-            <Avatar
-                src={record.avatar?.src}
-                sx={{ width: 32, height: 32, fontSize: '0.875rem' }}
-            >
+        <Box className="flex items-center gap-2">
+            <Avatar src={record.avatar?.src} className="w-8 h-8 text-sm">
                 {record.firstName?.[0]}
                 {record.lastName?.[0]}
             </Avatar>
@@ -327,10 +296,11 @@ const TerritoryField = ({ source }: { source: string }) => {
     }
 
     return (
-        <Box display="flex" alignItems="center" gap={0.5}>
+        <Box className="flex items-center gap-1">
             <LocationIcon fontSize="small" color="primary" />
             <Typography variant="body2">
-                {record.territory.length} area{record.territory.length !== 1 ? 's' : ''}
+                {record.territory.length} area
+                {record.territory.length !== 1 ? 's' : ''}
             </Typography>
         </Box>
     );
@@ -342,19 +312,15 @@ const UserStatusField = ({ source }: { source: string }) => {
 
     return record.administrator ? (
         <Chip
-            icon={<CheckCircleIcon />}
             label="Active"
-            color="success"
+            className="border-green-500 text-green-500"
             size="small"
-            variant="outlined"
         />
     ) : (
         <Chip
-            icon={<BlockIcon />}
             label="Inactive"
-            color="error"
+            className="border-red-500 text-red-500"
             size="small"
-            variant="outlined"
         />
     );
 };
@@ -379,7 +345,7 @@ const UserActionsField = () => {
             <IconButton
                 onClick={handleMenuOpen}
                 size="small"
-                sx={{ minHeight: 44, minWidth: 44 }}
+                className="min-h-11 min-w-11"
             >
                 <MoreVertIcon />
             </IconButton>
@@ -391,18 +357,18 @@ const UserActionsField = () => {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
                 <MenuItem onClick={handleMenuClose}>
-                    <EditIcon sx={{ mr: 1 }} />
+                    <EditIcon className="mr-2" />
                     Edit
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                     {record.administrator ? (
                         <>
-                            <BlockIcon sx={{ mr: 1 }} />
+                            <BlockIcon className="mr-2" />
                             Deactivate
                         </>
                     ) : (
                         <>
-                            <CheckCircleIcon sx={{ mr: 1 }} />
+                            <CheckCircleIcon className="mr-2" />
                             Activate
                         </>
                     )}
@@ -429,10 +395,9 @@ const BulkActivateButton = () => {
                 data: { isActive: true },
             });
 
-            notify(
-                `Successfully activated ${selectedIds.length} user(s)`,
-                { type: 'success' }
-            );
+            notify(`Successfully activated ${selectedIds.length} user(s)`, {
+                type: 'success',
+            });
             refresh();
             unselectAll();
         } catch (error) {
@@ -443,9 +408,10 @@ const BulkActivateButton = () => {
     return (
         <Button
             onClick={handleActivate}
-            startIcon={<CheckCircleIcon />}
             disabled={selectedIds.length === 0}
+            className="flex items-center gap-2"
         >
+            <CheckCircleIcon />
             Activate
         </Button>
     );
@@ -467,10 +433,9 @@ const BulkDeactivateButton = () => {
                 data: { isActive: false },
             });
 
-            notify(
-                `Successfully deactivated ${selectedIds.length} user(s)`,
-                { type: 'success' }
-            );
+            notify(`Successfully deactivated ${selectedIds.length} user(s)`, {
+                type: 'success',
+            });
             refresh();
             unselectAll();
         } catch (error) {
@@ -481,19 +446,15 @@ const BulkDeactivateButton = () => {
     return (
         <Button
             onClick={handleDeactivate}
-            startIcon={<BlockIcon />}
             disabled={selectedIds.length === 0}
+            className="flex items-center gap-2"
         >
+            <BlockIcon />
             Deactivate
         </Button>
     );
 };
 
 const BulkExportButton = () => {
-    return (
-        <ExportButton
-            label="Export Users"
-            maxResults={1000}
-        />
-    );
+    return <ExportButton label="Export Users" maxResults={1000} />;
 };

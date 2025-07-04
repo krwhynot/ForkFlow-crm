@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Typography, Button, Stack } from '@mui/material';
-import { 
+import { Box, Typography, Button, Stack } from '@/components/ui-kit';
+import {
     Schedule as InteractionIcon,
     Add as AddIcon,
 } from '@mui/icons-material';
@@ -16,55 +16,41 @@ export const InteractionEmpty = () => {
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 400,
-                p: 4,
-                textAlign: 'center',
-            }}
-        >
-            <InteractionIcon
-                sx={{
-                    fontSize: 80,
-                    color: 'text.secondary',
-                    mb: 2,
-                }}
-            />
-            
-            <Typography variant="h5" gutterBottom color="text.secondary">
+        <Box className="flex flex-col items-center justify-center min-h-96 p-4 text-center">
+            <InteractionIcon className="text-7xl text-gray-500 mb-2" />
+
+            <Typography variant="h5" className="text-gray-500" gutterBottom>
                 No Interactions Yet
             </Typography>
-            
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 400 }}>
-                Start logging your customer interactions to track your food service broker activities. 
-                Record calls, visits, demos, quotes, and follow-ups all in one place.
+
+            <Typography
+                variant="body1"
+                className="text-gray-500 mb-3 max-w-96"
+            >
+                Start logging your customer interactions to track your food
+                service broker activities. Record calls, visits, demos, quotes,
+                and follow-ups all in one place.
             </Typography>
-            
-            <Stack direction="row" spacing={2}>
+
+            <Stack className="flex-row space-x-2">
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={handleCreateInteraction}
                     size="large"
-                    sx={{ 
-                        minHeight: 44, // Mobile touch target
-                        px: 3,
-                    }}
+                    className="min-h-11 px-3"
                 >
                     Log First Interaction
                 </Button>
             </Stack>
-            
-            <Box sx={{ mt: 4, p: 2, bgcolor: 'background.default', borderRadius: 2 }}>
+
+            <Box className="mt-4 p-2 bg-gray-50 rounded-lg">
                 <Typography variant="subtitle2" gutterBottom>
                     Interaction Types Available:
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    📧 Email • 📞 Call • 👥 In Person • 🎯 Demo • 💰 Quote • 📅 Follow-up
+                <Typography variant="body2" className="text-gray-500">
+                    📧 Email • 📞 Call • 👥 In Person • 🎯 Demo • 💰 Quote • 📅
+                    Follow-up
                 </Typography>
             </Box>
         </Box>

@@ -5,7 +5,7 @@ import useAppBarHeight from '../misc/useAppBarHeight';
 export const CompanyEmpty = () => {
     const appbarHeight = useAppBarHeight();
     return (
-        <Box 
+        <Box
             className="flex flex-col justify-center items-center gap-6"
             style={{ height: `calc(100dvh - ${appbarHeight}px)` }}
         >

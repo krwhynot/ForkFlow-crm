@@ -18,8 +18,16 @@ import {
     useRecordContext,
     BulkActionsToolbar,
 } from 'react-admin';
-import { Stack, Typography, Card, CardContent, Box, Chip } from '@/components/ui-kit';
-import { CardActions, IconButton, Grid } from '@mui/material';
+import {
+    Stack,
+    Typography,
+    Card,
+    CardContent,
+    Box,
+    Chip,
+    Button,
+} from '@/components/ui-kit';
+import { Grid } from '@mui/material';
 import { Edit as EditIcon, Visibility as ViewIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
@@ -74,8 +82,7 @@ const CategoryChip: React.FC<CategoryChipProps> = ({
             label={record.category}
             size="small"
             style={{
-                backgroundColor:
-                    categoryColors[record.category] || '#9e9e9e',
+                backgroundColor: categoryColors[record.category] || '#9e9e9e',
             }}
             className="text-white font-medium"
         />
@@ -127,7 +134,7 @@ const EnhancedProductCard = () => {
             aria-label={`Product: ${record.name}, SKU: ${record.sku}, Price: ${
                 record.pricePerUnit ? `$${record.pricePerUnit}` : 'Not set'
             }`}
-            onKeyDown={(e) => {
+            onKeyDown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     window.location.href = `/products/${record.id}/show`;
@@ -181,33 +188,38 @@ const EnhancedProductCard = () => {
                 {/* Package Info */}
                 {record.packageSize && (
                     <Typography variant="body2" className="text-gray-500">
-                        Package: {record.packageSize} •{' '}
-                        {record.unitOfMeasure}
+                        Package: {record.packageSize} • {record.unitOfMeasure}
                     </Typography>
                 )}
             </CardContent>
 
             {/* Quick Actions */}
-            <CardActions sx={{ pt: 0, justifyContent: 'space-between' }}>
-                <Box className="flex gap-0.5">
-                    <IconButton
-                        component={Link}
-                        to={`/products/${record.id}/show`}
+            <Box className="flex justify-between items-center px-4 py-2 border-t">
+                <Box className="flex gap-2">
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        onClick={() =>
+                            (window.location.href = `/products/${record.id}/show`)
+                        }
                         className="min-w-11 min-h-11 text-blue-500"
                         aria-label={`View product: ${record.name}`}
                     >
                         <ViewIcon />
-                    </IconButton>
-                    <IconButton
-                        component={Link}
-                        to={`/products/${record.id}/edit`}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        onClick={() =>
+                            (window.location.href = `/products/${record.id}/edit`)
+                        }
                         className="min-w-11 min-h-11 text-gray-500"
                         aria-label={`Edit product: ${record.name}`}
                     >
                         <EditIcon />
-                    </IconButton>
+                    </Button>
                 </Box>
-            </CardActions>
+            </Box>
         </Card>
     );
 };
@@ -221,16 +233,10 @@ const ProductMobileGrid = () => {
     if (!data || data.length === 0) {
         return (
             <Box className="p-3 text-center">
-                <Typography
-                    variant="h6"
-                    className="text-gray-500 mb-2"
-                >
+                <Typography variant="h6" className="text-gray-500 mb-2">
                     No Products Found
                 </Typography>
-                <Typography
-                    variant="body2"
-                    className="text-gray-500 mb-2"
-                >
+                <Typography variant="body2" className="text-gray-500 mb-2">
                     No products match your current filters.
                 </Typography>
                 <CreateButton
@@ -292,7 +298,7 @@ const useProductFilters = () => {
     ];
 
     const principalChoices =
-        principalSettings?.map((setting) => ({
+        principalSettings?.map(setting => ({
             id: setting.id,
             name: setting.label,
         })) || [];
@@ -304,11 +310,7 @@ const useProductFilters = () => {
             label="Search by name"
             alwaysOn
         />,
-        <TextInput
-            key="search-sku"
-            source="sku"
-            label="Search by SKU"
-        />,
+        <TextInput key="search-sku" source="sku" label="Search by SKU" />,
         <SelectInput
             key="category"
             source="category"
@@ -357,16 +359,10 @@ export const ProductList = () => {
             title="Food Service Products"
             empty={
                 <Box className="p-3 text-center">
-                    <Typography
-                        variant="h6"
-                        className="text-gray-500 mb-2"
-                    >
+                    <Typography variant="h6" className="text-gray-500 mb-2">
                         No Products Found
                     </Typography>
-                    <Typography
-                        variant="body2"
-                        className="text-gray-500 mb-2"
-                    >
+                    <Typography variant="body2" className="text-gray-500 mb-2">
                         Add your first product to get started.
                     </Typography>
                     <CreateButton

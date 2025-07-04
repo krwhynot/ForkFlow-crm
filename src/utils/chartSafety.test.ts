@@ -94,7 +94,7 @@ describe('Chart Safety Utilities', () => {
             ];
 
             const result = sanitizeChartData(data, ['value', 'amount']);
-            
+
             expect(result).toEqual([
                 { name: 'A', value: 10, amount: 0 },
                 { name: 'B', value: 0, amount: 20 },

@@ -23,17 +23,26 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
     Paper,
     IconButton,
     Tooltip,
-} from '@mui/material';
+} from '@/components/ui-kit';
 
 import { User } from '../types';
 import { useBreakpoint } from '../hooks/useBreakpoint';
-import { Box, Card, CardContent, Typography, Chip, Button, Dialog, DialogTitle, DialogContent } from '@/components/ui-kit';
+import {
+    Box,
+    Card,
+    CardContent,
+    Typography,
+    Chip,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+} from '@/components/ui-kit';
 
 interface UserActivity {
     id: string;
@@ -78,9 +87,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
             id: '1',
             type: 'login',
             description: 'User logged in successfully',
-            timestamp: new Date(
-                Date.now() - 2 * 60 * 60 * 1000
-            ).toISOString(),
+            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
             ipAddress: '192.168.1.100',
             userAgent:
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -90,9 +97,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
             id: '2',
             type: 'edit',
             description: 'Updated organization: Acme Restaurant',
-            timestamp: new Date(
-                Date.now() - 4 * 60 * 60 * 1000
-            ).toISOString(),
+            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
             resourceType: 'organization',
             resourceId: '123',
             metadata: { changes: ['name', 'phone'] },
@@ -204,7 +209,10 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
             <Card>
                 <CardContent>
                     <Box className="flex justify-between items-center mb-4">
-                        <Typography variant="h6" className="mb-0 flex items-center">
+                        <Typography
+                            variant="h6"
+                            className="mb-0 flex items-center"
+                        >
                             <HistoryIcon className="mr-2" />
                             User Activity Log
                         </Typography>
@@ -226,17 +234,14 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                         color="text.secondary"
                         paragraph
                     >
-                        Recent activity and system interactions for {user.firstName}{' '}
-                        {user.lastName}
+                        Recent activity and system interactions for{' '}
+                        {user.firstName} {user.lastName}
                     </Typography>
 
                     {displayActivities.length === 0 ? (
                         <Box className="text-center py-8">
                             <HistoryIcon className="text-5xl text-gray-500 mb-4" />
-                            <Typography
-                                variant="body1"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body1" color="text.secondary">
                                 No activity recorded yet
                             </Typography>
                         </Box>
@@ -269,18 +274,21 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                                             ) === 'success'
                                                                 ? 'border-green-500 text-green-500'
                                                                 : getActivityColor(
-                                                                      activity.type
-                                                                  ) === 'error'
-                                                                ? 'border-red-500 text-red-500'
-                                                                : getActivityColor(
-                                                                      activity.type
-                                                                  ) === 'warning'
-                                                                ? 'border-yellow-500 text-yellow-500'
-                                                                : getActivityColor(
-                                                                      activity.type
-                                                                  ) === 'info'
-                                                                ? 'border-blue-500 text-blue-500'
-                                                                : 'border-gray-500 text-gray-500'
+                                                                        activity.type
+                                                                    ) ===
+                                                                    'error'
+                                                                  ? 'border-red-500 text-red-500'
+                                                                  : getActivityColor(
+                                                                          activity.type
+                                                                      ) ===
+                                                                      'warning'
+                                                                    ? 'border-yellow-500 text-yellow-500'
+                                                                    : getActivityColor(
+                                                                            activity.type
+                                                                        ) ===
+                                                                        'info'
+                                                                      ? 'border-blue-500 text-blue-500'
+                                                                      : 'border-gray-500 text-gray-500'
                                                         }`}
                                                     />
                                                 </Box>
@@ -301,7 +309,8 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                                             color="text.secondary"
                                                             className="ml-2"
                                                         >
-                                                            • {activity.ipAddress}
+                                                            •{' '}
+                                                            {activity.ipAddress}
                                                         </Typography>
                                                     )}
                                                     {activity.location && (
@@ -310,20 +319,24 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                                             color="text.secondary"
                                                             className="ml-2"
                                                         >
-                                                            • {activity.location}
+                                                            •{' '}
+                                                            {activity.location}
                                                         </Typography>
                                                     )}
                                                 </Box>
                                             }
                                         />
 
-                                        <IconButton size="small">
-                                            <VisibilityIcon fontSize="small" />
+                                        <IconButton
+                                            size="small"
+                                            className="text-blue-600"
+                                        >
+                                            <VisibilityIcon className="text-sm" />
                                         </IconButton>
                                     </ListItem>
 
                                     {index < displayActivities.length - 1 && (
-                                        <Divider />
+                                        <Divider className="my-1" />
                                     )}
                                 </React.Fragment>
                             ))}
@@ -342,10 +355,12 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
             >
                 <DialogTitle>
                     <Box className="flex justify-between items-center">
-                        <Typography variant="h6">
-                            Activity Details
-                        </Typography>
-                        <IconButton onClick={handleCloseDetails} size="small">
+                        <Typography variant="h6">Activity Details</Typography>
+                        <IconButton
+                            onClick={handleCloseDetails}
+                            size="small"
+                            className="text-gray-600"
+                        >
                             <CloseIcon />
                         </IconButton>
                     </Box>
@@ -369,31 +384,31 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                             ) === 'success'
                                                 ? 'bg-green-500 text-white'
                                                 : getActivityColor(
-                                                      selectedActivity.type
-                                                  ) === 'error'
-                                                ? 'bg-red-500 text-white'
-                                                : getActivityColor(
-                                                      selectedActivity.type
-                                                  ) === 'warning'
-                                                ? 'bg-yellow-500 text-white'
-                                                : getActivityColor(
-                                                      selectedActivity.type
-                                                  ) === 'info'
-                                                ? 'bg-blue-500 text-white'
-                                                : 'bg-gray-500 text-white'
+                                                        selectedActivity.type
+                                                    ) === 'error'
+                                                  ? 'bg-red-500 text-white'
+                                                  : getActivityColor(
+                                                          selectedActivity.type
+                                                      ) === 'warning'
+                                                    ? 'bg-yellow-500 text-white'
+                                                    : getActivityColor(
+                                                            selectedActivity.type
+                                                        ) === 'info'
+                                                      ? 'bg-blue-500 text-white'
+                                                      : 'bg-gray-500 text-white'
                                         }`}
                                     />
                                 </Box>
                             </Box>
 
-                            <TableContainer component={Paper} variant="outlined">
-                                <Table size="small">
+                            <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                <Table className="w-full">
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>
-                                                <strong>Timestamp</strong>
+                                        <TableRow className="border-b border-gray-100">
+                                            <TableCell className="font-semibold p-3">
+                                                Timestamp
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="p-3">
                                                 {new Date(
                                                     selectedActivity.timestamp
                                                 ).toLocaleString()}
@@ -401,35 +416,33 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                         </TableRow>
 
                                         {selectedActivity.ipAddress && (
-                                            <TableRow>
-                                                <TableCell>
-                                                    <strong>IP Address</strong>
+                                            <TableRow className="border-b border-gray-100">
+                                                <TableCell className="font-semibold p-3">
+                                                    IP Address
                                                 </TableCell>
-                                                <TableCell className="font-mono">
+                                                <TableCell className="font-mono p-3">
                                                     {selectedActivity.ipAddress}
                                                 </TableCell>
                                             </TableRow>
                                         )}
 
                                         {selectedActivity.location && (
-                                            <TableRow>
-                                                <TableCell>
-                                                    <strong>Location</strong>
+                                            <TableRow className="border-b border-gray-100">
+                                                <TableCell className="font-semibold p-3">
+                                                    Location
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell className="p-3">
                                                     {selectedActivity.location}
                                                 </TableCell>
                                             </TableRow>
                                         )}
 
                                         {selectedActivity.resourceType && (
-                                            <TableRow>
-                                                <TableCell>
-                                                    <strong>
-                                                        Resource Type
-                                                    </strong>
+                                            <TableRow className="border-b border-gray-100">
+                                                <TableCell className="font-semibold p-3">
+                                                    Resource Type
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell className="p-3">
                                                     {
                                                         selectedActivity.resourceType
                                                     }
@@ -438,13 +451,11 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                         )}
 
                                         {selectedActivity.resourceId && (
-                                            <TableRow>
-                                                <TableCell>
-                                                    <strong>
-                                                        Resource ID
-                                                    </strong>
+                                            <TableRow className="border-b border-gray-100">
+                                                <TableCell className="font-semibold p-3">
+                                                    Resource ID
                                                 </TableCell>
-                                                <TableCell className="font-mono">
+                                                <TableCell className="font-mono p-3">
                                                     {
                                                         selectedActivity.resourceId
                                                     }
@@ -453,32 +464,27 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                         )}
 
                                         {selectedActivity.userAgent && (
-                                            <TableRow>
-                                                <TableCell>
-                                                    <strong>User Agent</strong>
+                                            <TableRow className="border-b border-gray-100">
+                                                <TableCell className="font-semibold p-3">
+                                                    User Agent
                                                 </TableCell>
-                                                <TableCell className="font-mono text-xs break-all">
-                                                    {
-                                                        selectedActivity.userAgent
-                                                    }
+                                                <TableCell className="font-mono text-xs break-all p-3">
+                                                    {selectedActivity.userAgent}
                                                 </TableCell>
                                             </TableRow>
                                         )}
                                     </TableBody>
                                 </Table>
-                            </TableContainer>
+                            </div>
 
                             {selectedActivity.metadata &&
-                                Object.keys(selectedActivity.metadata)
-                                    .length > 0 && (
+                                Object.keys(selectedActivity.metadata).length >
+                                    0 && (
                                     <Box className="mt-6">
                                         <Typography variant="h6" gutterBottom>
                                             Additional Details
                                         </Typography>
-                                        <Paper
-                                            variant="outlined"
-                                            className="p-4"
-                                        >
+                                        <Paper className="border border-gray-200 p-4 rounded-lg">
                                             <pre
                                                 style={{
                                                     margin: 0,
@@ -500,8 +506,10 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                     )}
                 </DialogContent>
 
-                <div className="flex justify-end gap-2 p-4 border-t">
-                    <Button onClick={handleCloseDetails}>Close</Button>
+                <div className="flex justify-end gap-2 p-4 border-t border-gray-200">
+                    <Button onClick={handleCloseDetails} variant="secondary">
+                        Close
+                    </Button>
                 </div>
             </Dialog>
         </Box>

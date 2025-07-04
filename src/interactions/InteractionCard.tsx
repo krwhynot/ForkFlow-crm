@@ -5,10 +5,10 @@ import {
     Typography,
     Box,
     Chip,
-    IconButton,
+    Button,
     Stack,
     Avatar,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Visibility as ViewIcon,
     Edit as EditIcon,
@@ -51,12 +51,12 @@ interface InteractionCardProps {
     showTimeline?: boolean;
 }
 
-export const InteractionCard = ({ 
-    interaction, 
-    showTimeline = true 
+export const InteractionCard = ({
+    interaction,
+    showTimeline = true,
 }: InteractionCardProps) => {
     const redirect = useRedirect();
-    
+
     if (!interaction) return null;
 
     const handleView = (e: React.MouseEvent) => {
@@ -69,8 +69,14 @@ export const InteractionCard = ({
         redirect(`/interactions/${interaction.id}`);
     };
 
-    const TypeIcon = interactionTypeIcons[interaction.type?.key as keyof typeof interactionTypeIcons] || FollowUpIcon;
-    const typeColor = interactionTypeColors[interaction.type?.key as keyof typeof interactionTypeColors] || '#455a64';
+    const TypeIcon =
+        interactionTypeIcons[
+            interaction.type?.key as keyof typeof interactionTypeIcons
+        ] || FollowUpIcon;
+    const typeColor =
+        interactionTypeColors[
+            interaction.type?.key as keyof typeof interactionTypeColors
+        ] || '#455a64';
 
     const formatDate = (dateString?: string) => {
         if (!dateString) return '';
@@ -96,108 +102,72 @@ export const InteractionCard = ({
             role="button"
             tabIndex={0}
             aria-label={`Interaction: ${interaction.subject || 'Untitled Interaction'} with ${interaction.organization?.name || 'Unknown Organization'}`}
-            onKeyDown={(e) => {
+            onKeyDown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     handleView(e as any);
                 }
             }}
-            sx={{
-                mb: showTimeline ? 2 : 1,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                    boxShadow: 4,
-                    transform: 'translateY(-1px)',
-                },
-                '&:focus': {
-                    outline: '2px solid',
-                    outlineColor: 'primary.main',
-                    outlineOffset: '2px',
-                },
-                minHeight: 140,
-            }}
+            className={`${showTimeline ? 'mb-2' : 'mb-1'} cursor-pointer transition-all duration-200 ease-in-out hover:shadow-lg hover:-translate-y-px focus:outline-2 focus:outline-blue-600 focus:outline-offset-2 min-h-36`}
             onClick={handleView}
         >
-            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+            <CardContent className="p-2 [&:last-child]:pb-2">
                 {/* Header with Type Icon and Actions */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'flex-start',
-                    mb: 2 
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                <Box className="flex justify-between items-start mb-2">
+                    <Box className="flex items-center flex-grow">
                         <Avatar
                             aria-label={`${interaction.type?.label || 'Unknown Type'} interaction`}
-                            sx={{
-                                bgcolor: typeColor,
-                                width: 32,
-                                height: 32,
-                                mr: 1.5,
+                            className="w-8 h-8 mr-1.5"
+                            style={{
+                                backgroundColor: typeColor,
                             }}
                         >
-                            <TypeIcon fontSize="small" aria-hidden="true" />
+                            <TypeIcon className="text-sm" aria-hidden="true" />
                         </Avatar>
-                        <Box sx={{ flexGrow: 1 }}>
-                            <Typography 
-                                variant="subtitle1" 
-                                sx={{ 
-                                    fontWeight: 600,
-                                    lineHeight: 1.2,
-                                    fontSize: '0.95rem',
-                                }}
+                        <Box className="flex-grow">
+                            <Typography
+                                variant="subtitle1"
+                                className="font-semibold leading-tight text-sm"
                             >
                                 {interaction.subject || 'Untitled Interaction'}
                             </Typography>
-                            <Typography 
-                                variant="caption" 
-                                color="text.secondary"
-                                sx={{ fontSize: '0.75rem' }}
+                            <Typography
+                                variant="caption"
+                                className="text-gray-500 text-xs"
                             >
                                 {interaction.type?.label || 'Unknown Type'}
                             </Typography>
                         </Box>
                     </Box>
-                    
-                    <Stack direction="row" spacing={0.5}>
-                        <IconButton
-                            size="small"
+
+                    <Stack className="flex-row space-x-1">
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={handleView}
                             aria-label={`View interaction: ${interaction.subject || 'Untitled Interaction'}`}
-                            sx={{ 
-                                minWidth: 44, 
-                                minHeight: 44,
-                                padding: 1,
-                            }}
+                            className="min-w-11 min-h-11 p-1"
                         >
-                            <ViewIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                            size="small"
+                            <ViewIcon className="text-sm" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={handleEdit}
                             aria-label={`Edit interaction: ${interaction.subject || 'Untitled Interaction'}`}
-                            sx={{ 
-                                minWidth: 44, 
-                                minHeight: 44,
-                                padding: 1,
-                            }}
+                            className="min-w-11 min-h-11 p-1"
                         >
-                            <EditIcon fontSize="small" />
-                        </IconButton>
+                            <EditIcon className="text-sm" />
+                        </Button>
                     </Stack>
                 </Box>
 
                 {/* Organization and Contact */}
-                <Stack spacing={1} sx={{ mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <BusinessIcon 
+                <Stack className="space-y-1 mb-2">
+                    <Box className="flex items-center">
+                        <BusinessIcon
                             aria-hidden="true"
-                            sx={{ 
-                                fontSize: 16, 
-                                mr: 1, 
-                                color: 'text.secondary' 
-                            }} 
+                            className="text-base mr-1 text-gray-500"
                         />
                         <ReferenceField
                             source="organizationId"
@@ -205,23 +175,19 @@ export const InteractionCard = ({
                             link={false}
                             record={interaction}
                         >
-                            <TextField 
-                                source="name" 
+                            <TextField
+                                source="name"
                                 variant="body2"
-                                sx={{ fontSize: '0.875rem' }}
+                                className="text-sm"
                             />
                         </ReferenceField>
                     </Box>
-                    
+
                     {interaction.contactId && (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <PersonIcon 
+                        <Box className="flex items-center">
+                            <PersonIcon
                                 aria-hidden="true"
-                                sx={{ 
-                                    fontSize: 16, 
-                                    mr: 1, 
-                                    color: 'text.secondary' 
-                                }} 
+                                className="text-base mr-1 text-gray-500"
                             />
                             <ReferenceField
                                 source="contactId"
@@ -229,8 +195,12 @@ export const InteractionCard = ({
                                 link={false}
                                 record={interaction}
                             >
-                                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
-                                    <TextField source="firstName" /> <TextField source="lastName" />
+                                <Typography
+                                    variant="body2"
+                                    className="text-sm"
+                                >
+                                    <TextField source="firstName" />{' '}
+                                    <TextField source="lastName" />
                                 </Typography>
                             </ReferenceField>
                         </Box>
@@ -238,49 +208,38 @@ export const InteractionCard = ({
                 </Stack>
 
                 {/* Status and Details */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mb: 1.5,
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box className="flex justify-between items-center mb-1.5">
+                    <Box className="flex items-center">
                         {interaction.isCompleted ? (
-                            <CompletedIcon 
+                            <CompletedIcon
                                 aria-hidden="true"
-                                sx={{ 
-                                    fontSize: 18, 
-                                    mr: 0.5, 
-                                    color: 'success.main' 
-                                }} 
+                                className="text-lg mr-0.5 text-green-600"
                             />
                         ) : (
-                            <PendingIcon 
+                            <PendingIcon
                                 aria-hidden="true"
-                                sx={{ 
-                                    fontSize: 18, 
-                                    mr: 0.5, 
-                                    color: 'warning.main' 
-                                }} 
+                                className="text-lg mr-0.5 text-yellow-600"
                             />
                         )}
                         <Chip
-                            label={interaction.isCompleted ? 'Completed' : 'Pending'}
+                            label={
+                                interaction.isCompleted
+                                    ? 'Completed'
+                                    : 'Pending'
+                            }
                             size="small"
-                            color={interaction.isCompleted ? 'success' : 'warning'}
+                            color={
+                                interaction.isCompleted ? 'success' : 'warning'
+                            }
                             variant="outlined"
-                            sx={{ 
-                                fontSize: '0.75rem',
-                                minWidth: 80,
-                            }}
+                            className="text-xs min-w-20"
                         />
                     </Box>
-                    
+
                     {interaction.duration && (
-                        <Typography 
-                            variant="caption" 
-                            color="text.secondary"
-                            sx={{ fontSize: '0.75rem' }}
+                        <Typography
+                            variant="caption"
+                            className="text-gray-500 text-xs"
                         >
                             {formatDuration(interaction.duration)}
                         </Typography>
@@ -288,45 +247,41 @@ export const InteractionCard = ({
                 </Box>
 
                 {/* Schedule and Location */}
-                <Stack spacing={0.5}>
+                <Stack className="space-y-0.5">
                     {interaction.scheduledDate && (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <ScheduleIcon 
+                        <Box className="flex items-center">
+                            <ScheduleIcon
                                 aria-hidden="true"
-                                sx={{ 
-                                    fontSize: 14, 
-                                    mr: 1, 
-                                    color: 'text.secondary' 
-                                }} 
+                                className="text-sm mr-1 text-gray-500"
                             />
-                            <Typography 
-                                variant="caption" 
-                                color="text.secondary"
-                                sx={{ fontSize: '0.75rem' }}
+                            <Typography
+                                variant="caption"
+                                className="text-gray-500 text-xs"
                             >
-                                {interaction.isCompleted ? 'Completed: ' : 'Scheduled: '}
-                                {formatDate(interaction.completedDate || interaction.scheduledDate)}
+                                {interaction.isCompleted
+                                    ? 'Completed: '
+                                    : 'Scheduled: '}
+                                {formatDate(
+                                    interaction.completedDate ||
+                                        interaction.scheduledDate
+                                )}
                             </Typography>
                         </Box>
                     )}
-                    
-                    {(interaction.latitude && interaction.longitude) && (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <LocationIcon 
+
+                    {interaction.latitude && interaction.longitude && (
+                        <Box className="flex items-center">
+                            <LocationIcon
                                 aria-hidden="true"
-                                sx={{ 
-                                    fontSize: 14, 
-                                    mr: 1, 
-                                    color: 'text.secondary' 
-                                }} 
+                                className="text-sm mr-1 text-gray-500"
                             />
-                            <Typography 
-                                variant="caption" 
-                                color="text.secondary"
-                                sx={{ fontSize: '0.75rem' }}
+                            <Typography
+                                variant="caption"
+                                className="text-gray-500 text-xs"
                             >
                                 Location recorded
-                                {interaction.locationNotes && ` • ${interaction.locationNotes}`}
+                                {interaction.locationNotes &&
+                                    ` • ${interaction.locationNotes}`}
                             </Typography>
                         </Box>
                     )}
@@ -334,17 +289,13 @@ export const InteractionCard = ({
 
                 {/* Description Preview */}
                 {interaction.description && (
-                    <Typography 
-                        variant="body2" 
-                        color="text.secondary"
-                        sx={{ 
-                            mt: 1,
-                            fontSize: '0.8rem',
+                    <Typography
+                        variant="body2"
+                        className="mt-1 text-sm text-gray-500 line-clamp-2 overflow-hidden text-ellipsis"
+                        style={{
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
                         }}
                     >
                         {interaction.description}

@@ -60,7 +60,10 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
                     variant === 'indeterminate' && 'animate-pulse'
                 )}
                 style={{
-                    width: variant === 'determinate' ? `${Math.min(100, Math.max(0, value))}%` : '100%',
+                    width:
+                        variant === 'determinate'
+                            ? `${Math.min(100, Math.max(0, value))}%`
+                            : '100%',
                 }}
             />
         </div>

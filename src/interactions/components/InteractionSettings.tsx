@@ -35,7 +35,7 @@ import { useGPSService, useOfflineService } from '../../providers/mobile';
 export const InteractionSettings = () => {
     const gpsService = useGPSService();
     const offlineService = useOfflineService();
-    
+
     const [settings, setSettings] = useState({
         // GPS Settings
         gpsEnabled: true,
@@ -43,34 +43,40 @@ export const InteractionSettings = () => {
         gpsTimeout: 10000,
         gpsCacheTime: 60000,
         gpsAutoCapture: true,
-        
+
         // Offline Settings
         offlineEnabled: true,
         autoSync: true,
         syncInterval: 300000, // 5 minutes
         maxOfflineStorage: 100,
-        
+
         // File Upload Settings
         fileCompression: true,
         maxFileSize: 10485760, // 10MB
         compressionQuality: 0.8,
         thumbnailSize: 150,
-        
+
         // Performance Settings
         performanceTracking: true,
         performanceAlerts: true,
         maxMetricsStorage: 1000,
     });
 
-    const [offlineStatus, setOfflineStatus] = useState(offlineService.getStatus());
+    const [offlineStatus, setOfflineStatus] = useState(
+        offlineService.getStatus()
+    );
 
-    const handleSettingChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        setSettings(prev => ({
-            ...prev,
-            [key]: value,
-        }));
-    };
+    const handleSettingChange =
+        (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+            const value =
+                event.target.type === 'checkbox'
+                    ? event.target.checked
+                    : event.target.value;
+            setSettings(prev => ({
+                ...prev,
+                [key]: value,
+            }));
+        };
 
     const testGPS = async () => {
         try {
@@ -79,9 +85,11 @@ export const InteractionSettings = () => {
                 timeout: settings.gpsTimeout,
                 maximumAge: settings.gpsCacheTime,
             });
-            
+
             if (result.coordinates) {
-                alert(`GPS Test Successful!\n\nLatitude: ${result.coordinates.latitude}\nLongitude: ${result.coordinates.longitude}\nAccuracy: ±${Math.round(result.coordinates.accuracy || 0)}m`);
+                alert(
+                    `GPS Test Successful!\n\nLatitude: ${result.coordinates.latitude}\nLongitude: ${result.coordinates.longitude}\nAccuracy: ±${Math.round(result.coordinates.accuracy || 0)}m`
+                );
             } else {
                 alert(`GPS Test Failed: ${result.error}`);
             }
@@ -91,7 +99,11 @@ export const InteractionSettings = () => {
     };
 
     const clearOfflineData = async () => {
-        if (confirm('Are you sure you want to clear all offline data? This action cannot be undone.')) {
+        if (
+            confirm(
+                'Are you sure you want to clear all offline data? This action cannot be undone.'
+            )
+        ) {
             try {
                 await offlineService.clearOfflineData();
                 setOfflineStatus(offlineService.getStatus());
@@ -128,44 +140,67 @@ export const InteractionSettings = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <LocationIcon 
-                                    color={gpsService.isAvailable() ? 'success' : 'error'} 
-                                    sx={{ fontSize: 40, mb: 1 }} 
+                                <LocationIcon
+                                    color={
+                                        gpsService.isAvailable()
+                                            ? 'success'
+                                            : 'error'
+                                    }
+                                    sx={{ fontSize: 40, mb: 1 }}
                                 />
                                 <Typography variant="body2">
-                                    GPS: {gpsService.isAvailable() ? 'Available' : 'Unavailable'}
+                                    GPS:{' '}
+                                    {gpsService.isAvailable()
+                                        ? 'Available'
+                                        : 'Unavailable'}
                                 </Typography>
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <OfflineIcon 
-                                    color={offlineStatus.isOnline ? 'success' : 'warning'} 
-                                    sx={{ fontSize: 40, mb: 1 }} 
+                                <OfflineIcon
+                                    color={
+                                        offlineStatus.isOnline
+                                            ? 'success'
+                                            : 'warning'
+                                    }
+                                    sx={{ fontSize: 40, mb: 1 }}
                                 />
                                 <Typography variant="body2">
-                                    Status: {offlineStatus.isOnline ? 'Online' : 'Offline'}
+                                    Status:{' '}
+                                    {offlineStatus.isOnline
+                                        ? 'Online'
+                                        : 'Offline'}
                                 </Typography>
                                 {offlineStatus.pendingActions > 0 && (
-                                    <Chip 
-                                        label={`${offlineStatus.pendingActions} pending`} 
-                                        size="small" 
-                                        color="info" 
+                                    <Chip
+                                        label={`${offlineStatus.pendingActions} pending`}
+                                        size="small"
+                                        color="info"
                                     />
                                 )}
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <StorageIcon color="primary" sx={{ fontSize: 40, mb: 1 }} />
+                                <StorageIcon
+                                    color="primary"
+                                    sx={{ fontSize: 40, mb: 1 }}
+                                />
                                 <Typography variant="body2">
-                                    Storage: {formatBytes((offlineStatus as any).storageUsed || 0)}
+                                    Storage:{' '}
+                                    {formatBytes(
+                                        (offlineStatus as any).storageUsed || 0
+                                    )}
                                 </Typography>
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <PerformanceIcon color="primary" sx={{ fontSize: 40, mb: 1 }} />
+                                <PerformanceIcon
+                                    color="primary"
+                                    sx={{ fontSize: 40, mb: 1 }}
+                                />
                                 <Typography variant="body2">
                                     Performance: Monitoring
                                 </Typography>
@@ -180,9 +215,17 @@ export const InteractionSettings = () => {
                 {/* GPS Settings */}
                 <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                            }}
+                        >
                             <LocationIcon color="primary" />
-                            <Typography variant="h6">GPS & Location Settings</Typography>
+                            <Typography variant="h6">
+                                GPS & Location Settings
+                            </Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -193,7 +236,9 @@ export const InteractionSettings = () => {
                                         control={
                                             <Switch
                                                 checked={settings.gpsEnabled}
-                                                onChange={handleSettingChange('gpsEnabled')}
+                                                onChange={handleSettingChange(
+                                                    'gpsEnabled'
+                                                )}
                                             />
                                         }
                                         label="Enable GPS tracking"
@@ -201,8 +246,12 @@ export const InteractionSettings = () => {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                checked={settings.gpsHighAccuracy}
-                                                onChange={handleSettingChange('gpsHighAccuracy')}
+                                                checked={
+                                                    settings.gpsHighAccuracy
+                                                }
+                                                onChange={handleSettingChange(
+                                                    'gpsHighAccuracy'
+                                                )}
                                                 disabled={!settings.gpsEnabled}
                                             />
                                         }
@@ -211,8 +260,12 @@ export const InteractionSettings = () => {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                checked={settings.gpsAutoCapture}
-                                                onChange={handleSettingChange('gpsAutoCapture')}
+                                                checked={
+                                                    settings.gpsAutoCapture
+                                                }
+                                                onChange={handleSettingChange(
+                                                    'gpsAutoCapture'
+                                                )}
                                                 disabled={!settings.gpsEnabled}
                                             />
                                         }
@@ -226,11 +279,22 @@ export const InteractionSettings = () => {
                                         label="GPS Timeout"
                                         type="number"
                                         value={settings.gpsTimeout / 1000}
-                                        onChange={(e) => handleSettingChange('gpsTimeout')({
-                                            target: { value: Number(e.target.value) * 1000, type: 'text' }
-                                        } as any)}
+                                        onChange={e =>
+                                            handleSettingChange('gpsTimeout')({
+                                                target: {
+                                                    value:
+                                                        Number(e.target.value) *
+                                                        1000,
+                                                    type: 'text',
+                                                },
+                                            } as any)
+                                        }
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end">seconds</InputAdornment>,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    seconds
+                                                </InputAdornment>
+                                            ),
                                         }}
                                         helperText="Maximum time to wait for GPS signal"
                                         disabled={!settings.gpsEnabled}
@@ -240,11 +304,25 @@ export const InteractionSettings = () => {
                                         label="Cache Duration"
                                         type="number"
                                         value={settings.gpsCacheTime / 60000}
-                                        onChange={(e) => handleSettingChange('gpsCacheTime')({
-                                            target: { value: Number(e.target.value) * 60000, type: 'text' }
-                                        } as any)}
+                                        onChange={e =>
+                                            handleSettingChange('gpsCacheTime')(
+                                                {
+                                                    target: {
+                                                        value:
+                                                            Number(
+                                                                e.target.value
+                                                            ) * 60000,
+                                                        type: 'text',
+                                                    },
+                                                } as any
+                                            )
+                                        }
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    minutes
+                                                </InputAdornment>
+                                            ),
                                         }}
                                         helperText="How long to cache GPS coordinates"
                                         disabled={!settings.gpsEnabled}
@@ -267,9 +345,17 @@ export const InteractionSettings = () => {
                 {/* Offline Settings */}
                 <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                            }}
+                        >
                             <OfflineIcon color="primary" />
-                            <Typography variant="h6">Offline & Sync Settings</Typography>
+                            <Typography variant="h6">
+                                Offline & Sync Settings
+                            </Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -279,8 +365,12 @@ export const InteractionSettings = () => {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                checked={settings.offlineEnabled}
-                                                onChange={handleSettingChange('offlineEnabled')}
+                                                checked={
+                                                    settings.offlineEnabled
+                                                }
+                                                onChange={handleSettingChange(
+                                                    'offlineEnabled'
+                                                )}
                                             />
                                         }
                                         label="Enable offline mode"
@@ -289,8 +379,12 @@ export const InteractionSettings = () => {
                                         control={
                                             <Switch
                                                 checked={settings.autoSync}
-                                                onChange={handleSettingChange('autoSync')}
-                                                disabled={!settings.offlineEnabled}
+                                                onChange={handleSettingChange(
+                                                    'autoSync'
+                                                )}
+                                                disabled={
+                                                    !settings.offlineEnabled
+                                                }
                                             />
                                         }
                                         label="Auto-sync when connection is restored"
@@ -299,14 +393,31 @@ export const InteractionSettings = () => {
                                         label="Sync Interval"
                                         type="number"
                                         value={settings.syncInterval / 60000}
-                                        onChange={(e) => handleSettingChange('syncInterval')({
-                                            target: { value: Number(e.target.value) * 60000, type: 'text' }
-                                        } as any)}
+                                        onChange={e =>
+                                            handleSettingChange('syncInterval')(
+                                                {
+                                                    target: {
+                                                        value:
+                                                            Number(
+                                                                e.target.value
+                                                            ) * 60000,
+                                                        type: 'text',
+                                                    },
+                                                } as any
+                                            )
+                                        }
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    minutes
+                                                </InputAdornment>
+                                            ),
                                         }}
                                         helperText="How often to attempt sync when online"
-                                        disabled={!settings.offlineEnabled || !settings.autoSync}
+                                        disabled={
+                                            !settings.offlineEnabled ||
+                                            !settings.autoSync
+                                        }
                                         size="small"
                                     />
                                 </Stack>
@@ -317,23 +428,33 @@ export const InteractionSettings = () => {
                                         label="Max Offline Records"
                                         type="number"
                                         value={settings.maxOfflineStorage}
-                                        onChange={handleSettingChange('maxOfflineStorage')}
+                                        onChange={handleSettingChange(
+                                            'maxOfflineStorage'
+                                        )}
                                         helperText="Maximum interactions to store offline"
                                         disabled={!settings.offlineEnabled}
                                         size="small"
                                     />
                                     <Alert severity="info" sx={{ mt: 2 }}>
                                         <Typography variant="body2">
-                                            <strong>Current Offline Status:</strong>
+                                            <strong>
+                                                Current Offline Status:
+                                            </strong>
                                         </Typography>
                                         <Typography variant="body2">
-                                            • Pending Actions: {offlineStatus.pendingActions}
+                                            • Pending Actions:{' '}
+                                            {offlineStatus.pendingActions}
                                         </Typography>
                                         <Typography variant="body2">
-                                            • Storage Used: {formatBytes((offlineStatus as any).storageUsed || 0)}
+                                            • Storage Used:{' '}
+                                            {formatBytes(
+                                                (offlineStatus as any)
+                                                    .storageUsed || 0
+                                            )}
                                         </Typography>
                                         <Typography variant="body2">
-                                            • Last Sync: {offlineStatus.lastSync || 'Never'}
+                                            • Last Sync:{' '}
+                                            {offlineStatus.lastSync || 'Never'}
                                         </Typography>
                                     </Alert>
                                     <Button
@@ -354,9 +475,17 @@ export const InteractionSettings = () => {
                 {/* File Upload Settings */}
                 <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                            }}
+                        >
                             <UploadIcon color="primary" />
-                            <Typography variant="h6">File Upload Settings</Typography>
+                            <Typography variant="h6">
+                                File Upload Settings
+                            </Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -366,8 +495,12 @@ export const InteractionSettings = () => {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                checked={settings.fileCompression}
-                                                onChange={handleSettingChange('fileCompression')}
+                                                checked={
+                                                    settings.fileCompression
+                                                }
+                                                onChange={handleSettingChange(
+                                                    'fileCompression'
+                                                )}
                                             />
                                         }
                                         label="Compress images for mobile upload"
@@ -376,11 +509,22 @@ export const InteractionSettings = () => {
                                         label="Max File Size"
                                         type="number"
                                         value={settings.maxFileSize / 1048576}
-                                        onChange={(e) => handleSettingChange('maxFileSize')({
-                                            target: { value: Number(e.target.value) * 1048576, type: 'text' }
-                                        } as any)}
+                                        onChange={e =>
+                                            handleSettingChange('maxFileSize')({
+                                                target: {
+                                                    value:
+                                                        Number(e.target.value) *
+                                                        1048576,
+                                                    type: 'text',
+                                                },
+                                            } as any)
+                                        }
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end">MB</InputAdornment>,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    MB
+                                                </InputAdornment>
+                                            ),
                                         }}
                                         helperText="Maximum allowed file size"
                                         size="small"
@@ -393,9 +537,15 @@ export const InteractionSettings = () => {
                                         label="Compression Quality"
                                         type="number"
                                         value={settings.compressionQuality}
-                                        onChange={handleSettingChange('compressionQuality')}
+                                        onChange={handleSettingChange(
+                                            'compressionQuality'
+                                        )}
                                         InputProps={{
-                                            inputProps: { min: 0.1, max: 1.0, step: 0.1 },
+                                            inputProps: {
+                                                min: 0.1,
+                                                max: 1.0,
+                                                step: 0.1,
+                                            },
                                         }}
                                         helperText="Image compression quality (0.1 - 1.0)"
                                         disabled={!settings.fileCompression}
@@ -405,9 +555,15 @@ export const InteractionSettings = () => {
                                         label="Thumbnail Size"
                                         type="number"
                                         value={settings.thumbnailSize}
-                                        onChange={handleSettingChange('thumbnailSize')}
+                                        onChange={handleSettingChange(
+                                            'thumbnailSize'
+                                        )}
                                         InputProps={{
-                                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    px
+                                                </InputAdornment>
+                                            ),
                                         }}
                                         helperText="Size of generated thumbnails"
                                         size="small"
@@ -421,9 +577,17 @@ export const InteractionSettings = () => {
                 {/* Performance Settings */}
                 <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                            }}
+                        >
                             <PerformanceIcon color="primary" />
-                            <Typography variant="h6">Performance Monitoring</Typography>
+                            <Typography variant="h6">
+                                Performance Monitoring
+                            </Typography>
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -433,8 +597,12 @@ export const InteractionSettings = () => {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                checked={settings.performanceTracking}
-                                                onChange={handleSettingChange('performanceTracking')}
+                                                checked={
+                                                    settings.performanceTracking
+                                                }
+                                                onChange={handleSettingChange(
+                                                    'performanceTracking'
+                                                )}
                                             />
                                         }
                                         label="Enable performance tracking"
@@ -442,9 +610,15 @@ export const InteractionSettings = () => {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                checked={settings.performanceAlerts}
-                                                onChange={handleSettingChange('performanceAlerts')}
-                                                disabled={!settings.performanceTracking}
+                                                checked={
+                                                    settings.performanceAlerts
+                                                }
+                                                onChange={handleSettingChange(
+                                                    'performanceAlerts'
+                                                )}
+                                                disabled={
+                                                    !settings.performanceTracking
+                                                }
                                             />
                                         }
                                         label="Show performance alerts"
@@ -453,7 +627,9 @@ export const InteractionSettings = () => {
                                         label="Max Metrics to Store"
                                         type="number"
                                         value={settings.maxMetricsStorage}
-                                        onChange={handleSettingChange('maxMetricsStorage')}
+                                        onChange={handleSettingChange(
+                                            'maxMetricsStorage'
+                                        )}
                                         helperText="Maximum number of performance metrics to keep"
                                         disabled={!settings.performanceTracking}
                                         size="small"
@@ -463,12 +639,22 @@ export const InteractionSettings = () => {
                             <Grid item xs={12} md={6}>
                                 <Alert severity="info">
                                     <Typography variant="body2">
-                                        <strong>Performance tracking monitors:</strong>
+                                        <strong>
+                                            Performance tracking monitors:
+                                        </strong>
                                     </Typography>
-                                    <Typography variant="body2">• API response times</Typography>
-                                    <Typography variant="body2">• GPS acquisition speed</Typography>
-                                    <Typography variant="body2">• File upload performance</Typography>
-                                    <Typography variant="body2">• Error rates and success metrics</Typography>
+                                    <Typography variant="body2">
+                                        • API response times
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        • GPS acquisition speed
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        • File upload performance
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        • Error rates and success metrics
+                                    </Typography>
                                 </Alert>
                             </Grid>
                         </Grid>

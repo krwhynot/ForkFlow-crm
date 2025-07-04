@@ -17,12 +17,18 @@ export function generateReminder(seed: number = Date.now()): ReminderTestData {
     };
 }
 
-export async function createReminder(page: Page, data: ReminderTestData): Promise<string | undefined> {
+export async function createReminder(
+    page: Page,
+    data: ReminderTestData
+): Promise<string | undefined> {
     // TODO: Implement reminder creation (UI or API)
     expect(data.title).toContain('TestReminder');
     return undefined;
 }
 
-export async function deleteReminder(page: Page, reminderId: string): Promise<void> {
+export async function deleteReminder(
+    page: Page,
+    reminderId: string
+): Promise<void> {
     // TODO: Implement reminder deletion (UI or API)
-} 
+}

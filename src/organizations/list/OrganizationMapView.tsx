@@ -47,7 +47,7 @@ import {
 import { Organization, Setting } from '../../types';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 
-const libraries: ("places" | "geometry")[] = ["places", "geometry"];
+const libraries: ('places' | 'geometry')[] = ['places', 'geometry'];
 
 const mapContainerStyle = {
     width: '100%',
@@ -63,32 +63,35 @@ const defaultZoom = 4;
 
 // Color mapping for organization segments
 const segmentColors: { [key: string]: string } = {
-    'fine_dining': '#d32f2f',     // Red
-    'fast_food': '#f57c00',       // Orange  
-    'healthcare': '#1976d2',      // Blue
-    'catering': '#388e3c',        // Green
-    'institutional': '#7b1fa2',   // Purple
-    'default': '#757575',         // Grey
+    fine_dining: '#d32f2f', // Red
+    fast_food: '#f57c00', // Orange
+    healthcare: '#1976d2', // Blue
+    catering: '#388e3c', // Green
+    institutional: '#7b1fa2', // Purple
+    default: '#757575', // Grey
 };
 
 // Priority marker sizes
 const priorityMarkerSizes = {
-    'High': 40,
-    'Medium': 32,
-    'Low': 24,
-    'default': 28,
+    High: 40,
+    Medium: 32,
+    Low: 24,
+    default: 28,
 };
 
 interface OrganizationMapViewProps {
     onClose?: () => void;
 }
 
-export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClose }) => {
+export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
+    onClose,
+}) => {
     const isMobile = useBreakpoint('md');
     const notify = useNotify();
 
     // State
-    const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+    const [selectedOrganization, setSelectedOrganization] =
+        useState<Organization | null>(null);
     const [mapRef, setMapRef] = useState<google.maps.Map | null>(null);
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
@@ -99,10 +102,13 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
     });
 
     // Data fetching
-    const { data: organizations, isLoading } = useGetList<Organization>('organizations', {
-        pagination: { page: 1, perPage: 1000 },
-        sort: { field: 'name', order: 'ASC' },
-    });
+    const { data: organizations, isLoading } = useGetList<Organization>(
+        'organizations',
+        {
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'name', order: 'ASC' },
+        }
+    );
 
     const { data: segments } = useGetList<Setting>('settings', {
         filter: { category: 'segment' },
@@ -141,13 +147,21 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
     // Get marker color based on segment
     const getMarkerColor = (organization: Organization): string => {
         const segment = segments?.find(s => s.key === organization.segment);
-        return segment?.color || segmentColors[segment?.key || 'default'] || segmentColors.default;
+        return (
+            segment?.color ||
+            segmentColors[segment?.key || 'default'] ||
+            segmentColors.default
+        );
     };
 
     // Get marker size based on priority
     const getMarkerSize = (organization: Organization): number => {
         const priority = priorities?.find(p => p.key === organization.priority);
-        return priorityMarkerSizes[priority?.label as keyof typeof priorityMarkerSizes] || priorityMarkerSizes.default;
+        return (
+            priorityMarkerSizes[
+                priority?.label as keyof typeof priorityMarkerSizes
+            ] || priorityMarkerSizes.default
+        );
     };
 
     // Handle map load
@@ -188,19 +202,27 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
             <Typography variant="h6" gutterBottom>
                 Map Filters
             </Typography>
-            
+
             <Stack spacing={2}>
                 {/* Segment Filter */}
                 <FormControl fullWidth size="small">
                     <InputLabel>Business Segment</InputLabel>
                     <Select
                         value={filters.segmentId}
-                        onChange={(e) => setFilters(prev => ({ ...prev, segmentId: e.target.value }))}
+                        onChange={e =>
+                            setFilters(prev => ({
+                                ...prev,
+                                segmentId: e.target.value,
+                            }))
+                        }
                         label="Business Segment"
                     >
                         <MenuItem value="">All Segments</MenuItem>
                         {segments?.map(segment => (
-                            <MenuItem key={segment.id} value={segment.id.toString()}>
+                            <MenuItem
+                                key={segment.id}
+                                value={segment.id.toString()}
+                            >
                                 {segment.label}
                             </MenuItem>
                         ))}
@@ -212,12 +234,20 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
                     <InputLabel>Priority</InputLabel>
                     <Select
                         value={filters.priorityId}
-                        onChange={(e) => setFilters(prev => ({ ...prev, priorityId: e.target.value }))}
+                        onChange={e =>
+                            setFilters(prev => ({
+                                ...prev,
+                                priorityId: e.target.value,
+                            }))
+                        }
                         label="Priority"
                     >
                         <MenuItem value="">All Priorities</MenuItem>
                         {priorities?.map(priority => (
-                            <MenuItem key={priority.id} value={priority.id.toString()}>
+                            <MenuItem
+                                key={priority.id}
+                                value={priority.id.toString()}
+                            >
                                 {priority.label}
                             </MenuItem>
                         ))}
@@ -235,15 +265,20 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
     return (
         <Box sx={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
             <LoadScript
-                googleMapsApiKey={process.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyDTQb6tSmWCnoFkhcnMKP_ohrxm0hAxkMY'}
+                googleMapsApiKey={
+                    process.env.VITE_GOOGLE_MAPS_API_KEY ||
+                    'AIzaSyDTQb6tSmWCnoFkhcnMKP_ohrxm0hAxkMY'
+                }
                 libraries={libraries}
                 loadingElement={
-                    <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
-                        height: '100vh' 
-                    }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '100vh',
+                        }}
+                    >
                         <Typography>Loading map...</Typography>
                     </Box>
                 }
@@ -256,10 +291,10 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
                     options={{
                         styles: [
                             {
-                                featureType: "poi",
-                                elementType: "labels",
-                                stylers: [{ visibility: "off" }]
-                            }
+                                featureType: 'poi',
+                                elementType: 'labels',
+                                stylers: [{ visibility: 'off' }],
+                            },
                         ],
                         zoomControl: true,
                         streetViewControl: false,
@@ -270,32 +305,39 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
                     {/* Organization markers with clustering */}
                     <MarkerClusterer
                         options={{
-                            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                            imagePath:
+                                'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
                             gridSize: 60,
                             maxZoom: 15,
                         }}
                     >
-                        {(clusterer) => (
+                        {clusterer => (
                             <>
-                                {filteredOrganizations.map((organization) => (
-                                <Marker
-                                    key={organization.id}
-                                    position={{
-                                        lat: organization.latitude!,
-                                        lng: organization.longitude!,
-                                    }}
-                                    clusterer={clusterer}
-                                    onClick={() => handleMarkerClick(organization)}
-                                    icon={{
-                                        path: (window as any).google?.maps?.SymbolPath?.CIRCLE || 0,
-                                        fillColor: getMarkerColor(organization),
-                                        fillOpacity: 0.8,
-                                        strokeColor: 'white',
-                                        strokeWeight: 2,
-                                        scale: getMarkerSize(organization) / 2,
-                                    }}
-                                    title={organization.name}
-                                />
+                                {filteredOrganizations.map(organization => (
+                                    <Marker
+                                        key={organization.id}
+                                        position={{
+                                            lat: organization.latitude!,
+                                            lng: organization.longitude!,
+                                        }}
+                                        clusterer={clusterer}
+                                        onClick={() =>
+                                            handleMarkerClick(organization)
+                                        }
+                                        icon={{
+                                            path:
+                                                (window as any).google?.maps
+                                                    ?.SymbolPath?.CIRCLE || 0,
+                                            fillColor:
+                                                getMarkerColor(organization),
+                                            fillOpacity: 0.8,
+                                            strokeColor: 'white',
+                                            strokeWeight: 2,
+                                            scale:
+                                                getMarkerSize(organization) / 2,
+                                        }}
+                                        title={organization.name}
+                                    />
                                 ))}
                             </>
                         )}
@@ -327,7 +369,12 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
             <Box sx={{ position: 'absolute', bottom: 16, right: 16 }}>
                 <Stack spacing={1}>
                     {/* Filter FAB */}
-                    <Badge badgeContent={Object.values(filters).filter(Boolean).length} color="secondary">
+                    <Badge
+                        badgeContent={
+                            Object.values(filters).filter(Boolean).length
+                        }
+                        color="secondary"
+                    >
                         <Fab
                             color="secondary"
                             size="medium"
@@ -365,16 +412,23 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({ onClos
                 open={showFilters}
                 onClose={() => setShowFilters(false)}
                 PaperProps={{
-                    sx: { width: isMobile ? '100%' : 320, p: 2 }
+                    sx: { width: isMobile ? '100%' : 320, p: 2 },
                 }}
             >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2,
+                    }}
+                >
                     <Typography variant="h6">Map Filters</Typography>
                     <IconButton onClick={() => setShowFilters(false)}>
                         <CloseIcon />
                     </IconButton>
                 </Box>
-                
+
                 <FilterControls />
             </Drawer>
         </Box>
@@ -411,19 +465,19 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
             {/* Chips */}
             <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
                 {priority && (
-                    <Chip 
-                        label={priority.label} 
+                    <Chip
+                        label={priority.label}
                         size="small"
-                        sx={{ 
+                        sx={{
                             bgcolor: priority.color || 'grey.300',
                             color: 'white',
                         }}
                     />
                 )}
                 {segment && (
-                    <Chip 
-                        label={segment.label} 
-                        size="small" 
+                    <Chip
+                        label={segment.label}
+                        size="small"
                         variant="outlined"
                         sx={{ borderColor: segment.color }}
                     />

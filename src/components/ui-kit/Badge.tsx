@@ -34,10 +34,12 @@ export const Badge: React.FC<BadgeProps> = ({
     invisible = false,
     className,
 }) => {
-    const showBadge = !invisible && (
-        variant === 'dot' || 
-        (badgeContent !== null && badgeContent !== undefined && badgeContent !== 0)
-    );
+    const showBadge =
+        !invisible &&
+        (variant === 'dot' ||
+            (badgeContent !== null &&
+                badgeContent !== undefined &&
+                badgeContent !== 0));
 
     return (
         <div className={cn('relative inline-flex', className)}>
@@ -47,9 +49,7 @@ export const Badge: React.FC<BadgeProps> = ({
                     className={cn(
                         'absolute -top-2 -right-2 flex items-center justify-center rounded-full text-xs font-medium',
                         COLOR_VARIANTS[color],
-                        variant === 'dot' 
-                            ? 'h-2 w-2' 
-                            : 'min-h-5 min-w-5 px-1'
+                        variant === 'dot' ? 'h-2 w-2' : 'min-h-5 min-w-5 px-1'
                     )}
                 >
                     {variant === 'standard' && badgeContent}

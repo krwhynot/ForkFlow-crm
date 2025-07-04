@@ -6,12 +6,9 @@ import {
     Box,
     Chip,
     Stack,
-    useTheme,
-    useMediaQuery,
-    IconButton,
-    Tabs,
-    Tab,
-} from '@mui/material';
+    Button,
+} from '@/components/ui-kit';
+import { BarChart } from '@/components/ui-kit/Chart';
 import {
     Business as PrincipalIcon,
     TrendingUp as TrendingUpIcon,
@@ -20,12 +17,18 @@ import {
     Assessment as MetricsIcon,
     Refresh as RefreshIcon,
 } from '@mui/icons-material';
-import { ResponsiveBar } from '@nivo/bar';
 import { format, startOfMonth, subMonths } from 'date-fns';
 import { useGetList } from 'react-admin';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 import { Product, Deal, Interaction, Setting } from '../types';
-import { safeAmount, safeDivide, safeTrend, validateChartData, safeCurrencyFormat } from '../utils/chartSafety';
+import {
+    safeAmount,
+    safeDivide,
+    safeTrend,
+    validateChartData,
+    safeCurrencyFormat,
+} from '../utils/chartSafety';
 
 interface PrincipalMetrics {
     principalId: number;
@@ -41,23 +44,27 @@ interface PrincipalMetrics {
 }
 
 export const PrincipalPerformanceChart = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md');
     const [activeTab, setActiveTab] = React.useState(0);
 
     // Get data
-    const { data: products, isPending: productsPending } = useGetList<Product>('products', {
-        pagination: { page: 1, perPage: 1000 },
-    });
+    const { data: products, isPending: productsPending } = useGetList<Product>(
+        'products',
+        {
+            pagination: { page: 1, perPage: 1000 },
+        }
+    );
 
-    const { data: opportunities, isPending: opportunitiesPending } = useGetList<Deal>('opportunities', {
-        pagination: { page: 1, perPage: 1000 },
-    });
+    const { data: opportunities, isPending: opportunitiesPending } =
+        useGetList<Deal>('opportunities', {
+            pagination: { page: 1, perPage: 1000 },
+        });
 
-    const { data: interactions, isPending: interactionsPending } = useGetList<Interaction>('interactions', {
-        pagination: { page: 1, perPage: 1000 },
-        filter: { isCompleted: true },
-    });
+    const { data: interactions, isPending: interactionsPending } =
+        useGetList<Interaction>('interactions', {
+            pagination: { page: 1, perPage: 1000 },
+            filter: { isCompleted: true },
+        });
 
     const { data: principals } = useGetList<Setting>('settings', {
         filter: { category: 'principal' },
@@ -70,64 +77,91 @@ export const PrincipalPerformanceChart = () => {
         const validOpportunities = validateChartData(opportunities);
         const validInteractions = validateChartData(interactions);
         const validPrincipals = validateChartData(principals);
-        
+
         if (validPrincipals.length === 0) return [];
 
         const now = new Date();
         const currentMonth = startOfMonth(now);
         const lastMonth = startOfMonth(subMonths(now, 1));
 
-        return validPrincipals.map((principal): PrincipalMetrics => {
-            // Get products for this principal
-            const principalProducts = validProducts.filter(p => p.principalId === principal.id);
-            
-            // Get opportunities related to these products
-            const principalOpportunities = validOpportunities.filter(opp => 
-                principalProducts.some(product => product.id === opp.productId)
-            );
+        return validPrincipals
+            .map((principal): PrincipalMetrics => {
+                // Get products for this principal
+                const principalProducts = validProducts.filter(
+                    p => p.principalId === principal.id
+                );
 
-            // Get interactions related to these opportunities
-            const principalInteractions = validInteractions.filter(interaction =>
-                principalOpportunities.some(opp => opp.id === interaction.opportunityId)
-            );
+                // Get opportunities related to these products
+                const principalOpportunities = validOpportunities.filter(opp =>
+                    principalProducts.some(
+                        product => product.id === opp.productId
+                    )
+                );
 
-            // Calculate metrics safely
-            const wonOpportunities = principalOpportunities.filter(opp => opp.stage === 'won');
-            const totalRevenue = wonOpportunities.reduce((sum, opp) => sum + safeAmount(opp.amount), 0);
-            
-            // Safe division for conversion rate
-            const conversionRate = safeDivide(wonOpportunities.length, principalOpportunities.length) * 100;
-            
-            // Safe division for average deal size
-            const avgDealSize = safeDivide(totalRevenue, wonOpportunities.length);
+                // Get interactions related to these opportunities
+                const principalInteractions = validInteractions.filter(
+                    interaction =>
+                        principalOpportunities.some(
+                            opp => opp.id === interaction.opportunityId
+                        )
+                );
 
-            // Calculate monthly trend safely
-            const currentMonthOpps = principalOpportunities.filter(opp => 
-                opp.createdAt && new Date(opp.createdAt) >= currentMonth
-            );
-            const lastMonthOpps = principalOpportunities.filter(opp => 
-                opp.createdAt && 
-                new Date(opp.createdAt) >= lastMonth && 
-                new Date(opp.createdAt) < currentMonth
-            );
-            
-            const monthlyTrend = safeTrend(currentMonthOpps.length, lastMonthOpps.length);
+                // Calculate metrics safely
+                const wonOpportunities = principalOpportunities.filter(
+                    opp => opp.stage === 'won'
+                );
+                const totalRevenue = wonOpportunities.reduce(
+                    (sum, opp) => sum + safeAmount(opp.amount),
+                    0
+                );
 
-            return {
-                principalId: principal.id,
-                principalName: principal.label,
-                principalColor: principal.color,
-                totalRevenue,
-                opportunityCount: principalOpportunities.length,
-                productCount: principalProducts.length,
-                interactionCount: principalInteractions.length,
-                conversionRate,
-                avgDealSize,
-                monthlyTrend,
-            };
-        })
-        .filter(metric => metric.opportunityCount > 0 || metric.productCount > 0) // Only show principals with activity
-        .sort((a, b) => b.totalRevenue - a.totalRevenue); // Sort by revenue descending
+                // Safe division for conversion rate
+                const conversionRate =
+                    safeDivide(
+                        wonOpportunities.length,
+                        principalOpportunities.length
+                    ) * 100;
+
+                // Safe division for average deal size
+                const avgDealSize = safeDivide(
+                    totalRevenue,
+                    wonOpportunities.length
+                );
+
+                // Calculate monthly trend safely
+                const currentMonthOpps = principalOpportunities.filter(
+                    opp =>
+                        opp.createdAt && new Date(opp.createdAt) >= currentMonth
+                );
+                const lastMonthOpps = principalOpportunities.filter(
+                    opp =>
+                        opp.createdAt &&
+                        new Date(opp.createdAt) >= lastMonth &&
+                        new Date(opp.createdAt) < currentMonth
+                );
+
+                const monthlyTrend = safeTrend(
+                    currentMonthOpps.length,
+                    lastMonthOpps.length
+                );
+
+                return {
+                    principalId: principal.id,
+                    principalName: principal.label,
+                    principalColor: principal.color,
+                    totalRevenue,
+                    opportunityCount: principalOpportunities.length,
+                    productCount: principalProducts.length,
+                    interactionCount: principalInteractions.length,
+                    conversionRate,
+                    avgDealSize,
+                    monthlyTrend,
+                };
+            })
+            .filter(
+                metric => metric.opportunityCount > 0 || metric.productCount > 0
+            ) // Only show principals with activity
+            .sort((a, b) => b.totalRevenue - a.totalRevenue); // Sort by revenue descending
     }, [products, opportunities, interactions, principals]);
 
     const chartData = useMemo(() => {
@@ -136,47 +170,56 @@ export const PrincipalPerformanceChart = () => {
         switch (activeTab) {
             case 0: // Revenue
                 return principalMetrics.map(metric => ({
-                    principal: metric.principalName.length > 10 
-                        ? metric.principalName.substring(0, 10) + '...' 
-                        : metric.principalName,
+                    principal:
+                        metric.principalName.length > 10
+                            ? metric.principalName.substring(0, 10) + '...'
+                            : metric.principalName,
                     revenue: metric.totalRevenue,
                     opportunities: 0, // Add for type compatibility
                     conversionRate: 0, // Add for type compatibility
-                    color: metric.principalColor || theme.palette.primary.main,
+                    color: metric.principalColor || '#2196F3',
                 }));
-            
+
             case 1: // Opportunities
                 return principalMetrics.map(metric => ({
-                    principal: metric.principalName.length > 10 
-                        ? metric.principalName.substring(0, 10) + '...' 
-                        : metric.principalName,
+                    principal:
+                        metric.principalName.length > 10
+                            ? metric.principalName.substring(0, 10) + '...'
+                            : metric.principalName,
                     revenue: 0, // Add for type compatibility
                     opportunities: metric.opportunityCount,
                     conversionRate: 0, // Add for type compatibility
-                    color: metric.principalColor || theme.palette.secondary.main,
+                    color: metric.principalColor || '#9C27B0',
                 }));
-            
+
             case 2: // Conversion Rate
                 return principalMetrics.map(metric => ({
-                    principal: metric.principalName.length > 10 
-                        ? metric.principalName.substring(0, 10) + '...' 
-                        : metric.principalName,
+                    principal:
+                        metric.principalName.length > 10
+                            ? metric.principalName.substring(0, 10) + '...'
+                            : metric.principalName,
                     revenue: 0, // Add for type compatibility
                     opportunities: 0, // Add for type compatibility
                     conversionRate: Number(metric.conversionRate.toFixed(1)),
-                    color: metric.principalColor || theme.palette.success.main,
+                    color: metric.principalColor || '#4CAF50',
                 }));
-            
+
             default:
                 return [];
         }
-    }, [principalMetrics, activeTab, theme.palette]);
+    }, [principalMetrics, activeTab]);
 
     // Remove pie chart data for now - using only bar charts
 
     const topPrincipal = principalMetrics[0];
-    const totalRevenue = principalMetrics.reduce((sum, metric) => sum + metric.totalRevenue, 0);
-    const totalOpportunities = principalMetrics.reduce((sum, metric) => sum + metric.opportunityCount, 0);
+    const totalRevenue = principalMetrics.reduce(
+        (sum, metric) => sum + metric.totalRevenue,
+        0
+    );
+    const totalOpportunities = principalMetrics.reduce(
+        (sum, metric) => sum + metric.opportunityCount,
+        0
+    );
 
     if (productsPending || opportunitiesPending || interactionsPending) {
         return (
@@ -195,20 +238,20 @@ export const PrincipalPerformanceChart = () => {
         return (
             <Card>
                 <CardContent>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                    <Box className="flex justify-between items-center mb-2">
                         <Typography variant="h6">
                             Principal Performance
                         </Typography>
-                        <IconButton size="small">
+                        <Button variant="ghost" size="sm" className="p-2">
                             <RefreshIcon />
-                        </IconButton>
+                        </Button>
                     </Box>
-                    <Box textAlign="center" py={3}>
-                        <PrincipalIcon color="disabled" sx={{ fontSize: 48, mb: 1 }} />
-                        <Typography variant="body2" color="textSecondary">
+                    <Box className="text-center py-3">
+                        <PrincipalIcon className="text-gray-400 text-5xl mb-1" />
+                        <Typography variant="body2" className="text-gray-500">
                             No principal data available
                         </Typography>
-                        <Typography variant="caption" color="textSecondary">
+                        <Typography variant="caption" className="text-gray-500">
                             Create products and opportunities to see performance
                         </Typography>
                     </Box>
@@ -227,29 +270,27 @@ export const PrincipalPerformanceChart = () => {
     return (
         <Card>
             <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography variant="h6">
-                        Principal Performance
-                    </Typography>
-                    <IconButton size="small">
+                <Box className="flex justify-between items-center mb-2">
+                    <Typography variant="h6">Principal Performance</Typography>
+                    <Button variant="ghost" size="sm" className="p-2">
                         <RefreshIcon />
-                    </IconButton>
+                    </Button>
                 </Box>
 
                 {/* Summary Stats */}
-                <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
+                <Stack className="flex flex-row space-x-1 flex-wrap mb-2">
                     <Chip
                         size="small"
                         icon={<RevenueIcon />}
                         label={`Total: ${formatCurrency(totalRevenue)}`}
-                        color="primary"
+                        className="text-blue-600 border-blue-600 bg-transparent"
                         variant="outlined"
                     />
                     <Chip
                         size="small"
                         icon={<MetricsIcon />}
                         label={`${totalOpportunities} Opportunities`}
-                        color="secondary"
+                        className="text-purple-600 border-purple-600 bg-transparent"
                         variant="outlined"
                     />
                     {topPrincipal && (
@@ -257,44 +298,51 @@ export const PrincipalPerformanceChart = () => {
                             size="small"
                             icon={<TrendingUpIcon />}
                             label={`Top: ${topPrincipal.principalName}`}
-                            color="success"
+                            className="text-green-600 border-green-600 bg-transparent"
                             variant="outlined"
                         />
                     )}
                 </Stack>
 
                 {/* Tabs for different views */}
-                <Tabs
-                    value={activeTab}
-                    onChange={(_, newValue) => setActiveTab(newValue)}
-                    variant={isMobile ? "scrollable" : "fullWidth"}
-                    scrollButtons={isMobile ? "auto" : false}
-                    sx={{ mb: 2 }}
-                >
-                    {tabLabels.map((label, index) => (
-                        <Tab key={index} label={label} />
-                    ))}
-                </Tabs>
+                <div className="mb-2">
+                    <div
+                        className={`flex ${isMobile ? 'overflow-x-auto' : 'w-full'} border-b border-gray-200`}
+                    >
+                        {tabLabels.map((label, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setActiveTab(index)}
+                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                                    activeTab === index
+                                        ? 'border-blue-500 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                } ${!isMobile ? 'flex-1' : 'flex-shrink-0'}`}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
                 {/* Chart */}
-                <Box sx={{ height: isMobile ? 250 : 300 }}>
+                <Box>
                     {chartData.length > 0 ? (
-                        <ResponsiveBar
+                        <BarChart
                             data={chartData}
                             keys={[chartKeys[activeTab]]}
                             indexBy="principal"
-                            margin={{ 
-                                top: 20, 
-                                right: isMobile ? 10 : 30, 
-                                bottom: isMobile ? 60 : 50, 
-                                left: isMobile ? 50 : 80 
+                            height={isMobile ? 250 : 300}
+                            margin={{
+                                top: 20,
+                                right: isMobile ? 10 : 30,
+                                bottom: isMobile ? 60 : 50,
+                                left: isMobile ? 50 : 80,
                             }}
-                            padding={0.3}
                             colors={chartData.map(d => d.color)}
                             enableGridY={true}
                             enableGridX={false}
                             enableLabel={!isMobile}
-                            labelTextColor="white"
                             axisBottom={{
                                 tickSize: 0,
                                 tickPadding: 5,
@@ -303,51 +351,21 @@ export const PrincipalPerformanceChart = () => {
                             axisLeft={{
                                 tickSize: 0,
                                 tickPadding: 5,
-                                format: activeTab === 0 
-                                    ? (value: number) => formatCurrency(value).replace('$', '$')
-                                    : activeTab === 2
-                                        ? (value: number) => `${safeAmount(value)}%`
-                                        : undefined,
+                                format:
+                                    activeTab === 0
+                                        ? (value: number) =>
+                                              formatCurrency(value).replace(
+                                                  '$',
+                                                  '$'
+                                              )
+                                        : activeTab === 2
+                                          ? (value: number) =>
+                                                `${safeAmount(value)}%`
+                                          : undefined,
                             }}
-                            animate
-                            motionConfig="gentle"
-                            tooltip={({ id, value, color, indexValue }) => (
-                                <div
-                                    style={{
-                                        background: 'white',
-                                        padding: '9px 12px',
-                                        border: '1px solid #ccc',
-                                        borderRadius: '4px',
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                    }}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                                        <div
-                                            style={{
-                                                width: '12px',
-                                                height: '12px',
-                                                backgroundColor: color,
-                                                borderRadius: '2px',
-                                            }}
-                                        />
-                                        <strong>{indexValue}</strong>
-                                    </div>
-                                    <div>
-                                        {activeTab === 0 && `Revenue: ${formatCurrency(safeAmount(value))}`}
-                                        {activeTab === 1 && `Opportunities: ${safeAmount(value)}`}
-                                        {activeTab === 2 && `Conversion: ${safeAmount(value)}%`}
-                                    </div>
-                                </div>
-                            )}
                         />
                     ) : (
-                        <Box 
-                            display="flex" 
-                            alignItems="center" 
-                            justifyContent="center" 
-                            height="100%"
-                            color="text.secondary"
-                        >
+                        <Box className="flex items-center justify-center h-48 text-gray-500">
                             <Typography variant="body2">
                                 No principal performance data available
                             </Typography>
@@ -356,36 +374,46 @@ export const PrincipalPerformanceChart = () => {
                 </Box>
 
                 {/* Top Performers List */}
-                <Box sx={{ mt: 2 }}>
+                <Box className="mt-2">
                     <Typography variant="subtitle2" gutterBottom>
                         Top Performers
                     </Typography>
-                    <Stack spacing={1}>
+                    <Stack className="space-y-1">
                         {principalMetrics.slice(0, 3).map((metric, index) => (
                             <Box
                                 key={metric.principalId}
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    p: 1,
-                                    borderRadius: 1,
-                                    backgroundColor: index === 0 ? theme.palette.success.light + '20' : 'transparent',
-                                }}
+                                className={`flex justify-between items-center p-1 rounded ${
+                                    index === 0 ? 'bg-green-50' : ''
+                                }`}
                             >
-                                <Box display="flex" alignItems="center" gap={1}>
-                                    <Typography variant="body2" fontWeight="medium">
+                                <Box className="flex items-center space-x-1">
+                                    <Typography
+                                        variant="body2"
+                                        className="font-medium"
+                                    >
                                         #{index + 1} {metric.principalName}
                                     </Typography>
                                     <Chip
                                         size="small"
-                                        icon={metric.monthlyTrend >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
+                                        icon={
+                                            metric.monthlyTrend >= 0 ? (
+                                                <TrendingUpIcon />
+                                            ) : (
+                                                <TrendingDownIcon />
+                                            )
+                                        }
                                         label={`${metric.monthlyTrend.toFixed(0)}%`}
-                                        color={metric.monthlyTrend >= 0 ? 'success' : 'error'}
-                                        sx={{ height: 20, fontSize: '0.7rem' }}
+                                        className={`${
+                                            metric.monthlyTrend >= 0
+                                                ? 'text-green-600 border-green-600'
+                                                : 'text-red-600 border-red-600'
+                                        } bg-transparent h-5 text-xs`}
                                     />
                                 </Box>
-                                <Typography variant="body2" color="textSecondary">
+                                <Typography
+                                    variant="body2"
+                                    className="text-gray-500"
+                                >
                                     {formatCurrency(metric.totalRevenue)}
                                 </Typography>
                             </Box>

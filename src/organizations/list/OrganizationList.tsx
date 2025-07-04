@@ -18,7 +18,10 @@ import { Box } from '../../components/Layout/Box';
 import { Chip } from '../../components/DataDisplay/Chip';
 import { Button } from '../../components/Button/Button';
 import { Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
-import { Map as MapIcon, LocationOn as LocationIcon } from '@mui/icons-material';
+import {
+    Map as MapIcon,
+    LocationOn as LocationIcon,
+} from '@mui/icons-material';
 import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
 import { OrganizationMapView } from './OrganizationMapView';
@@ -106,7 +109,7 @@ const OrganizationListActions = () => {
                         height: isFullScreen ? '100%' : '90vh',
                         maxWidth: 'none',
                         maxHeight: 'none',
-                    }
+                    },
                 }}
             >
                 <DialogContent sx={{ p: 0, height: '100%' }}>

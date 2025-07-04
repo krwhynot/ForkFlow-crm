@@ -3,15 +3,15 @@
  * Simulates JWT backend for food service CRM development
  */
 
-import { 
+import {
     LoginCredentials,
-    LoginResponse, 
-    User, 
+    LoginResponse,
+    User,
     AuthTokens,
     JWTPayload,
     UserRole,
     PasswordResetRequest,
-    PasswordResetConfirm
+    PasswordResetConfirm,
 } from '../../types';
 import { validatePassword } from '../../utils/jwtUtils';
 
@@ -80,7 +80,10 @@ const mockPasswords: Record<string, string> = {
 };
 
 // Mock refresh tokens storage
-const mockRefreshTokens = new Map<string, { userId: string; expiresAt: number }>();
+const mockRefreshTokens = new Map<
+    string,
+    { userId: string; expiresAt: number }
+>();
 
 /**
  * Generate mock JWT token
@@ -95,15 +98,15 @@ const generateMockJWT = (user: User): string => {
         territory: user.territory,
         principals: user.principals,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (8 * 60 * 60), // 8 hours
+        exp: Math.floor(Date.now() / 1000) + 8 * 60 * 60, // 8 hours
         jti: Math.random().toString(36).substr(2, 9),
     };
-    
+
     // Simple mock JWT (in production, this would be properly signed)
     const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
     const payloadB64 = btoa(JSON.stringify(payload));
     const signature = 'mock-signature';
-    
+
     return `${header}.${payloadB64}.${signature}`;
 };
 
@@ -112,8 +115,8 @@ const generateMockJWT = (user: User): string => {
  */
 const generateRefreshToken = (userId: string): string => {
     const token = Math.random().toString(36).substr(2, 32);
-    const expiresAt = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
-    
+    const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+
     mockRefreshTokens.set(token, { userId, expiresAt });
     return token;
 };
@@ -128,38 +131,40 @@ const delay = (ms: number = 500): Promise<void> => {
 /**
  * Mock login API
  */
-export const mockLogin = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+export const mockLogin = async (
+    credentials: LoginCredentials
+): Promise<LoginResponse> => {
     await delay();
-    
+
     const { email, password } = credentials;
-    
+
     // Find user
     const user = mockUsers.find(u => u.email === email && u.isActive);
     if (!user) {
         throw new Error('Invalid email or password');
     }
-    
+
     // Check password
     const storedPassword = mockPasswords[email];
     if (!storedPassword || storedPassword !== password) {
         throw new Error('Invalid email or password');
     }
-    
+
     // Generate tokens
     const accessToken = generateMockJWT(user);
     const refreshToken = generateRefreshToken(user.id);
-    
+
     const tokens: AuthTokens = {
         accessToken,
         refreshToken,
         tokenType: 'Bearer',
         expiresIn: 8 * 60 * 60, // 8 hours in seconds
-        expiresAt: Date.now() + (8 * 60 * 60 * 1000), // 8 hours in ms
+        expiresAt: Date.now() + 8 * 60 * 60 * 1000, // 8 hours in ms
     };
-    
+
     // Update last login
     user.lastLoginAt = new Date().toISOString();
-    
+
     return {
         user,
         tokens,
@@ -171,7 +176,7 @@ export const mockLogin = async (credentials: LoginCredentials): Promise<LoginRes
  */
 export const mockLogout = async (refreshToken?: string): Promise<void> => {
     await delay(200);
-    
+
     if (refreshToken) {
         mockRefreshTokens.delete(refreshToken);
     }
@@ -180,34 +185,36 @@ export const mockLogout = async (refreshToken?: string): Promise<void> => {
 /**
  * Mock refresh token API
  */
-export const mockRefreshToken = async (refreshToken: string): Promise<AuthTokens | null> => {
+export const mockRefreshToken = async (
+    refreshToken: string
+): Promise<AuthTokens | null> => {
     await delay(300);
-    
+
     const tokenData = mockRefreshTokens.get(refreshToken);
     if (!tokenData || tokenData.expiresAt < Date.now()) {
         mockRefreshTokens.delete(refreshToken);
         return null;
     }
-    
+
     const user = mockUsers.find(u => u.id === tokenData.userId);
     if (!user || !user.isActive) {
         mockRefreshTokens.delete(refreshToken);
         return null;
     }
-    
+
     // Generate new tokens
     const newAccessToken = generateMockJWT(user);
     const newRefreshToken = generateRefreshToken(user.id);
-    
+
     // Remove old refresh token
     mockRefreshTokens.delete(refreshToken);
-    
+
     return {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
         tokenType: 'Bearer',
         expiresIn: 8 * 60 * 60,
-        expiresAt: Date.now() + (8 * 60 * 60 * 1000),
+        expiresAt: Date.now() + 8 * 60 * 60 * 1000,
     };
 };
 
@@ -216,26 +223,28 @@ export const mockRefreshToken = async (refreshToken: string): Promise<AuthTokens
  */
 export const mockGetCurrentUser = async (userId: string): Promise<User> => {
     await delay(200);
-    
+
     const user = mockUsers.find(u => u.id === userId && u.isActive);
     if (!user) {
         throw new Error('User not found');
     }
-    
+
     return user;
 };
 
 /**
  * Mock get user permissions API
  */
-export const mockGetUserPermissions = async (userId: string): Promise<string[]> => {
+export const mockGetUserPermissions = async (
+    userId: string
+): Promise<string[]> => {
     await delay(200);
-    
+
     const user = mockUsers.find(u => u.id === userId);
     if (!user) {
         throw new Error('User not found');
     }
-    
+
     // Return permissions based on role
     switch (user.role) {
         case 'admin':
@@ -248,7 +257,7 @@ export const mockGetUserPermissions = async (userId: string): Promise<string[]> 
                 'opportunities.*',
                 'interactions.*',
                 'reports.view',
-                'settings.view'
+                'settings.view',
             ];
         case 'broker':
             return [
@@ -257,7 +266,7 @@ export const mockGetUserPermissions = async (userId: string): Promise<string[]> 
                 'contacts.*',
                 'products.view',
                 'opportunities.*',
-                'interactions.*'
+                'interactions.*',
             ];
         default:
             return [];
@@ -267,15 +276,17 @@ export const mockGetUserPermissions = async (userId: string): Promise<string[]> 
 /**
  * Mock password reset request API
  */
-export const mockPasswordResetRequest = async (request: PasswordResetRequest): Promise<void> => {
+export const mockPasswordResetRequest = async (
+    request: PasswordResetRequest
+): Promise<void> => {
     await delay(1000);
-    
+
     const user = mockUsers.find(u => u.email === request.email && u.isActive);
     if (!user) {
         // Don't reveal if email exists for security
         return;
     }
-    
+
     // In production, this would send an email with reset token
     console.log(`Password reset email sent to ${request.email}`);
 };
@@ -283,15 +294,19 @@ export const mockPasswordResetRequest = async (request: PasswordResetRequest): P
 /**
  * Mock password reset confirm API
  */
-export const mockPasswordResetConfirm = async (request: PasswordResetConfirm): Promise<void> => {
+export const mockPasswordResetConfirm = async (
+    request: PasswordResetConfirm
+): Promise<void> => {
     await delay(500);
-    
+
     // Validate password strength
     const validation = validatePassword(request.newPassword);
     if (!validation.isValid) {
-        throw new Error(`Password requirements not met: ${validation.errors.join(', ')}`);
+        throw new Error(
+            `Password requirements not met: ${validation.errors.join(', ')}`
+        );
     }
-    
+
     // In production, this would validate the reset token and update password
     console.log('Password reset successful');
 };
@@ -299,24 +314,30 @@ export const mockPasswordResetConfirm = async (request: PasswordResetConfirm): P
 /**
  * Mock change password API
  */
-export const mockChangePassword = async (userId: string, currentPassword: string, newPassword: string): Promise<void> => {
+export const mockChangePassword = async (
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+): Promise<void> => {
     await delay(500);
-    
+
     const user = mockUsers.find(u => u.id === userId);
     if (!user) {
         throw new Error('User not found');
     }
-    
+
     const storedPassword = mockPasswords[user.email];
     if (storedPassword !== currentPassword) {
         throw new Error('Current password is incorrect');
     }
-    
+
     const validation = validatePassword(newPassword);
     if (!validation.isValid) {
-        throw new Error(`Password requirements not met: ${validation.errors.join(', ')}`);
+        throw new Error(
+            `Password requirements not met: ${validation.errors.join(', ')}`
+        );
     }
-    
+
     // Update password
     mockPasswords[user.email] = newPassword;
     user.updatedAt = new Date().toISOString();
@@ -325,14 +346,17 @@ export const mockChangePassword = async (userId: string, currentPassword: string
 /**
  * Mock update profile API
  */
-export const mockUpdateProfile = async (userId: string, updates: Partial<User>): Promise<User> => {
+export const mockUpdateProfile = async (
+    userId: string,
+    updates: Partial<User>
+): Promise<User> => {
     await delay(500);
-    
+
     const userIndex = mockUsers.findIndex(u => u.id === userId);
     if (userIndex === -1) {
         throw new Error('User not found');
     }
-    
+
     // Update user (excluding sensitive fields)
     const allowedUpdates = {
         firstName: updates.firstName,
@@ -341,10 +365,10 @@ export const mockUpdateProfile = async (userId: string, updates: Partial<User>):
         territory: updates.territory,
         principals: updates.principals,
     };
-    
+
     Object.assign(mockUsers[userIndex], allowedUpdates, {
         updatedAt: new Date().toISOString(),
     });
-    
+
     return mockUsers[userIndex];
 };

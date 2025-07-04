@@ -11,7 +11,13 @@ interface IconButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     size?: 'xs' | 'sm' | 'md' | 'lg';
-    color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+    color?:
+        | 'default'
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'warning'
+        | 'error';
     variant?: 'contained' | 'outlined' | 'text';
     className?: string;
     title?: string;
@@ -28,19 +34,29 @@ const SIZE_VARIANTS = {
 
 const COLOR_VARIANTS = {
     contained: {
-        default: 'bg-gray-100 text-gray-600 hover:bg-gray-200 focus:ring-gray-500',
-        primary: 'bg-blue-100 text-blue-600 hover:bg-blue-200 focus:ring-blue-500',
-        secondary: 'bg-gray-100 text-gray-600 hover:bg-gray-200 focus:ring-gray-500',
-        success: 'bg-green-100 text-green-600 hover:bg-green-200 focus:ring-green-500',
-        warning: 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200 focus:ring-yellow-500',
+        default:
+            'bg-gray-100 text-gray-600 hover:bg-gray-200 focus:ring-gray-500',
+        primary:
+            'bg-blue-100 text-blue-600 hover:bg-blue-200 focus:ring-blue-500',
+        secondary:
+            'bg-gray-100 text-gray-600 hover:bg-gray-200 focus:ring-gray-500',
+        success:
+            'bg-green-100 text-green-600 hover:bg-green-200 focus:ring-green-500',
+        warning:
+            'bg-yellow-100 text-yellow-600 hover:bg-yellow-200 focus:ring-yellow-500',
         error: 'bg-red-100 text-red-600 hover:bg-red-200 focus:ring-red-500',
     },
     outlined: {
-        default: 'border border-gray-300 text-gray-600 hover:bg-gray-50 focus:ring-gray-500',
-        primary: 'border border-blue-300 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
-        secondary: 'border border-gray-300 text-gray-600 hover:bg-gray-50 focus:ring-gray-500',
-        success: 'border border-green-300 text-green-600 hover:bg-green-50 focus:ring-green-500',
-        warning: 'border border-yellow-300 text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-500',
+        default:
+            'border border-gray-300 text-gray-600 hover:bg-gray-50 focus:ring-gray-500',
+        primary:
+            'border border-blue-300 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
+        secondary:
+            'border border-gray-300 text-gray-600 hover:bg-gray-50 focus:ring-gray-500',
+        success:
+            'border border-green-300 text-green-600 hover:bg-green-50 focus:ring-green-500',
+        warning:
+            'border border-yellow-300 text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-500',
         error: 'border border-red-300 text-red-600 hover:bg-red-50 focus:ring-red-500',
     },
     text: {

@@ -10,17 +10,18 @@ import {
     useNotify,
     useRedirect,
 } from 'react-admin';
-import { Box, Button, Chip } from '@mui/material';
-import { 
+import { Box, Button, Chip } from '@/components/ui-kit';
+import {
     GpsFixed as GpsIcon,
-    CloudOff as OfflineIcon 
+    CloudOff as OfflineIcon,
 } from '@mui/icons-material';
 
 import { InteractionInputs } from './InteractionInputs';
 import { useInteractionAPI } from './hooks/useInteractionAPI';
 
 const CreateActions = () => {
-    const { getCurrentLocation, syncOfflineData, getOfflineStatus } = useInteractionAPI();
+    const { getCurrentLocation, syncOfflineData, getOfflineStatus } =
+        useInteractionAPI();
     const [isGettingLocation, setIsGettingLocation] = useState(false);
     const offlineStatus = getOfflineStatus();
 
@@ -36,23 +37,23 @@ const CreateActions = () => {
     return (
         <TopToolbar>
             <ListButton />
-            
+
             {/* Quick GPS button */}
             <Button
                 onClick={handleGetLocation}
                 disabled={isGettingLocation}
                 startIcon={<GpsIcon />}
-                sx={{ mr: 1 }}
+                className="mr-1"
             >
                 {isGettingLocation ? 'Getting Location...' : 'Get GPS'}
             </Button>
-            
+
             {/* Offline status */}
             {!offlineStatus.isOnline && (
                 <Chip
                     icon={<OfflineIcon />}
                     label="Offline Mode"
-                    color="warning"
+                    className="text-yellow-600 border-yellow-600 bg-yellow-50"
                     size="small"
                 />
             )}
@@ -79,7 +80,7 @@ export const InteractionCreate = () => {
         try {
             // Use our enhanced create method with automatic GPS capture
             const result = await createWithLocation(transform(data), true);
-            
+
             // Redirect to the interaction details or list
             if (result.data.id) {
                 redirect('show', 'interactions', result.data.id);
@@ -101,17 +102,12 @@ export const InteractionCreate = () => {
                 },
                 onError: () => {
                     // Handled by custom submit
-                }
-            }}
-            sx={{
-                '& .RaCreate-main': {
-                    maxWidth: 800,
-                    margin: '0 auto',
                 },
             }}
+            className="[&_.RaCreate-main]:max-w-4xl [&_.RaCreate-main]:mx-auto"
         >
             <SimpleForm onSubmit={handleSubmit}>
-                <Box sx={{ width: '100%', maxWidth: 600 }}>
+                <Box className="w-full max-w-xl">
                     <InteractionInputs />
                 </Box>
             </SimpleForm>

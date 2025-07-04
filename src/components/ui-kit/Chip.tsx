@@ -26,10 +26,14 @@ const COLOR_VARIANTS = {
         error: 'bg-red-100 text-red-800 border-red-200',
     },
     outlined: {
-        primary: 'bg-transparent text-blue-600 border-blue-300 hover:bg-blue-50',
-        secondary: 'bg-transparent text-gray-600 border-gray-300 hover:bg-gray-50',
-        success: 'bg-transparent text-green-600 border-green-300 hover:bg-green-50',
-        warning: 'bg-transparent text-yellow-600 border-yellow-300 hover:bg-yellow-50',
+        primary:
+            'bg-transparent text-blue-600 border-blue-300 hover:bg-blue-50',
+        secondary:
+            'bg-transparent text-gray-600 border-gray-300 hover:bg-gray-50',
+        success:
+            'bg-transparent text-green-600 border-green-300 hover:bg-green-50',
+        warning:
+            'bg-transparent text-yellow-600 border-yellow-300 hover:bg-yellow-50',
         error: 'bg-transparent text-red-600 border-red-300 hover:bg-red-50',
     },
 };
@@ -53,7 +57,7 @@ export const Chip: React.FC<ChipProps> = ({
     disabled = false,
 }) => {
     const isClickable = onClick && !disabled;
-    
+
     const Component = isClickable ? 'button' : 'div';
 
     return (
@@ -70,10 +74,12 @@ export const Chip: React.FC<ChipProps> = ({
             )}
         >
             {icon && (
-                <span className={cn(
-                    'inline-flex items-center justify-center',
-                    size === 'small' ? 'mr-1' : 'mr-1.5'
-                )}>
+                <span
+                    className={cn(
+                        'inline-flex items-center justify-center',
+                        size === 'small' ? 'mr-1' : 'mr-1.5'
+                    )}
+                >
                     {React.cloneElement(icon as React.ReactElement, {
                         className: cn(
                             size === 'small' ? 'h-3 w-3' : 'h-4 w-4',

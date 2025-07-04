@@ -3,7 +3,13 @@
  * Adds mobile-optimized interaction management with GPS and file upload capabilities
  */
 
-import { DataProvider, Identifier, CreateParams, UpdateParams, GetListParams } from 'react-admin';
+import {
+    DataProvider,
+    Identifier,
+    CreateParams,
+    UpdateParams,
+    GetListParams,
+} from 'react-admin';
 import { Interaction, GPSCoordinates } from '../../types';
 import { supabase } from './supabase';
 import { logAuditEvent } from '../../utils/auditLogging';
@@ -85,20 +91,26 @@ export const getCurrentLocation = (): Promise<GPSCoordinates> => {
 export const validateFileAttachment = async (file: File): Promise<boolean> => {
     // Maximum file size: 10MB
     const MAX_SIZE = 10 * 1024 * 1024;
-    
+
     // Allowed file types
     const ALLOWED_TYPES = [
-        'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/gif',
         'application/pdf',
-        'text/plain', 'text/csv',
+        'text/plain',
+        'text/csv',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
 
     if (file.size > MAX_SIZE) {
-        throw new Error(`File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds 10MB limit`);
+        throw new Error(
+            `File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds 10MB limit`
+        );
     }
 
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -130,12 +142,12 @@ export const compressImageForMobile = async (
         img.onload = () => {
             // Calculate new dimensions maintaining aspect ratio
             let { width, height } = img;
-            
+
             if (width > maxWidth) {
                 height = (height * maxWidth) / width;
                 width = maxWidth;
             }
-            
+
             if (height > maxHeight) {
                 width = (width * maxHeight) / height;
                 height = maxHeight;
@@ -146,9 +158,9 @@ export const compressImageForMobile = async (
 
             // Draw and compress
             ctx?.drawImage(img, 0, 0, width, height);
-            
+
             canvas.toBlob(
-                (blob) => {
+                blob => {
                     if (blob) {
                         const compressedFile = new File([blob], file.name, {
                             type: file.type,
@@ -164,7 +176,8 @@ export const compressImageForMobile = async (
             );
         };
 
-        img.onerror = () => reject(new Error('Failed to load image for compression'));
+        img.onerror = () =>
+            reject(new Error('Failed to load image for compression'));
         img.src = URL.createObjectURL(file);
     });
 };
@@ -172,7 +185,10 @@ export const compressImageForMobile = async (
 /**
  * Create image thumbnail
  */
-export const createImageThumbnail = async (file: File, size: number = 150): Promise<File> => {
+export const createImageThumbnail = async (
+    file: File,
+    size: number = 150
+): Promise<File> => {
     return compressImageForMobile(file, size, size, 0.7);
 };
 
@@ -184,21 +200,21 @@ export const uploadInteractionAttachment = async (
     file: File
 ): Promise<FileAttachment> => {
     await validateFileAttachment(file);
-    
+
     // Compress images for mobile
     const processedFile = await compressImageForMobile(file);
-    
+
     // Generate unique filename
     const timestamp = Date.now();
     const randomSuffix = Math.random().toString(36).substring(2, 8);
     const filename = `${interactionId}/${timestamp}_${randomSuffix}_${processedFile.name}`;
-    
+
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
         .from('interaction-attachments')
         .upload(filename, processedFile, {
             cacheControl: '3600',
-            upsert: false
+            upsert: false,
         });
 
     if (error) {
@@ -222,16 +238,20 @@ export const uploadInteractionAttachment = async (
     };
 
     // Log audit event
-    await logAuditEvent('data.create', {
-        resource: 'interaction_attachment',
-        interactionId,
-        filename: file.name,
-        size: processedFile.size,
-        mimeType: processedFile.type,
-    }, {
-        outcome: 'success',
-        message: 'Interaction attachment uploaded successfully'
-    });
+    await logAuditEvent(
+        'data.create',
+        {
+            resource: 'interaction_attachment',
+            interactionId,
+            filename: file.name,
+            size: processedFile.size,
+            mimeType: processedFile.type,
+        },
+        {
+            outcome: 'success',
+            message: 'Interaction attachment uploaded successfully',
+        }
+    );
 
     return attachment;
 };
@@ -252,14 +272,18 @@ export const deleteInteractionAttachment = async (
     }
 
     // Log audit event
-    await logAuditEvent('data.delete', {
-        resource: 'interaction_attachment',
-        interactionId,
-        filename,
-    }, {
-        outcome: 'success',
-        message: 'Interaction attachment deleted successfully'
-    });
+    await logAuditEvent(
+        'data.delete',
+        {
+            resource: 'interaction_attachment',
+            interactionId,
+            filename,
+        },
+        {
+            outcome: 'success',
+            message: 'Interaction attachment deleted successfully',
+        }
+    );
 
     return true;
 };
@@ -283,7 +307,9 @@ export const processInteractionLocation = async (
                     ...data,
                     latitude: location.latitude,
                     longitude: location.longitude,
-                    locationNotes: data.locationNotes || `Auto-captured at ${location.timestamp}`,
+                    locationNotes:
+                        data.locationNotes ||
+                        `Auto-captured at ${location.timestamp}`,
                 },
             };
         } catch (error) {
@@ -305,7 +331,7 @@ export const addLocationToInteraction = async (
 ): Promise<Interaction> => {
     try {
         const location = await getCurrentLocation();
-        
+
         const updatedInteraction = await dataProvider.update('interactions', {
             id: interactionId,
             data: {
@@ -317,30 +343,38 @@ export const addLocationToInteraction = async (
         });
 
         // Log audit event
-        await logAuditEvent('data.update', {
-            resource: 'interaction',
-            interactionId,
-            action: 'location_added',
-            latitude: location.latitude,
-            longitude: location.longitude,
-            accuracy: location.accuracy,
-        }, {
-            outcome: 'success',
-            message: 'GPS location added to interaction'
-        });
+        await logAuditEvent(
+            'data.update',
+            {
+                resource: 'interaction',
+                interactionId,
+                action: 'location_added',
+                latitude: location.latitude,
+                longitude: location.longitude,
+                accuracy: location.accuracy,
+            },
+            {
+                outcome: 'success',
+                message: 'GPS location added to interaction',
+            }
+        );
 
         return updatedInteraction.data;
     } catch (error: any) {
         // Log audit event for failure
-        await logAuditEvent('data.update', {
-            resource: 'interaction',
-            interactionId,
-            action: 'location_add_failed',
-            error: error.message,
-        }, {
-            outcome: 'failure',
-            message: 'Failed to add GPS location to interaction'
-        });
+        await logAuditEvent(
+            'data.update',
+            {
+                resource: 'interaction',
+                interactionId,
+                action: 'location_add_failed',
+                error: error.message,
+            },
+            {
+                outcome: 'failure',
+                message: 'Failed to add GPS location to interaction',
+            }
+        );
 
         throw error;
     }
@@ -360,23 +394,23 @@ export const getInteractionTimeline = async (
     }
 ): Promise<{ data: Interaction[]; total?: number }> => {
     const filters: Record<string, any> = {};
-    
+
     if (params.organizationId) {
         filters.organizationId = params.organizationId;
     }
-    
+
     if (params.contactId) {
         filters.contactId = params.contactId;
     }
-    
+
     if (params.typeIds && params.typeIds.length > 0) {
         filters.typeId = params.typeIds;
     }
-    
+
     if (params.startDate) {
         filters.scheduledDate_gte = params.startDate;
     }
-    
+
     if (params.endDate) {
         filters.scheduledDate_lte = params.endDate;
     }
@@ -403,10 +437,10 @@ export const getFollowUpReminders = async (
         followUpRequired: true,
         isCompleted: false,
     };
-    
+
     const now = new Date();
     const daysAhead = params.days || 7;
-    
+
     if (params.overdue) {
         filters.followUpDate_lt = now.toISOString();
     } else if (params.upcoming) {
@@ -442,14 +476,18 @@ export const completeInteraction = async (
     });
 
     // Log audit event
-    await logAuditEvent('business.interaction_completed', {
-        interactionId: id,
-        duration: completionData.duration,
-        outcome: completionData.outcome,
-    }, {
-        outcome: 'success',
-        message: 'Interaction marked as completed'
-    });
+    await logAuditEvent(
+        'business.interaction_completed',
+        {
+            interactionId: id,
+            duration: completionData.duration,
+            outcome: completionData.outcome,
+        },
+        {
+            outcome: 'success',
+            message: 'Interaction marked as completed',
+        }
+    );
 
     return updatedInteraction.data;
 };
@@ -472,14 +510,18 @@ export const scheduleFollowUp = async (
     });
 
     // Log audit event
-    await logAuditEvent('business.follow_up_scheduled', {
-        interactionId: id,
-        followUpDate: followUpData.followUpDate,
-        followUpNotes: followUpData.followUpNotes,
-    }, {
-        outcome: 'success',
-        message: 'Follow-up scheduled for interaction'
-    });
+    await logAuditEvent(
+        'business.follow_up_scheduled',
+        {
+            interactionId: id,
+            followUpDate: followUpData.followUpDate,
+            followUpNotes: followUpData.followUpNotes,
+        },
+        {
+            outcome: 'success',
+            message: 'Follow-up scheduled for interaction',
+        }
+    );
 
     return updatedInteraction.data;
 };
@@ -495,7 +537,7 @@ export const getOfflineStatus = (): {
     const isOnline = navigator.onLine;
     const offlineData = localStorage.getItem('forkflow_offline_interactions');
     const lastSync = localStorage.getItem('forkflow_last_sync');
-    
+
     return {
         isOnline,
         hasOfflineData: !!offlineData,
@@ -512,32 +554,38 @@ export const storeOfflineInteraction = async (
     const offlineKey = 'forkflow_offline_interactions';
     const existingData = localStorage.getItem(offlineKey);
     const offlineInteractions = existingData ? JSON.parse(existingData) : [];
-    
+
     const offlineInteraction = {
         ...interaction,
         _offline: true,
         _offlineId: `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         _offlineTimestamp: new Date().toISOString(),
     };
-    
+
     offlineInteractions.push(offlineInteraction);
     localStorage.setItem(offlineKey, JSON.stringify(offlineInteractions));
-    
+
     // Log audit event
-    await logAuditEvent('system.offline_mode', {
-        action: 'interaction_stored_offline',
-        offlineId: offlineInteraction._offlineId,
-        subject: interaction.subject,
-    }, {
-        outcome: 'success',
-        message: 'Interaction stored offline for later sync'
-    });
+    await logAuditEvent(
+        'system.offline_mode',
+        {
+            action: 'interaction_stored_offline',
+            offlineId: offlineInteraction._offlineId,
+            subject: interaction.subject,
+        },
+        {
+            outcome: 'success',
+            message: 'Interaction stored offline for later sync',
+        }
+    );
 };
 
 /**
  * Get offline interactions
  */
-export const getOfflineInteractions = async (): Promise<Partial<Interaction>[]> => {
+export const getOfflineInteractions = async (): Promise<
+    Partial<Interaction>[]
+> => {
     const offlineKey = 'forkflow_offline_interactions';
     const existingData = localStorage.getItem(offlineKey);
     return existingData ? JSON.parse(existingData) : [];
@@ -550,64 +598,80 @@ export const syncOfflineInteractions = async (
     dataProvider: DataProvider
 ): Promise<SyncResult> => {
     const offlineInteractions = await getOfflineInteractions();
-    
+
     if (offlineInteractions.length === 0) {
         return { success: true, processed: 0, failed: 0, errors: [] };
     }
-    
+
     let processed = 0;
     let failed = 0;
     const errors: string[] = [];
-    
+
     for (const interaction of offlineInteractions) {
         try {
             // Remove offline metadata before syncing
-            const { _offline, _offlineId, _offlineTimestamp, ...cleanInteraction } = interaction as any;
-            
+            const {
+                _offline,
+                _offlineId,
+                _offlineTimestamp,
+                ...cleanInteraction
+            } = interaction as any;
+
             await dataProvider.create('interactions', {
                 data: cleanInteraction,
             });
-            
+
             processed++;
-            
+
             // Log successful sync
-            await logAuditEvent('system.offline_mode', {
-                action: 'interaction_synced',
-                offlineId: _offlineId,
-                subject: interaction.subject,
-            }, {
-                outcome: 'success',
-                message: 'Offline interaction synced successfully'
-            });
+            await logAuditEvent(
+                'system.offline_mode',
+                {
+                    action: 'interaction_synced',
+                    offlineId: _offlineId,
+                    subject: interaction.subject,
+                },
+                {
+                    outcome: 'success',
+                    message: 'Offline interaction synced successfully',
+                }
+            );
         } catch (error: any) {
             failed++;
             errors.push(error.message);
-            
+
             // Log sync failure
-            await logAuditEvent('system.offline_mode', {
-                action: 'interaction_sync_failed',
-                offlineId: (interaction as any)._offlineId,
-                error: error.message,
-            }, {
-                outcome: 'failure',
-                message: 'Failed to sync offline interaction'
-            });
+            await logAuditEvent(
+                'system.offline_mode',
+                {
+                    action: 'interaction_sync_failed',
+                    offlineId: (interaction as any)._offlineId,
+                    error: error.message,
+                },
+                {
+                    outcome: 'failure',
+                    message: 'Failed to sync offline interaction',
+                }
+            );
         }
     }
-    
+
     // Clear synced interactions from offline storage
     if (processed > 0) {
         const remainingInteractions = offlineInteractions.slice(processed);
         if (remainingInteractions.length === 0) {
             localStorage.removeItem('forkflow_offline_interactions');
         } else {
-            localStorage.setItem('forkflow_offline_interactions', JSON.stringify(remainingInteractions));
+            localStorage.setItem(
+                'forkflow_offline_interactions',
+                JSON.stringify(remainingInteractions)
+            );
         }
-        
+
         // Update last sync time
         localStorage.setItem('forkflow_last_sync', new Date().toISOString());
     }
-    
+
     return {
         success: failed === 0,
         processed,
@@ -622,12 +686,16 @@ export const syncOfflineInteractions = async (
 export const clearOfflineData = async (): Promise<void> => {
     localStorage.removeItem('forkflow_offline_interactions');
     localStorage.removeItem('forkflow_last_sync');
-    
+
     // Log audit event
-    await logAuditEvent('system.offline_mode', {
-        action: 'offline_data_cleared',
-    }, {
-        outcome: 'success',
-        message: 'Offline interaction data cleared'
-    });
+    await logAuditEvent(
+        'system.offline_mode',
+        {
+            action: 'offline_data_cleared',
+        },
+        {
+            outcome: 'success',
+            message: 'Offline interaction data cleared',
+        }
+    );
 };

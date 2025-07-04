@@ -29,10 +29,9 @@ import {
     Stack,
     Alert,
     Chip,
-    TextField,
     Button,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     PhotoCamera as PhotoCameraIcon,
     Delete as DeleteIcon,
@@ -61,12 +60,7 @@ export const UserEdit = () => {
         <Edit
             title={<UserEditTitle />}
             actions={<UserEditActions />}
-            sx={{
-                '& .RaEdit-main': {
-                    maxWidth: isMobile ? '100%' : 900,
-                    margin: '0 auto',
-                },
-            }}
+            className={`${isMobile ? 'w-full' : 'max-w-5xl mx-auto'}`}
         >
             <UserEditForm />
         </Edit>
@@ -99,7 +93,9 @@ const UserEditForm = () => {
     );
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [territory, setTerritory] = useState<string[]>(
-        typeof record?.territory === 'string' ? [record.territory] : record?.territory || []
+        typeof record?.territory === 'string'
+            ? [record.territory]
+            : record?.territory || []
     );
     const [principals, setPrincipals] = useState<string[]>([]);
     const [newTerritory, setNewTerritory] = useState('');
@@ -140,7 +136,7 @@ const UserEditForm = () => {
 
             // Create preview URL
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
                 setAvatarPreview(e.target?.result as string);
             };
             reader.readAsDataURL(file);
@@ -171,21 +167,18 @@ const UserEditForm = () => {
     };
 
     const handleRemoveTerritory = (territoryToRemove: string) => {
-        setTerritory(territory.filter((t) => t !== territoryToRemove));
+        setTerritory(territory.filter(t => t !== territoryToRemove));
     };
 
     const handleAddPrincipal = () => {
-        if (
-            newPrincipal.trim() &&
-            !principals.includes(newPrincipal.trim())
-        ) {
+        if (newPrincipal.trim() && !principals.includes(newPrincipal.trim())) {
             setPrincipals([...principals, newPrincipal.trim()]);
             setNewPrincipal('');
         }
     };
 
     const handleRemovePrincipal = (principalToRemove: string) => {
-        setPrincipals(principals.filter((p) => p !== principalToRemove));
+        setPrincipals(principals.filter(p => p !== principalToRemove));
     };
 
     const handleResetPassword = () => {
@@ -213,57 +206,51 @@ const UserEditForm = () => {
     if (!record) return null;
 
     return (
-        <SimpleForm
-            toolbar={<UserEditToolbar />}
-            sx={{ maxWidth: 'none' }}
-        >
+        <SimpleForm toolbar={<UserEditToolbar />} className="max-w-none">
             {/* User Status Overview */}
-            <Card sx={{ mb: 3, width: '100%' }}>
+            <Card className="mb-6 w-full">
                 <CardContent>
-                    <Box display="flex" alignItems="center" gap={2} mb={2}>
+                    <Box className="flex items-center gap-4 mb-4">
                         <Avatar
                             src={avatarPreview || undefined}
-                            sx={{
-                                width: 60,
-                                height: 60,
-                                fontSize: '1.5rem',
-                            }}
+                            className="w-15 h-15 text-xl"
                         >
                             {record.firstName?.[0]}
                             {record.lastName?.[0]}
                         </Avatar>
-                        <Box flex={1}>
+                        <Box className="flex-1">
                             <Typography variant="h6">
                                 {record.firstName} {record.lastName}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 {record.email}
                             </Typography>
-                            <Box display="flex" gap={1} mt={1}>
-                                <RoleChip role={record.role || 'user'} size="small" />
+                            <Box className="flex gap-2 mt-2">
+                                <RoleChip
+                                    role={record.role || 'user'}
+                                    size="small"
+                                />
                                 <Chip
                                     label={
-                                        record.administrator ? 'Active' : 'Inactive'
+                                        record.administrator
+                                            ? 'Active'
+                                            : 'Inactive'
                                     }
-                                    color={
-                                        record.administrator ? 'success' : 'error'
+                                    className={
+                                        record.administrator
+                                            ? 'border-green-500 text-green-500'
+                                            : 'border-red-500 text-red-500'
                                     }
                                     size="small"
-                                    variant="outlined"
                                 />
                             </Box>
                         </Box>
                     </Box>
 
                     {record.updatedAt && (
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                        >
-                            Last login: {new Date(record.updatedAt).toLocaleDateString()} at{' '}
+                        <Typography variant="body2" color="text.secondary">
+                            Last login:{' '}
+                            {new Date(record.updatedAt).toLocaleDateString()} at{' '}
                             {new Date(record.updatedAt).toLocaleTimeString()}
                         </Typography>
                     )}
@@ -276,28 +263,21 @@ const UserEditForm = () => {
             </Card>
 
             {/* Basic Information */}
-            <Card sx={{ mb: 3, width: '100%' }}>
+            <Card className="mb-6 w-full">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Basic Information
                     </Typography>
 
                     {/* Avatar Section */}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            mb: 3,
-                        }}
-                    >
+                    <Box className="flex items-center gap-4 mb-6">
                         <Avatar
                             src={avatarPreview || undefined}
-                            sx={{
-                                width: isMobile ? 80 : 100,
-                                height: isMobile ? 80 : 100,
-                                fontSize: isMobile ? '2rem' : '2.5rem',
-                            }}
+                            className={`${
+                                isMobile
+                                    ? 'w-20 h-20 text-2xl'
+                                    : 'w-25 h-25 text-3xl'
+                            }`}
                         >
                             {record.firstName?.[0]}
                             {record.lastName?.[0]}
@@ -312,19 +292,16 @@ const UserEditForm = () => {
                             />
                             <label htmlFor="avatar-upload">
                                 <IconButton
-                                    color="primary"
+                                    className="text-blue-600 min-h-11 min-w-11"
                                     aria-label="upload picture"
-                                    component="span"
-                                    sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     <PhotoCameraIcon />
                                 </IconButton>
                             </label>
                             {avatarPreview && (
                                 <IconButton
-                                    color="error"
+                                    className="text-red-600 min-h-11 min-w-11"
                                     onClick={handleRemoveAvatar}
-                                    sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     <DeleteIcon />
                                 </IconButton>
@@ -336,15 +313,16 @@ const UserEditForm = () => {
                     <Stack
                         direction={isMobile ? 'column' : 'row'}
                         spacing={2}
-                        sx={{ mb: 3 }}
+                        className="mb-6"
                     >
                         <TextInput
                             source="firstName"
                             label="First Name"
                             validate={[required(), minLength(2)]}
                             fullWidth
-                            sx={{
-                                '& .MuiInputBase-input': {
+                            className="text-base"
+                            inputProps={{
+                                style: {
                                     fontSize: isMobile ? '16px' : '14px',
                                 },
                             }}
@@ -354,8 +332,9 @@ const UserEditForm = () => {
                             label="Last Name"
                             validate={[required(), minLength(2)]}
                             fullWidth
-                            sx={{
-                                '& .MuiInputBase-input': {
+                            className="text-base"
+                            inputProps={{
+                                style: {
                                     fontSize: isMobile ? '16px' : '14px',
                                 },
                             }}
@@ -369,9 +348,9 @@ const UserEditForm = () => {
                         validate={[required(), email()]}
                         fullWidth
                         helperText="Changing email will require user verification"
-                        sx={{
-                            mb: 3,
-                            '& .MuiInputBase-input': {
+                        className="mb-6 text-base"
+                        inputProps={{
+                            style: {
                                 fontSize: isMobile ? '16px' : '14px',
                             },
                         }}
@@ -385,7 +364,7 @@ const UserEditForm = () => {
                         validate={[required()]}
                         fullWidth
                         helperText="Changing role will affect user permissions immediately"
-                        sx={{ mb: 3 }}
+                        className="mb-6"
                     />
 
                     {/* Active Status */}
@@ -393,33 +372,25 @@ const UserEditForm = () => {
                         source="administrator"
                         label="Active User"
                         helperText="Inactive users cannot log in"
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                     />
                 </CardContent>
             </Card>
 
             {/* Security Management */}
-            <Card sx={{ mb: 3, width: '100%' }}>
+            <Card className="mb-6 w-full">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        <SecurityIcon
-                            sx={{ mr: 1, verticalAlign: 'middle' }}
-                        />
+                        <SecurityIcon className="mr-2 align-middle" />
                         Security Management
                     </Typography>
 
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 2,
-                            flexWrap: 'wrap',
-                        }}
-                    >
+                    <Box className="flex gap-4 flex-wrap">
                         <Button
                             variant="outlined"
                             startIcon={<VpnKeyIcon />}
                             onClick={handleResetPassword}
-                            sx={{ minHeight: 44 }}
+                            className="min-h-11"
                         >
                             Send Password Reset
                         </Button>
@@ -427,7 +398,7 @@ const UserEditForm = () => {
                         <Button
                             variant="outlined"
                             startIcon={<HistoryIcon />}
-                            sx={{ minHeight: 44 }}
+                            className="min-h-11"
                         >
                             View Login History
                         </Button>
@@ -436,10 +407,10 @@ const UserEditForm = () => {
                     <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ mt: 2 }}
+                        className="mt-4"
                     >
-                        Password reset emails will be sent to the user's
-                        current email address.
+                        Password reset emails will be sent to the user's current
+                        email address.
                     </Typography>
                 </CardContent>
             </Card>
@@ -449,7 +420,7 @@ const UserEditForm = () => {
                     formData.role === 'broker' && (
                         <>
                             {/* Territory Management */}
-                            <Card sx={{ mb: 3, width: '100%' }}>
+                            <Card className="mb-6 w-full">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Sales Territory
@@ -465,65 +436,41 @@ const UserEditForm = () => {
                                         Angeles), or ZIP codes (90210).
                                     </Typography>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            mb: 2,
-                                            flexWrap: 'wrap',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <TextField
-                                            label="Add Territory"
+                                    <Box className="flex gap-2 mb-4 flex-wrap items-center">
+                                        <input
+                                            type="text"
+                                            placeholder="Add Territory"
                                             value={newTerritory}
-                                            onChange={(e) =>
+                                            onChange={e =>
                                                 setNewTerritory(e.target.value)
                                             }
-                                            size="small"
-                                            onKeyPress={(e) =>
+                                            onKeyPress={e =>
                                                 e.key === 'Enter' &&
                                                 (e.preventDefault(),
                                                 handleAddTerritory())
                                             }
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: isMobile
-                                                        ? '16px'
-                                                        : '14px',
-                                                },
-                                            }}
+                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                                isMobile ? 'text-base' : 'text-sm'
+                                            }`}
                                         />
                                         <IconButton
                                             onClick={handleAddTerritory}
-                                            color="primary"
+                                            className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newTerritory.trim()}
-                                            sx={{
-                                                minHeight: 44,
-                                                minWidth: 44,
-                                            }}
                                         >
                                             <AddIcon />
                                         </IconButton>
                                     </Box>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            flexWrap: 'wrap',
-                                            mb: 2,
-                                        }}
-                                    >
-                                        {territory.map((area) => (
+                                    <Box className="flex gap-2 flex-wrap mb-4">
+                                        {territory.map(area => (
                                             <Chip
                                                 key={area}
                                                 label={area}
                                                 onDelete={() =>
                                                     handleRemoveTerritory(area)
                                                 }
-                                                color="primary"
-                                                variant="outlined"
+                                                className="border-blue-500 text-blue-500"
                                             />
                                         ))}
                                         {territory.length === 0 && (
@@ -546,7 +493,7 @@ const UserEditForm = () => {
                             </Card>
 
                             {/* Principals Management */}
-                            <Card sx={{ mb: 3, width: '100%' }}>
+                            <Card className="mb-6 w-full">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Principals/Brands
@@ -561,56 +508,34 @@ const UserEditForm = () => {
                                         or brands this broker represents.
                                     </Typography>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            mb: 2,
-                                            flexWrap: 'wrap',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <TextField
-                                            label="Add Principal"
+                                    <Box className="flex gap-2 mb-4 flex-wrap items-center">
+                                        <input
+                                            type="text"
+                                            placeholder="Add Principal"
                                             value={newPrincipal}
-                                            onChange={(e) =>
+                                            onChange={e =>
                                                 setNewPrincipal(e.target.value)
                                             }
-                                            size="small"
-                                            onKeyPress={(e) =>
+                                            onKeyPress={e =>
                                                 e.key === 'Enter' &&
                                                 (e.preventDefault(),
                                                 handleAddPrincipal())
                                             }
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: isMobile
-                                                        ? '16px'
-                                                        : '14px',
-                                                },
-                                            }}
+                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                                isMobile ? 'text-base' : 'text-sm'
+                                            }`}
                                         />
                                         <IconButton
                                             onClick={handleAddPrincipal}
-                                            color="primary"
+                                            className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newPrincipal.trim()}
-                                            sx={{
-                                                minHeight: 44,
-                                                minWidth: 44,
-                                            }}
                                         >
                                             <AddIcon />
                                         </IconButton>
                                     </Box>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
-                                        {principals.map((principal) => (
+                                    <Box className="flex gap-2 flex-wrap">
+                                        {principals.map(principal => (
                                             <Chip
                                                 key={principal}
                                                 label={principal}
@@ -619,8 +544,7 @@ const UserEditForm = () => {
                                                         principal
                                                     )
                                                 }
-                                                color="secondary"
-                                                variant="outlined"
+                                                className="border-gray-500 text-gray-600"
                                             />
                                         ))}
                                         {principals.length === 0 && (
@@ -643,11 +567,8 @@ const UserEditForm = () => {
 };
 
 const UserEditToolbar = () => (
-    <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <SaveButton
-            variant="contained"
-            sx={{ minHeight: 48, px: 4 }}
-        />
+    <Toolbar className="flex justify-between">
+        <SaveButton variant="contained" className="min-h-12 px-8" />
         <DeleteButton
             confirmTitle="Delete User"
             confirmContent="Are you sure you want to delete this user? This action cannot be undone."

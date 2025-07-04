@@ -4,42 +4,40 @@
  */
 
 import { AuthProvider } from 'react-admin';
-import { 
+import {
     login as apiLogin,
     logout as apiLogout,
     getCurrentUser,
     getUserPermissions,
     initializeAuth,
     setupTokenRefresh,
-    isAuthenticated as checkAuthenticated
+    isAuthenticated as checkAuthenticated,
 } from '../../api/auth/authService';
-import { 
+import {
     getAuthState,
     clearAuthState,
     getUserFromToken,
     getAccessToken,
-    clearAccessToken
+    clearAccessToken,
 } from '../../utils/jwtUtils';
 import { User, LoginCredentials } from '../../types';
-import { 
-    saveSession, 
-    loadSession, 
-    clearSession, 
-    isSessionValid, 
+import {
+    saveSession,
+    loadSession,
+    clearSession,
+    isSessionValid,
     setupActivityTracking,
-    checkSessionConflict 
+    checkSessionConflict,
 } from '../../utils/sessionPersistence';
-import { 
-    logAuditEvent, 
-    initializeAuditLogging 
+import {
+    logAuditEvent,
+    initializeAuditLogging,
 } from '../../utils/auditLogging';
-import { 
-    initializeSecurity, 
-    createSecureHttpClient 
+import {
+    initializeSecurity,
+    createSecureHttpClient,
 } from '../../utils/securityMiddleware';
-import { 
-    initializeHTTPSSecurity 
-} from '../../utils/httpsEnforcement';
+import { initializeHTTPSSecurity } from '../../utils/httpsEnforcement';
 
 // Authentication state management
 type AuthState = 'initializing' | 'authenticated' | 'unauthenticated';
@@ -53,23 +51,30 @@ const waitForAuthInitialization = async (): Promise<User | null> => {
     if (authInitializationPromise) {
         return authInitializationPromise;
     }
-    
+
     // If already initialized, return current state
     if (authenticationState !== 'initializing') {
-        return authenticationState === 'authenticated' ? getCurrentUser() : null;
+        return authenticationState === 'authenticated'
+            ? getCurrentUser()
+            : null;
     }
-    
+
     // Start initialization
-    authInitializationPromise = initializeAuth().then((user) => {
-        authenticationState = user ? 'authenticated' : 'unauthenticated';
-        console.debug('🔐 Authentication state initialized:', authenticationState);
-        return user;
-    }).catch((error) => {
-        authenticationState = 'unauthenticated';
-        console.debug('🔐 Authentication initialization failed:', error);
-        return null;
-    });
-    
+    authInitializationPromise = initializeAuth()
+        .then(user => {
+            authenticationState = user ? 'authenticated' : 'unauthenticated';
+            console.debug(
+                '🔐 Authentication state initialized:',
+                authenticationState
+            );
+            return user;
+        })
+        .catch(error => {
+            authenticationState = 'unauthenticated';
+            console.debug('🔐 Authentication initialization failed:', error);
+            return null;
+        });
+
     return authInitializationPromise;
 };
 
@@ -89,13 +94,13 @@ const getRolePermissions = (role: string): string[] => {
         case 'admin':
             return [
                 'organizations.*',
-                'contacts.*', 
+                'contacts.*',
                 'products.*',
                 'opportunities.*',
                 'interactions.*',
                 'users.*',
                 'settings.*',
-                'reports.*'
+                'reports.*',
             ];
         case 'manager':
             return [
@@ -105,7 +110,7 @@ const getRolePermissions = (role: string): string[] => {
                 'opportunities.*',
                 'interactions.*',
                 'reports.view',
-                'settings.view'
+                'settings.view',
             ];
         case 'broker':
             return [
@@ -114,7 +119,7 @@ const getRolePermissions = (role: string): string[] => {
                 'contacts.*',
                 'products.view',
                 'opportunities.*',
-                'interactions.*'
+                'interactions.*',
             ];
         default:
             return [];
@@ -124,13 +129,19 @@ const getRolePermissions = (role: string): string[] => {
 /**
  * Check if user can access a specific resource/action
  */
-const canAccess = (permissions: string[], resource: string, action: string): boolean => {
+const canAccess = (
+    permissions: string[],
+    resource: string,
+    action: string
+): boolean => {
     const fullPermission = `${resource}.${action}`;
     const wildcardPermission = `${resource}.*`;
-    
-    return permissions.includes(fullPermission) || 
-           permissions.includes(wildcardPermission) ||
-           permissions.includes('*');
+
+    return (
+        permissions.includes(fullPermission) ||
+        permissions.includes(wildcardPermission) ||
+        permissions.includes('*')
+    );
 };
 
 export const jwtAuthProvider: AuthProvider = {
@@ -140,52 +151,63 @@ export const jwtAuthProvider: AuthProvider = {
     login: async (params: LoginCredentials) => {
         try {
             const response = await apiLogin(params);
-            
+
             // Update authentication state
             setAuthenticationState('authenticated');
             authInitializationPromise = Promise.resolve(response.user);
-            
+
             // Log successful authentication
-            await logAuditEvent('auth.login', {
-                userId: response.user.id,
-                userEmail: response.user.email,
-                userRole: response.user.role,
-                rememberMe: params.rememberMe,
-                loginMethod: 'jwt',
-            }, {
-                userId: response.user.id,
-                userEmail: response.user.email,
-                userRole: response.user.role,
-                outcome: 'success',
-                message: 'User login successful',
-            });
-            
+            await logAuditEvent(
+                'auth.login',
+                {
+                    userId: response.user.id,
+                    userEmail: response.user.email,
+                    userRole: response.user.role,
+                    rememberMe: params.rememberMe,
+                    loginMethod: 'jwt',
+                },
+                {
+                    userId: response.user.id,
+                    userEmail: response.user.email,
+                    userRole: response.user.role,
+                    outcome: 'success',
+                    message: 'User login successful',
+                }
+            );
+
             // Setup automatic token refresh
             setupTokenRefresh();
-            
+
             // Save session for mobile persistence
             await saveSession(response.user);
-            
+
             return Promise.resolve();
         } catch (error) {
             console.error('Login failed:', error);
-            
+
             // Update authentication state on failure
             setAuthenticationState('unauthenticated');
             authInitializationPromise = Promise.resolve(null);
-            
+
             // Log failed authentication
-            await logAuditEvent('auth.login_failed', {
-                userEmail: params.email,
-                error: error instanceof Error ? error.message : 'Unknown error',
-                attemptedRememberMe: params.rememberMe,
-            }, {
-                userEmail: params.email,
-                outcome: 'failure',
-                severity: 'high',
-                message: 'Login attempt failed',
-            });
-            
+            await logAuditEvent(
+                'auth.login_failed',
+                {
+                    userEmail: params.email,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    attemptedRememberMe: params.rememberMe,
+                },
+                {
+                    userEmail: params.email,
+                    outcome: 'failure',
+                    severity: 'high',
+                    message: 'Login attempt failed',
+                }
+            );
+
             return Promise.reject(error);
         }
     },
@@ -195,44 +217,55 @@ export const jwtAuthProvider: AuthProvider = {
      */
     logout: async () => {
         const sessionInfo = loadSession();
-        
+
         try {
             await apiLogout();
-            
+
             // Log successful logout
-            await logAuditEvent('auth.logout', {
-                userId: sessionInfo?.user.id,
-                userEmail: sessionInfo?.user.email,
-                sessionId: sessionInfo?.sessionId,
-                logoutMethod: 'explicit',
-            }, {
-                userId: sessionInfo?.user.id,
-                userEmail: sessionInfo?.user.email,
-                outcome: 'success',
-                message: 'User logout successful',
-            });
-            
+            await logAuditEvent(
+                'auth.logout',
+                {
+                    userId: sessionInfo?.user.id,
+                    userEmail: sessionInfo?.user.email,
+                    sessionId: sessionInfo?.sessionId,
+                    logoutMethod: 'explicit',
+                },
+                {
+                    userId: sessionInfo?.user.id,
+                    userEmail: sessionInfo?.user.email,
+                    outcome: 'success',
+                    message: 'User logout successful',
+                }
+            );
+
             // Clear session persistence
             clearSession();
-            
+
             return Promise.resolve();
         } catch (error) {
             console.error('Logout error:', error);
-            
+
             // Log logout attempt (even if server call failed)
-            await logAuditEvent('auth.logout', {
-                userId: sessionInfo?.user.id,
-                userEmail: sessionInfo?.user.email,
-                error: error instanceof Error ? error.message : 'Unknown error',
-                logoutMethod: 'explicit_with_error',
-            }, {
-                userId: sessionInfo?.user.id,
-                userEmail: sessionInfo?.user.email,
-                outcome: 'warning',
-                severity: 'medium',
-                message: 'Logout completed with server error',
-            });
-            
+            await logAuditEvent(
+                'auth.logout',
+                {
+                    userId: sessionInfo?.user.id,
+                    userEmail: sessionInfo?.user.email,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    logoutMethod: 'explicit_with_error',
+                },
+                {
+                    userId: sessionInfo?.user.id,
+                    userEmail: sessionInfo?.user.email,
+                    outcome: 'warning',
+                    severity: 'medium',
+                    message: 'Logout completed with server error',
+                }
+            );
+
             // Even if server logout fails, clear local state
             clearAccessToken();
             clearAuthState();
@@ -251,26 +284,26 @@ export const jwtAuthProvider: AuthProvider = {
                 clearSession();
                 return Promise.reject(new Error('Session conflict detected'));
             }
-            
+
             // Check session validity first
             if (!isSessionValid()) {
                 clearSession();
                 return Promise.reject(new Error('Session expired or invalid'));
             }
-            
+
             const token = getAccessToken();
             const authState = getAuthState();
-            
+
             // If no token and no stored auth state, user is not authenticated
             if (!token && !authState) {
                 return Promise.reject(new Error('Not authenticated'));
             }
-            
+
             // If we have a token, user is authenticated
             if (token) {
                 return Promise.resolve();
             }
-            
+
             // Try to initialize auth (refresh token)
             const user = await initializeAuth();
             if (user) {
@@ -278,7 +311,7 @@ export const jwtAuthProvider: AuthProvider = {
                 await saveSession(user);
                 return Promise.resolve();
             }
-            
+
             return Promise.reject(new Error('Authentication expired'));
         } catch (error) {
             console.error('Auth check failed:', error);
@@ -293,14 +326,14 @@ export const jwtAuthProvider: AuthProvider = {
      */
     checkError: async (error: any) => {
         const status = error?.status || error?.response?.status;
-        
+
         if (status === 401 || status === 403) {
             // Token expired or insufficient permissions
             clearAccessToken();
             clearAuthState();
             return Promise.reject(new Error('Session expired'));
         }
-        
+
         // For other errors, don't logout
         return Promise.resolve();
     },
@@ -326,13 +359,13 @@ export const jwtAuthProvider: AuthProvider = {
                     });
                 }
             }
-            
+
             // Fallback: get user from API
             const user = await getCurrentUser();
             if (!user) {
                 return Promise.reject(new Error('No authenticated user found'));
             }
-            
+
             return Promise.resolve({
                 id: user.id,
                 fullName: `${user.firstName} ${user.lastName}`,
@@ -360,7 +393,7 @@ export const jwtAuthProvider: AuthProvider = {
                     return Promise.resolve(getRolePermissions(user.role));
                 }
             }
-            
+
             // Fallback: get permissions from API
             const permissions = await getUserPermissions();
             return Promise.resolve(permissions);
@@ -376,7 +409,7 @@ export const jwtAuthProvider: AuthProvider = {
     canAccess: async ({ resource, action, record }: any) => {
         try {
             const permissions = await jwtAuthProvider.getPermissions!({});
-            
+
             // Additional territory-based access control for brokers
             const token = getAccessToken();
             if (token) {
@@ -387,7 +420,7 @@ export const jwtAuthProvider: AuthProvider = {
                     // For now, allowing access to all records for brokers
                 }
             }
-            
+
             return canAccess(permissions as string[], resource, action);
         } catch (error) {
             console.error('Access check failed:', error);
@@ -411,7 +444,7 @@ export const initializeAuthentication = async (): Promise<User | null> => {
             xssProtection: true,
             sqlInjectionProtection: true,
         });
-        
+
         // Initialize HTTPS enforcement
         const cleanupHTTPS = initializeHTTPSSecurity({
             enforceHTTPS: process.env.NODE_ENV === 'production',
@@ -420,16 +453,16 @@ export const initializeAuthentication = async (): Promise<User | null> => {
             blockMixedContent: true,
             allowLocalDevelopment: true,
         });
-        
+
         // Initialize audit logging
         const cleanupAudit = initializeAuditLogging();
-        
+
         // Setup automatic token refresh
         setupTokenRefresh();
-        
+
         // Setup activity tracking for session persistence
         const cleanupActivity = setupActivityTracking();
-        
+
         // Check for existing session
         const sessionInfo = loadSession();
         if (sessionInfo) {
@@ -439,50 +472,58 @@ export const initializeAuthentication = async (): Promise<User | null> => {
                 isMobile: sessionInfo.deviceInfo.isMobile,
                 isStandalone: sessionInfo.deviceInfo.isStandalone,
             });
-            
+
             // Log session restoration
-            await logAuditEvent('auth.session_restored', {
-                userId: sessionInfo.user.id,
-                userEmail: sessionInfo.user.email,
-                sessionId: sessionInfo.sessionId,
-                deviceInfo: sessionInfo.deviceInfo,
-            }, {
-                userId: sessionInfo.user.id,
-                userEmail: sessionInfo.user.email,
-                outcome: 'success',
-                message: 'Session restored from storage',
-            });
+            await logAuditEvent(
+                'auth.session_restored',
+                {
+                    userId: sessionInfo.user.id,
+                    userEmail: sessionInfo.user.email,
+                    sessionId: sessionInfo.sessionId,
+                    deviceInfo: sessionInfo.deviceInfo,
+                },
+                {
+                    userId: sessionInfo.user.id,
+                    userEmail: sessionInfo.user.email,
+                    outcome: 'success',
+                    message: 'Session restored from storage',
+                }
+            );
         }
-        
+
         // Try to restore authentication state
         const user = await initializeAuth();
-        
+
         // If we have a user but no session, save the session
         if (user && !sessionInfo) {
             await saveSession(user);
         }
-        
+
         // Store cleanup functions globally for app shutdown
         (window as any).__forkflowCleanup = () => {
             cleanupHTTPS();
             cleanupAudit();
             cleanupActivity();
         };
-        
+
         return user;
     } catch (error) {
         console.error('Authentication initialization failed:', error);
-        
+
         // Log initialization failure
-        await logAuditEvent('system.error', {
-            error: error instanceof Error ? error.message : 'Unknown error',
-            component: 'authentication_initialization',
-        }, {
-            outcome: 'failure',
-            severity: 'high',
-            message: 'Authentication system initialization failed',
-        });
-        
+        await logAuditEvent(
+            'system.error',
+            {
+                error: error instanceof Error ? error.message : 'Unknown error',
+                component: 'authentication_initialization',
+            },
+            {
+                outcome: 'failure',
+                severity: 'high',
+                message: 'Authentication system initialization failed',
+            }
+        );
+
         clearSession();
         return null;
     }

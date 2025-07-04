@@ -15,7 +15,7 @@ export const getOpportunitiesByStage = (
     stages: FoodServiceStage[]
 ): OpportunitiesByStage => {
     const opportunitiesByStage: OpportunitiesByStage = {};
-    
+
     // Initialize all stages
     stages.forEach(stage => {
         opportunitiesByStage[stage.id] = [];
@@ -34,7 +34,9 @@ export const getOpportunitiesByStage = (
 
     // Sort opportunities within each stage by index
     Object.keys(opportunitiesByStage).forEach(stageId => {
-        opportunitiesByStage[stageId].sort((a, b) => (b.index || 0) - (a.index || 0));
+        opportunitiesByStage[stageId].sort(
+            (a, b) => (b.index || 0) - (a.index || 0)
+        );
     });
 
     return opportunitiesByStage;
@@ -50,7 +52,7 @@ export const FOOD_SERVICE_PIPELINE_STAGES: FoodServiceStage[] = [
     {
         id: 'contacted',
         name: 'Contacted',
-        color: '#f3e5f5', // Light purple  
+        color: '#f3e5f5', // Light purple
     },
     {
         id: 'sampled_visited',
@@ -76,6 +78,10 @@ export const getStageInfo = (stageId: string): FoodServiceStage | undefined => {
 
 // Helper function to calculate stage progression percentage
 export const calculateStageProgress = (stageId: string): number => {
-    const stageIndex = FOOD_SERVICE_PIPELINE_STAGES.findIndex(stage => stage.id === stageId);
-    return stageIndex >= 0 ? ((stageIndex + 1) / FOOD_SERVICE_PIPELINE_STAGES.length) * 100 : 0;
+    const stageIndex = FOOD_SERVICE_PIPELINE_STAGES.findIndex(
+        stage => stage.id === stageId
+    );
+    return stageIndex >= 0
+        ? ((stageIndex + 1) / FOOD_SERVICE_PIPELINE_STAGES.length) * 100
+        : 0;
 };

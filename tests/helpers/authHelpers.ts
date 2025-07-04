@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { Page, expect } from '@playwright/test';
 
 export class AuthHelpers {
-    constructor(private page: Page) { }
+    constructor(private page: Page) {}
 
     async gotoSignIn() {
         await this.page.goto('/login');
@@ -21,11 +21,19 @@ export class AuthHelpers {
         await this.page.click('[data-testid="submit"]');
     }
 
-    async fillSignUpForm(data: { firstName: string; email: string; password: string; confirmPassword: string; }) {
+    async fillSignUpForm(data: {
+        firstName: string;
+        email: string;
+        password: string;
+        confirmPassword: string;
+    }) {
         await this.page.fill('[data-testid="firstName"]', data.firstName);
         await this.page.fill('[data-testid="email"]', data.email);
         await this.page.fill('[data-testid="password"]', data.password);
-        await this.page.fill('[data-testid="confirmPassword"]', data.confirmPassword);
+        await this.page.fill(
+            '[data-testid="confirmPassword"]',
+            data.confirmPassword
+        );
     }
 
     async submitSignUp() {
@@ -33,15 +41,21 @@ export class AuthHelpers {
     }
 
     async expectErrorMessage(message: string) {
-        await expect(this.page.locator('[data-testid="error-message"]')).toHaveText(message);
+        await expect(
+            this.page.locator('[data-testid="error-message"]')
+        ).toHaveText(message);
     }
 
     async expectFieldError(field: string, message: string) {
-        await expect(this.page.locator(`[data-testid="${field}-error"]`)).toHaveText(message);
+        await expect(
+            this.page.locator(`[data-testid="${field}-error"]`)
+        ).toHaveText(message);
     }
 
     async expectSubmitDisabled() {
-        await expect(this.page.locator('[data-testid="submit"]')).toBeDisabled();
+        await expect(
+            this.page.locator('[data-testid="submit"]')
+        ).toBeDisabled();
     }
 
     async expectSubmitEnabled() {
@@ -75,7 +89,9 @@ export class AuthHelpers {
     }
 
     async expectResetMessage() {
-        await expect(this.page.locator('[data-testid="reset-message"]')).toBeVisible();
+        await expect(
+            this.page.locator('[data-testid="reset-message"]')
+        ).toBeVisible();
     }
 
     async fillMfaCode(code: string) {
@@ -87,6 +103,8 @@ export class AuthHelpers {
     }
 
     async expectMfaChallenge() {
-        await expect(this.page.locator('[data-testid="mfa-challenge"]')).toBeVisible();
+        await expect(
+            this.page.locator('[data-testid="mfa-challenge"]')
+        ).toBeVisible();
     }
-} 
+}

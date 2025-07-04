@@ -16,11 +16,7 @@ export const Avatar = (props: {
     }
 
     return (
-        <UIAvatar
-            width={props.width}
-            height={props.height}
-            title={props.title}
-        >
+        <UIAvatar width={props.width} height={props.height} title={props.title}>
             {record.firstName?.charAt(0).toUpperCase()}
             {record.lastName?.charAt(0).toUpperCase()}
         </UIAvatar>

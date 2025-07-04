@@ -25,13 +25,12 @@ interface MenuItemProps {
 /**
  * Menu component for dropdown menus
  */
-export const Menu: React.FC<MenuProps> = ({
-    button,
-    children,
-    className,
-}) => {
+export const Menu: React.FC<MenuProps> = ({ button, children, className }) => {
     return (
-        <HeadlessMenu as="div" className={cn("relative inline-block text-left", className)}>
+        <HeadlessMenu
+            as="div"
+            className={cn('relative inline-block text-left', className)}
+        >
             <div>
                 <HeadlessMenu.Button as="div">{button}</HeadlessMenu.Button>
             </div>
@@ -45,9 +44,7 @@ export const Menu: React.FC<MenuProps> = ({
                 leaveTo="transform opacity-0 scale-95"
             >
                 <HeadlessMenu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                    <div className="px-1 py-1">
-                        {children}
-                    </div>
+                    <div className="px-1 py-1">{children}</div>
                 </HeadlessMenu.Items>
             </Transition>
         </HeadlessMenu>

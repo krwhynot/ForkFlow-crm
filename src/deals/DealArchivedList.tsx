@@ -1,10 +1,5 @@
 import { Button, Stack, Typography } from '../components/ui-kit';
-import {
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    Grid,
-} from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useGetIdentity, useGetList } from 'react-admin';
 import { DialogCloseButton } from '../misc/DialogCloseButton';
@@ -55,7 +50,7 @@ export const DealArchivedList = () => {
             <Button
                 variant="text"
                 onClick={() => setOpenDialog(true)}
-                sx={{ my: 1 }}
+                className="my-1"
             >
                 View archived deals
             </Button>
@@ -68,10 +63,10 @@ export const DealArchivedList = () => {
                 <DialogCloseButton onClose={() => setOpenDialog(false)} />
                 <DialogTitle>Archived Deals</DialogTitle>
                 <DialogContent>
-                    <Stack gap={2}>
+                    <Stack className="gap-2">
                         {Object.entries(archivedListsByDate).map(
                             ([date, deals]) => (
-                                <Stack key={date} gap={1}>
+                                <Stack key={date} className="gap-1">
                                     <Typography
                                         variant="body1"
                                         fontWeight="bold"

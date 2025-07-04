@@ -1,16 +1,10 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { Stepper, Step, StepLabel, StepContent, Collapse } from '@mui/material';
 import {
     Box,
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
     Button,
     Typography,
     Paper,
-    useTheme,
-    useMediaQuery,
-    Collapse,
     Alert,
     LinearProgress,
     Chip,
@@ -20,7 +14,9 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
 import {
     ArrowBack as ArrowBackIcon,
     ArrowForward as ArrowForwardIcon,
@@ -43,7 +39,7 @@ import {
     required,
 } from 'react-admin';
 import { Organization } from '../../types';
-import { 
+import {
     BasicInfoStep,
     ContactDetailsStep,
     BusinessDetailsStep,
@@ -78,13 +74,11 @@ interface StepState {
  * - Real-time validation with visual feedback
  * - Mobile-responsive design
  */
-export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps> = ({
-    onClose,
-    isModal = false,
-    redirectOnSave = 'show',
-}) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+export const MultiStepOrganizationEdit: React.FC<
+    MultiStepOrganizationEditProps
+> = ({ onClose, isModal = false, redirectOnSave = 'show' }) => {
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const { identity } = useGetIdentity();
     const notify = useNotify();
     const redirect = useRedirect();
@@ -92,17 +86,47 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
 
     // Form state
     const [activeStep, setActiveStep] = useState(0);
-    const [formData, setFormData] = useState<Partial<Organization>>(record || {});
-    const [originalData, setOriginalData] = useState<Partial<Organization>>(record || {});
+    const [formData, setFormData] = useState<Partial<Organization>>(
+        record || {}
+    );
+    const [originalData, setOriginalData] = useState<Partial<Organization>>(
+        record || {}
+    );
     const [stepStates, setStepStates] = useState<Record<number, StepState>>({
-        0: { completed: false, hasErrors: false, isValid: true, errorCount: 0, warningCount: 0, hasChanges: false },
-        1: { completed: false, hasErrors: false, isValid: true, errorCount: 0, warningCount: 0, hasChanges: false },
-        2: { completed: false, hasErrors: false, isValid: true, errorCount: 0, warningCount: 0, hasChanges: false },
+        0: {
+            completed: false,
+            hasErrors: false,
+            isValid: true,
+            errorCount: 0,
+            warningCount: 0,
+            hasChanges: false,
+        },
+        1: {
+            completed: false,
+            hasErrors: false,
+            isValid: true,
+            errorCount: 0,
+            warningCount: 0,
+            hasChanges: false,
+        },
+        2: {
+            completed: false,
+            hasErrors: false,
+            isValid: true,
+            errorCount: 0,
+            warningCount: 0,
+            hasChanges: false,
+        },
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-    const [showUnsavedChangesDialog, setShowUnsavedChangesDialog] = useState(false);
-    const [pendingNavigation, setPendingNavigation] = useState<number | null>(null);
+    const [validationErrors, setValidationErrors] = useState<
+        Record<string, string>
+    >({});
+    const [showUnsavedChangesDialog, setShowUnsavedChangesDialog] =
+        useState(false);
+    const [pendingNavigation, setPendingNavigation] = useState<number | null>(
+        null
+    );
 
     // Initialize form data when record loads
     useEffect(() => {
@@ -113,35 +137,38 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
     }, [record]);
 
     // Steps configuration
-    const steps: FormStep[] = useMemo(() => [
-        {
-            id: 'basic-info',
-            label: 'Basic Information',
-            description: 'Organization name and primary details',
-            icon: '🏢',
-            component: BasicInfoStep,
-            validate: validateBasicInfo,
-            required: true,
-        },
-        {
-            id: 'contact-details',
-            label: 'Contact Details',
-            description: 'Website, phone, and address information',
-            icon: '📞',
-            component: ContactDetailsStep,
-            validate: validateContactDetails,
-            required: false,
-        },
-        {
-            id: 'business-details',
-            label: 'Business Details',
-            description: 'Priority, segment, and business context',
-            icon: '💼',
-            component: BusinessDetailsStep,
-            validate: validateBusinessDetails,
-            required: false,
-        },
-    ], []);
+    const steps: FormStep[] = useMemo(
+        () => [
+            {
+                id: 'basic-info',
+                label: 'Basic Information',
+                description: 'Organization name and primary details',
+                icon: '🏢',
+                component: BasicInfoStep,
+                validate: validateBasicInfo,
+                required: true,
+            },
+            {
+                id: 'contact-details',
+                label: 'Contact Details',
+                description: 'Website, phone, and address information',
+                icon: '📞',
+                component: ContactDetailsStep,
+                validate: validateContactDetails,
+                required: false,
+            },
+            {
+                id: 'business-details',
+                label: 'Business Details',
+                description: 'Priority, segment, and business context',
+                icon: '💼',
+                component: BusinessDetailsStep,
+                validate: validateBusinessDetails,
+                required: false,
+            },
+        ],
+        []
+    );
 
     // Check if form has unsaved changes
     const hasUnsavedChanges = useMemo(() => {
@@ -149,62 +176,102 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
     }, [formData, originalData]);
 
     // Detect changes in specific step
-    const detectStepChanges = useCallback((stepIndex: number, data: Partial<Organization>): boolean => {
-        const stepFields = [
-            ['name', 'business_type'], // Basic info fields
-            ['website', 'phone', 'email', 'contact_person', 'address', 'city', 'state', 'zipCode', 'latitude', 'longitude'], // Contact details
-            ['priorityId', 'segmentId', 'distributorId', 'accountManager', 'revenue', 'notes'], // Business details
-        ];
+    const detectStepChanges = useCallback(
+        (stepIndex: number, data: Partial<Organization>): boolean => {
+            const stepFields = [
+                ['name', 'business_type'], // Basic info fields
+                [
+                    'website',
+                    'phone',
+                    'email',
+                    'contact_person',
+                    'address',
+                    'city',
+                    'state',
+                    'zipCode',
+                    'latitude',
+                    'longitude',
+                ], // Contact details
+                [
+                    'priorityId',
+                    'segmentId',
+                    'distributorId',
+                    'accountManager',
+                    'revenue',
+                    'notes',
+                ], // Business details
+            ];
 
-        const fieldsToCheck = stepFields[stepIndex] || [];
-        return fieldsToCheck.some(field => data[field as keyof Organization] !== originalData[field as keyof Organization]);
-    }, [originalData]);
+            const fieldsToCheck = stepFields[stepIndex] || [];
+            return fieldsToCheck.some(
+                field =>
+                    data[field as keyof Organization] !==
+                    originalData[field as keyof Organization]
+            );
+        },
+        [originalData]
+    );
 
     // Validate current step
-    const validateStep = useCallback(async (stepIndex: number, data: Partial<Organization>): Promise<StepValidationResult> => {
-        const step = steps[stepIndex];
-        if (!step.validate) {
-            return { isValid: true, errors: [], warnings: [] };
-        }
-        return step.validate(data);
-    }, [steps]);
+    const validateStep = useCallback(
+        async (
+            stepIndex: number,
+            data: Partial<Organization>
+        ): Promise<StepValidationResult> => {
+            const step = steps[stepIndex];
+            if (!step.validate) {
+                return { isValid: true, errors: [], warnings: [] };
+            }
+            return step.validate(data);
+        },
+        [steps]
+    );
 
     // Update step validation state
-    const updateStepState = useCallback(async (stepIndex: number, data: Partial<Organization>) => {
-        const validation = await validateStep(stepIndex, data);
-        const hasChanges = detectStepChanges(stepIndex, data);
-        
-        setStepStates(prev => ({
-            ...prev,
-            [stepIndex]: {
-                completed: validation.isValid && steps[stepIndex].required ? true : prev[stepIndex].completed,
-                hasErrors: validation.errors.length > 0,
-                isValid: validation.isValid,
-                errorCount: validation.errors.length,
-                warningCount: validation.warnings.length,
-                hasChanges,
-            }
-        }));
+    const updateStepState = useCallback(
+        async (stepIndex: number, data: Partial<Organization>) => {
+            const validation = await validateStep(stepIndex, data);
+            const hasChanges = detectStepChanges(stepIndex, data);
 
-        return validation;
-    }, [validateStep, steps, detectStepChanges]);
+            setStepStates(prev => ({
+                ...prev,
+                [stepIndex]: {
+                    completed:
+                        validation.isValid && steps[stepIndex].required
+                            ? true
+                            : prev[stepIndex].completed,
+                    hasErrors: validation.errors.length > 0,
+                    isValid: validation.isValid,
+                    errorCount: validation.errors.length,
+                    warningCount: validation.warnings.length,
+                    hasChanges,
+                },
+            }));
+
+            return validation;
+        },
+        [validateStep, steps, detectStepChanges]
+    );
 
     // Handle form data change
-    const handleFormDataChange = useCallback(async (newData: Partial<Organization>) => {
-        setFormData(newData);
-        await updateStepState(activeStep, newData);
-    }, [activeStep, updateStepState]);
+    const handleFormDataChange = useCallback(
+        async (newData: Partial<Organization>) => {
+            setFormData(newData);
+            await updateStepState(activeStep, newData);
+        },
+        [activeStep, updateStepState]
+    );
 
     // Navigate to next step
     const handleNext = useCallback(async () => {
         const validation = await validateStep(activeStep, formData);
-        
+
         if (validation.isValid || !steps[activeStep].required) {
             setStepStates(prev => ({
                 ...prev,
-                [activeStep]: { ...prev[activeStep], completed: true }
+                [activeStep]: { ...prev[activeStep], completed: true },
             }));
-            
+
             if (activeStep < steps.length - 1) {
                 setActiveStep(prev => prev + 1);
             }
@@ -215,8 +282,10 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                 errors[error.field] = error.message;
             });
             setValidationErrors(errors);
-            
-            notify('Please fix the errors before proceeding', { type: 'warning' });
+
+            notify('Please fix the errors before proceeding', {
+                type: 'warning',
+            });
         }
     }, [activeStep, formData, validateStep, steps, notify]);
 
@@ -228,16 +297,22 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
     }, [activeStep]);
 
     // Jump to specific step with unsaved changes check
-    const handleStepClick = useCallback((stepIndex: number) => {
-        const currentStepHasChanges = stepStates[activeStep].hasChanges;
-        
-        if (currentStepHasChanges && stepIndex !== activeStep) {
-            setPendingNavigation(stepIndex);
-            setShowUnsavedChangesDialog(true);
-        } else if (stepIndex <= activeStep || stepStates[activeStep].isValid) {
-            setActiveStep(stepIndex);
-        }
-    }, [activeStep, stepStates]);
+    const handleStepClick = useCallback(
+        (stepIndex: number) => {
+            const currentStepHasChanges = stepStates[activeStep].hasChanges;
+
+            if (currentStepHasChanges && stepIndex !== activeStep) {
+                setPendingNavigation(stepIndex);
+                setShowUnsavedChangesDialog(true);
+            } else if (
+                stepIndex <= activeStep ||
+                stepStates[activeStep].isValid
+            ) {
+                setActiveStep(stepIndex);
+            }
+        },
+        [activeStep, stepStates]
+    );
 
     // Handle unsaved changes dialog
     const handleUnsavedChangesConfirm = useCallback(() => {
@@ -262,7 +337,9 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
 
     // Calculate overall progress
     const progressPercentage = useMemo(() => {
-        const completedSteps = Object.values(stepStates).filter(state => state.completed).length;
+        const completedSteps = Object.values(stepStates).filter(
+            state => state.completed
+        ).length;
         return (completedSteps / steps.length) * 100;
     }, [stepStates, steps.length]);
 
@@ -272,19 +349,22 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
     }, [stepStates, isSubmitting, hasUnsavedChanges]);
 
     // Transform form data for submission
-    const transformFormData = useCallback((values: Partial<Organization>) => {
-        // Add https:// before website if not present
-        if (values.website && !values.website.startsWith('http')) {
-            values.website = `https://${values.website}`;
-        }
+    const transformFormData = useCallback(
+        (values: Partial<Organization>) => {
+            // Add https:// before website if not present
+            if (values.website && !values.website.startsWith('http')) {
+                values.website = `https://${values.website}`;
+            }
 
-        // Update modification tracking
-        return {
-            ...values,
-            modifiedBy: identity?.id,
-            modifiedAt: new Date().toISOString(),
-        };
-    }, [identity]);
+            // Update modification tracking
+            return {
+                ...values,
+                modifiedBy: identity?.id,
+                modifiedAt: new Date().toISOString(),
+            };
+        },
+        [identity]
+    );
 
     // Handle form submission
     const handleSubmit = useCallback(async () => {
@@ -300,110 +380,116 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
 
             // Transform and submit data
             const transformedData = transformFormData(formData);
-            
+
             notify('Organization updated successfully!', { type: 'success' });
-            
+
             if (redirectOnSave && !isModal) {
                 redirect(redirectOnSave, 'organizations', transformedData.id);
             } else if (onClose) {
                 onClose();
             }
-            
         } catch (error) {
             console.error('Form submission error:', error);
-            notify('Failed to update organization. Please try again.', { type: 'error' });
+            notify('Failed to update organization. Please try again.', {
+                type: 'error',
+            });
         } finally {
             setIsSubmitting(false);
         }
-    }, [formData, steps, validateStep, transformFormData, notify, redirect, redirectOnSave, isModal, onClose]);
+    }, [
+        formData,
+        steps,
+        validateStep,
+        transformFormData,
+        notify,
+        redirect,
+        redirectOnSave,
+        isModal,
+        onClose,
+    ]);
 
     // Get step status icon
-    const getStepIcon = useCallback((stepIndex: number) => {
-        const state = stepStates[stepIndex];
-        if (state.completed) {
-            return <CheckIcon color="success" />;
-        }
-        if (state.hasErrors) {
-            return <ErrorIcon color="error" />;
-        }
-        if (state.warningCount > 0) {
-            return <WarningIcon color="warning" />;
-        }
-        return stepIndex + 1;
-    }, [stepStates]);
+    const getStepIcon = useCallback(
+        (stepIndex: number) => {
+            const state = stepStates[stepIndex];
+            if (state.completed) {
+                return <CheckIcon color="success" />;
+            }
+            if (state.hasErrors) {
+                return <ErrorIcon color="error" />;
+            }
+            if (state.warningCount > 0) {
+                return <WarningIcon color="warning" />;
+            }
+            return stepIndex + 1;
+        },
+        [stepStates]
+    );
 
     // Render step content
-    const renderStepContent = useCallback((stepIndex: number) => {
-        const step = steps[stepIndex];
-        const StepComponent = step.component;
-        
-        return (
-            <StepComponent
-                formData={formData}
-                onDataChange={handleFormDataChange}
-                validationErrors={validationErrors}
-                isMobile={isMobile}
-            />
-        );
-    }, [steps, formData, handleFormDataChange, validationErrors, isMobile]);
+    const renderStepContent = useCallback(
+        (stepIndex: number) => {
+            const step = steps[stepIndex];
+            const StepComponent = step.component;
+
+            return (
+                <StepComponent
+                    formData={formData}
+                    onDataChange={handleFormDataChange}
+                    validationErrors={validationErrors}
+                    isMobile={isMobile}
+                />
+            );
+        },
+        [steps, formData, handleFormDataChange, validationErrors, isMobile]
+    );
 
     if (!record) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Box className="p-6 text-center">
                 <Typography>Loading organization...</Typography>
             </Box>
         );
     }
 
     return (
-        <Edit
-            actions={false}
-            redirect={false}
-            transform={transformFormData}
-        >
+        <Edit actions={false} redirect={false} transform={transformFormData}>
             <Form>
-                <Paper 
+                <Paper
                     elevation={isModal ? 0 : 2}
-                    sx={{ 
-                        p: { xs: 2, sm: 3 },
-                        maxWidth: { xs: '100%', md: 800 },
-                        mx: isModal ? 0 : 'auto',
-                        position: 'relative'
-                    }}
+                    className={`p-4 sm:p-6 max-w-full md:max-w-3xl relative ${isModal ? 'mx-0' : 'mx-auto'}`}
                 >
                     {/* Header */}
-                    <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'space-between',
-                        mb: 3
-                    }}>
+                    <Box className="flex items-center justify-between mb-6">
                         <Box>
                             <Typography variant="h5" component="h1">
                                 Edit Organization
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                                variant="body2"
+                                className="text-gray-600"
+                            >
                                 {record.name}
                             </Typography>
                         </Box>
-                        
-                        <Box sx={{ display: 'flex', gap: 1 }}>
+
+                        <Box className="flex gap-2">
                             {hasUnsavedChanges && (
                                 <Tooltip title="Reset to original values">
-                                    <IconButton 
+                                    <IconButton
                                         onClick={handleResetForm}
-                                        sx={{ minWidth: '44px', minHeight: '44px' }}
+                                        className="min-w-11 min-h-11"
                                     >
                                         <RestoreIcon />
                                     </IconButton>
                                 </Tooltip>
                             )}
-                            
+
                             {onClose && (
                                 <Tooltip title="Close">
-                                    <IconButton 
+                                    <IconButton
                                         onClick={onClose}
-                                        sx={{ minWidth: '44px', minHeight: '44px' }}
+                                        className="min-w-11 min-h-11"
                                     >
                                         <CloseIcon />
                                     </IconButton>
@@ -414,16 +500,17 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
 
                     {/* Unsaved Changes Warning */}
                     {hasUnsavedChanges && (
-                        <Alert severity="warning" sx={{ mb: 2 }}>
+                        <Alert severity="warning" className="mb-4">
                             <Typography variant="body2">
-                                You have unsaved changes. Make sure to save before leaving this page.
+                                You have unsaved changes. Make sure to save
+                                before leaving this page.
                             </Typography>
                         </Alert>
                     )}
 
                     {/* Progress Bar */}
-                    <Box sx={{ mb: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Box className="mb-6">
+                        <Box className="flex justify-between mb-2">
                             <Typography variant="body2" color="text.secondary">
                                 Progress: {Math.round(progressPercentage)}%
                             </Typography>
@@ -431,36 +518,36 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                 Step {activeStep + 1} of {steps.length}
                             </Typography>
                         </Box>
-                        <LinearProgress 
-                            variant="determinate" 
+                        <LinearProgress
+                            variant="determinate"
                             value={progressPercentage}
-                            sx={{ height: 8, borderRadius: 4 }}
+                            className="h-2 rounded-full"
                         />
                     </Box>
 
                     {/* Stepper */}
-                    <Stepper 
-                        activeStep={activeStep} 
+                    <Stepper
+                        activeStep={activeStep}
                         orientation={isMobile ? 'vertical' : 'horizontal'}
-                        sx={{ mb: 3 }}
+                        className="mb-6"
                     >
                         {steps.map((step, index) => {
                             const state = stepStates[index];
                             return (
-                                <Step 
+                                <Step
                                     key={step.id}
                                     completed={state.completed}
                                     onClick={() => handleStepClick(index)}
-                                    sx={{ cursor: 'pointer' }}
+                                    className="cursor-pointer"
                                 >
                                     <StepLabel
                                         icon={getStepIcon(index)}
                                         error={state.hasErrors}
                                         optional={
                                             !isMobile && (
-                                                <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 }}>
+                                                <Box className="flex gap-1 mt-1">
                                                     {state.hasChanges && (
-                                                        <Chip 
+                                                        <Chip
                                                             label="Modified"
                                                             size="small"
                                                             color="info"
@@ -468,7 +555,7 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                                         />
                                                     )}
                                                     {state.errorCount > 0 && (
-                                                        <Chip 
+                                                        <Chip
                                                             label={`${state.errorCount} error${state.errorCount > 1 ? 's' : ''}`}
                                                             size="small"
                                                             color="error"
@@ -476,7 +563,7 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                                         />
                                                     )}
                                                     {state.warningCount > 0 && (
-                                                        <Chip 
+                                                        <Chip
                                                             label={`${state.warningCount} warning${state.warningCount > 1 ? 's' : ''}`}
                                                             size="small"
                                                             color="warning"
@@ -492,13 +579,16 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                                 {step.icon} {step.label}
                                             </Typography>
                                             {!isMobile && (
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography
+                                                    variant="caption"
+                                                    color="text.secondary"
+                                                >
                                                     {step.description}
                                                 </Typography>
                                             )}
                                         </Box>
                                     </StepLabel>
-                                    
+
                                     {isMobile && (
                                         <StepContent>
                                             {renderStepContent(index)}
@@ -511,16 +601,16 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
 
                     {/* Desktop Step Content */}
                     {!isMobile && (
-                        <Box sx={{ mt: 3, minHeight: 400 }}>
+                        <Box className="mt-6 min-h-96">
                             {renderStepContent(activeStep)}
                         </Box>
                     )}
 
                     {/* Error Summary */}
                     <Collapse in={Object.keys(validationErrors).length > 0}>
-                        <Alert 
-                            severity="error" 
-                            sx={{ mt: 2 }}
+                        <Alert
+                            severity="error"
+                            className="mt-4"
                             action={
                                 <IconButton
                                     color="inherit"
@@ -531,41 +621,35 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                 </IconButton>
                             }
                         >
-                            <Typography variant="body2" fontWeight="medium">
+                            <Typography variant="body2" className="font-medium">
                                 Please fix the following errors:
                             </Typography>
-                            <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2 }}>
-                                {Object.entries(validationErrors).map(([field, error]) => (
-                                    <li key={field}>
-                                        <Typography variant="body2">
-                                            {field}: {error}
-                                        </Typography>
-                                    </li>
-                                ))}
+                            <Box as="ul" className="mt-2 mb-0 pl-4">
+                                {Object.entries(validationErrors).map(
+                                    ([field, error]) => (
+                                        <li key={field}>
+                                            <Typography variant="body2">
+                                                {field}: {error}
+                                            </Typography>
+                                        </li>
+                                    )
+                                )}
                             </Box>
                         </Alert>
                     </Collapse>
 
                     {/* Navigation */}
-                    <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mt: 4,
-                        pt: 2,
-                        borderTop: '1px solid',
-                        borderColor: 'divider'
-                    }}>
+                    <Box className="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
                         <Button
                             onClick={handleBack}
                             disabled={activeStep === 0}
                             startIcon={<ArrowBackIcon />}
-                            sx={{ minHeight: '44px' }}
+                            className="min-h-11"
                         >
                             Back
                         </Button>
 
-                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Box className="flex gap-4">
                             {activeStep === steps.length - 1 ? (
                                 <FormDataConsumer>
                                     {({ formData: currentFormData }) => (
@@ -574,7 +658,7 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                             icon={<SaveIcon />}
                                             disabled={!canSubmit}
                                             variant="contained"
-                                            sx={{ minHeight: '44px', px: 3 }}
+                                            className="min-h-11 px-6"
                                             transform={transformFormData}
                                         />
                                     )}
@@ -584,7 +668,7 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                                     onClick={handleNext}
                                     variant="contained"
                                     endIcon={<ArrowForwardIcon />}
-                                    sx={{ minHeight: '44px' }}
+                                    className="min-h-11"
                                 >
                                     Next
                                 </Button>
@@ -603,16 +687,17 @@ export const MultiStepOrganizationEdit: React.FC<MultiStepOrganizationEditProps>
                     <DialogTitle>Unsaved Changes</DialogTitle>
                     <DialogContent>
                         <Typography>
-                            You have unsaved changes in the current step. Do you want to continue 
-                            without saving? Your changes will be lost.
+                            You have unsaved changes in the current step. Do you
+                            want to continue without saving? Your changes will
+                            be lost.
                         </Typography>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleUnsavedChangesCancel}>
                             Stay Here
                         </Button>
-                        <Button 
-                            onClick={handleUnsavedChangesConfirm} 
+                        <Button
+                            onClick={handleUnsavedChangesConfirm}
                             color="warning"
                             variant="contained"
                         >

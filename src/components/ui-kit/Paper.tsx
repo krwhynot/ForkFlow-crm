@@ -44,13 +44,14 @@ export const Paper: React.FC<PaperProps> = ({
 }) => {
     const Component = component;
 
-    const elevationClass = variant === 'elevation' 
-        ? ELEVATION_STYLES[Math.min(elevation, 6) as keyof typeof ELEVATION_STYLES]
-        : '';
+    const elevationClass =
+        variant === 'elevation'
+            ? ELEVATION_STYLES[
+                  Math.min(elevation, 6) as keyof typeof ELEVATION_STYLES
+              ]
+            : '';
 
-    const borderClass = variant === 'outlined' 
-        ? 'border border-gray-200'
-        : '';
+    const borderClass = variant === 'outlined' ? 'border border-gray-200' : '';
 
     return (
         <Component

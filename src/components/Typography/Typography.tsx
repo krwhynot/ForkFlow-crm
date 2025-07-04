@@ -6,7 +6,10 @@ import { Variant } from '@mui/material/styles/createTypography';
 import { TypographyPropsVariantOverrides } from '@mui/material/Typography';
 
 type TypographyProps = {
-    variant?: OverridableStringUnion<Variant | 'inherit', TypographyPropsVariantOverrides>;
+    variant?: OverridableStringUnion<
+        Variant | 'inherit',
+        TypographyPropsVariantOverrides
+    >;
     component?: React.ElementType;
     className?: string;
     children: React.ReactNode;

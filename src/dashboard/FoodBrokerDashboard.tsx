@@ -1,4 +1,11 @@
-import { Box, Card, CardContent, Grid, Stack, Typography } from '../components/ui-kit';
+import {
+    Box,
+    Card,
+    CardContent,
+    Grid,
+    Stack,
+    Typography,
+} from '../components/ui-kit';
 import { useGetIdentity, useGetList } from 'react-admin';
 import { ReminderDashboard } from '../reminders/ReminderDashboard';
 import { Customer, Order, Reminder, Visit } from '../types';
@@ -142,10 +149,7 @@ export const FoodBrokerDashboard = () => {
             <Typography variant="h4" className="mb-2">
                 Food Broker Dashboard
             </Typography>
-            <Typography
-                variant="subtitle1"
-                className="text-gray-600 mb-6"
-            >
+            <Typography variant="subtitle1" className="text-gray-600 mb-6">
                 Welcome back! Here's what's happening in your territory.
             </Typography>
 

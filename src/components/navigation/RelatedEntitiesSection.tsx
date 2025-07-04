@@ -8,16 +8,16 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    ListItemButton,
     Chip,
     Stack,
     Button,
     Divider,
-    useTheme,
     CircularProgress,
     Avatar,
     Badge,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { ListItemButton } from '@mui/material';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
     Business as OrganizationIcon,
     Person as ContactIcon,
@@ -33,44 +33,61 @@ import {
 } from '@mui/icons-material';
 import { Link, useGetList, useRecordContext } from 'react-admin';
 import { formatCurrency, formatDate } from '../../utils/formatters';
-import { Organization, Contact, Product, Deal, Interaction, Setting } from '../../types';
+import {
+    Organization,
+    Contact,
+    Product,
+    Deal,
+    Interaction,
+    Setting,
+} from '../../types';
 
 interface RelatedEntitiesSectionProps {
     /**
      * The entity type that this section is being displayed for
      */
-    entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction';
-    
+    entityType:
+        | 'organization'
+        | 'contact'
+        | 'product'
+        | 'opportunity'
+        | 'interaction';
+
     /**
      * Title of the section
      */
     title: string;
-    
+
     /**
      * What type of related entities to display
      */
-    relatedType: 'contacts' | 'opportunities' | 'interactions' | 'products' | 'organizations';
-    
+    relatedType:
+        | 'contacts'
+        | 'opportunities'
+        | 'interactions'
+        | 'products'
+        | 'organizations';
+
     /**
      * Filter to apply when fetching related entities
      */
     filter: Record<string, any>;
-    
+
     /**
      * Maximum number of items to display (default: 5)
      */
     maxItems?: number;
-    
+
     /**
      * Link to create a new related entity
      */
     createLink?: string;
-    
+
     /**
      * Link to view all related entities
      */
     viewAllLink?: string;
-    
+
     /**
      * Custom empty state message
      */
@@ -91,14 +108,15 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
     const record = useRecordContext();
 
     // Fetch related entities
-    const { data: relatedEntities, isLoading, error } = useGetList(
-        getResourceName(relatedType),
-        {
-            filter,
-            sort: { field: getSortField(relatedType), order: 'DESC' },
-            pagination: { page: 1, perPage: maxItems },
-        }
-    );
+    const {
+        data: relatedEntities,
+        isLoading,
+        error,
+    } = useGetList(getResourceName(relatedType), {
+        filter,
+        sort: { field: getSortField(relatedType), order: 'DESC' },
+        pagination: { page: 1, perPage: maxItems },
+    });
 
     function getResourceName(type: string): string {
         switch (type) {
@@ -170,7 +188,7 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
 
     const renderEntityItem = (entity: any, index: number) => {
         const isLast = index === relatedEntities!.length - 1;
-        
+
         switch (relatedType) {
             case 'contacts':
                 return renderContactItem(entity as Contact, isLast);
@@ -199,14 +217,26 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 }}
             >
                 <ListItemIcon>
-                    <Avatar sx={{ width: 40, height: 40, bgcolor: 'secondary.main' }}>
-                        {contact.firstName?.charAt(0)}{contact.lastName?.charAt(0)}
+                    <Avatar
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            bgcolor: 'secondary.main',
+                        }}
+                    >
+                        {contact.firstName?.charAt(0)}
+                        {contact.lastName?.charAt(0)}
                     </Avatar>
                 </ListItemIcon>
                 <ListItemText
                     primary={`${contact.firstName} ${contact.lastName}`}
                     secondary={
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mt: 0.5 }}
+                        >
                             {contact.isPrimary && (
                                 <Chip
                                     label="Primary"
@@ -256,7 +286,13 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 <ListItemIcon>
                     <Badge
                         badgeContent={`${opportunity.probability}%`}
-                        color={opportunity.probability >= 75 ? 'success' : opportunity.probability >= 50 ? 'warning' : 'default'}
+                        color={
+                            opportunity.probability >= 75
+                                ? 'success'
+                                : opportunity.probability >= 50
+                                  ? 'warning'
+                                  : 'default'
+                        }
                         sx={{
                             '& .MuiBadge-badge': {
                                 fontSize: '0.6rem',
@@ -265,13 +301,22 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             },
                         }}
                     >
-                        <OpportunityIcon sx={{ fontSize: 32, color: 'warning.main' }} />
+                        <OpportunityIcon
+                            sx={{ fontSize: 32, color: 'warning.main' }}
+                        />
                     </Badge>
                 </ListItemIcon>
                 <ListItemText
-                    primary={opportunity.name || `Opportunity #${opportunity.id}`}
+                    primary={
+                        opportunity.name || `Opportunity #${opportunity.id}`
+                    }
                     secondary={
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mt: 0.5 }}
+                        >
                             <Chip
                                 icon={<MoneyIcon sx={{ fontSize: 12 }} />}
                                 label={formatCurrency(opportunity.amount)}
@@ -294,7 +339,10 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
         </React.Fragment>
     );
 
-    const renderInteractionItem = (interaction: Interaction, isLast: boolean) => (
+    const renderInteractionItem = (
+        interaction: Interaction,
+        isLast: boolean
+    ) => (
         <React.Fragment key={interaction.id}>
             <ListItemButton
                 component={Link}
@@ -306,28 +354,46 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 }}
             >
                 <ListItemIcon>
-                    <InteractionIcon 
-                        sx={{ 
-                            fontSize: 32, 
-                            color: interaction.isCompleted ? 'success.main' : 'info.main' 
-                        }} 
+                    <InteractionIcon
+                        sx={{
+                            fontSize: 32,
+                            color: interaction.isCompleted
+                                ? 'success.main'
+                                : 'info.main',
+                        }}
                     />
                 </ListItemIcon>
                 <ListItemText
                     primary={interaction.subject}
                     secondary={
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mt: 0.5 }}
+                        >
                             <Chip
                                 icon={<ScheduleIcon sx={{ fontSize: 12 }} />}
-                                label={formatDate(interaction.scheduledDate || interaction.createdAt)}
+                                label={formatDate(
+                                    interaction.scheduledDate ||
+                                        interaction.createdAt
+                                )}
                                 size="small"
                                 variant="outlined"
                                 sx={{ height: 20, fontSize: '0.7rem' }}
                             />
                             <Chip
-                                label={interaction.isCompleted ? 'Completed' : 'Scheduled'}
+                                label={
+                                    interaction.isCompleted
+                                        ? 'Completed'
+                                        : 'Scheduled'
+                                }
                                 size="small"
-                                color={interaction.isCompleted ? 'success' : 'default'}
+                                color={
+                                    interaction.isCompleted
+                                        ? 'success'
+                                        : 'default'
+                                }
                                 sx={{ height: 20, fontSize: '0.7rem' }}
                             />
                         </Stack>
@@ -356,7 +422,12 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 <ListItemText
                     primary={product.name}
                     secondary={
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mt: 0.5 }}
+                        >
                             <Chip
                                 label={product.category}
                                 size="small"
@@ -379,7 +450,10 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
         </React.Fragment>
     );
 
-    const renderOrganizationItem = (organization: Organization, isLast: boolean) => (
+    const renderOrganizationItem = (
+        organization: Organization,
+        isLast: boolean
+    ) => (
         <React.Fragment key={organization.id}>
             <ListItemButton
                 component={Link}
@@ -391,12 +465,19 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 }}
             >
                 <ListItemIcon>
-                    <OrganizationIcon sx={{ fontSize: 32, color: 'primary.main' }} />
+                    <OrganizationIcon
+                        sx={{ fontSize: 32, color: 'primary.main' }}
+                    />
                 </ListItemIcon>
                 <ListItemText
                     primary={organization.name}
                     secondary={
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mt: 0.5 }}
+                        >
                             {organization.segment && (
                                 <Chip
                                     label={organization.segment.label}
@@ -439,7 +520,7 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 >
                     <Typography
                         variant="h6"
-                        sx={{ 
+                        sx={{
                             fontWeight: 600,
                             display: 'flex',
                             alignItems: 'center',
@@ -449,7 +530,7 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                         {getIcon()}
                         {title} ({relatedEntities?.length || 0})
                     </Typography>
-                    
+
                     {createLink && (
                         <Button
                             component={Link}
@@ -465,7 +546,13 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 </Box>
 
                 {isLoading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            py: 3,
+                        }}
+                    >
                         <CircularProgress size={24} />
                     </Box>
                 ) : error ? (
@@ -475,11 +562,11 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 ) : relatedEntities && relatedEntities.length > 0 ? (
                     <>
                         <List sx={{ py: 0 }}>
-                            {relatedEntities.map((entity, index) => 
+                            {relatedEntities.map((entity, index) =>
                                 renderEntityItem(entity, index)
                             )}
                         </List>
-                        
+
                         {viewAllLink && relatedEntities.length >= maxItems && (
                             <Box sx={{ mt: 2, textAlign: 'center' }}>
                                 <Button

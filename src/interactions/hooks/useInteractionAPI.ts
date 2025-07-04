@@ -11,22 +11,31 @@ export const useInteractionAPI = () => {
     const notify = useNotify();
 
     // Create interaction with automatic GPS capture
-    const createWithLocation = async (data: Partial<Interaction>, autoCapture: boolean = true) => {
+    const createWithLocation = async (
+        data: Partial<Interaction>,
+        autoCapture: boolean = true
+    ) => {
         try {
             const result = await dataProvider.createInteractionWithLocation(
                 { data },
                 autoCapture
             );
-            
+
             if (result.data._offline) {
-                notify('Interaction saved offline. Will sync when online.', { type: 'info' });
+                notify('Interaction saved offline. Will sync when online.', {
+                    type: 'info',
+                });
             } else {
-                notify('Interaction created successfully!', { type: 'success' });
+                notify('Interaction created successfully!', {
+                    type: 'success',
+                });
             }
-            
+
             return result;
         } catch (error: any) {
-            notify(`Failed to create interaction: ${error.message}`, { type: 'error' });
+            notify(`Failed to create interaction: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -42,13 +51,21 @@ export const useInteractionAPI = () => {
     };
 
     // Add location to existing interaction
-    const addLocationToInteraction = async (interactionId: Identifier, forceRefresh: boolean = false) => {
+    const addLocationToInteraction = async (
+        interactionId: Identifier,
+        forceRefresh: boolean = false
+    ) => {
         try {
-            const result = await dataProvider.addLocationToInteraction(interactionId, forceRefresh);
+            const result = await dataProvider.addLocationToInteraction(
+                interactionId,
+                forceRefresh
+            );
             notify('Location added to interaction!', { type: 'success' });
             return result;
         } catch (error: any) {
-            notify(`Failed to add location: ${error.message}`, { type: 'error' });
+            notify(`Failed to add location: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -57,17 +74,24 @@ export const useInteractionAPI = () => {
     const syncOfflineData = async () => {
         try {
             const result = await dataProvider.syncOfflineInteractions();
-            
+
             if (result.success) {
-                notify(`Synced ${result.processed} interactions successfully!`, { type: 'success' });
-                
+                notify(
+                    `Synced ${result.processed} interactions successfully!`,
+                    { type: 'success' }
+                );
+
                 if (result.failed > 0) {
-                    notify(`${result.failed} interactions failed to sync`, { type: 'warning' });
+                    notify(`${result.failed} interactions failed to sync`, {
+                        type: 'warning',
+                    });
                 }
             } else {
-                notify('Sync failed. Will retry automatically.', { type: 'error' });
+                notify('Sync failed. Will retry automatically.', {
+                    type: 'error',
+                });
             }
-            
+
             return result;
         } catch (error: any) {
             notify(`Sync failed: ${error.message}`, { type: 'error' });
@@ -85,7 +109,9 @@ export const useInteractionAPI = () => {
         try {
             return await dataProvider.getOfflineInteractions();
         } catch (error: any) {
-            notify(`Failed to get offline interactions: ${error.message}`, { type: 'error' });
+            notify(`Failed to get offline interactions: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -96,7 +122,9 @@ export const useInteractionAPI = () => {
             await dataProvider.clearOfflineData();
             notify('Offline data cleared!', { type: 'success' });
         } catch (error: any) {
-            notify(`Failed to clear offline data: ${error.message}`, { type: 'error' });
+            notify(`Failed to clear offline data: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -106,22 +134,31 @@ export const useInteractionAPI = () => {
         try {
             return await dataProvider.validateFileAttachment(file);
         } catch (error: any) {
-            notify(`File validation failed: ${error.message}`, { type: 'error' });
+            notify(`File validation failed: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
 
     // Compress image for mobile upload
     const compressImageForMobile = async (
-        file: File, 
-        maxWidth: number = 1920, 
-        maxHeight: number = 1080, 
+        file: File,
+        maxWidth: number = 1920,
+        maxHeight: number = 1080,
         quality: number = 0.8
     ) => {
         try {
-            return await dataProvider.compressImageForMobile(file, maxWidth, maxHeight, quality);
+            return await dataProvider.compressImageForMobile(
+                file,
+                maxWidth,
+                maxHeight,
+                quality
+            );
         } catch (error: any) {
-            notify(`Image compression failed: ${error.message}`, { type: 'error' });
+            notify(`Image compression failed: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -131,7 +168,9 @@ export const useInteractionAPI = () => {
         try {
             return await dataProvider.createImageThumbnail(file, size);
         } catch (error: any) {
-            notify(`Thumbnail creation failed: ${error.message}`, { type: 'error' });
+            notify(`Thumbnail creation failed: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -147,7 +186,9 @@ export const useInteractionAPI = () => {
         try {
             return await dataProvider.getInteractionTimeline(params);
         } catch (error: any) {
-            notify(`Failed to get interaction timeline: ${error.message}`, { type: 'error' });
+            notify(`Failed to get interaction timeline: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -161,37 +202,53 @@ export const useInteractionAPI = () => {
         try {
             return await dataProvider.getFollowUpReminders(params);
         } catch (error: any) {
-            notify(`Failed to get follow-up reminders: ${error.message}`, { type: 'error' });
+            notify(`Failed to get follow-up reminders: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
 
     // Complete interaction
     const completeInteraction = async (
-        id: Identifier, 
-        completionData: { duration?: number; outcome?: string; [key: string]: any }
+        id: Identifier,
+        completionData: {
+            duration?: number;
+            outcome?: string;
+            [key: string]: any;
+        }
     ) => {
         try {
-            const result = await dataProvider.completeInteraction(id, completionData);
+            const result = await dataProvider.completeInteraction(
+                id,
+                completionData
+            );
             notify('Interaction marked as completed!', { type: 'success' });
             return result;
         } catch (error: any) {
-            notify(`Failed to complete interaction: ${error.message}`, { type: 'error' });
+            notify(`Failed to complete interaction: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
 
     // Schedule follow-up
     const scheduleFollowUp = async (
-        id: Identifier, 
+        id: Identifier,
         followUpData: { followUpDate: string; followUpNotes?: string }
     ) => {
         try {
-            const result = await dataProvider.scheduleFollowUp(id, followUpData);
+            const result = await dataProvider.scheduleFollowUp(
+                id,
+                followUpData
+            );
             notify('Follow-up scheduled!', { type: 'success' });
             return result;
         } catch (error: any) {
-            notify(`Failed to schedule follow-up: ${error.message}`, { type: 'error' });
+            notify(`Failed to schedule follow-up: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -199,7 +256,10 @@ export const useInteractionAPI = () => {
     // Upload interaction attachment
     const uploadAttachment = async (interactionId: Identifier, file: File) => {
         try {
-            const result = await dataProvider.uploadInteractionAttachment(interactionId, file);
+            const result = await dataProvider.uploadInteractionAttachment(
+                interactionId,
+                file
+            );
             notify('File uploaded successfully!', { type: 'success' });
             return result;
         } catch (error: any) {
@@ -209,13 +269,21 @@ export const useInteractionAPI = () => {
     };
 
     // Delete interaction attachment
-    const deleteAttachment = async (interactionId: Identifier, fileName: string) => {
+    const deleteAttachment = async (
+        interactionId: Identifier,
+        fileName: string
+    ) => {
         try {
-            const result = await dataProvider.deleteInteractionAttachment(interactionId, fileName);
+            const result = await dataProvider.deleteInteractionAttachment(
+                interactionId,
+                fileName
+            );
             notify('File deleted successfully!', { type: 'success' });
             return result;
         } catch (error: any) {
-            notify(`Failed to delete file: ${error.message}`, { type: 'error' });
+            notify(`Failed to delete file: ${error.message}`, {
+                type: 'error',
+            });
             throw error;
         }
     };
@@ -225,24 +293,24 @@ export const useInteractionAPI = () => {
         createWithLocation,
         completeInteraction,
         scheduleFollowUp,
-        
+
         // GPS methods
         getCurrentLocation,
         addLocationToInteraction,
-        
+
         // Offline methods
         syncOfflineData,
         getOfflineStatus,
         getOfflineInteractions,
         clearOfflineData,
-        
+
         // File methods
         validateFileAttachment,
         compressImageForMobile,
         createImageThumbnail,
         uploadAttachment,
         deleteAttachment,
-        
+
         // Query methods
         getInteractionTimeline,
         getFollowUpReminders,

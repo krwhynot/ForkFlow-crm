@@ -145,10 +145,13 @@ const dataProviderWithCustomMethods = {
         if (resource === 'customers') {
             return baseDataProvider.getList('customer_summary', params);
         }
-        
+
         // Handle users resource via auth API
         if (resource === 'users') {
-            const result = await authDataProviderMethods.getList(resource, params);
+            const result = await authDataProviderMethods.getList(
+                resource,
+                params
+            );
             return result as any; // Type assertion to satisfy DataProvider interface
         }
 
@@ -158,10 +161,13 @@ const dataProviderWithCustomMethods = {
         if (resource === 'customers') {
             return baseDataProvider.getOne('customer_summary', params);
         }
-        
+
         // Handle users resource via auth API
         if (resource === 'users') {
-            const result = await authDataProviderMethods.getOne(resource, params);
+            const result = await authDataProviderMethods.getOne(
+                resource,
+                params
+            );
             return result as any; // Type assertion to satisfy DataProvider interface
         }
 
@@ -170,7 +176,10 @@ const dataProviderWithCustomMethods = {
     async create(resource: string, params: any) {
         // Handle users resource via auth API
         if (resource === 'users') {
-            const result = await authDataProviderMethods.create(resource, params);
+            const result = await authDataProviderMethods.create(
+                resource,
+                params
+            );
             return result as any; // Type assertion to satisfy DataProvider interface
         }
 
@@ -179,7 +188,10 @@ const dataProviderWithCustomMethods = {
     async update(resource: string, params: any) {
         // Handle users resource via auth API
         if (resource === 'users') {
-            const result = await authDataProviderMethods.update(resource, params);
+            const result = await authDataProviderMethods.update(
+                resource,
+                params
+            );
             return result as any; // Type assertion to satisfy DataProvider interface
         }
 
@@ -188,7 +200,10 @@ const dataProviderWithCustomMethods = {
     async delete(resource: string, params: any) {
         // Handle users resource via auth API
         if (resource === 'users') {
-            const result = await authDataProviderMethods.delete(resource, params);
+            const result = await authDataProviderMethods.delete(
+                resource,
+                params
+            );
             return result as any; // Type assertion to satisfy DataProvider interface
         }
 
@@ -381,16 +396,16 @@ const dataProviderWithCustomMethods = {
      * Create interaction with automatic GPS capture
      */
     async createInteractionWithLocation(
-        params: { data: Partial<Interaction> }, 
+        params: { data: Partial<Interaction> },
         autoCapture: boolean = true
     ) {
         const processedParams = await processInteractionLocation(
-            { data: params.data } as CreateParams<Interaction>, 
+            { data: params.data } as CreateParams<Interaction>,
             autoCapture
         );
-        
+
         const { data: user } = await supabase.auth.getUser();
-        
+
         // Handle offline mode
         if (!navigator.onLine) {
             await storeOfflineInteraction({
@@ -398,16 +413,16 @@ const dataProviderWithCustomMethods = {
                 createdBy: user?.user?.id,
                 createdAt: new Date().toISOString(),
             });
-            
+
             return {
                 data: {
                     ...processedParams.data,
                     id: `offline_${Date.now()}`,
                     _offline: true,
-                }
+                },
             };
         }
-        
+
         return baseDataProvider.create('interactions', {
             data: {
                 ...processedParams.data,
@@ -425,7 +440,10 @@ const dataProviderWithCustomMethods = {
     /**
      * Add location to existing interaction
      */
-    async addLocationToInteraction(interactionId: Identifier, forceRefresh: boolean = false) {
+    async addLocationToInteraction(
+        interactionId: Identifier,
+        forceRefresh: boolean = false
+    ) {
         return addLocationToInteraction(this, interactionId, forceRefresh);
     },
 
@@ -448,46 +466,58 @@ const dataProviderWithCustomMethods = {
      * Upload interaction attachment
      */
     async uploadInteractionAttachment(interactionId: Identifier, file: File) {
-        const attachment = await uploadInteractionAttachment(interactionId, file);
-        
+        const attachment = await uploadInteractionAttachment(
+            interactionId,
+            file
+        );
+
         // Update interaction with new attachment
-        const { data: interaction } = await baseDataProvider.getOne('interactions', {
-            id: interactionId,
-        });
-        
+        const { data: interaction } = await baseDataProvider.getOne(
+            'interactions',
+            {
+                id: interactionId,
+            }
+        );
+
         const existingAttachments = interaction.attachments || [];
         const updatedAttachments = [...existingAttachments, attachment];
-        
+
         await baseDataProvider.update('interactions', {
             id: interactionId,
             data: { attachments: updatedAttachments },
             previousData: interaction,
         });
-        
+
         return attachment;
     },
 
     /**
      * Delete interaction attachment
      */
-    async deleteInteractionAttachment(interactionId: Identifier, filename: string) {
+    async deleteInteractionAttachment(
+        interactionId: Identifier,
+        filename: string
+    ) {
         await deleteInteractionAttachment(interactionId, filename);
-        
+
         // Update interaction to remove attachment
-        const { data: interaction } = await baseDataProvider.getOne('interactions', {
-            id: interactionId,
-        });
-        
+        const { data: interaction } = await baseDataProvider.getOne(
+            'interactions',
+            {
+                id: interactionId,
+            }
+        );
+
         const updatedAttachments = (interaction.attachments || []).filter(
             (att: FileAttachment) => att.filename !== filename
         );
-        
+
         await baseDataProvider.update('interactions', {
             id: interactionId,
             data: { attachments: updatedAttachments },
             previousData: interaction,
         });
-        
+
         return true;
     },
 
@@ -520,7 +550,11 @@ const dataProviderWithCustomMethods = {
      */
     async completeInteraction(
         id: Identifier,
-        completionData: { duration?: number; outcome?: string; [key: string]: any }
+        completionData: {
+            duration?: number;
+            outcome?: string;
+            [key: string]: any;
+        }
     ) {
         return completeInteraction(this, id, completionData);
     },
@@ -597,7 +631,10 @@ const dataProviderWithCustomMethods = {
     /**
      * Get organizations within a user's territory
      */
-    async getTerritoryOrganizations(userId: string, territory?: TerritoryBoundary) {
+    async getTerritoryOrganizations(
+        userId: string,
+        territory?: TerritoryBoundary
+    ) {
         return getTerritoryOrganizations(this, userId, territory);
     },
 
@@ -629,19 +666,26 @@ const dataProviderWithCustomMethods = {
     async findOrganizationsAutocomplete(
         query: string,
         limit: number = 10
-    ): Promise<{ data: Array<{ id: number; name: string; address?: string; distance?: number }> }> {
-        const result = await this.searchOrganizations(query, { 
+    ): Promise<{
+        data: Array<{
+            id: number;
+            name: string;
+            address?: string;
+            distance?: number;
+        }>;
+    }> {
+        const result = await this.searchOrganizations(query, {
             limit,
-            sortBy: 'relevance' 
+            sortBy: 'relevance',
         });
-        
+
         return {
             data: result.data.map((org: OrganizationSearchResult) => ({
                 id: org.id,
                 name: org.name,
                 address: org.address,
                 distance: org.distance,
-            }))
+            })),
         };
     },
 
@@ -684,8 +728,11 @@ const dataProviderWithCustomMethods = {
     ): Promise<{ latitude: number; longitude: number }> {
         // Get organization if address not provided
         if (!address) {
-            const org = await this.getOne('organizations', { id: organizationId });
-            address = `${org.data.address || ''}, ${org.data.city || ''}, ${org.data.state || ''} ${org.data.zipCode || ''}`.trim();
+            const org = await this.getOne('organizations', {
+                id: organizationId,
+            });
+            address =
+                `${org.data.address || ''}, ${org.data.city || ''}, ${org.data.state || ''} ${org.data.zipCode || ''}`.trim();
         }
 
         if (!address) {
@@ -708,17 +755,21 @@ const dataProviderWithCustomMethods = {
         });
 
         // Log audit event
-        await logAuditEvent('data.update', {
-            resource: 'organization',
-            organizationId,
-            action: 'geocoded',
-            address,
-            latitude: mockLat,
-            longitude: mockLng,
-        }, {
-            outcome: 'success',
-            message: 'Organization address geocoded successfully'
-        });
+        await logAuditEvent(
+            'data.update',
+            {
+                resource: 'organization',
+                organizationId,
+                action: 'geocoded',
+                address,
+                latitude: mockLat,
+                longitude: mockLng,
+            },
+            {
+                outcome: 'success',
+                message: 'Organization address geocoded successfully',
+            }
+        );
 
         return {
             latitude: mockLat,
@@ -876,20 +927,22 @@ export const dataProvider = withLifecycleCallbacks(
                         .select('role, territory')
                         .eq('id', user.user.id)
                         .single();
-                    
+
                     if (userProfile) {
                         const userData = {
                             id: user.user.id,
                             email: user.user.email || '',
-                            firstName: user.user.user_metadata?.first_name || '',
+                            firstName:
+                                user.user.user_metadata?.first_name || '',
                             lastName: user.user.user_metadata?.last_name || '',
                             role: userProfile.role || 'broker',
                             territory: userProfile.territory || [],
                             isActive: true,
                             createdAt: user.user.created_at,
-                            updatedAt: user.user.updated_at || user.user.created_at,
+                            updatedAt:
+                                user.user.updated_at || user.user.created_at,
                         };
-                        
+
                         processedParams = applyTerritoryFilter({
                             user: userData,
                             resource: 'organizations',
@@ -932,20 +985,22 @@ export const dataProvider = withLifecycleCallbacks(
                         .select('role, territory')
                         .eq('id', user.user.id)
                         .single();
-                    
+
                     if (userProfile) {
                         const userData = {
                             id: user.user.id,
                             email: user.user.email || '',
-                            firstName: user.user.user_metadata?.first_name || '',
+                            firstName:
+                                user.user.user_metadata?.first_name || '',
                             lastName: user.user.user_metadata?.last_name || '',
                             role: userProfile.role || 'broker',
                             territory: userProfile.territory || [],
                             isActive: true,
                             createdAt: user.user.created_at,
-                            updatedAt: user.user.updated_at || user.user.created_at,
+                            updatedAt:
+                                user.user.updated_at || user.user.created_at,
                         };
-                        
+
                         processedParams = applyTerritoryFilter({
                             user: userData,
                             resource: 'contacts',
@@ -1095,20 +1150,22 @@ export const dataProvider = withLifecycleCallbacks(
                         .select('role, territory')
                         .eq('id', user.user.id)
                         .single();
-                    
+
                     if (userProfile) {
                         const userData = {
                             id: user.user.id,
                             email: user.user.email || '',
-                            firstName: user.user.user_metadata?.first_name || '',
+                            firstName:
+                                user.user.user_metadata?.first_name || '',
                             lastName: user.user.user_metadata?.last_name || '',
                             role: userProfile.role || 'broker',
                             territory: userProfile.territory || [],
                             isActive: true,
                             createdAt: user.user.created_at,
-                            updatedAt: user.user.updated_at || user.user.created_at,
+                            updatedAt:
+                                user.user.updated_at || user.user.created_at,
                         };
-                        
+
                         processedParams = applyTerritoryFilter({
                             user: userData,
                             resource: 'interactions',
@@ -1120,7 +1177,10 @@ export const dataProvider = withLifecycleCallbacks(
                 return processedParams;
             },
             beforeCreate: async params => {
-                const processedParams = await processInteractionLocation(params, true);
+                const processedParams = await processInteractionLocation(
+                    params,
+                    true
+                );
                 const { data: user } = await supabase.auth.getUser();
 
                 return {
@@ -1130,7 +1190,8 @@ export const dataProvider = withLifecycleCallbacks(
                         createdBy: user?.user?.id,
                         createdAt: new Date().toISOString(),
                         isCompleted: processedParams.data.isCompleted || false,
-                        followUpRequired: processedParams.data.followUpRequired || false,
+                        followUpRequired:
+                            processedParams.data.followUpRequired || false,
                     },
                 };
             },
@@ -1145,7 +1206,7 @@ export const dataProvider = withLifecycleCallbacks(
                         },
                     };
                 }
-                
+
                 return params;
             },
         },
@@ -1168,20 +1229,22 @@ export const dataProvider = withLifecycleCallbacks(
                         .select('role, territory')
                         .eq('id', user.user.id)
                         .single();
-                    
+
                     if (userProfile) {
                         const userData = {
                             id: user.user.id,
                             email: user.user.email || '',
-                            firstName: user.user.user_metadata?.first_name || '',
+                            firstName:
+                                user.user.user_metadata?.first_name || '',
                             lastName: user.user.user_metadata?.last_name || '',
                             role: userProfile.role || 'broker',
                             territory: userProfile.territory || [],
                             isActive: true,
                             createdAt: user.user.created_at,
-                            updatedAt: user.user.updated_at || user.user.created_at,
+                            updatedAt:
+                                user.user.updated_at || user.user.created_at,
                         };
-                        
+
                         processedParams = applyTerritoryFilter({
                             user: userData,
                             resource: 'deals',
@@ -1212,7 +1275,8 @@ export const dataProvider = withLifecycleCallbacks(
             beforeUpdate: async params => {
                 // Handle archiving logic for won/lost deals
                 if (
-                    (params.data.status === 'won' || params.data.status === 'lost') &&
+                    (params.data.status === 'won' ||
+                        params.data.status === 'lost') &&
                     !params.data.archivedAt
                 ) {
                     return {
@@ -1223,7 +1287,7 @@ export const dataProvider = withLifecycleCallbacks(
                         },
                     };
                 }
-                
+
                 return params;
             },
         },
@@ -1232,57 +1296,71 @@ export const dataProvider = withLifecycleCallbacks(
             beforeGetList: async params => {
                 return applyFullTextSearch([
                     'firstName',
-                    'lastName', 
+                    'lastName',
                     'email',
                     'role',
                 ])(params);
             },
             beforeCreate: async params => {
                 const { data: currentUser } = await supabase.auth.getUser();
-                
+
                 // Log user creation attempt
-                await logAuditEvent('users.create_attempt', {
-                    createdBy: currentUser?.user?.id,
-                    newUserEmail: params.data.email,
-                    newUserRole: params.data.administrator ? 'admin' : 'broker',
-                }, {
-                    userId: currentUser?.user?.id,
-                    outcome: 'success',
-                    message: 'User creation initiated',
-                });
-                
+                await logAuditEvent(
+                    'users.create_attempt',
+                    {
+                        createdBy: currentUser?.user?.id,
+                        newUserEmail: params.data.email,
+                        newUserRole: params.data.administrator
+                            ? 'admin'
+                            : 'broker',
+                    },
+                    {
+                        userId: currentUser?.user?.id,
+                        outcome: 'success',
+                        message: 'User creation initiated',
+                    }
+                );
+
                 return params;
             },
             beforeUpdate: async params => {
                 const { data: currentUser } = await supabase.auth.getUser();
-                
+
                 // Log user update attempt
-                await logAuditEvent('users.update_attempt', {
-                    updatedBy: currentUser?.user?.id,
-                    targetUserId: params.id,
-                    changes: Object.keys(params.data),
-                }, {
-                    userId: currentUser?.user?.id,
-                    outcome: 'success',
-                    message: 'User update initiated',
-                });
-                
+                await logAuditEvent(
+                    'users.update_attempt',
+                    {
+                        updatedBy: currentUser?.user?.id,
+                        targetUserId: params.id,
+                        changes: Object.keys(params.data),
+                    },
+                    {
+                        userId: currentUser?.user?.id,
+                        outcome: 'success',
+                        message: 'User update initiated',
+                    }
+                );
+
                 return params;
             },
             beforeDelete: async params => {
                 const { data: currentUser } = await supabase.auth.getUser();
-                
+
                 // Log user deletion attempt
-                await logAuditEvent('users.delete_attempt', {
-                    deletedBy: currentUser?.user?.id,
-                    targetUserId: params.id,
-                }, {
-                    userId: currentUser?.user?.id,
-                    outcome: 'warning',
-                    severity: 'high',
-                    message: 'User deletion initiated',
-                });
-                
+                await logAuditEvent(
+                    'users.delete_attempt',
+                    {
+                        deletedBy: currentUser?.user?.id,
+                        targetUserId: params.id,
+                    },
+                    {
+                        userId: currentUser?.user?.id,
+                        outcome: 'warning',
+                        severity: 'high',
+                        message: 'User deletion initiated',
+                    }
+                );
+
                 return params;
             },
         },

@@ -23,4 +23,7 @@ export { SettingsAdminDashboard } from './SettingsAdminDashboard';
 export { SettingsBulkOperations } from './SettingsBulkOperations';
 
 // Hooks
-export { useRealtimeSettings, useRealtimeSettingsStats } from './hooks/useRealtimeSettings';
+export {
+    useRealtimeSettings,
+    useRealtimeSettingsStats,
+} from './hooks/useRealtimeSettings';

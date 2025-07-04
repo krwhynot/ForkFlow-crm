@@ -51,7 +51,11 @@ export const Dialog: React.FC<DialogProps> = ({
 }) => {
     return (
         <Transition appear show={open} as={Fragment}>
-            <HeadlessDialog as="div" className="relative z-50" onClose={onClose}>
+            <HeadlessDialog
+                as="div"
+                className="relative z-50"
+                onClose={onClose}
+            >
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -119,11 +123,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
     children,
     className,
 }) => {
-    return (
-        <div className={cn('mt-2', className)}>
-            {children}
-        </div>
-    );
+    return <div className={cn('mt-2', className)}>{children}</div>;
 };
 
 /**
@@ -143,10 +143,10 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
 /**
  * DialogCloseButton component
  */
-export const DialogCloseButton: React.FC<{ onClose: () => void; className?: string }> = ({
-    onClose,
-    className,
-}) => {
+export const DialogCloseButton: React.FC<{
+    onClose: () => void;
+    className?: string;
+}> = ({ onClose, className }) => {
     return (
         <button
             type="button"

@@ -1,1023 +1,808 @@
 {
-  "master": {
-    "tasks": [
-      {
-        "id": 1,
-        "title": "Setup Project Repository and Infrastructure",
-        "description": "Initialize the project repository with a mobile-first web application structure and configure the development environment.",
-        "details": "Create a Git repository with appropriate branching strategy. Setup a Node.js/Express backend and React frontend with responsive design. Configure ESLint, Prettier, and other development tools. Setup CI/CD pipeline for automated testing and deployment. Initialize PostgreSQL database connection. Configure HTTPS/TLS 1.3 for secure communications.",
-        "testStrategy": "Verify repository structure and access. Test development environment setup on different machines. Validate CI/CD pipeline with a simple test deployment.",
-        "priority": "high",
-        "dependencies": [],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 2,
-        "title": "Design and Implement Database Schema",
-        "description": "Create the database schema based on the data model specified in the PRD.",
-        "details": "Implement PostgreSQL database with tables for Users, Customers, Visits, and Follow-up Reminders as specified in section 6.1. Create appropriate indexes for performance optimization. Implement foreign key relationships between tables. Set up data validation constraints. Create database migration scripts for version control. Implement UUID primary keys as specified.",
-        "testStrategy": "Validate schema against PRD requirements. Test data relationships with sample data. Verify constraints and validation rules. Measure query performance with test data.",
-        "priority": "high",
-        "dependencies": [
-          1
+    "master": {
+        "tasks": [
+            {
+                "id": 1,
+                "title": "Setup Project Repository and Infrastructure",
+                "description": "Initialize the project repository with a mobile-first web application structure and configure the development environment.",
+                "details": "Create a Git repository with appropriate branching strategy. Setup a Node.js/Express backend and React frontend with responsive design. Configure ESLint, Prettier, and other development tools. Setup CI/CD pipeline for automated testing and deployment. Initialize PostgreSQL database connection. Configure HTTPS/TLS 1.3 for secure communications.",
+                "testStrategy": "Verify repository structure and access. Test development environment setup on different machines. Validate CI/CD pipeline with a simple test deployment.",
+                "priority": "high",
+                "dependencies": [],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 2,
+                "title": "Design and Implement Database Schema",
+                "description": "Create the database schema based on the data model specified in the PRD.",
+                "details": "Implement PostgreSQL database with tables for Users, Customers, Visits, and Follow-up Reminders as specified in section 6.1. Create appropriate indexes for performance optimization. Implement foreign key relationships between tables. Set up data validation constraints. Create database migration scripts for version control. Implement UUID primary keys as specified.",
+                "testStrategy": "Validate schema against PRD requirements. Test data relationships with sample data. Verify constraints and validation rules. Measure query performance with test data.",
+                "priority": "high",
+                "dependencies": [1],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 3,
+                "title": "Implement User Authentication System",
+                "description": "Develop a secure authentication system with JWT token-based authentication as specified in Epic 1.",
+                "details": "Implement user registration, login, and password reset functionality. Use bcrypt for password hashing. Create JWT token generation with 8-hour expiration. Implement refresh token mechanism. Create middleware for route protection based on user roles. Implement password reset via email using a secure token system. Ensure password requirements (8+ characters, mixed case, numbers).",
+                "testStrategy": "Test user registration with valid and invalid data. Verify password hashing security. Test JWT token generation and validation. Verify token expiration and refresh. Test role-based access control. Validate password reset workflow.",
+                "priority": "high",
+                "dependencies": [1, 2],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Implement User Registration Functionality",
+                        "description": "Create a user registration form and backend logic to securely store user data in a database.",
+                        "dependencies": [],
+                        "details": "Use a database management system like MySQL or PostgreSQL to store user information securely.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Develop Login System with Password Hashing",
+                        "description": "Implement a login system that verifies user credentials using password hashing techniques like Bcrypt.",
+                        "dependencies": [1],
+                        "details": "Hash passwords during registration and verify them during login to ensure secure authentication.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Implement JWT Token Generation and Validation",
+                        "description": "Create a system to generate and validate JSON Web Tokens (JWT) for authenticated users.",
+                        "dependencies": [2],
+                        "details": "Use JWT to manage user sessions securely by generating tokens upon successful login and validating them for subsequent requests.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Implement Refresh Token Mechanism",
+                        "description": "Develop a refresh token system to securely extend user sessions without requiring frequent logins.",
+                        "dependencies": [3],
+                        "details": "Use refresh tokens to obtain new JWTs when they expire, ensuring continuous access without compromising security.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Implement Role-Based Middleware Protection",
+                        "description": "Create middleware to enforce role-based access control, restricting actions based on user roles.",
+                        "dependencies": [3],
+                        "details": "Define roles and permissions to control what actions users can perform within the application.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Implement Password Reset via Email",
+                        "description": "Develop a password reset feature that securely allows users to recover their accounts via email.",
+                        "dependencies": [1],
+                        "details": "Send a password reset link to the user's registered email, allowing them to securely reset their password.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 7,
+                        "title": "Conduct Security Testing and Validation",
+                        "description": "Perform thorough security testing to identify vulnerabilities in the authentication system.",
+                        "dependencies": [1, 2, 3, 4, 5, 6],
+                        "details": "Test for common vulnerabilities like SQL injection, cross-site scripting (XSS), and ensure secure communication protocols are used.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Develop Authentication API Endpoints",
+                "description": "Create RESTful API endpoints for user authentication as specified in section 7.1.",
+                "details": "Implement the following endpoints: POST /api/auth/login, POST /api/auth/logout, POST /api/auth/refresh-token, POST /api/auth/forgot-password, POST /api/auth/reset-password. Ensure proper request validation. Implement appropriate error handling and status codes. Document API endpoints with Swagger/OpenAPI.",
+                "testStrategy": "Test each endpoint with valid and invalid requests. Verify proper token generation and validation. Test error handling scenarios. Measure response times to ensure they meet performance requirements (<500ms).",
+                "priority": "high",
+                "dependencies": [3],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 5,
+                "title": "Create User Management Interface",
+                "description": "Develop admin interface for managing broker accounts as specified in AUTH-003.",
+                "details": "Create admin dashboard for user management. Implement user creation form with role selection. Develop user listing with filtering and search. Implement user editing and deactivation functionality. Ensure mobile responsiveness for all interfaces. Implement role-based access control to restrict access to admin users only.",
+                "testStrategy": "Test user creation, editing, and deactivation. Verify role-based access restrictions. Test mobile responsiveness on different devices. Validate form validation and error handling.",
+                "priority": "medium",
+                "dependencies": [3, 4],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 6,
+                "title": "Implement Customer Management API",
+                "description": "Develop API endpoints for customer management as specified in section 7.2.",
+                "details": "Implement the following endpoints: GET /api/customers, POST /api/customers, GET /api/customers/:id, PUT /api/customers/:id, DELETE /api/customers/:id, GET /api/customers/search?q=query. Ensure proper request validation and error handling. Implement pagination for list endpoints. Add filtering capabilities based on business type and other attributes. Implement search functionality with proper indexing.",
+                "testStrategy": "Test each endpoint with valid and invalid requests. Verify pagination works correctly. Test search functionality with various queries. Measure response times to ensure they meet performance requirements (<500ms).",
+                "priority": "high",
+                "dependencies": [2, 4],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 7,
+                "title": "Develop Customer Management Interface",
+                "description": "Create mobile-friendly interface for managing customers as specified in Epic 2.",
+                "details": "Implement customer list view with search and filtering. Create customer detail view showing all information and visit history. Develop customer creation and editing forms. Ensure all forms are touch-friendly with appropriate input types. Implement character limits on notes fields (500 characters). Create mobile-optimized list view with key information visible. Implement form validation for required fields.",
+                "testStrategy": "Test customer creation, viewing, editing, and deletion. Verify mobile usability on different devices. Test form validation and error handling. Verify character limits on notes fields. Test search and filtering functionality.",
+                "priority": "high",
+                "dependencies": [6],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 8,
+                "title": "Implement Visit Tracking API",
+                "description": "Develop API endpoints for visit tracking as specified in section 7.3.",
+                "details": "Implement the following endpoints: GET /api/visits, POST /api/visits, GET /api/visits/:id, PUT /api/visits/:id, DELETE /api/visits/:id, GET /api/customers/:id/visits. Ensure proper request validation and error handling. Implement pagination for list endpoints. Add filtering capabilities based on date ranges and other attributes. Store GPS coordinates with visit records.",
+                "testStrategy": "Test each endpoint with valid and invalid requests. Verify pagination works correctly. Test filtering functionality with various parameters. Measure response times to ensure they meet performance requirements (<500ms).",
+                "priority": "high",
+                "dependencies": [2, 6],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 9,
+                "title": "Develop Visit Logging Interface",
+                "description": "Create mobile-friendly interface for logging customer visits as specified in Epic 3.",
+                "details": "Implement visit logging form with auto-populated date/time. Create one-tap visit logging from customer detail page. Implement GPS location capture using browser geolocation API. Create visit notes field with 1000 character limit. Implement visit history view sorted by most recent first. Ensure all forms are touch-friendly and optimized for quick entry.",
+                "testStrategy": "Test visit logging on mobile devices. Verify GPS location capture works correctly. Test character limit on notes field. Verify visit history display. Measure time to complete visit logging to ensure it meets the 2-minute requirement.",
+                "priority": "high",
+                "dependencies": [7, 8],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 10,
+                "title": "Implement Follow-up Reminder System",
+                "description": "Develop functionality for setting and managing follow-up reminders as specified in VISIT-004.",
+                "details": "Create database operations for follow-up reminders. Implement API endpoints for creating, retrieving, updating, and deleting reminders. Develop date/time picker for setting reminder dates. Create reminder listing view sorted by date. Implement reminder completion functionality. Add notification system for upcoming reminders.",
+                "testStrategy": "Test reminder creation, viewing, updating, and completion. Verify date/time picker works correctly. Test reminder sorting and filtering. Verify notifications for upcoming reminders.",
+                "priority": "medium",
+                "dependencies": [2, 8],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 11,
+                "title": "Implement Google Maps Integration",
+                "description": "Integrate Google Maps for customer location visualization as specified in Epic 5.",
+                "details": "Set up Google Maps API integration. Create map view showing customer pins. Implement customer info popup on pin tap. Add 'Get Directions' button linking to Google Maps navigation. Create 'Near Me' view showing customers within configurable radius. Implement map filtering controls. Ensure smooth performance on mobile devices.",
+                "testStrategy": "Test map loading and rendering on different devices. Verify customer pins display correctly. Test 'Get Directions' functionality. Verify 'Near Me' view with different radius settings. Test performance with large numbers of customer pins.",
+                "priority": "medium",
+                "dependencies": [7],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Google Maps API Setup and Configuration",
+                        "description": "Set up a Google Cloud project, enable the Maps JavaScript API, generate an API key, and configure billing and security restrictions.",
+                        "dependencies": [],
+                        "details": "Follow official Google Maps Platform documentation to create a project, enable the Maps JavaScript API, generate an API key, and restrict it by domain. Ensure billing is configured and quotas are set to avoid unexpected charges.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Customer Pin Visualization",
+                        "description": "Implement map markers to visualize customer locations on the map, including clustering for large datasets.",
+                        "dependencies": [1],
+                        "details": "Use the Maps JavaScript API to add markers for each customer location. For large numbers of customers, implement marker clustering and use different marker colors or icons for different customer types if needed.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Info Popup Implementation",
+                        "description": "Add interactive info popups (info windows) that display customer details when a pin is clicked.",
+                        "dependencies": [2],
+                        "details": "Configure info windows to show relevant customer information (e.g., name, address, contact) when a marker is clicked. Ensure popups are styled and accessible.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Directions Integration",
+                        "description": "Integrate Google Maps Directions API to provide route guidance from the user's location to a selected customer pin.",
+                        "dependencies": [3],
+                        "details": "Enable and use the Directions API to calculate and display routes on the map. Allow users to select a customer pin and get directions from their current location or a specified address.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "'Near Me' Functionality with Radius Filtering",
+                        "description": "Implement a feature to filter and display only customer pins within a user-defined radius from the user's current location.",
+                        "dependencies": [4],
+                        "details": "Use geolocation to get the user's current position, calculate distances to each customer, and filter pins based on a configurable radius. Update the map to show only relevant pins and update clustering as needed.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Mobile Performance Optimization",
+                        "description": "Optimize the map integration for mobile devices, ensuring fast load times, smooth interactions, and responsive design.",
+                        "dependencies": [5],
+                        "details": "Implement best practices for mobile performance: lazy load map components, minimize marker count, use clustering, optimize images and assets, and ensure the map UI is responsive and touch-friendly.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 12,
+                "title": "Implement Reporting API",
+                "description": "Develop API endpoints for reporting as specified in section 7.4.",
+                "details": "Implement the following endpoints: GET /api/reports/dashboard, GET /api/reports/visits?start_date&end_date, GET /api/reports/customers/needs-visit, GET /api/exports/customers, GET /api/exports/visits. Create data aggregation logic for dashboard summary. Implement CSV generation for export endpoints. Add filtering capabilities based on date ranges and other attributes.",
+                "testStrategy": "Test each endpoint with various parameters. Verify data aggregation accuracy. Test CSV export functionality. Measure response times to ensure they meet performance requirements (<500ms).",
+                "priority": "medium",
+                "dependencies": [6, 8],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 13,
+                "title": "Develop Broker Dashboard Interface",
+                "description": "Create dashboard for brokers to view their activity and upcoming tasks as specified in RPT-001 and RPT-005.",
+                "details": "Implement dashboard showing visits per day/week/month. Create upcoming follow-up reminders list. Add quick stats section (visits today, this week). Implement 'Needs Visit' list for customers not contacted in 30+ days. Ensure all charts and visualizations work on mobile devices. Add quick access buttons for common actions.",
+                "testStrategy": "Test dashboard loading and rendering on different devices. Verify data accuracy in charts and stats. Test responsiveness and usability on mobile devices. Measure load time to ensure it meets performance requirements (<3 seconds).",
+                "priority": "medium",
+                "dependencies": [9, 10, 12],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 14,
+                "title": "Implement Admin Reporting Interface",
+                "description": "Create reporting interface for administrators as specified in RPT-003.",
+                "details": "Implement admin dashboard showing team activity across all brokers. Create broker comparison charts and metrics. Add filtering by date range and broker. Implement CSV export functionality for all reports. Ensure all visualizations are responsive and mobile-friendly.",
+                "testStrategy": "Test admin dashboard with sample data. Verify data accuracy in reports. Test CSV export functionality. Verify role-based access restrictions. Test responsiveness on different devices.",
+                "priority": "medium",
+                "dependencies": [5, 12],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Implement Team Activity Dashboard",
+                        "description": "Develop a dashboard that visualizes team activity metrics, such as user logins, actions performed, and activity trends over time.",
+                        "dependencies": [],
+                        "details": "Design and build interactive charts and tables to display team activity. Ensure data aggregation logic is efficient for large datasets.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Develop Broker Comparison Charts and Metrics",
+                        "description": "Create comparative analytics visualizations to compare performance and key metrics across multiple brokers.",
+                        "dependencies": [1],
+                        "details": "Implement side-by-side charts, tables, and summary statistics for brokers. Ensure metrics are clearly defined and calculations are accurate.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Add Date and Broker Filtering Controls",
+                        "description": "Implement filtering controls to allow admins to filter reports and visualizations by date range and broker selection.",
+                        "dependencies": [1, 2],
+                        "details": "Design intuitive UI components for filtering. Ensure all visualizations update dynamically based on selected filters.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Implement CSV Export Functionality",
+                        "description": "Enable exporting of dashboard data and visualizations to CSV format for offline analysis and reporting.",
+                        "dependencies": [1, 2, 3],
+                        "details": "Add export buttons and ensure exported data matches the filtered and displayed results. Handle large data exports efficiently.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Ensure Mobile Responsive Design for Visualizations",
+                        "description": "Adapt all dashboards, charts, and controls to be fully responsive and usable on mobile devices.",
+                        "dependencies": [1, 2, 3, 4],
+                        "details": "Test and optimize layouts, chart rendering, and controls for various screen sizes. Address touch interactions and performance on mobile.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 15,
+                "title": "Implement Login and Authentication UI",
+                "description": "Create user interface for authentication as specified in section 5.2.1 and Epic 1.",
+                "details": "Implement login screen with username/password fields. Add 'Remember Me' checkbox functionality. Create 'Forgot Password' flow with email-based reset. Add company branding area. Implement session management with 8-hour expiration. Create secure storage for authentication tokens. Ensure mobile-friendly design and usability.",
+                "testStrategy": "Test login with valid and invalid credentials. Verify 'Remember Me' functionality. Test password reset flow. Verify session expiration and renewal. Test mobile usability on different devices.",
+                "priority": "high",
+                "dependencies": [3, 4],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 16,
+                "title": "Implement Responsive UI Framework",
+                "description": "Develop responsive UI framework following the design principles in section 5.1 and breakpoints in section 5.3.",
+                "details": "Create mobile-first CSS framework with responsive breakpoints (320px-768px, 768px-1024px, 1024px+). Implement touch-friendly UI components with minimum 44px tap targets. Create consistent navigation pattern with maximum 3 taps to any function. Develop offline indication and graceful degradation. Implement loading indicators and error states.",
+                "testStrategy": "Test responsiveness across different screen sizes. Verify touch targets meet size requirements. Test navigation paths to ensure 3-tap maximum. Verify offline indication and behavior. Test on target browsers (iOS Safari 14+, Android Chrome 90+, Desktop Chrome/Firefox/Edge).",
+                "priority": "high",
+                "dependencies": [1],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Set Up Mobile-First CSS Framework with Breakpoints",
+                        "description": "Integrate a mobile-first CSS framework (e.g., Bootstrap) and define responsive breakpoints for various device sizes using media queries.",
+                        "dependencies": [],
+                        "details": "Include the chosen CSS framework in the project, configure the grid system, and set up breakpoints for extra-small, small, medium, large, and extra-large devices using a mobile-first approach.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Develop Touch-Friendly UI Components",
+                        "description": "Design and implement UI components (buttons, sliders, menus) that are optimized for touch interactions and accessibility.",
+                        "dependencies": [1],
+                        "details": "Ensure all interactive elements have adequate touch targets, spacing, and visual feedback for mobile and tablet users.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Implement Consistent Navigation Patterns",
+                        "description": "Create a navigation system that adapts to different screen sizes and maintains consistency across devices.",
+                        "dependencies": [1, 2],
+                        "details": "Use responsive navigation patterns such as hamburger menus for mobile and horizontal menus for desktop, ensuring seamless transitions and accessibility.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Integrate Offline Indication System",
+                        "description": "Add a system to detect and visually indicate when the application is offline or has connectivity issues.",
+                        "dependencies": [1, 2, 3],
+                        "details": "Implement UI banners or icons that notify users of offline status, using browser APIs to monitor connectivity.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Add Loading Indicators and Error States",
+                        "description": "Design and implement visual feedback for loading processes and error conditions throughout the UI.",
+                        "dependencies": [1, 2, 3, 4],
+                        "details": "Provide spinners, skeleton screens, and clear error messages to enhance user experience during data fetching or failures.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Conduct Cross-Browser and Device Testing",
+                        "description": "Test the responsive UI framework across multiple browsers and devices to ensure consistent appearance and functionality.",
+                        "dependencies": [1, 2, 3, 4, 5],
+                        "details": "Use tools and real devices to verify layout, touch interactions, navigation, offline indicators, and feedback components work as intended everywhere.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 17,
+                "title": "Implement Offline Support",
+                "description": "Add basic offline support with clear indication when offline and sync when reconnected.",
+                "details": "Implement service worker for offline detection. Create offline indication UI. Implement data caching for critical screens. Develop queue system for operations performed offline. Create sync mechanism for when connection is restored. Add conflict resolution for data modified while offline.",
+                "testStrategy": "Test application behavior when network is disconnected. Verify offline indication appears correctly. Test operations while offline and sync when reconnected. Verify data integrity after sync.",
+                "priority": "medium",
+                "dependencies": [7, 9, 16],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Service Worker Implementation for Offline Detection",
+                        "description": "Develop and register a service worker to intercept network requests, enable offline detection, and manage the app's connectivity state.",
+                        "dependencies": [],
+                        "details": "Implement a service worker script that acts as a proxy between the browser and the network, intercepting requests and enabling offline detection. Ensure the service worker is registered on app load and can detect when the app is offline or online using the navigator.onLine API and relevant event listeners.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Offline UI Indication",
+                        "description": "Create UI components or notifications to inform users of their current connectivity status (offline/online).",
+                        "dependencies": [1],
+                        "details": "Use event listeners for 'online' and 'offline' events to update the UI, such as displaying a banner or message indicating the app is offline or when connectivity is restored. Integrate this logic with the service worker registration process.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Data Caching Strategy",
+                        "description": "Design and implement a caching strategy for static assets and dynamic data to ensure the app functions offline.",
+                        "dependencies": [1],
+                        "details": "Determine which assets (HTML, CSS, JS, images) and API responses should be cached. Implement caching logic in the service worker using Cache API, and decide on cache versioning and update strategies to keep content fresh.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Offline Operation Queue System",
+                        "description": "Develop a system to queue user actions or API requests performed while offline for later synchronization.",
+                        "dependencies": [1, 3],
+                        "details": "Implement logic to capture and store user actions (such as form submissions or POST requests) in local storage or IndexedDB when offline. Ensure these actions are queued reliably until connectivity is restored.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Synchronization Mechanism",
+                        "description": "Implement a mechanism to process and synchronize queued offline operations with the server once connectivity is restored.",
+                        "dependencies": [4],
+                        "details": "Detect when the app comes back online and automatically process the queued operations, sending them to the server in the correct order. Handle retries and error cases as needed.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Conflict Resolution Implementation",
+                        "description": "Design and implement logic to handle conflicts that may arise when synchronizing offline changes with the server.",
+                        "dependencies": [5],
+                        "details": "Develop strategies to detect and resolve conflicts between local offline changes and server data, such as last-write-wins, user prompts, or merging changes. Ensure the user is informed of any conflicts and can take appropriate action.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 18,
+                "title": "Implement Security Measures",
+                "description": "Implement security requirements specified in section 8.4.",
+                "details": "Configure HTTPS/TLS 1.3 for all communications. Implement SQL injection prevention through parameterized queries. Add XSS attack prevention through proper output encoding. Implement CSRF protection with tokens. Add rate limiting for authentication endpoints. Create security headers configuration. Implement input validation for all forms and API endpoints.",
+                "testStrategy": "Perform security testing including penetration testing. Verify HTTPS configuration. Test SQL injection prevention. Verify XSS protection. Test CSRF protection. Verify rate limiting functionality.",
+                "priority": "high",
+                "dependencies": [3, 4, 6, 8],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Configure HTTPS and TLS",
+                        "description": "Set up HTTPS and TLS encryption to secure data in transit between clients and the server.",
+                        "dependencies": [],
+                        "details": "Obtain and install a valid SSL/TLS certificate, configure the web server to enforce HTTPS, disable insecure protocols, and ensure strong cipher suites are used.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Implement SQL Injection Prevention",
+                        "description": "Protect the application from SQL injection attacks by securing all database interactions.",
+                        "dependencies": [1],
+                        "details": "Use parameterized queries or prepared statements, avoid dynamic SQL, and validate all user inputs before using them in database queries.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Implement XSS Protection",
+                        "description": "Prevent cross-site scripting (XSS) vulnerabilities by sanitizing and encoding user input and output.",
+                        "dependencies": [1],
+                        "details": "Sanitize user inputs, encode outputs, use frameworks with built-in XSS protection, and set appropriate Content Security Policy (CSP) headers.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Implement CSRF Protection with Tokens",
+                        "description": "Defend against cross-site request forgery (CSRF) attacks by integrating anti-CSRF tokens in forms and validating them on the server.",
+                        "dependencies": [1],
+                        "details": "Generate unique CSRF tokens for user sessions, embed them in forms, and verify them on the server for each state-changing request.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Apply Rate Limiting to Authentication Endpoints",
+                        "description": "Limit the number of authentication attempts to prevent brute-force attacks.",
+                        "dependencies": [1],
+                        "details": "Configure rate limiting on login and authentication endpoints using middleware or web server settings to restrict repeated requests from the same IP or user.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Configure Security Headers",
+                        "description": "Set HTTP security headers to protect against common web vulnerabilities.",
+                        "dependencies": [1],
+                        "details": "Implement headers such as Content Security Policy (CSP), X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security, and Referrer-Policy.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 7,
+                        "title": "Implement Input Validation",
+                        "description": "Validate and sanitize all user inputs to prevent injection and other input-based attacks.",
+                        "dependencies": [1],
+                        "details": "Apply both client-side and server-side validation, use allow-lists for expected input formats, and sanitize data before processing or storing.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 19,
+                "title": "Implement Performance Optimization",
+                "description": "Optimize application performance to meet requirements in section 8.3.",
+                "details": "Implement database query optimization with proper indexing. Add API response caching where appropriate. Optimize frontend assets with bundling and minification. Implement lazy loading for images and components. Add database connection pooling. Optimize map rendering performance. Implement pagination for all list views.",
+                "testStrategy": "Measure page load times on 3G connection. Test API response times under load. Verify concurrent user support (5 users). Measure database response times. Test performance on target mobile devices.",
+                "priority": "medium",
+                "dependencies": [7, 9, 11, 13],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Database Query Optimization",
+                        "description": "Analyze and optimize database queries to reduce execution time and resource consumption. This includes indexing, query refactoring, and eliminating N+1 query issues.",
+                        "dependencies": [],
+                        "details": "Review slow queries using profiling tools, add appropriate indexes, and rewrite inefficient queries to improve performance.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "API Response Caching",
+                        "description": "Implement caching mechanisms for API responses to reduce redundant processing and improve response times.",
+                        "dependencies": [1],
+                        "details": "Use in-memory caches (e.g., Redis, Memcached) or HTTP cache headers to store frequently requested API responses.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Frontend Asset Optimization",
+                        "description": "Optimize frontend assets such as JavaScript, CSS, and images to reduce load times and bandwidth usage.",
+                        "dependencies": [],
+                        "details": "Minify and bundle scripts, compress images, use modern formats, and leverage CDNs for asset delivery.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Lazy Loading Implementation",
+                        "description": "Implement lazy loading for non-critical resources to defer their loading until needed, improving initial page load speed.",
+                        "dependencies": [3],
+                        "details": "Apply lazy loading to images, videos, and offscreen components using native browser features or JavaScript libraries.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Database Connection Pooling",
+                        "description": "Set up and configure database connection pooling to efficiently manage database connections and reduce latency.",
+                        "dependencies": [1],
+                        "details": "Configure connection pool settings (size, timeout) in the application to prevent connection exhaustion and improve throughput.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Map Rendering Optimization",
+                        "description": "Optimize the rendering of interactive maps to ensure smooth performance, especially with large datasets or complex layers.",
+                        "dependencies": [3, 4],
+                        "details": "Use techniques such as tile-based rendering, clustering, and vector simplification to enhance map performance.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 7,
+                        "title": "Pagination Implementation for List Views",
+                        "description": "Implement pagination for list views to limit the amount of data loaded and rendered at once, improving both backend and frontend performance.",
+                        "dependencies": [1, 3],
+                        "details": "Apply server-side or client-side pagination strategies to efficiently handle large datasets in list or table views.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 20,
+                "title": "Implement Data Backup and Recovery",
+                "description": "Develop backup and recovery system as specified in section 8.2.",
+                "details": "Implement automated daily database backups. Create encrypted backup storage. Develop backup verification process. Implement recovery procedures with 4-hour recovery time objective. Create backup rotation and retention policy. Document backup and recovery procedures.",
+                "testStrategy": "Test backup creation and verification. Perform recovery testing from backups. Verify backup encryption. Measure recovery time to ensure it meets the 4-hour objective.",
+                "priority": "medium",
+                "dependencies": [2],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 21,
+                "title": "Implement System Monitoring",
+                "description": "Set up monitoring for application performance and health as specified in section 13.1.",
+                "details": "Implement application performance monitoring. Add error logging and tracking. Create database performance monitoring. Set up server resource monitoring. Implement user activity tracking. Create alerting system for critical issues. Develop dashboard for system health visualization.",
+                "testStrategy": "Verify monitoring captures performance metrics correctly. Test error logging with simulated errors. Verify alerting system works as expected. Test dashboard with sample data.",
+                "priority": "medium",
+                "dependencies": [1, 19],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 22,
+                "title": "Create User Documentation",
+                "description": "Develop comprehensive user documentation and help resources.",
+                "details": "Create user guides for brokers and administrators. Develop in-app help system with tooltips and guides. Create video tutorials for key workflows. Implement FAQ section. Document all features and functionality. Create printable quick reference guides.",
+                "testStrategy": "Review documentation for accuracy and completeness. Test in-app help system. Verify documentation covers all features and common tasks. Get feedback from test users on documentation clarity.",
+                "priority": "low",
+                "dependencies": [7, 9, 11, 13, 14, 15],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 23,
+                "title": "Implement Automated Testing",
+                "description": "Develop automated testing suite with >80% coverage as specified in section 8.5.",
+                "details": "Implement unit tests for backend services and API endpoints. Create integration tests for database operations. Develop end-to-end tests for critical user flows. Implement performance tests for key operations. Add accessibility testing. Configure test automation in CI/CD pipeline.",
+                "testStrategy": "Verify test coverage meets 80% requirement. Run tests in CI/CD pipeline. Verify tests catch regressions. Measure test execution time and optimize if needed.",
+                "priority": "high",
+                "dependencies": [4, 6, 8, 12],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Unit Testing Framework Setup",
+                        "description": "Select and configure a unit testing framework suitable for the project's technology stack. Establish folder structure, configure test runners, and set up basic reporting.",
+                        "dependencies": [],
+                        "details": "Choose a framework (e.g., JUnit, pytest, NUnit), integrate with the codebase, and ensure developers can write and run unit tests locally and in CI environments.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "API Endpoint Test Implementation",
+                        "description": "Develop automated tests for API endpoints to validate request/response correctness, error handling, and authentication.",
+                        "dependencies": [1],
+                        "details": "Use tools like Postman, REST Assured, or similar. Cover positive, negative, and edge cases for all critical API endpoints.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Database Integration Test Development",
+                        "description": "Create integration tests to verify database interactions, including CRUD operations and data integrity.",
+                        "dependencies": [1],
+                        "details": "Set up test databases or use in-memory databases. Ensure tests can run in isolation and clean up after execution.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "End-to-End Testing for Critical Flows",
+                        "description": "Implement end-to-end (E2E) tests simulating user journeys through the application’s most important workflows.",
+                        "dependencies": [2, 3],
+                        "details": "Use frameworks like Selenium, Cypress, or Playwright. Automate login, checkout, and other business-critical flows.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Performance Testing Implementation",
+                        "description": "Set up and execute automated performance tests to assess system responsiveness and stability under load.",
+                        "dependencies": [2, 3],
+                        "details": "Use tools such as JMeter, Gatling, or Locust. Define performance benchmarks and integrate tests into the automation suite.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "CI/CD Integration for Automated Test Runs",
+                        "description": "Integrate all automated tests into the CI/CD pipeline to ensure tests run on every code change and provide feedback to the team.",
+                        "dependencies": [1, 2, 3, 4, 5],
+                        "details": "Configure the CI/CD system (e.g., Jenkins, GitHub Actions, GitLab CI) to trigger test suites, collect results, and enforce quality gates.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            },
+            {
+                "id": 24,
+                "title": "Prepare Staging Environment",
+                "description": "Set up staging environment for testing and validation before production deployment.",
+                "details": "Configure staging server environment. Set up staging database. Implement deployment pipeline for staging. Create test data generation scripts. Configure monitoring for staging environment. Document staging environment setup and access.",
+                "testStrategy": "Verify staging environment matches production specifications. Test deployment pipeline to staging. Verify monitoring works in staging environment. Test with generated test data.",
+                "priority": "medium",
+                "dependencies": [1, 2, 3, 16, 18],
+                "status": "pending",
+                "subtasks": []
+            },
+            {
+                "id": 25,
+                "title": "Prepare Production Deployment",
+                "description": "Prepare for production deployment with blue-green deployment strategy as specified in section 12.3.",
+                "details": "Configure production server environment. Set up production database with proper security. Implement blue-green deployment strategy. Create database migration scripts for production. Develop rollback procedures. Create deployment documentation. Prepare user training materials. Set up support email (support@yourcrm.com).",
+                "testStrategy": "Perform deployment dry-run to verify process. Test rollback procedures. Verify production environment security. Test database migrations with production-like data. Verify monitoring and alerting in production environment.",
+                "priority": "high",
+                "dependencies": [19, 20, 21, 23, 24],
+                "status": "pending",
+                "subtasks": [
+                    {
+                        "id": 1,
+                        "title": "Production Server Environment Setup",
+                        "description": "Provision and configure the production server infrastructure, ensuring scalability, load balancing, and high availability. Apply best practices for isolation, automation, and monitoring.",
+                        "dependencies": [],
+                        "details": "Set up servers using Infrastructure as Code (IaC), configure load balancers, automate environment creation, and ensure proper monitoring and logging are in place.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 2,
+                        "title": "Database Configuration with Security",
+                        "description": "Configure the production database with a focus on security, including access controls, encryption, and secure connection settings.",
+                        "dependencies": [1],
+                        "details": "Set up database users with least privilege, enable encryption at rest and in transit, and implement regular security audits.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 3,
+                        "title": "Blue-Green Deployment Strategy Implementation",
+                        "description": "Design and implement a blue-green deployment strategy to enable zero-downtime releases and easy rollback.",
+                        "dependencies": [1, 2],
+                        "details": "Set up two identical production environments (blue and green), configure routing and switching mechanisms, and automate environment promotion.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 4,
+                        "title": "Database Migration Scripts Preparation",
+                        "description": "Develop and test database migration scripts to ensure smooth schema and data changes during deployment.",
+                        "dependencies": [2],
+                        "details": "Write migration scripts, test them in staging, and automate their execution as part of the deployment pipeline.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 5,
+                        "title": "Rollback Procedure Development",
+                        "description": "Create and document robust rollback procedures for both application and database changes in case of deployment failure.",
+                        "dependencies": [3, 4],
+                        "details": "Define steps for reverting application code and database state, automate rollback scripts, and test rollback scenarios.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 6,
+                        "title": "Deployment Documentation",
+                        "description": "Document the entire deployment process, including environment setup, deployment steps, migration procedures, and rollback instructions.",
+                        "dependencies": [1, 2, 3, 4, 5],
+                        "details": "Produce clear, step-by-step guides and diagrams for all deployment activities, ensuring knowledge transfer and auditability.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    },
+                    {
+                        "id": 7,
+                        "title": "Support System Setup",
+                        "description": "Establish a support system for monitoring, alerting, and incident response post-deployment.",
+                        "dependencies": [1, 6],
+                        "details": "Configure monitoring tools, set up alerting channels, and define escalation procedures for production incidents.",
+                        "status": "pending",
+                        "testStrategy": ""
+                    }
+                ]
+            }
         ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 3,
-        "title": "Implement User Authentication System",
-        "description": "Develop a secure authentication system with JWT token-based authentication as specified in Epic 1.",
-        "details": "Implement user registration, login, and password reset functionality. Use bcrypt for password hashing. Create JWT token generation with 8-hour expiration. Implement refresh token mechanism. Create middleware for route protection based on user roles. Implement password reset via email using a secure token system. Ensure password requirements (8+ characters, mixed case, numbers).",
-        "testStrategy": "Test user registration with valid and invalid data. Verify password hashing security. Test JWT token generation and validation. Verify token expiration and refresh. Test role-based access control. Validate password reset workflow.",
-        "priority": "high",
-        "dependencies": [
-          1,
-          2
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Implement User Registration Functionality",
-            "description": "Create a user registration form and backend logic to securely store user data in a database.",
-            "dependencies": [],
-            "details": "Use a database management system like MySQL or PostgreSQL to store user information securely.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Develop Login System with Password Hashing",
-            "description": "Implement a login system that verifies user credentials using password hashing techniques like Bcrypt.",
-            "dependencies": [
-              1
-            ],
-            "details": "Hash passwords during registration and verify them during login to ensure secure authentication.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Implement JWT Token Generation and Validation",
-            "description": "Create a system to generate and validate JSON Web Tokens (JWT) for authenticated users.",
-            "dependencies": [
-              2
-            ],
-            "details": "Use JWT to manage user sessions securely by generating tokens upon successful login and validating them for subsequent requests.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Implement Refresh Token Mechanism",
-            "description": "Develop a refresh token system to securely extend user sessions without requiring frequent logins.",
-            "dependencies": [
-              3
-            ],
-            "details": "Use refresh tokens to obtain new JWTs when they expire, ensuring continuous access without compromising security.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Implement Role-Based Middleware Protection",
-            "description": "Create middleware to enforce role-based access control, restricting actions based on user roles.",
-            "dependencies": [
-              3
-            ],
-            "details": "Define roles and permissions to control what actions users can perform within the application.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Implement Password Reset via Email",
-            "description": "Develop a password reset feature that securely allows users to recover their accounts via email.",
-            "dependencies": [
-              1
-            ],
-            "details": "Send a password reset link to the user's registered email, allowing them to securely reset their password.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 7,
-            "title": "Conduct Security Testing and Validation",
-            "description": "Perform thorough security testing to identify vulnerabilities in the authentication system.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "details": "Test for common vulnerabilities like SQL injection, cross-site scripting (XSS), and ensure secure communication protocols are used.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "Develop Authentication API Endpoints",
-        "description": "Create RESTful API endpoints for user authentication as specified in section 7.1.",
-        "details": "Implement the following endpoints: POST /api/auth/login, POST /api/auth/logout, POST /api/auth/refresh-token, POST /api/auth/forgot-password, POST /api/auth/reset-password. Ensure proper request validation. Implement appropriate error handling and status codes. Document API endpoints with Swagger/OpenAPI.",
-        "testStrategy": "Test each endpoint with valid and invalid requests. Verify proper token generation and validation. Test error handling scenarios. Measure response times to ensure they meet performance requirements (<500ms).",
-        "priority": "high",
-        "dependencies": [
-          3
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 5,
-        "title": "Create User Management Interface",
-        "description": "Develop admin interface for managing broker accounts as specified in AUTH-003.",
-        "details": "Create admin dashboard for user management. Implement user creation form with role selection. Develop user listing with filtering and search. Implement user editing and deactivation functionality. Ensure mobile responsiveness for all interfaces. Implement role-based access control to restrict access to admin users only.",
-        "testStrategy": "Test user creation, editing, and deactivation. Verify role-based access restrictions. Test mobile responsiveness on different devices. Validate form validation and error handling.",
-        "priority": "medium",
-        "dependencies": [
-          3,
-          4
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 6,
-        "title": "Implement Customer Management API",
-        "description": "Develop API endpoints for customer management as specified in section 7.2.",
-        "details": "Implement the following endpoints: GET /api/customers, POST /api/customers, GET /api/customers/:id, PUT /api/customers/:id, DELETE /api/customers/:id, GET /api/customers/search?q=query. Ensure proper request validation and error handling. Implement pagination for list endpoints. Add filtering capabilities based on business type and other attributes. Implement search functionality with proper indexing.",
-        "testStrategy": "Test each endpoint with valid and invalid requests. Verify pagination works correctly. Test search functionality with various queries. Measure response times to ensure they meet performance requirements (<500ms).",
-        "priority": "high",
-        "dependencies": [
-          2,
-          4
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 7,
-        "title": "Develop Customer Management Interface",
-        "description": "Create mobile-friendly interface for managing customers as specified in Epic 2.",
-        "details": "Implement customer list view with search and filtering. Create customer detail view showing all information and visit history. Develop customer creation and editing forms. Ensure all forms are touch-friendly with appropriate input types. Implement character limits on notes fields (500 characters). Create mobile-optimized list view with key information visible. Implement form validation for required fields.",
-        "testStrategy": "Test customer creation, viewing, editing, and deletion. Verify mobile usability on different devices. Test form validation and error handling. Verify character limits on notes fields. Test search and filtering functionality.",
-        "priority": "high",
-        "dependencies": [
-          6
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 8,
-        "title": "Implement Visit Tracking API",
-        "description": "Develop API endpoints for visit tracking as specified in section 7.3.",
-        "details": "Implement the following endpoints: GET /api/visits, POST /api/visits, GET /api/visits/:id, PUT /api/visits/:id, DELETE /api/visits/:id, GET /api/customers/:id/visits. Ensure proper request validation and error handling. Implement pagination for list endpoints. Add filtering capabilities based on date ranges and other attributes. Store GPS coordinates with visit records.",
-        "testStrategy": "Test each endpoint with valid and invalid requests. Verify pagination works correctly. Test filtering functionality with various parameters. Measure response times to ensure they meet performance requirements (<500ms).",
-        "priority": "high",
-        "dependencies": [
-          2,
-          6
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 9,
-        "title": "Develop Visit Logging Interface",
-        "description": "Create mobile-friendly interface for logging customer visits as specified in Epic 3.",
-        "details": "Implement visit logging form with auto-populated date/time. Create one-tap visit logging from customer detail page. Implement GPS location capture using browser geolocation API. Create visit notes field with 1000 character limit. Implement visit history view sorted by most recent first. Ensure all forms are touch-friendly and optimized for quick entry.",
-        "testStrategy": "Test visit logging on mobile devices. Verify GPS location capture works correctly. Test character limit on notes field. Verify visit history display. Measure time to complete visit logging to ensure it meets the 2-minute requirement.",
-        "priority": "high",
-        "dependencies": [
-          7,
-          8
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 10,
-        "title": "Implement Follow-up Reminder System",
-        "description": "Develop functionality for setting and managing follow-up reminders as specified in VISIT-004.",
-        "details": "Create database operations for follow-up reminders. Implement API endpoints for creating, retrieving, updating, and deleting reminders. Develop date/time picker for setting reminder dates. Create reminder listing view sorted by date. Implement reminder completion functionality. Add notification system for upcoming reminders.",
-        "testStrategy": "Test reminder creation, viewing, updating, and completion. Verify date/time picker works correctly. Test reminder sorting and filtering. Verify notifications for upcoming reminders.",
-        "priority": "medium",
-        "dependencies": [
-          2,
-          8
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 11,
-        "title": "Implement Google Maps Integration",
-        "description": "Integrate Google Maps for customer location visualization as specified in Epic 5.",
-        "details": "Set up Google Maps API integration. Create map view showing customer pins. Implement customer info popup on pin tap. Add 'Get Directions' button linking to Google Maps navigation. Create 'Near Me' view showing customers within configurable radius. Implement map filtering controls. Ensure smooth performance on mobile devices.",
-        "testStrategy": "Test map loading and rendering on different devices. Verify customer pins display correctly. Test 'Get Directions' functionality. Verify 'Near Me' view with different radius settings. Test performance with large numbers of customer pins.",
-        "priority": "medium",
-        "dependencies": [
-          7
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Google Maps API Setup and Configuration",
-            "description": "Set up a Google Cloud project, enable the Maps JavaScript API, generate an API key, and configure billing and security restrictions.",
-            "dependencies": [],
-            "details": "Follow official Google Maps Platform documentation to create a project, enable the Maps JavaScript API, generate an API key, and restrict it by domain. Ensure billing is configured and quotas are set to avoid unexpected charges.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Customer Pin Visualization",
-            "description": "Implement map markers to visualize customer locations on the map, including clustering for large datasets.",
-            "dependencies": [
-              1
-            ],
-            "details": "Use the Maps JavaScript API to add markers for each customer location. For large numbers of customers, implement marker clustering and use different marker colors or icons for different customer types if needed.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Info Popup Implementation",
-            "description": "Add interactive info popups (info windows) that display customer details when a pin is clicked.",
-            "dependencies": [
-              2
-            ],
-            "details": "Configure info windows to show relevant customer information (e.g., name, address, contact) when a marker is clicked. Ensure popups are styled and accessible.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Directions Integration",
-            "description": "Integrate Google Maps Directions API to provide route guidance from the user's location to a selected customer pin.",
-            "dependencies": [
-              3
-            ],
-            "details": "Enable and use the Directions API to calculate and display routes on the map. Allow users to select a customer pin and get directions from their current location or a specified address.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "'Near Me' Functionality with Radius Filtering",
-            "description": "Implement a feature to filter and display only customer pins within a user-defined radius from the user's current location.",
-            "dependencies": [
-              4
-            ],
-            "details": "Use geolocation to get the user's current position, calculate distances to each customer, and filter pins based on a configurable radius. Update the map to show only relevant pins and update clustering as needed.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Mobile Performance Optimization",
-            "description": "Optimize the map integration for mobile devices, ensuring fast load times, smooth interactions, and responsive design.",
-            "dependencies": [
-              5
-            ],
-            "details": "Implement best practices for mobile performance: lazy load map components, minimize marker count, use clustering, optimize images and assets, and ensure the map UI is responsive and touch-friendly.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 12,
-        "title": "Implement Reporting API",
-        "description": "Develop API endpoints for reporting as specified in section 7.4.",
-        "details": "Implement the following endpoints: GET /api/reports/dashboard, GET /api/reports/visits?start_date&end_date, GET /api/reports/customers/needs-visit, GET /api/exports/customers, GET /api/exports/visits. Create data aggregation logic for dashboard summary. Implement CSV generation for export endpoints. Add filtering capabilities based on date ranges and other attributes.",
-        "testStrategy": "Test each endpoint with various parameters. Verify data aggregation accuracy. Test CSV export functionality. Measure response times to ensure they meet performance requirements (<500ms).",
-        "priority": "medium",
-        "dependencies": [
-          6,
-          8
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 13,
-        "title": "Develop Broker Dashboard Interface",
-        "description": "Create dashboard for brokers to view their activity and upcoming tasks as specified in RPT-001 and RPT-005.",
-        "details": "Implement dashboard showing visits per day/week/month. Create upcoming follow-up reminders list. Add quick stats section (visits today, this week). Implement 'Needs Visit' list for customers not contacted in 30+ days. Ensure all charts and visualizations work on mobile devices. Add quick access buttons for common actions.",
-        "testStrategy": "Test dashboard loading and rendering on different devices. Verify data accuracy in charts and stats. Test responsiveness and usability on mobile devices. Measure load time to ensure it meets performance requirements (<3 seconds).",
-        "priority": "medium",
-        "dependencies": [
-          9,
-          10,
-          12
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 14,
-        "title": "Implement Admin Reporting Interface",
-        "description": "Create reporting interface for administrators as specified in RPT-003.",
-        "details": "Implement admin dashboard showing team activity across all brokers. Create broker comparison charts and metrics. Add filtering by date range and broker. Implement CSV export functionality for all reports. Ensure all visualizations are responsive and mobile-friendly.",
-        "testStrategy": "Test admin dashboard with sample data. Verify data accuracy in reports. Test CSV export functionality. Verify role-based access restrictions. Test responsiveness on different devices.",
-        "priority": "medium",
-        "dependencies": [
-          5,
-          12
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Implement Team Activity Dashboard",
-            "description": "Develop a dashboard that visualizes team activity metrics, such as user logins, actions performed, and activity trends over time.",
-            "dependencies": [],
-            "details": "Design and build interactive charts and tables to display team activity. Ensure data aggregation logic is efficient for large datasets.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Develop Broker Comparison Charts and Metrics",
-            "description": "Create comparative analytics visualizations to compare performance and key metrics across multiple brokers.",
-            "dependencies": [
-              1
-            ],
-            "details": "Implement side-by-side charts, tables, and summary statistics for brokers. Ensure metrics are clearly defined and calculations are accurate.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Add Date and Broker Filtering Controls",
-            "description": "Implement filtering controls to allow admins to filter reports and visualizations by date range and broker selection.",
-            "dependencies": [
-              1,
-              2
-            ],
-            "details": "Design intuitive UI components for filtering. Ensure all visualizations update dynamically based on selected filters.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Implement CSV Export Functionality",
-            "description": "Enable exporting of dashboard data and visualizations to CSV format for offline analysis and reporting.",
-            "dependencies": [
-              1,
-              2,
-              3
-            ],
-            "details": "Add export buttons and ensure exported data matches the filtered and displayed results. Handle large data exports efficiently.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Ensure Mobile Responsive Design for Visualizations",
-            "description": "Adapt all dashboards, charts, and controls to be fully responsive and usable on mobile devices.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "details": "Test and optimize layouts, chart rendering, and controls for various screen sizes. Address touch interactions and performance on mobile.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 15,
-        "title": "Implement Login and Authentication UI",
-        "description": "Create user interface for authentication as specified in section 5.2.1 and Epic 1.",
-        "details": "Implement login screen with username/password fields. Add 'Remember Me' checkbox functionality. Create 'Forgot Password' flow with email-based reset. Add company branding area. Implement session management with 8-hour expiration. Create secure storage for authentication tokens. Ensure mobile-friendly design and usability.",
-        "testStrategy": "Test login with valid and invalid credentials. Verify 'Remember Me' functionality. Test password reset flow. Verify session expiration and renewal. Test mobile usability on different devices.",
-        "priority": "high",
-        "dependencies": [
-          3,
-          4
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 16,
-        "title": "Implement Responsive UI Framework",
-        "description": "Develop responsive UI framework following the design principles in section 5.1 and breakpoints in section 5.3.",
-        "details": "Create mobile-first CSS framework with responsive breakpoints (320px-768px, 768px-1024px, 1024px+). Implement touch-friendly UI components with minimum 44px tap targets. Create consistent navigation pattern with maximum 3 taps to any function. Develop offline indication and graceful degradation. Implement loading indicators and error states.",
-        "testStrategy": "Test responsiveness across different screen sizes. Verify touch targets meet size requirements. Test navigation paths to ensure 3-tap maximum. Verify offline indication and behavior. Test on target browsers (iOS Safari 14+, Android Chrome 90+, Desktop Chrome/Firefox/Edge).",
-        "priority": "high",
-        "dependencies": [
-          1
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Set Up Mobile-First CSS Framework with Breakpoints",
-            "description": "Integrate a mobile-first CSS framework (e.g., Bootstrap) and define responsive breakpoints for various device sizes using media queries.",
-            "dependencies": [],
-            "details": "Include the chosen CSS framework in the project, configure the grid system, and set up breakpoints for extra-small, small, medium, large, and extra-large devices using a mobile-first approach.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Develop Touch-Friendly UI Components",
-            "description": "Design and implement UI components (buttons, sliders, menus) that are optimized for touch interactions and accessibility.",
-            "dependencies": [
-              1
-            ],
-            "details": "Ensure all interactive elements have adequate touch targets, spacing, and visual feedback for mobile and tablet users.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Implement Consistent Navigation Patterns",
-            "description": "Create a navigation system that adapts to different screen sizes and maintains consistency across devices.",
-            "dependencies": [
-              1,
-              2
-            ],
-            "details": "Use responsive navigation patterns such as hamburger menus for mobile and horizontal menus for desktop, ensuring seamless transitions and accessibility.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Integrate Offline Indication System",
-            "description": "Add a system to detect and visually indicate when the application is offline or has connectivity issues.",
-            "dependencies": [
-              1,
-              2,
-              3
-            ],
-            "details": "Implement UI banners or icons that notify users of offline status, using browser APIs to monitor connectivity.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Add Loading Indicators and Error States",
-            "description": "Design and implement visual feedback for loading processes and error conditions throughout the UI.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "details": "Provide spinners, skeleton screens, and clear error messages to enhance user experience during data fetching or failures.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Conduct Cross-Browser and Device Testing",
-            "description": "Test the responsive UI framework across multiple browsers and devices to ensure consistent appearance and functionality.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4,
-              5
-            ],
-            "details": "Use tools and real devices to verify layout, touch interactions, navigation, offline indicators, and feedback components work as intended everywhere.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 17,
-        "title": "Implement Offline Support",
-        "description": "Add basic offline support with clear indication when offline and sync when reconnected.",
-        "details": "Implement service worker for offline detection. Create offline indication UI. Implement data caching for critical screens. Develop queue system for operations performed offline. Create sync mechanism for when connection is restored. Add conflict resolution for data modified while offline.",
-        "testStrategy": "Test application behavior when network is disconnected. Verify offline indication appears correctly. Test operations while offline and sync when reconnected. Verify data integrity after sync.",
-        "priority": "medium",
-        "dependencies": [
-          7,
-          9,
-          16
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Service Worker Implementation for Offline Detection",
-            "description": "Develop and register a service worker to intercept network requests, enable offline detection, and manage the app's connectivity state.",
-            "dependencies": [],
-            "details": "Implement a service worker script that acts as a proxy between the browser and the network, intercepting requests and enabling offline detection. Ensure the service worker is registered on app load and can detect when the app is offline or online using the navigator.onLine API and relevant event listeners.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Offline UI Indication",
-            "description": "Create UI components or notifications to inform users of their current connectivity status (offline/online).",
-            "dependencies": [
-              1
-            ],
-            "details": "Use event listeners for 'online' and 'offline' events to update the UI, such as displaying a banner or message indicating the app is offline or when connectivity is restored. Integrate this logic with the service worker registration process.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Data Caching Strategy",
-            "description": "Design and implement a caching strategy for static assets and dynamic data to ensure the app functions offline.",
-            "dependencies": [
-              1
-            ],
-            "details": "Determine which assets (HTML, CSS, JS, images) and API responses should be cached. Implement caching logic in the service worker using Cache API, and decide on cache versioning and update strategies to keep content fresh.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Offline Operation Queue System",
-            "description": "Develop a system to queue user actions or API requests performed while offline for later synchronization.",
-            "dependencies": [
-              1,
-              3
-            ],
-            "details": "Implement logic to capture and store user actions (such as form submissions or POST requests) in local storage or IndexedDB when offline. Ensure these actions are queued reliably until connectivity is restored.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Synchronization Mechanism",
-            "description": "Implement a mechanism to process and synchronize queued offline operations with the server once connectivity is restored.",
-            "dependencies": [
-              4
-            ],
-            "details": "Detect when the app comes back online and automatically process the queued operations, sending them to the server in the correct order. Handle retries and error cases as needed.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Conflict Resolution Implementation",
-            "description": "Design and implement logic to handle conflicts that may arise when synchronizing offline changes with the server.",
-            "dependencies": [
-              5
-            ],
-            "details": "Develop strategies to detect and resolve conflicts between local offline changes and server data, such as last-write-wins, user prompts, or merging changes. Ensure the user is informed of any conflicts and can take appropriate action.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 18,
-        "title": "Implement Security Measures",
-        "description": "Implement security requirements specified in section 8.4.",
-        "details": "Configure HTTPS/TLS 1.3 for all communications. Implement SQL injection prevention through parameterized queries. Add XSS attack prevention through proper output encoding. Implement CSRF protection with tokens. Add rate limiting for authentication endpoints. Create security headers configuration. Implement input validation for all forms and API endpoints.",
-        "testStrategy": "Perform security testing including penetration testing. Verify HTTPS configuration. Test SQL injection prevention. Verify XSS protection. Test CSRF protection. Verify rate limiting functionality.",
-        "priority": "high",
-        "dependencies": [
-          3,
-          4,
-          6,
-          8
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Configure HTTPS and TLS",
-            "description": "Set up HTTPS and TLS encryption to secure data in transit between clients and the server.",
-            "dependencies": [],
-            "details": "Obtain and install a valid SSL/TLS certificate, configure the web server to enforce HTTPS, disable insecure protocols, and ensure strong cipher suites are used.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Implement SQL Injection Prevention",
-            "description": "Protect the application from SQL injection attacks by securing all database interactions.",
-            "dependencies": [
-              1
-            ],
-            "details": "Use parameterized queries or prepared statements, avoid dynamic SQL, and validate all user inputs before using them in database queries.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Implement XSS Protection",
-            "description": "Prevent cross-site scripting (XSS) vulnerabilities by sanitizing and encoding user input and output.",
-            "dependencies": [
-              1
-            ],
-            "details": "Sanitize user inputs, encode outputs, use frameworks with built-in XSS protection, and set appropriate Content Security Policy (CSP) headers.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Implement CSRF Protection with Tokens",
-            "description": "Defend against cross-site request forgery (CSRF) attacks by integrating anti-CSRF tokens in forms and validating them on the server.",
-            "dependencies": [
-              1
-            ],
-            "details": "Generate unique CSRF tokens for user sessions, embed them in forms, and verify them on the server for each state-changing request.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Apply Rate Limiting to Authentication Endpoints",
-            "description": "Limit the number of authentication attempts to prevent brute-force attacks.",
-            "dependencies": [
-              1
-            ],
-            "details": "Configure rate limiting on login and authentication endpoints using middleware or web server settings to restrict repeated requests from the same IP or user.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Configure Security Headers",
-            "description": "Set HTTP security headers to protect against common web vulnerabilities.",
-            "dependencies": [
-              1
-            ],
-            "details": "Implement headers such as Content Security Policy (CSP), X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security, and Referrer-Policy.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 7,
-            "title": "Implement Input Validation",
-            "description": "Validate and sanitize all user inputs to prevent injection and other input-based attacks.",
-            "dependencies": [
-              1
-            ],
-            "details": "Apply both client-side and server-side validation, use allow-lists for expected input formats, and sanitize data before processing or storing.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 19,
-        "title": "Implement Performance Optimization",
-        "description": "Optimize application performance to meet requirements in section 8.3.",
-        "details": "Implement database query optimization with proper indexing. Add API response caching where appropriate. Optimize frontend assets with bundling and minification. Implement lazy loading for images and components. Add database connection pooling. Optimize map rendering performance. Implement pagination for all list views.",
-        "testStrategy": "Measure page load times on 3G connection. Test API response times under load. Verify concurrent user support (5 users). Measure database response times. Test performance on target mobile devices.",
-        "priority": "medium",
-        "dependencies": [
-          7,
-          9,
-          11,
-          13
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Database Query Optimization",
-            "description": "Analyze and optimize database queries to reduce execution time and resource consumption. This includes indexing, query refactoring, and eliminating N+1 query issues.",
-            "dependencies": [],
-            "details": "Review slow queries using profiling tools, add appropriate indexes, and rewrite inefficient queries to improve performance.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "API Response Caching",
-            "description": "Implement caching mechanisms for API responses to reduce redundant processing and improve response times.",
-            "dependencies": [
-              1
-            ],
-            "details": "Use in-memory caches (e.g., Redis, Memcached) or HTTP cache headers to store frequently requested API responses.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Frontend Asset Optimization",
-            "description": "Optimize frontend assets such as JavaScript, CSS, and images to reduce load times and bandwidth usage.",
-            "dependencies": [],
-            "details": "Minify and bundle scripts, compress images, use modern formats, and leverage CDNs for asset delivery.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Lazy Loading Implementation",
-            "description": "Implement lazy loading for non-critical resources to defer their loading until needed, improving initial page load speed.",
-            "dependencies": [
-              3
-            ],
-            "details": "Apply lazy loading to images, videos, and offscreen components using native browser features or JavaScript libraries.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Database Connection Pooling",
-            "description": "Set up and configure database connection pooling to efficiently manage database connections and reduce latency.",
-            "dependencies": [
-              1
-            ],
-            "details": "Configure connection pool settings (size, timeout) in the application to prevent connection exhaustion and improve throughput.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Map Rendering Optimization",
-            "description": "Optimize the rendering of interactive maps to ensure smooth performance, especially with large datasets or complex layers.",
-            "dependencies": [
-              3,
-              4
-            ],
-            "details": "Use techniques such as tile-based rendering, clustering, and vector simplification to enhance map performance.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 7,
-            "title": "Pagination Implementation for List Views",
-            "description": "Implement pagination for list views to limit the amount of data loaded and rendered at once, improving both backend and frontend performance.",
-            "dependencies": [
-              1,
-              3
-            ],
-            "details": "Apply server-side or client-side pagination strategies to efficiently handle large datasets in list or table views.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 20,
-        "title": "Implement Data Backup and Recovery",
-        "description": "Develop backup and recovery system as specified in section 8.2.",
-        "details": "Implement automated daily database backups. Create encrypted backup storage. Develop backup verification process. Implement recovery procedures with 4-hour recovery time objective. Create backup rotation and retention policy. Document backup and recovery procedures.",
-        "testStrategy": "Test backup creation and verification. Perform recovery testing from backups. Verify backup encryption. Measure recovery time to ensure it meets the 4-hour objective.",
-        "priority": "medium",
-        "dependencies": [
-          2
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 21,
-        "title": "Implement System Monitoring",
-        "description": "Set up monitoring for application performance and health as specified in section 13.1.",
-        "details": "Implement application performance monitoring. Add error logging and tracking. Create database performance monitoring. Set up server resource monitoring. Implement user activity tracking. Create alerting system for critical issues. Develop dashboard for system health visualization.",
-        "testStrategy": "Verify monitoring captures performance metrics correctly. Test error logging with simulated errors. Verify alerting system works as expected. Test dashboard with sample data.",
-        "priority": "medium",
-        "dependencies": [
-          1,
-          19
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 22,
-        "title": "Create User Documentation",
-        "description": "Develop comprehensive user documentation and help resources.",
-        "details": "Create user guides for brokers and administrators. Develop in-app help system with tooltips and guides. Create video tutorials for key workflows. Implement FAQ section. Document all features and functionality. Create printable quick reference guides.",
-        "testStrategy": "Review documentation for accuracy and completeness. Test in-app help system. Verify documentation covers all features and common tasks. Get feedback from test users on documentation clarity.",
-        "priority": "low",
-        "dependencies": [
-          7,
-          9,
-          11,
-          13,
-          14,
-          15
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 23,
-        "title": "Implement Automated Testing",
-        "description": "Develop automated testing suite with >80% coverage as specified in section 8.5.",
-        "details": "Implement unit tests for backend services and API endpoints. Create integration tests for database operations. Develop end-to-end tests for critical user flows. Implement performance tests for key operations. Add accessibility testing. Configure test automation in CI/CD pipeline.",
-        "testStrategy": "Verify test coverage meets 80% requirement. Run tests in CI/CD pipeline. Verify tests catch regressions. Measure test execution time and optimize if needed.",
-        "priority": "high",
-        "dependencies": [
-          4,
-          6,
-          8,
-          12
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Unit Testing Framework Setup",
-            "description": "Select and configure a unit testing framework suitable for the project's technology stack. Establish folder structure, configure test runners, and set up basic reporting.",
-            "dependencies": [],
-            "details": "Choose a framework (e.g., JUnit, pytest, NUnit), integrate with the codebase, and ensure developers can write and run unit tests locally and in CI environments.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "API Endpoint Test Implementation",
-            "description": "Develop automated tests for API endpoints to validate request/response correctness, error handling, and authentication.",
-            "dependencies": [
-              1
-            ],
-            "details": "Use tools like Postman, REST Assured, or similar. Cover positive, negative, and edge cases for all critical API endpoints.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Database Integration Test Development",
-            "description": "Create integration tests to verify database interactions, including CRUD operations and data integrity.",
-            "dependencies": [
-              1
-            ],
-            "details": "Set up test databases or use in-memory databases. Ensure tests can run in isolation and clean up after execution.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "End-to-End Testing for Critical Flows",
-            "description": "Implement end-to-end (E2E) tests simulating user journeys through the application’s most important workflows.",
-            "dependencies": [
-              2,
-              3
-            ],
-            "details": "Use frameworks like Selenium, Cypress, or Playwright. Automate login, checkout, and other business-critical flows.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Performance Testing Implementation",
-            "description": "Set up and execute automated performance tests to assess system responsiveness and stability under load.",
-            "dependencies": [
-              2,
-              3
-            ],
-            "details": "Use tools such as JMeter, Gatling, or Locust. Define performance benchmarks and integrate tests into the automation suite.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "CI/CD Integration for Automated Test Runs",
-            "description": "Integrate all automated tests into the CI/CD pipeline to ensure tests run on every code change and provide feedback to the team.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4,
-              5
-            ],
-            "details": "Configure the CI/CD system (e.g., Jenkins, GitHub Actions, GitLab CI) to trigger test suites, collect results, and enforce quality gates.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      },
-      {
-        "id": 24,
-        "title": "Prepare Staging Environment",
-        "description": "Set up staging environment for testing and validation before production deployment.",
-        "details": "Configure staging server environment. Set up staging database. Implement deployment pipeline for staging. Create test data generation scripts. Configure monitoring for staging environment. Document staging environment setup and access.",
-        "testStrategy": "Verify staging environment matches production specifications. Test deployment pipeline to staging. Verify monitoring works in staging environment. Test with generated test data.",
-        "priority": "medium",
-        "dependencies": [
-          1,
-          2,
-          3,
-          16,
-          18
-        ],
-        "status": "pending",
-        "subtasks": []
-      },
-      {
-        "id": 25,
-        "title": "Prepare Production Deployment",
-        "description": "Prepare for production deployment with blue-green deployment strategy as specified in section 12.3.",
-        "details": "Configure production server environment. Set up production database with proper security. Implement blue-green deployment strategy. Create database migration scripts for production. Develop rollback procedures. Create deployment documentation. Prepare user training materials. Set up support email (support@yourcrm.com).",
-        "testStrategy": "Perform deployment dry-run to verify process. Test rollback procedures. Verify production environment security. Test database migrations with production-like data. Verify monitoring and alerting in production environment.",
-        "priority": "high",
-        "dependencies": [
-          19,
-          20,
-          21,
-          23,
-          24
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Production Server Environment Setup",
-            "description": "Provision and configure the production server infrastructure, ensuring scalability, load balancing, and high availability. Apply best practices for isolation, automation, and monitoring.",
-            "dependencies": [],
-            "details": "Set up servers using Infrastructure as Code (IaC), configure load balancers, automate environment creation, and ensure proper monitoring and logging are in place.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 2,
-            "title": "Database Configuration with Security",
-            "description": "Configure the production database with a focus on security, including access controls, encryption, and secure connection settings.",
-            "dependencies": [
-              1
-            ],
-            "details": "Set up database users with least privilege, enable encryption at rest and in transit, and implement regular security audits.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 3,
-            "title": "Blue-Green Deployment Strategy Implementation",
-            "description": "Design and implement a blue-green deployment strategy to enable zero-downtime releases and easy rollback.",
-            "dependencies": [
-              1,
-              2
-            ],
-            "details": "Set up two identical production environments (blue and green), configure routing and switching mechanisms, and automate environment promotion.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 4,
-            "title": "Database Migration Scripts Preparation",
-            "description": "Develop and test database migration scripts to ensure smooth schema and data changes during deployment.",
-            "dependencies": [
-              2
-            ],
-            "details": "Write migration scripts, test them in staging, and automate their execution as part of the deployment pipeline.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Rollback Procedure Development",
-            "description": "Create and document robust rollback procedures for both application and database changes in case of deployment failure.",
-            "dependencies": [
-              3,
-              4
-            ],
-            "details": "Define steps for reverting application code and database state, automate rollback scripts, and test rollback scenarios.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Deployment Documentation",
-            "description": "Document the entire deployment process, including environment setup, deployment steps, migration procedures, and rollback instructions.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4,
-              5
-            ],
-            "details": "Produce clear, step-by-step guides and diagrams for all deployment activities, ensuring knowledge transfer and auditability.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 7,
-            "title": "Support System Setup",
-            "description": "Establish a support system for monitoring, alerting, and incident response post-deployment.",
-            "dependencies": [
-              1,
-              6
-            ],
-            "details": "Configure monitoring tools, set up alerting channels, and define escalation procedures for production incidents.",
-            "status": "pending",
-            "testStrategy": ""
-          }
-        ]
-      }
-    ],
-    "metadata": {
-      "created": "2025-06-27T03:59:29.578Z",
-      "updated": "2025-06-27T03:59:31.099Z",
-      "description": "Tasks for master context"
+        "metadata": {
+            "created": "2025-06-27T03:59:29.578Z",
+            "updated": "2025-06-27T03:59:31.099Z",
+            "description": "Tasks for master context"
+        }
     }
-  }
 }

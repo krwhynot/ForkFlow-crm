@@ -1,18 +1,10 @@
-import { Box } from '@mui/material';
-
 export const RoundButton = ({ color, handleClick, selected }: any) => (
-    <Box
-        component="button"
+    <button
         type="button"
-        sx={{
-            bgcolor: color,
-            width: 30,
-            height: 30,
-            borderRadius: 15,
-            border: selected ? '2px solid grey' : 'none',
-            display: 'inline-block',
-            margin: 1,
-        }}
+        className={`w-8 h-8 rounded-full inline-block m-1 ${
+            selected ? 'border-2 border-gray-500' : 'border-none'
+        }`}
+        style={{ backgroundColor: color }}
         onClick={handleClick}
     />
 );

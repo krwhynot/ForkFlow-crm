@@ -52,13 +52,19 @@ const OpportunityLayout = () => {
 
     if (matchShow?.params.id) {
         return (
-            <OpportunityShow id={matchShow.params.id} key={matchShow.params.id} />
+            <OpportunityShow
+                id={matchShow.params.id}
+                key={matchShow.params.id}
+            />
         );
     }
 
     if (matchEdit?.params.id) {
         return (
-            <OpportunityEdit id={matchEdit.params.id} key={matchEdit.params.id} />
+            <OpportunityEdit
+                id={matchEdit.params.id}
+                key={matchEdit.params.id}
+            />
         );
     }
 

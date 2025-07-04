@@ -1,4 +1,4 @@
-import { Card, Container, Typography } from '@mui/material';
+import { Card, Typography } from '../components/ui-kit';
 import { useMutation } from '@tanstack/react-query';
 import {
     SimpleForm,
@@ -38,13 +38,13 @@ export function SalesCreate() {
     };
 
     return (
-        <Container maxWidth="sm" sx={{ mt: 4 }}>
+        <div className="max-w-sm mx-auto mt-4">
             <Card>
                 <SimpleForm onSubmit={onSubmit as SubmitHandler<any>}>
                     <Typography variant="h6">Create a new user</Typography>
                     <SalesInputs />
                 </SimpleForm>
             </Card>
-        </Container>
+        </div>
     );
 }

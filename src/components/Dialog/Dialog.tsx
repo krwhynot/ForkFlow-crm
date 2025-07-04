@@ -21,7 +21,7 @@ export const Dialog = ({ open, onClose, children, className }: DialogProps) => {
                     'bg-white rounded-lg shadow-xl max-w-lg w-full',
                     className
                 )}
-                onClick={(e) => e.stopPropagation()}
+                onClick={e => e.stopPropagation()}
             >
                 {children}
             </div>

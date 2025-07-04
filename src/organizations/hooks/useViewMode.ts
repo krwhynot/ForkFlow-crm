@@ -15,21 +15,28 @@ const STORAGE_KEY = 'organizationViewMode';
  * Supports table, cards, kanban, and map views with sorting and pagination preferences
  */
 export const useViewMode = () => {
-    const [viewMode, setViewModeState] = useState<OrganizationListViewMode>(() => {
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                // Validate the stored data has required properties
-                if (parsed.mode && parsed.sortField && parsed.sortOrder && parsed.itemsPerPage) {
-                    return { ...DEFAULT_VIEW_MODE, ...parsed };
+    const [viewMode, setViewModeState] = useState<OrganizationListViewMode>(
+        () => {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    // Validate the stored data has required properties
+                    if (
+                        parsed.mode &&
+                        parsed.sortField &&
+                        parsed.sortOrder &&
+                        parsed.itemsPerPage
+                    ) {
+                        return { ...DEFAULT_VIEW_MODE, ...parsed };
+                    }
                 }
+            } catch (error) {
+                console.warn('Failed to parse stored view mode:', error);
             }
-        } catch (error) {
-            console.warn('Failed to parse stored view mode:', error);
+            return DEFAULT_VIEW_MODE;
         }
-        return DEFAULT_VIEW_MODE;
-    });
+    );
 
     // Persist to localStorage whenever viewMode changes
     useEffect(() => {
@@ -40,12 +47,20 @@ export const useViewMode = () => {
         }
     }, [viewMode]);
 
-    const setViewMode = useCallback((updates: Partial<OrganizationListViewMode>) => {
-        setViewModeState(prev => ({ ...prev, ...updates }));
-    }, []);
+    const setViewMode = useCallback(
+        (updates: Partial<OrganizationListViewMode>) => {
+            setViewModeState(prev => ({ ...prev, ...updates }));
+        },
+        []
+    );
 
     const toggleViewMode = useCallback(() => {
-        const modes: OrganizationListViewMode['mode'][] = ['table', 'cards', 'kanban', 'map'];
+        const modes: OrganizationListViewMode['mode'][] = [
+            'table',
+            'cards',
+            'kanban',
+            'map',
+        ];
         const currentIndex = modes.indexOf(viewMode.mode);
         const nextIndex = (currentIndex + 1) % modes.length;
         setViewMode({ mode: modes[nextIndex] });
@@ -56,7 +71,10 @@ export const useViewMode = () => {
         try {
             localStorage.removeItem(STORAGE_KEY);
         } catch (error) {
-            console.warn('Failed to remove view mode from localStorage:', error);
+            console.warn(
+                'Failed to remove view mode from localStorage:',
+                error
+            );
         }
     }, []);
 

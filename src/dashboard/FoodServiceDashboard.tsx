@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-    Grid,
-    Box,
-    Stack,
-    useTheme,
-    useMediaQuery,
-    Container,
-} from '@mui/material';
+import { Box, Stack } from '@/components/ui-kit';
 import { useGetList } from 'react-admin';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 import { Contact, ContactNote, Deal } from '../types';
 import { DashboardStepper } from './DashboardStepper';
@@ -24,9 +18,7 @@ import { DashboardActivityLog } from './DashboardActivityLog';
 import { QuickActionsFAB } from './QuickActionsFAB';
 
 export const FoodServiceDashboard = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    const isMobile = useBreakpoint('md');
 
     // Check if we need to show onboarding steps
     const {
@@ -67,8 +59,10 @@ export const FoodServiceDashboard = () => {
 
     // Main dashboard layout
     return (
-        <Container maxWidth="xl" sx={{ py: isMobile ? 1 : 2 }}>
-            <Stack spacing={isMobile ? 2 : 3}>
+        <div
+            className={`max-w-7xl mx-auto ${isMobile ? 'py-1 px-2' : 'py-2 px-4'}`}
+        >
+            <Stack className={`space-y-${isMobile ? '2' : '3'}`}>
                 {/* Welcome Section (Demo only) */}
                 {import.meta.env.VITE_IS_DEMO === 'true' && (
                     <Box>
@@ -82,52 +76,56 @@ export const FoodServiceDashboard = () => {
                 </Box>
 
                 {/* Main Dashboard Grid */}
-                <Grid container spacing={isMobile ? 2 : 3}>
+                <div
+                    className={`grid grid-cols-1 lg:grid-cols-12 gap-${isMobile ? '2' : '3'}`}
+                >
                     {/* Left Column - Primary Metrics */}
-                    <Grid item xs={12} lg={8}>
-                        <Stack spacing={isMobile ? 2 : 3}>
+                    <div className="col-span-1 lg:col-span-8">
+                        <Stack className={`space-y-${isMobile ? '2' : '3'}`}>
                             {/* Interaction Metrics */}
                             <InteractionMetricsCard />
-                            
+
                             {/* Deals Chart (if deals exist) */}
                             {totalDeal ? <DealsChart /> : null}
-                            
+
                             {/* Principal Performance Chart */}
                             <PrincipalPerformanceChart />
-                            
+
                             {/* Activity Log */}
                             <DashboardActivityLog />
                         </Stack>
-                    </Grid>
+                    </div>
 
                     {/* Right Column - Action Items & Quick Access */}
-                    <Grid item xs={12} lg={4}>
-                        <Stack spacing={isMobile ? 2 : 3}>
+                    <div className="col-span-1 lg:col-span-4">
+                        <Stack className={`space-y-${isMobile ? '2' : '3'}`}>
                             {/* Follow-up Reminders */}
                             <FollowUpRemindersWidget />
-                            
+
                             {/* Organizations Needing Attention */}
                             <NeedsVisitList />
-                            
+
                             {/* Hot Contacts */}
                             <HotContacts />
-                            
+
                             {/* Tasks List */}
                             <TasksList />
                         </Stack>
-                    </Grid>
-                </Grid>
+                    </div>
+                </div>
 
                 {/* Mobile-Specific Bottom Section */}
                 {isMobile && (
-                    <Box sx={{ pb: 8 }}> {/* Extra padding for FAB */}
+                    <Box className="pb-8">
+                        {' '}
+                        {/* Extra padding for FAB */}
                         {/* Any mobile-specific content can go here */}
                     </Box>
                 )}
             </Stack>
-            
+
             {/* Quick Actions FAB - Fixed position for mobile */}
             <QuickActionsFAB />
-        </Container>
+        </div>
     );
 };

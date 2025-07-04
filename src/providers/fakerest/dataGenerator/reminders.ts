@@ -58,14 +58,18 @@ export const generateReminders = (db: Db): Reminder[] => {
                 description: faker.datatype.boolean()
                     ? faker.lorem.sentence()
                     : undefined,
-                dueDate: faker.date.future({ refDate: new Date() }).toISOString(),
+                dueDate: faker.date
+                    .future({ refDate: new Date() })
+                    .toISOString(),
                 completed: isCompleted,
                 organizationId: org.id,
                 contactId: contact?.id,
                 priority: faker.helpers.arrayElement(['low', 'medium', 'high']),
                 assignedTo: String(salesRep?.id || 'unknown'),
                 createdAt: faker.date.past({ years: 1 }).toISOString(),
-                updatedAt: faker.date.recent({ refDate: new Date() }).toISOString(),
+                updatedAt: faker.date
+                    .recent({ refDate: new Date() })
+                    .toISOString(),
             });
         }
     });

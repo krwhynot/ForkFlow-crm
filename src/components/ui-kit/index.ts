@@ -10,11 +10,24 @@ export { AvatarGroup } from './AvatarGroup';
 export { Badge } from './Badge';
 export { Box } from './Box';
 export { Button } from './Button';
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card';
+export {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from './Card';
 export { Checkbox } from './Checkbox';
 export { Chip } from './Chip';
 export { CircularProgress, Spinner } from './CircularProgress';
-export { Dialog, DialogTitle, DialogContent, DialogActions, DialogCloseButton } from './Dialog';
+export {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    DialogCloseButton,
+} from './Dialog';
 export { Divider } from './Divider';
 export { Dropdown, DropdownItem } from './Dropdown';
 export { Fab, SpeedDial, SpeedDialAction, Backdrop } from './Fab';
@@ -23,12 +36,27 @@ export { Grid } from './Grid';
 export { IconButton } from './IconButton';
 export { Input } from './Input';
 export { LinearProgress } from './LinearProgress';
-export { List, ListItem, ListItemIcon, ListItemText, ListItemButton, ListItemAvatar, ListItemSecondaryAction } from './List';
+export {
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    ListItemButton,
+    ListItemAvatar,
+    ListItemSecondaryAction,
+} from './List';
 export { Menu, MenuItem } from './Menu';
 export { Modal } from './Modal';
 export { Paper } from './Paper';
 export { Stack } from './Stack';
-export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './Table';
+export {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from './Table';
 export { Tooltip } from './Tooltip';
 export { Typography } from './Typography';
 

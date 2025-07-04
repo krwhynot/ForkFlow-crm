@@ -25,7 +25,7 @@ export interface AuditEvent {
     message: string;
 }
 
-export type AuditEventType = 
+export type AuditEventType =
     // Authentication Events
     | 'auth.login'
     | 'auth.logout'
@@ -38,7 +38,7 @@ export type AuditEventType =
     | 'auth.offline_login'
     | 'auth.session_conflict'
     | 'auth.session_restored'
-    
+
     // API Authentication Events
     | 'api.auth.login'
     | 'api.auth.logout'
@@ -48,12 +48,12 @@ export type AuditEventType =
     | 'api.auth.password_reset_confirm'
     | 'api.auth.password_reset_confirm_failed'
     | 'api.auth.password_update'
-    
+
     // Authorization Events
     | 'authz.access_denied'
     | 'authz.permission_check'
     | 'authz.role_change'
-    
+
     // Data Access Events
     | 'data.create'
     | 'data.read'
@@ -62,7 +62,7 @@ export type AuditEventType =
     | 'data.export'
     | 'data.import'
     | 'data.bulk_operation'
-    
+
     // API User Management Events
     | 'api.users.list'
     | 'api.users.create'
@@ -72,12 +72,12 @@ export type AuditEventType =
     | 'api.users.delete'
     | 'api.users.permissions_update'
     | 'api.users.force_password_reset'
-    
+
     // User Management Events
     | 'users.create_attempt'
     | 'users.update_attempt'
     | 'users.delete_attempt'
-    
+
     // Security Events
     | 'security.rate_limit_exceeded'
     | 'security.suspicious_activity'
@@ -95,7 +95,7 @@ export type AuditEventType =
     | 'security.mixed_content_detected'
     | 'security.certificate_transparency_configured'
     | 'security.https_initialized'
-    
+
     // System Events
     | 'system.startup'
     | 'system.shutdown'
@@ -103,7 +103,7 @@ export type AuditEventType =
     | 'system.performance_issue'
     | 'system.offline_mode'
     | 'system.online_mode'
-    
+
     // Business Events
     | 'business.customer_visit'
     | 'business.deal_stage_change'
@@ -112,7 +112,7 @@ export type AuditEventType =
     | 'business.interaction_completed'
     | 'business.follow_up_scheduled';
 
-export type AuditCategory = 
+export type AuditCategory =
     | 'authentication'
     | 'authorization'
     | 'data_access'
@@ -120,11 +120,7 @@ export type AuditCategory =
     | 'system'
     | 'business';
 
-export type AuditSeverity = 
-    | 'low'
-    | 'medium'
-    | 'high'
-    | 'critical';
+export type AuditSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 const AUDIT_STORAGE_KEY = 'forkflow_audit_log';
 const MAX_LOCAL_EVENTS = 1000; // Keep last 1000 events locally
@@ -193,7 +189,9 @@ export const createAuditEvent = async (
         userAgent: navigator.userAgent,
         details,
         outcome: options.outcome || 'success',
-        message: options.message || generateDefaultMessage(type, options.outcome || 'success'),
+        message:
+            options.message ||
+            generateDefaultMessage(type, options.outcome || 'success'),
     };
 
     return event;
@@ -209,16 +207,16 @@ export const logAuditEvent = async (
 ): Promise<void> => {
     try {
         const event = await createAuditEvent(type, details, options);
-        
+
         // Add to buffer
         eventBuffer.push(event);
-        
+
         // Store locally for persistence
         storeEventLocally(event);
-        
+
         // Schedule flush if not already scheduled
         scheduleFlush();
-        
+
         // Log to console for development
         if (process.env.NODE_ENV === 'development') {
             console.log('🔐 Audit Event:', {
@@ -229,7 +227,7 @@ export const logAuditEvent = async (
                 details: event.details,
             });
         }
-        
+
         // Immediate flush for critical events
         if (event.severity === 'critical') {
             await flushEvents();
@@ -263,7 +261,7 @@ const getSeverityFromType = (type: AuditEventType): AuditSeverity => {
         'auth.session_conflict',
         'security.suspicious_activity',
     ];
-    
+
     const highEvents = [
         'auth.login_failed',
         'security.rate_limit_exceeded',
@@ -271,7 +269,7 @@ const getSeverityFromType = (type: AuditEventType): AuditSeverity => {
         'security.device_change',
         'auth.password_change',
     ];
-    
+
     const mediumEvents = [
         'auth.login',
         'auth.logout',
@@ -279,7 +277,7 @@ const getSeverityFromType = (type: AuditEventType): AuditSeverity => {
         'data.export',
         'security.location_change',
     ];
-    
+
     if (criticalEvents.includes(type)) return 'critical';
     if (highEvents.includes(type)) return 'high';
     if (mediumEvents.includes(type)) return 'medium';
@@ -289,7 +287,10 @@ const getSeverityFromType = (type: AuditEventType): AuditSeverity => {
 /**
  * Generate default message for event type
  */
-const generateDefaultMessage = (type: AuditEventType, outcome: string): string => {
+const generateDefaultMessage = (
+    type: AuditEventType,
+    outcome: string
+): string => {
     const messages: Record<string, string> = {
         'auth.login': 'User logged in successfully',
         'auth.logout': 'User logged out',
@@ -304,7 +305,7 @@ const generateDefaultMessage = (type: AuditEventType, outcome: string): string =
         'business.interaction_completed': 'Interaction completed successfully',
         'business.follow_up_scheduled': 'Follow-up scheduled',
     };
-    
+
     const baseMessage = messages[type] || `Event: ${type}`;
     return outcome === 'failure' ? `${baseMessage} (failed)` : baseMessage;
 };
@@ -316,14 +317,14 @@ const storeEventLocally = (event: AuditEvent): void => {
     try {
         const stored = localStorage.getItem(AUDIT_STORAGE_KEY);
         const events: AuditEvent[] = stored ? JSON.parse(stored) : [];
-        
+
         events.push(event);
-        
+
         // Keep only last MAX_LOCAL_EVENTS
         if (events.length > MAX_LOCAL_EVENTS) {
             events.splice(0, events.length - MAX_LOCAL_EVENTS);
         }
-        
+
         localStorage.setItem(AUDIT_STORAGE_KEY, JSON.stringify(events));
     } catch (error) {
         console.error('Failed to store audit event locally:', error);
@@ -335,7 +336,7 @@ const storeEventLocally = (event: AuditEvent): void => {
  */
 const scheduleFlush = (): void => {
     if (flushTimer) return;
-    
+
     flushTimer = setTimeout(async () => {
         await flushEvents();
         flushTimer = null;
@@ -347,10 +348,10 @@ const scheduleFlush = (): void => {
  */
 const flushEvents = async (): Promise<void> => {
     if (eventBuffer.length === 0) return;
-    
+
     try {
         const eventsToSend = eventBuffer.splice(0, BATCH_SIZE);
-        
+
         // In production, send to audit API endpoint
         if (process.env.NODE_ENV === 'production') {
             await sendEventsToServer(eventsToSend);
@@ -377,7 +378,7 @@ const flushEvents = async (): Promise<void> => {
  */
 const sendEventsToServer = async (events: AuditEvent[]): Promise<void> => {
     const auditEndpoint = process.env.REACT_APP_AUDIT_ENDPOINT || '/api/audit';
-    
+
     const response = await fetch(auditEndpoint, {
         method: 'POST',
         headers: {
@@ -385,7 +386,7 @@ const sendEventsToServer = async (events: AuditEvent[]): Promise<void> => {
         },
         body: JSON.stringify({ events }),
     });
-    
+
     if (!response.ok) {
         throw new Error(`Audit API error: ${response.status}`);
     }
@@ -407,9 +408,9 @@ export const getLocalAuditEvents = (
     try {
         const stored = localStorage.getItem(AUDIT_STORAGE_KEY);
         if (!stored) return [];
-        
+
         let events: AuditEvent[] = JSON.parse(stored);
-        
+
         // Apply filters
         if (filters.type) {
             events = events.filter(e => e.type === filters.type);
@@ -426,15 +427,15 @@ export const getLocalAuditEvents = (
         if (filters.since) {
             events = events.filter(e => e.timestamp >= filters.since!);
         }
-        
+
         // Sort by timestamp (newest first)
         events.sort((a, b) => b.timestamp - a.timestamp);
-        
+
         // Apply limit
         if (filters.limit) {
             events = events.slice(0, filters.limit);
         }
-        
+
         return events;
     } catch (error) {
         console.error('Failed to get local audit events:', error);
@@ -466,9 +467,9 @@ export const getAuditStatistics = (): {
     lastWeekEvents: number;
 } => {
     const events = getLocalAuditEvents();
-    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-    
+    const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+
     const eventsByCategory: Record<AuditCategory, number> = {
         authentication: 0,
         authorization: 0,
@@ -477,30 +478,30 @@ export const getAuditStatistics = (): {
         system: 0,
         business: 0,
     };
-    
+
     const eventsBySeverity: Record<AuditSeverity, number> = {
         low: 0,
         medium: 0,
         high: 0,
         critical: 0,
     };
-    
+
     let recentCriticalEvents = 0;
     let lastWeekEvents = 0;
-    
+
     events.forEach(event => {
         eventsByCategory[event.category]++;
         eventsBySeverity[event.severity]++;
-        
+
         if (event.timestamp >= oneWeekAgo) {
             lastWeekEvents++;
         }
-        
+
         if (event.severity === 'critical' && event.timestamp >= oneDayAgo) {
             recentCriticalEvents++;
         }
     });
-    
+
     return {
         totalEvents: events.length,
         eventsByCategory,
@@ -519,7 +520,7 @@ export const initializeAuditLogging = (): (() => void) => {
         userAgent: navigator.userAgent,
         timestamp: Date.now(),
     });
-    
+
     // Setup beforeunload to flush events
     const handleBeforeUnload = () => {
         logAuditEvent('system.shutdown', {
@@ -535,16 +536,16 @@ export const initializeAuditLogging = (): (() => void) => {
             }
         }
     };
-    
+
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
     // Return cleanup function
     return () => {
         if (flushTimer) {
             clearTimeout(flushTimer);
         }
         window.removeEventListener('beforeunload', handleBeforeUnload);
-        
+
         // Final flush
         flushEvents();
     };

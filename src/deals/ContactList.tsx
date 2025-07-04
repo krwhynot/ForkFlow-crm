@@ -8,9 +8,9 @@ export const ContactList = () => {
     const { data, error, isPending } = useListContext();
     if (isPending || error) return <div style={{ height: '2em' }} />;
     return (
-        <Stack direction="row" flexWrap="wrap" gap={3} mt={1}>
+        <Stack className="flex-row flex-wrap gap-3 mt-1">
             {data.map(contact => (
-                <Stack direction="row" key={contact.id} gap={1}>
+                <Stack className="flex-row gap-1" key={contact.id}>
                     <Avatar record={contact} />
                     <Stack>
                         <Link
@@ -20,7 +20,7 @@ export const ContactList = () => {
                         >
                             {contact.first_name} {contact.last_name}
                         </Link>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" className="text-gray-500">
                             {contact.title}
                             {contact.title &&
                                 contact.organization?.name &&

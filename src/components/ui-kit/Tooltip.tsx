@@ -36,16 +36,18 @@ export const Tooltip: React.FC<TooltipProps> = ({
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
-        
+
         timeoutRef.current = setTimeout(() => {
             if (triggerRef.current) {
                 const rect = triggerRef.current.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-                
+                const scrollTop =
+                    window.pageYOffset || document.documentElement.scrollTop;
+                const scrollLeft =
+                    window.pageXOffset || document.documentElement.scrollLeft;
+
                 let x = 0;
                 let y = 0;
-                
+
                 switch (placement) {
                     case 'top':
                         x = rect.left + scrollLeft + rect.width / 2;
@@ -64,7 +66,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
                         y = rect.top + scrollTop + rect.height / 2;
                         break;
                 }
-                
+
                 setPosition({ x, y });
                 setIsVisible(true);
             }
@@ -79,25 +81,35 @@ export const Tooltip: React.FC<TooltipProps> = ({
     };
 
     const getTooltipClasses = () => {
-        const baseClasses = 'absolute z-50 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm max-w-sm';
-        
+        const baseClasses =
+            'absolute z-50 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm max-w-sm';
+
         switch (placement) {
             case 'top':
-                return cn(baseClasses, 'mb-2 -translate-x-1/2 -translate-y-full');
+                return cn(
+                    baseClasses,
+                    'mb-2 -translate-x-1/2 -translate-y-full'
+                );
             case 'bottom':
                 return cn(baseClasses, 'mt-2 -translate-x-1/2');
             case 'left':
-                return cn(baseClasses, 'mr-2 -translate-y-1/2 -translate-x-full');
+                return cn(
+                    baseClasses,
+                    'mr-2 -translate-y-1/2 -translate-x-full'
+                );
             case 'right':
                 return cn(baseClasses, 'ml-2 -translate-y-1/2');
             default:
-                return cn(baseClasses, 'mb-2 -translate-x-1/2 -translate-y-full');
+                return cn(
+                    baseClasses,
+                    'mb-2 -translate-x-1/2 -translate-y-full'
+                );
         }
     };
 
     const getArrowClasses = () => {
         const baseClasses = 'absolute w-2 h-2 bg-gray-900 transform rotate-45';
-        
+
         switch (placement) {
             case 'top':
                 return cn(baseClasses, 'left-1/2 -translate-x-1/2 -bottom-1');
@@ -122,7 +134,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
             >
                 {children}
             </div>
-            
+
             {/* Portal-like tooltip rendered at document level */}
             {isVisible && (
                 <div
@@ -142,7 +154,10 @@ export const Tooltip: React.FC<TooltipProps> = ({
                         leaveTo="opacity-0"
                     >
                         <div
-                            className={cn(getTooltipClasses(), contentClassName)}
+                            className={cn(
+                                getTooltipClasses(),
+                                contentClassName
+                            )}
                             style={{
                                 left: position.x,
                                 top: position.y,

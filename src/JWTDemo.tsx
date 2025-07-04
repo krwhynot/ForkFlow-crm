@@ -4,10 +4,10 @@ import { jwtAuthProvider } from './providers/auth';
 
 /**
  * JWT Authentication Demo
- * 
+ *
  * This demo shows the ForkFlow CRM with JWT authentication enabled.
  * Uses fake data provider for testing but real JWT auth flows.
- * 
+ *
  * Test credentials:
  * - admin@forkflow.com / Admin123!
  * - manager@forkflow.com / Manager123!

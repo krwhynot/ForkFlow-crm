@@ -19,11 +19,11 @@ import {
 import { Link, ReferenceField, TextField, useRedirect } from 'react-admin';
 import { Deal } from '../types';
 
-export const OpportunityCard = ({ 
-    opportunity, 
-    index 
-}: { 
-    opportunity: Deal; 
+export const OpportunityCard = ({
+    opportunity,
+    index,
+}: {
+    opportunity: Deal;
     index: number;
 }) => {
     if (!opportunity) return null;
@@ -51,7 +51,7 @@ export const OpportunityCardContent = ({
     opportunity: Deal;
 }) => {
     const redirect = useRedirect();
-    
+
     const handleView = (e: React.MouseEvent) => {
         e.stopPropagation();
         redirect(`/opportunities/${opportunity.id}/show`);
@@ -77,8 +77,8 @@ export const OpportunityCardContent = ({
 
     return (
         <Box
-            sx={{ 
-                mb: 1, 
+            sx={{
+                mb: 1,
                 cursor: 'pointer',
                 transform: snapshot?.isDragging ? 'rotate(-2deg)' : 'none',
                 opacity: snapshot?.isDragging ? 0.9 : 1,
@@ -99,15 +99,17 @@ export const OpportunityCardContent = ({
             >
                 <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
                     {/* Header with Actions */}
-                    <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'flex-start',
-                        mb: 2 
-                    }}>
-                        <Typography 
-                            variant="subtitle1" 
-                            sx={{ 
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            mb: 2,
+                        }}
+                    >
+                        <Typography
+                            variant="subtitle1"
+                            sx={{
                                 fontWeight: 600,
                                 lineHeight: 1.2,
                                 fontSize: '0.95rem',
@@ -121,8 +123,8 @@ export const OpportunityCardContent = ({
                             <IconButton
                                 size="small"
                                 onClick={handleView}
-                                sx={{ 
-                                    minWidth: 44, 
+                                sx={{
+                                    minWidth: 44,
                                     minHeight: 44,
                                     padding: 1,
                                 }}
@@ -132,8 +134,8 @@ export const OpportunityCardContent = ({
                             <IconButton
                                 size="small"
                                 onClick={handleEdit}
-                                sx={{ 
-                                    minWidth: 44, 
+                                sx={{
+                                    minWidth: 44,
                                     minHeight: 44,
                                     padding: 1,
                                 }}
@@ -146,12 +148,12 @@ export const OpportunityCardContent = ({
                     {/* Organization & Contact */}
                     <Stack spacing={1} sx={{ mb: 2 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <BusinessIcon 
-                                sx={{ 
-                                    fontSize: 16, 
-                                    mr: 1, 
-                                    color: 'text.secondary' 
-                                }} 
+                            <BusinessIcon
+                                sx={{
+                                    fontSize: 16,
+                                    mr: 1,
+                                    color: 'text.secondary',
+                                }}
                             />
                             <ReferenceField
                                 source="organizationId"
@@ -159,22 +161,22 @@ export const OpportunityCardContent = ({
                                 link={false}
                                 record={opportunity}
                             >
-                                <TextField 
-                                    source="name" 
+                                <TextField
+                                    source="name"
                                     variant="body2"
                                     sx={{ fontSize: '0.875rem' }}
                                 />
                             </ReferenceField>
                         </Box>
-                        
+
                         {opportunity.contactId && (
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <PersonIcon 
-                                    sx={{ 
-                                        fontSize: 16, 
-                                        mr: 1, 
-                                        color: 'text.secondary' 
-                                    }} 
+                                <PersonIcon
+                                    sx={{
+                                        fontSize: 16,
+                                        mr: 1,
+                                        color: 'text.secondary',
+                                    }}
                                 />
                                 <ReferenceField
                                     source="contactId"
@@ -182,8 +184,12 @@ export const OpportunityCardContent = ({
                                     link={false}
                                     record={opportunity}
                                 >
-                                    <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
-                                        <TextField source="firstName" /> <TextField source="lastName" />
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ fontSize: '0.875rem' }}
+                                    >
+                                        <TextField source="firstName" />{' '}
+                                        <TextField source="lastName" />
                                     </Typography>
                                 </ReferenceField>
                             </Box>
@@ -192,22 +198,24 @@ export const OpportunityCardContent = ({
 
                     {/* Value and Probability */}
                     <Box sx={{ mb: 2 }}>
-                        <Box sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            mb: 1,
-                        }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                mb: 1,
+                            }}
+                        >
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <MoneyIcon 
-                                    sx={{ 
-                                        fontSize: 18, 
-                                        mr: 0.5, 
-                                        color: 'success.main' 
-                                    }} 
+                                <MoneyIcon
+                                    sx={{
+                                        fontSize: 18,
+                                        mr: 0.5,
+                                        color: 'success.main',
+                                    }}
                                 />
-                                <Typography 
-                                    variant="h6" 
+                                <Typography
+                                    variant="h6"
                                     color="success.main"
                                     sx={{ fontWeight: 600, fontSize: '1rem' }}
                                 >
@@ -217,14 +225,20 @@ export const OpportunityCardContent = ({
                             <Chip
                                 label={`${probability}%`}
                                 size="small"
-                                color={probability >= 80 ? 'success' : probability >= 50 ? 'warning' : 'default'}
-                                sx={{ 
+                                color={
+                                    probability >= 80
+                                        ? 'success'
+                                        : probability >= 50
+                                          ? 'warning'
+                                          : 'default'
+                                }
+                                sx={{
                                     minWidth: 48,
                                     fontSize: '0.75rem',
                                 }}
                             />
                         </Box>
-                        
+
                         {/* Probability Progress Bar */}
                         <LinearProgress
                             variant="determinate"
@@ -235,9 +249,12 @@ export const OpportunityCardContent = ({
                                 backgroundColor: 'grey.200',
                                 '& .MuiLinearProgress-bar': {
                                     borderRadius: 2,
-                                    backgroundColor: 
-                                        probability >= 80 ? 'success.main' :
-                                        probability >= 50 ? 'warning.main' : 'primary.main',
+                                    backgroundColor:
+                                        probability >= 80
+                                            ? 'success.main'
+                                            : probability >= 50
+                                              ? 'warning.main'
+                                              : 'primary.main',
                                 },
                             }}
                         />
@@ -245,12 +262,15 @@ export const OpportunityCardContent = ({
 
                     {/* Expected Close Date */}
                     {opportunity.expectedClosingDate && (
-                        <Typography 
-                            variant="caption" 
+                        <Typography
+                            variant="caption"
                             color="text.secondary"
                             sx={{ fontSize: '0.75rem' }}
                         >
-                            Expected close: {new Date(opportunity.expectedClosingDate).toLocaleDateString()}
+                            Expected close:{' '}
+                            {new Date(
+                                opportunity.expectedClosingDate
+                            ).toLocaleDateString()}
                         </Typography>
                     )}
                 </CardContent>

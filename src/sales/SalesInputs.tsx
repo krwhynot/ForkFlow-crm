@@ -6,13 +6,13 @@ import {
     useRecordContext,
 } from 'react-admin';
 import { Sale } from '../types';
-import { Stack } from '@mui/material';
+import { Stack } from '../components/ui-kit';
 
 export function SalesInputs() {
     const { identity } = useGetIdentity();
     const record = useRecordContext<Sale>();
     return (
-        <Stack gap={1} sx={{ width: '100%' }}>
+        <Stack className="gap-1 w-full">
             <TextInput
                 source="first_name"
                 validate={required()}

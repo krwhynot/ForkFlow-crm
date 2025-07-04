@@ -83,7 +83,9 @@ export const CustomerListContent = () => {
                             <TableCell>
                                 <Checkbox
                                     checked={selectedIds.includes(customer.id)}
-                                    onCheckedChange={() => onToggleItem(customer.id)}
+                                    onCheckedChange={() =>
+                                        onToggleItem(customer.id)
+                                    }
                                 />
                             </TableCell>
                             <TableCell>
@@ -155,7 +157,10 @@ const MobileCustomerList = ({
                         {customer.createdAt && (
                             <p className="text-xs text-gray-500">
                                 Added{' '}
-                                {formatRelative(new Date(customer.createdAt), now)}
+                                {formatRelative(
+                                    new Date(customer.createdAt),
+                                    now
+                                )}
                             </p>
                         )}
                     </li>

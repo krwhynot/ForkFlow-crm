@@ -1,15 +1,6 @@
-import {
-    Button,
-    Stack,
-    Typography,
-} from '../components/ui-kit';
-import {
-    Box,
-    Chip,
-    Dialog,
-    DialogContent,
-    Divider,
-} from '@mui/material';
+import { Button, Stack, Typography } from '../components/ui-kit';
+import { Box, Chip } from '@/components/ui-kit';
+import { Dialog, DialogContent, Divider } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import {
     DeleteButton,
@@ -71,26 +62,26 @@ const CLOSE_TOP_WITH_ARCHIVED = 14;
 const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
     const { dealStages } = useConfigurationContext();
     const record = useRecordContext<Deal>();
-    
+
     // Fetch related entities for breadcrumbs
     const { data: organization } = useGetOne<Organization>(
-        'organizations', 
+        'organizations',
         { id: record?.organizationId },
         { enabled: !!record?.organizationId }
     );
-    
+
     const { data: contact } = useGetOne<Contact>(
-        'contacts', 
+        'contacts',
         { id: record?.contactId },
         { enabled: !!record?.contactId }
     );
-    
+
     const { data: product } = useGetOne<Product>(
         'products',
         { id: record?.productId },
         { enabled: !!record?.productId }
     );
-    
+
     if (!record) return null;
 
     return (
@@ -111,7 +102,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                             organization: organization,
                             contact: contact,
                             product: product,
-                            opportunity: record
+                            opportunity: record,
                         }}
                     />
                 </Box>
@@ -257,7 +248,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
 
                         <Box m={2}>
                             <Divider sx={{ mb: 3 }} />
-                            
+
                             {/* Related Interactions */}
                             <RelatedEntitiesSection
                                 entityType="opportunity"
@@ -269,9 +260,9 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                 viewAllLink={`/interactions?filter=${JSON.stringify({ opportunityId: record?.id })}`}
                                 emptyMessage="No interactions recorded for this opportunity yet."
                             />
-                            
+
                             <Divider sx={{ my: 3 }} />
-                            
+
                             <ReferenceManyField
                                 target="deal_id"
                                 reference="dealNotes"

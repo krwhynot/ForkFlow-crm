@@ -55,7 +55,11 @@ const alignClasses = {
 
 interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
     variant?: keyof typeof variantMapping;
-    color?: keyof typeof colorClasses | 'text.primary' | 'text.secondary' | 'text.disabled';
+    color?:
+        | keyof typeof colorClasses
+        | 'text.primary'
+        | 'text.secondary'
+        | 'text.disabled';
     align?: keyof typeof alignClasses;
     component?: React.ElementType;
     as?: React.ElementType;
@@ -67,17 +71,17 @@ interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
 
 export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     (
-        { 
-            variant = 'body1', 
-            color = 'textPrimary', 
+        {
+            variant = 'body1',
+            color = 'textPrimary',
             align,
             component,
-            as, 
+            as,
             gutterBottom = false,
             noWrap = false,
             paragraph = false,
-            className, 
-            ...props 
+            className,
+            ...props
         },
         ref
     ) => {
@@ -87,8 +91,12 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
         if (color === 'text.secondary') colorKey = 'textSecondary';
         if (color === 'text.disabled') colorKey = 'textDisabled';
 
-        const Component = component || as || (paragraph ? 'p' : variantMapping[variant]) || 'p';
-        
+        const Component =
+            component ||
+            as ||
+            (paragraph ? 'p' : variantMapping[variant]) ||
+            'p';
+
         const classes = twMerge(
             'text-gray-900', // default color
             variantClasses[variant],

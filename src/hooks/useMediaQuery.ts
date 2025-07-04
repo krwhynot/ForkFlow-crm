@@ -26,7 +26,9 @@ export const useMediaQuery = (query: string): boolean => {
     return matches;
 };
 
-export const useBreakpoint = (breakpoint: keyof typeof fullConfig.theme.screens): boolean => {
+export const useBreakpoint = (
+    breakpoint: keyof typeof fullConfig.theme.screens
+): boolean => {
     const screens = fullConfig.theme.screens as Record<string, string>;
     const query = `(min-width: ${getBreakpointValue(screens[breakpoint as string])}px)`;
     return useMediaQuery(query);

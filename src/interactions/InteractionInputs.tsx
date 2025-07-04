@@ -19,13 +19,15 @@ import {
     Stack,
     Box,
     Typography,
-    Collapse,
     Button,
+    Chip,
+} from '@/components/ui-kit';
+import {
+    Collapse,
     Alert,
     FormControlLabel,
     Switch,
     CircularProgress,
-    Chip,
 } from '@mui/material';
 import {
     LocationOn as LocationIcon,
@@ -45,16 +47,22 @@ export const InteractionInputs = () => {
     const notify = useNotify();
     const gpsService = useGPSService();
     const offlineService = useOfflineService();
-    
+
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [gpsEnabled, setGpsEnabled] = useState(false);
-    const [location, setLocation] = useState<{latitude: number; longitude: number; accuracy?: number} | null>(null);
+    const [location, setLocation] = useState<{
+        latitude: number;
+        longitude: number;
+        accuracy?: number;
+    } | null>(null);
     const [locationError, setLocationError] = useState<string>('');
     const [locationLoading, setLocationLoading] = useState(false);
-    const [offlineStatus, setOfflineStatus] = useState(offlineService.getStatus());
-    
+    const [offlineStatus, setOfflineStatus] = useState(
+        offlineService.getStatus()
+    );
+
     const typeId = record?.typeId;
-    
+
     // Get interaction types from settings
     const { data: interactionTypes } = useGetList('settings', {
         filter: { category: 'interaction_type' },
@@ -62,14 +70,16 @@ export const InteractionInputs = () => {
         sort: { field: 'sortOrder', order: 'ASC' },
     });
 
-    const interactionTypeChoices = interactionTypes?.map(type => ({
-        id: type.id,
-        name: type.label,
-    })) || [];
+    const interactionTypeChoices =
+        interactionTypes?.map(type => ({
+            id: type.id,
+            name: type.label,
+        })) || [];
 
     // Check if selected type requires GPS
     const selectedType = interactionTypes?.find(type => type.id === typeId);
-    const isLocationRecommended = selectedType?.key === 'in_person' || selectedType?.key === 'demo';
+    const isLocationRecommended =
+        selectedType?.key === 'in_person' || selectedType?.key === 'demo';
 
     // Subscribe to offline status changes
     useEffect(() => {
@@ -126,10 +136,16 @@ export const InteractionInputs = () => {
                     longitude: result.coordinates.longitude,
                     accuracy: result.coordinates.accuracy,
                 });
-                
+
                 // Show accuracy info to user
-                if (result.coordinates.accuracy && result.coordinates.accuracy > 50) {
-                    notify('GPS accuracy is low. Consider moving to an open area for better precision.', { type: 'warning' });
+                if (
+                    result.coordinates.accuracy &&
+                    result.coordinates.accuracy > 50
+                ) {
+                    notify(
+                        'GPS accuracy is low. Consider moving to an open area for better precision.',
+                        { type: 'warning' }
+                    );
                 }
             } else {
                 setLocationError(result.error || 'Failed to get location');
@@ -148,20 +164,26 @@ export const InteractionInputs = () => {
     return (
         <Stack spacing={3}>
             {/* Offline Status Indicator */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box className="flex justify-between items-center">
                 <Typography variant="h6" gutterBottom>
                     Interaction Details
                 </Typography>
-                
-                <Box sx={{ display: 'flex', gap: 1 }}>
+
+                <Box className="flex gap-1">
                     {/* Offline Status */}
                     <Chip
-                        icon={offlineStatus.isOnline ? <OnlineIcon /> : <OfflineIcon />}
+                        icon={
+                            offlineStatus.isOnline ? (
+                                <OnlineIcon />
+                            ) : (
+                                <OfflineIcon />
+                            )
+                        }
                         label={offlineStatus.isOnline ? 'Online' : 'Offline'}
                         color={offlineStatus.isOnline ? 'success' : 'warning'}
                         size="small"
                     />
-                    
+
                     {/* Pending Sync Count */}
                     {offlineStatus.pendingActions > 0 && (
                         <Chip
@@ -172,8 +194,8 @@ export const InteractionInputs = () => {
                     )}
                 </Box>
             </Box>
-            
-            <Stack spacing={2}>
+
+            <Stack className="space-y-2">
                 <ReferenceInput
                     source="organizationId"
                     reference="organizations"
@@ -195,8 +217,10 @@ export const InteractionInputs = () => {
                     filter={{ organizationId: record?.organizationId }}
                 >
                     <AutocompleteInput
-                        optionText={(choice: any) => 
-                            choice ? `${choice.firstName} ${choice.lastName}` : ''
+                        optionText={(choice: any) =>
+                            choice
+                                ? `${choice.firstName} ${choice.lastName}`
+                                : ''
                         }
                         size="medium"
                         fullWidth
@@ -238,8 +262,8 @@ export const InteractionInputs = () => {
             <Typography variant="h6" gutterBottom>
                 Scheduling
             </Typography>
-            
-            <Stack spacing={2}>
+
+            <Stack className="space-y-2">
                 <DateTimeInput
                     source="scheduledDate"
                     label="Scheduled Date & Time"
@@ -270,13 +294,15 @@ export const InteractionInputs = () => {
                     <Typography variant="h6" gutterBottom>
                         Location {isLocationRecommended && '(Recommended)'}
                     </Typography>
-                    
-                    <Stack spacing={2}>
+
+                    <Stack className="space-y-2">
                         <FormControlLabel
                             control={
                                 <Switch
                                     checked={gpsEnabled}
-                                    onChange={(e) => setGpsEnabled(e.target.checked)}
+                                    onChange={e =>
+                                        setGpsEnabled(e.target.checked)
+                                    }
                                     color="primary"
                                 />
                             }
@@ -285,16 +311,24 @@ export const InteractionInputs = () => {
 
                         {gpsEnabled && (
                             <Box>
-                                <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                                <Box className="flex gap-1 mb-2">
                                     <Button
                                         variant="outlined"
-                                        startIcon={locationLoading ? <CircularProgress size={16} /> : <GpsIcon />}
+                                        startIcon={
+                                            locationLoading ? (
+                                                <CircularProgress size={16} />
+                                            ) : (
+                                                <GpsIcon />
+                                            )
+                                        }
                                         onClick={refreshLocation}
                                         disabled={locationLoading}
                                     >
-                                        {locationLoading ? 'Getting Location...' : 'Get Current Location'}
+                                        {locationLoading
+                                            ? 'Getting Location...'
+                                            : 'Get Current Location'}
                                     </Button>
-                                    
+
                                     {location && (
                                         <Button
                                             variant="text"
@@ -311,13 +345,21 @@ export const InteractionInputs = () => {
                                 </Box>
 
                                 {location && (
-                                    <Alert severity="success" sx={{ mb: 2 }}>
+                                    <Alert severity="success" className="mb-2">
                                         <Box>
-                                            <strong>Location captured:</strong> {gpsService.formatCoordinates(location)}
+                                            <strong>Location captured:</strong>{' '}
+                                            {gpsService.formatCoordinates(
+                                                location
+                                            )}
                                             {location.accuracy && (
-                                                <Box component="span" sx={{ display: 'block', fontSize: '0.875em', mt: 0.5 }}>
-                                                    Accuracy: ±{Math.round(location.accuracy)}m
-                                                    {location.accuracy > 50 && ' (Consider moving to an open area for better accuracy)'}
+                                                <Box className="block text-sm mt-0.5">
+                                                    Accuracy: ±
+                                                    {Math.round(
+                                                        location.accuracy
+                                                    )}
+                                                    m
+                                                    {location.accuracy > 50 &&
+                                                        ' (Consider moving to an open area for better accuracy)'}
                                                 </Box>
                                             )}
                                         </Box>
@@ -325,12 +367,12 @@ export const InteractionInputs = () => {
                                 )}
 
                                 {locationError && (
-                                    <Alert severity="error" sx={{ mb: 2 }}>
+                                    <Alert severity="error" className="mb-2">
                                         {locationError}
                                         <Button
                                             size="small"
                                             onClick={refreshLocation}
-                                            sx={{ ml: 1 }}
+                                            className="ml-1"
                                         >
                                             Retry
                                         </Button>
@@ -372,14 +414,16 @@ export const InteractionInputs = () => {
             <Box>
                 <Button
                     onClick={() => setShowAdvanced(!showAdvanced)}
-                    startIcon={showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    sx={{ mb: 2 }}
+                    startIcon={
+                        showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                    }
+                    className="mb-2"
                 >
                     {showAdvanced ? 'Hide' : 'Show'} Advanced Options
                 </Button>
 
                 <Collapse in={showAdvanced}>
-                    <Stack spacing={2}>
+                    <Stack className="space-y-2">
                         <Typography variant="subtitle1" gutterBottom>
                             Follow-up & Outcomes
                         </Typography>
@@ -439,15 +483,26 @@ export const InteractionInputs = () => {
                                 source="attachments"
                                 label="Upload Files"
                                 multiple
-                                accept={{"image/*": [], "application/pdf": [], "application/msword": [".doc"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"], "text/plain": [".txt"], "text/csv": [".csv"]} as any}
+                                accept={
+                                    {
+                                        'image/*': [],
+                                        'application/pdf': [],
+                                        'application/msword': ['.doc'],
+                                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                            ['.docx'],
+                                        'text/plain': ['.txt'],
+                                        'text/csv': ['.csv'],
+                                    } as any
+                                }
                                 helperText="Max 10MB per file. Images will be compressed for mobile upload."
                             >
                                 <FileField source="src" title="title" />
                             </FileInput>
-                            
+
                             {!offlineStatus.isOnline && (
-                                <Alert severity="info" sx={{ mt: 1 }}>
-                                    Files will be uploaded when connection is restored.
+                                <Alert severity="info" className="mt-1">
+                                    Files will be uploaded when connection is
+                                    restored.
                                 </Alert>
                             )}
                         </Box>

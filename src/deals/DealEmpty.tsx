@@ -24,9 +24,7 @@ export const DealEmpty = ({ children }: { children?: React.ReactNode }) => {
 
     return (
         <Stack
-            justifyContent="center"
-            alignItems="center"
-            gap={3}
+            className="justify-center items-center gap-3"
             sx={{
                 height: `calc(100dvh - ${appbarHeight}px)`,
             }}
@@ -34,34 +32,34 @@ export const DealEmpty = ({ children }: { children?: React.ReactNode }) => {
             <img src="./img/empty.svg" alt="No deals found" />
             {contacts && contacts.length > 0 ? (
                 <>
-                    <Stack gap={0} alignItems="center">
+                    <Stack className="gap-0 items-center">
                         <Typography variant="h6" fontWeight="bold">
                             No deals found
                         </Typography>
                         <Typography
                             variant="body2"
                             align="center"
-                            color="text.secondary"
+                            className="text-gray-500"
                             gutterBottom
                         >
                             It seems your deal list is empty.
                         </Typography>
                     </Stack>
-                    <Stack spacing={2} direction="row">
+                    <Stack className="gap-2 flex-row">
                         <CreateButton variant="contained" label="Create deal" />
                     </Stack>
                     <DealCreate open={!!matchCreate} />
                     {children}
                 </>
             ) : (
-                <Stack gap={0} alignItems="center">
+                <Stack className="gap-0 items-center">
                     <Typography variant="h6" fontWeight="bold">
                         No deals found
                     </Typography>
                     <Typography
                         variant="body2"
                         align="center"
-                        color="text.secondary"
+                        className="text-gray-500"
                         gutterBottom
                     >
                         It seems your contact list is empty.

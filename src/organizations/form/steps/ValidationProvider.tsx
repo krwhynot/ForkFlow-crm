@@ -1,7 +1,24 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Alert, AlertTitle, Box, Collapse, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Error as ErrorIcon, Warning as WarningIcon, CheckCircle as SuccessIcon } from '@mui/icons-material';
-import { StepValidationResult, ValidationError, ValidationWarning } from './types';
+import {
+    Alert,
+    AlertTitle,
+    Box,
+    Collapse,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+} from '@mui/material';
+import {
+    Error as ErrorIcon,
+    Warning as WarningIcon,
+    CheckCircle as SuccessIcon,
+} from '@mui/icons-material';
+import {
+    StepValidationResult,
+    ValidationError,
+    ValidationWarning,
+} from './types';
 
 interface ValidationContextType {
     showValidationSummary: boolean;
@@ -34,9 +51,14 @@ export const ValidationProvider: React.FC<ValidationProviderProps> = ({
     defaultValidationMode = 'realtime',
 }) => {
     const [showValidationSummary, setShowValidationSummary] = useState(false);
-    const [validationSummary, setValidationSummary] = useState<StepValidationResult | null>(null);
-    const [highlightedFields, setHighlightedFields] = useState<Set<string>>(new Set());
-    const [validationMode, setValidationMode] = useState<'realtime' | 'onsubmit' | 'onblur'>(defaultValidationMode);
+    const [validationSummary, setValidationSummary] =
+        useState<StepValidationResult | null>(null);
+    const [highlightedFields, setHighlightedFields] = useState<Set<string>>(
+        new Set()
+    );
+    const [validationMode, setValidationMode] = useState<
+        'realtime' | 'onsubmit' | 'onblur'
+    >(defaultValidationMode);
 
     const contextValue: ValidationContextType = {
         showValidationSummary,
@@ -62,7 +84,9 @@ export const ValidationProvider: React.FC<ValidationProviderProps> = ({
 export const useValidationContext = () => {
     const context = useContext(ValidationContext);
     if (!context) {
-        throw new Error('useValidationContext must be used within a ValidationProvider');
+        throw new Error(
+            'useValidationContext must be used within a ValidationProvider'
+        );
     }
     return context;
 };
@@ -92,21 +116,32 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
 }) => {
     const [expanded, setExpanded] = useState(true);
 
-    const handleFieldClick = useCallback((fieldName: string) => {
-        if (onFieldClick) {
-            onFieldClick(fieldName);
-        } else {
-            // Default behavior: scroll to field
-            const element = document.querySelector(`[name="${fieldName}"], #${fieldName}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Focus the field if it's an input
-                if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-                    element.focus();
+    const handleFieldClick = useCallback(
+        (fieldName: string) => {
+            if (onFieldClick) {
+                onFieldClick(fieldName);
+            } else {
+                // Default behavior: scroll to field
+                const element = document.querySelector(
+                    `[name="${fieldName}"], #${fieldName}`
+                );
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                    });
+                    // Focus the field if it's an input
+                    if (
+                        element instanceof HTMLInputElement ||
+                        element instanceof HTMLTextAreaElement
+                    ) {
+                        element.focus();
+                    }
                 }
             }
-        }
-    }, [onFieldClick]);
+        },
+        [onFieldClick]
+    );
 
     const hasErrors = validation.errors.length > 0;
     const hasWarnings = validation.warnings.length > 0;
@@ -117,10 +152,16 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
     }
 
     const severity = hasErrors ? 'error' : hasWarnings ? 'warning' : 'success';
-    const icon = hasErrors ? <ErrorIcon /> : hasWarnings ? <WarningIcon /> : <SuccessIcon />;
+    const icon = hasErrors ? (
+        <ErrorIcon />
+    ) : hasWarnings ? (
+        <WarningIcon />
+    ) : (
+        <SuccessIcon />
+    );
 
     return (
-        <Alert 
+        <Alert
             severity={severity}
             sx={{ mb: 2 }}
             action={
@@ -134,7 +175,9 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                             padding: '4px',
                             color: 'inherit',
                         }}
-                        aria-label={expanded ? 'Collapse details' : 'Expand details'}
+                        aria-label={
+                            expanded ? 'Collapse details' : 'Expand details'
+                        }
                     >
                         {expanded ? '▼' : '▶'}
                     </button>
@@ -144,8 +187,18 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
             <AlertTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {icon}
                 {title}
-                {hasErrors && <span>({validation.errors.length} error{validation.errors.length > 1 ? 's' : ''})</span>}
-                {hasWarnings && <span>({validation.warnings.length} warning{validation.warnings.length > 1 ? 's' : ''})</span>}
+                {hasErrors && (
+                    <span>
+                        ({validation.errors.length} error
+                        {validation.errors.length > 1 ? 's' : ''})
+                    </span>
+                )}
+                {hasWarnings && (
+                    <span>
+                        ({validation.warnings.length} warning
+                        {validation.warnings.length > 1 ? 's' : ''})
+                    </span>
+                )}
             </AlertTitle>
 
             {/* Success message */}
@@ -158,29 +211,53 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                 {/* Errors */}
                 {hasErrors && (
                     <Box sx={{ mt: 1 }}>
-                        <Box component="h4" sx={{ m: 0, mb: 1, fontSize: '0.875rem', fontWeight: 600 }}>
+                        <Box
+                            component="h4"
+                            sx={{
+                                m: 0,
+                                mb: 1,
+                                fontSize: '0.875rem',
+                                fontWeight: 600,
+                            }}
+                        >
                             Errors that must be fixed:
                         </Box>
                         <List dense sx={{ pt: 0 }}>
                             {validation.errors.map((error, index) => (
-                                <ListItem 
+                                <ListItem
                                     key={`error-${index}`}
-                                    sx={{ 
+                                    sx={{
                                         pl: 0,
-                                        cursor: onFieldClick ? 'pointer' : 'default',
-                                        '&:hover': onFieldClick ? { backgroundColor: 'rgba(0,0,0,0.04)' } : {},
+                                        cursor: onFieldClick
+                                            ? 'pointer'
+                                            : 'default',
+                                        '&:hover': onFieldClick
+                                            ? {
+                                                  backgroundColor:
+                                                      'rgba(0,0,0,0.04)',
+                                              }
+                                            : {},
                                         borderRadius: 1,
                                     }}
-                                    onClick={() => handleFieldClick(error.field)}
+                                    onClick={() =>
+                                        handleFieldClick(error.field)
+                                    }
                                 >
                                     <ListItemIcon sx={{ minWidth: 24 }}>
-                                        <ErrorIcon fontSize="small" color="error" />
+                                        <ErrorIcon
+                                            fontSize="small"
+                                            color="error"
+                                        />
                                     </ListItemIcon>
-                                    <ListItemText 
+                                    <ListItemText
                                         primary={error.message}
                                         secondary={`Field: ${error.field}`}
-                                        primaryTypographyProps={{ fontSize: '0.875rem' }}
-                                        secondaryTypographyProps={{ fontSize: '0.75rem' }}
+                                        primaryTypographyProps={{
+                                            fontSize: '0.875rem',
+                                        }}
+                                        secondaryTypographyProps={{
+                                            fontSize: '0.75rem',
+                                        }}
                                     />
                                 </ListItem>
                             ))}
@@ -191,29 +268,53 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                 {/* Warnings */}
                 {hasWarnings && (
                     <Box sx={{ mt: hasErrors ? 2 : 1 }}>
-                        <Box component="h4" sx={{ m: 0, mb: 1, fontSize: '0.875rem', fontWeight: 600 }}>
+                        <Box
+                            component="h4"
+                            sx={{
+                                m: 0,
+                                mb: 1,
+                                fontSize: '0.875rem',
+                                fontWeight: 600,
+                            }}
+                        >
                             Suggestions for improvement:
                         </Box>
                         <List dense sx={{ pt: 0 }}>
                             {validation.warnings.map((warning, index) => (
-                                <ListItem 
+                                <ListItem
                                     key={`warning-${index}`}
-                                    sx={{ 
+                                    sx={{
                                         pl: 0,
-                                        cursor: onFieldClick ? 'pointer' : 'default',
-                                        '&:hover': onFieldClick ? { backgroundColor: 'rgba(0,0,0,0.04)' } : {},
+                                        cursor: onFieldClick
+                                            ? 'pointer'
+                                            : 'default',
+                                        '&:hover': onFieldClick
+                                            ? {
+                                                  backgroundColor:
+                                                      'rgba(0,0,0,0.04)',
+                                              }
+                                            : {},
                                         borderRadius: 1,
                                     }}
-                                    onClick={() => handleFieldClick(warning.field)}
+                                    onClick={() =>
+                                        handleFieldClick(warning.field)
+                                    }
                                 >
                                     <ListItemIcon sx={{ minWidth: 24 }}>
-                                        <WarningIcon fontSize="small" color="warning" />
+                                        <WarningIcon
+                                            fontSize="small"
+                                            color="warning"
+                                        />
                                     </ListItemIcon>
-                                    <ListItemText 
+                                    <ListItemText
                                         primary={warning.message}
                                         secondary={`Field: ${warning.field}`}
-                                        primaryTypographyProps={{ fontSize: '0.875rem' }}
-                                        secondaryTypographyProps={{ fontSize: '0.75rem' }}
+                                        primaryTypographyProps={{
+                                            fontSize: '0.875rem',
+                                        }}
+                                        secondaryTypographyProps={{
+                                            fontSize: '0.75rem',
+                                        }}
                                     />
                                 </ListItem>
                             ))}
@@ -237,7 +338,9 @@ interface FieldValidationIndicatorProps {
 /**
  * FieldValidationIndicator displays validation status for individual fields
  */
-export const FieldValidationIndicator: React.FC<FieldValidationIndicatorProps> = ({
+export const FieldValidationIndicator: React.FC<
+    FieldValidationIndicatorProps
+> = ({
     fieldName,
     errors,
     warnings,
@@ -253,17 +356,20 @@ export const FieldValidationIndicator: React.FC<FieldValidationIndicatorProps> =
     }
 
     const severity = hasErrors ? 'error' : 'warning';
-    const icon = hasErrors ? <ErrorIcon fontSize={size} color={severity} /> : 
-                 <WarningIcon fontSize={size} color={severity} />;
-    
+    const icon = hasErrors ? (
+        <ErrorIcon fontSize={size} color={severity} />
+    ) : (
+        <WarningIcon fontSize={size} color={severity} />
+    );
+
     const messages = [...errors, ...warnings];
     const primaryMessage = messages[0]?.message;
 
     return (
-        <Box 
-            sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
                 gap: 0.5,
                 color: severity === 'error' ? 'error.main' : 'warning.main',
             }}
@@ -295,14 +401,26 @@ export const ValidationModeToggle: React.FC<ValidationModeToggleProps> = ({
     disabled = false,
 }) => {
     const modes = [
-        { value: 'realtime', label: 'Real-time', description: 'Validate as you type' },
-        { value: 'onblur', label: 'On blur', description: 'Validate when leaving field' },
-        { value: 'onsubmit', label: 'On submit', description: 'Validate only when submitting' },
+        {
+            value: 'realtime',
+            label: 'Real-time',
+            description: 'Validate as you type',
+        },
+        {
+            value: 'onblur',
+            label: 'On blur',
+            description: 'Validate when leaving field',
+        },
+        {
+            value: 'onsubmit',
+            label: 'On submit',
+            description: 'Validate only when submitting',
+        },
     ] as const;
 
     return (
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {modes.map((mode) => (
+            {modes.map(mode => (
                 <button
                     key={mode.value}
                     onClick={() => onModeChange(mode.value)}
@@ -310,8 +428,12 @@ export const ValidationModeToggle: React.FC<ValidationModeToggleProps> = ({
                     style={{
                         padding: '4px 8px',
                         border: '1px solid',
-                        borderColor: currentMode === mode.value ? '#1976d2' : '#ccc',
-                        backgroundColor: currentMode === mode.value ? '#1976d2' : 'transparent',
+                        borderColor:
+                            currentMode === mode.value ? '#1976d2' : '#ccc',
+                        backgroundColor:
+                            currentMode === mode.value
+                                ? '#1976d2'
+                                : 'transparent',
                         color: currentMode === mode.value ? 'white' : '#1976d2',
                         borderRadius: '4px',
                         cursor: disabled ? 'not-allowed' : 'pointer',

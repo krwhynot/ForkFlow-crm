@@ -213,8 +213,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     ) => {
         try {
             // In production, call API to revoke session
-            setSessions((prev) =>
-                prev.map((session) =>
+            setSessions(prev =>
+                prev.map(session =>
                     session.id === sessionId
                         ? {
                               ...session,
@@ -237,8 +237,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     const handleRevokeAllSessions = async () => {
         try {
             // In production, call API to revoke all sessions except current
-            setSessions((prev) =>
-                prev.map((session) =>
+            setSessions(prev =>
+                prev.map(session =>
                     session.isCurrent
                         ? session
                         : {
@@ -318,10 +318,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
         return `${diffDays} days ago`;
     };
 
-    const activeSessions = sessions.filter((s) => s.isActive && !s.revokedAt);
-    const inactiveSessions = sessions.filter(
-        (s) => !s.isActive || s.revokedAt
-    );
+    const activeSessions = sessions.filter(s => s.isActive && !s.revokedAt);
+    const inactiveSessions = sessions.filter(s => !s.isActive || s.revokedAt);
 
     // Check if user has admin permissions to view all sessions
     const isAdmin = identity?.role === 'admin';
@@ -339,9 +337,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 <Box display="flex" alignItems="center" gap={2}>
                     <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
                     <Box>
-                        <Typography variant="h5">
-                            Session Management
-                        </Typography>
+                        <Typography variant="h5">Session Management</Typography>
                         <Typography variant="body2" color="text.secondary">
                             {canViewAllSessions
                                 ? 'Manage all user sessions'
@@ -382,10 +378,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             <Typography variant="h4" color="success.main">
                                 {activeSessions.length}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Active Sessions
                             </Typography>
                         </CardContent>
@@ -397,10 +390,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             <Typography variant="h4" color="warning.main">
                                 {inactiveSessions.length}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Inactive Sessions
                             </Typography>
                         </CardContent>
@@ -412,10 +402,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             <Typography variant="h4" color="primary.main">
                                 {sessions.length}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Total Sessions
                             </Typography>
                         </CardContent>
@@ -440,7 +427,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
                         {isMobile ? (
                             <List>
-                                {activeSessions.map((session) => {
+                                {activeSessions.map(session => {
                                     const status = getSessionStatus(session);
                                     return (
                                         <ListItem key={session.id} divider>
@@ -472,7 +459,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                 secondary={
                                                     <Box>
                                                         <Typography variant="body2">
-                                                            {session.ipAddress} •{' '}
+                                                            {session.ipAddress}{' '}
+                                                            •{' '}
                                                             {session.location ||
                                                                 'Unknown location'}
                                                         </Typography>
@@ -522,15 +510,13 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                             <TableCell>Device</TableCell>
                                             <TableCell>Location</TableCell>
                                             <TableCell>IP Address</TableCell>
-                                            <TableCell>
-                                                Last Activity
-                                            </TableCell>
+                                            <TableCell>Last Activity</TableCell>
                                             <TableCell>Status</TableCell>
                                             <TableCell>Actions</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {activeSessions.map((session) => {
+                                        {activeSessions.map(session => {
                                             const status =
                                                 getSessionStatus(session);
                                             return (
@@ -661,7 +647,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {inactiveSessions.map((session) => {
+                                    {inactiveSessions.map(session => {
                                         const status =
                                             getSessionStatus(session);
                                         return (

@@ -4,11 +4,7 @@ import { isAfter } from 'date-fns';
 
 import { Task } from './Task';
 
-export const TasksIterator = ({
-    showContact,
-}: {
-    showContact?: boolean;
-}) => {
+export const TasksIterator = ({ showContact }: { showContact?: boolean }) => {
     const { data, error, isPending } = useListContext();
     if (isPending || error || data.length === 0) return null;
 

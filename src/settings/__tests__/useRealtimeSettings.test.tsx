@@ -1,13 +1,16 @@
 import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { TestContext } from 'ra-test';
-import { useRealtimeSettings, useRealtimeSettingsStats } from '../hooks/useRealtimeSettings';
+import {
+    useRealtimeSettings,
+    useRealtimeSettingsStats,
+} from '../hooks/useRealtimeSettings';
 import { Setting } from '../../types';
 
 // Mock Supabase client
 const mockChannel = {
     on: jest.fn().mockReturnThis(),
-    subscribe: jest.fn().mockImplementation((callback) => {
+    subscribe: jest.fn().mockImplementation(callback => {
         callback('SUBSCRIBED');
         return mockChannel;
     }),
@@ -66,7 +69,9 @@ const mockDataProvider = {
     getOne: jest.fn(),
     getMany: jest.fn(),
     getManyReference: jest.fn(),
-    create: jest.fn().mockResolvedValue({ data: { ...mockSettings[0], id: 4 } }),
+    create: jest
+        .fn()
+        .mockResolvedValue({ data: { ...mockSettings[0], id: 4 } }),
     update: jest.fn().mockResolvedValue({ data: mockSettings[0] }),
     updateMany: jest.fn(),
     delete: jest.fn().mockResolvedValue({ data: mockSettings[0] }),
@@ -74,9 +79,7 @@ const mockDataProvider = {
 };
 
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <TestContext dataProvider={mockDataProvider}>
-        {children}
-    </TestContext>
+    <TestContext dataProvider={mockDataProvider}>{children}</TestContext>
 );
 
 describe('useRealtimeSettings', () => {
@@ -97,9 +100,12 @@ describe('useRealtimeSettings', () => {
     });
 
     it('filters settings by category when specified', async () => {
-        const { result } = renderHook(() => useRealtimeSettings({ category: 'priority' }), {
-            wrapper: TestWrapper,
-        });
+        const { result } = renderHook(
+            () => useRealtimeSettings({ category: 'priority' }),
+            {
+                wrapper: TestWrapper,
+            }
+        );
 
         await waitFor(() => {
             expect(mockDataProvider.getList).toHaveBeenCalledWith(
@@ -117,7 +123,9 @@ describe('useRealtimeSettings', () => {
         });
 
         await waitFor(() => {
-            expect(mockSupabaseClient.channel).toHaveBeenCalledWith('settings-changes');
+            expect(mockSupabaseClient.channel).toHaveBeenCalledWith(
+                'settings-changes'
+            );
             expect(mockChannel.on).toHaveBeenCalledWith(
                 'postgres_changes',
                 expect.objectContaining({
@@ -199,7 +207,9 @@ describe('useRealtimeSettings', () => {
     });
 
     it('handles optimistic update errors gracefully', async () => {
-        mockDataProvider.create.mockRejectedValueOnce(new Error('Network error'));
+        mockDataProvider.create.mockRejectedValueOnce(
+            new Error('Network error')
+        );
 
         const { result } = renderHook(() => useRealtimeSettings(), {
             wrapper: TestWrapper,
@@ -215,7 +225,10 @@ describe('useRealtimeSettings', () => {
 
         await waitFor(async () => {
             try {
-                await result.current.performOptimisticUpdate('create', newSetting);
+                await result.current.performOptimisticUpdate(
+                    'create',
+                    newSetting
+                );
             } catch (error) {
                 expect(error).toBeInstanceOf(Error);
             }
@@ -229,7 +242,9 @@ describe('useRealtimeSettings', () => {
 
         unmount();
 
-        expect(mockSupabaseClient.removeChannel).toHaveBeenCalledWith(mockChannel);
+        expect(mockSupabaseClient.removeChannel).toHaveBeenCalledWith(
+            mockChannel
+        );
     });
 });
 
@@ -254,9 +269,12 @@ describe('useRealtimeSettingsStats', () => {
     });
 
     it('updates stats when settings change', async () => {
-        const { result, rerender } = renderHook(() => useRealtimeSettingsStats(), {
-            wrapper: TestWrapper,
-        });
+        const { result, rerender } = renderHook(
+            () => useRealtimeSettingsStats(),
+            {
+                wrapper: TestWrapper,
+            }
+        );
 
         // Initially should have stats for mockSettings
         await waitFor(() => {
@@ -306,7 +324,9 @@ describe('useRealtimeSettingsStats', () => {
             expect(result.current.stats.total).toBe(0);
             expect(result.current.stats.active).toBe(0);
             expect(result.current.stats.inactive).toBe(0);
-            expect(Object.keys(result.current.stats.byCategory)).toHaveLength(0);
+            expect(Object.keys(result.current.stats.byCategory)).toHaveLength(
+                0
+            );
         });
     });
 });

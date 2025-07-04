@@ -17,7 +17,13 @@ export interface SecurityContext {
 }
 
 export interface SecurityEvent {
-    type: 'login' | 'logout' | 'session_timeout' | 'suspicious_activity' | 'mfa_required' | 'permission_denied';
+    type:
+        | 'login'
+        | 'logout'
+        | 'session_timeout'
+        | 'suspicious_activity'
+        | 'mfa_required'
+        | 'permission_denied';
     details?: any;
     riskScore?: number;
 }
@@ -46,7 +52,7 @@ export const useSecurity = () => {
         riskLevel: 'low',
         permissions: [],
         deviceTrusted: false,
-        requiresMFA: false
+        requiresMFA: false,
     });
 
     const [securitySettings, setSecuritySettings] = useState<SecuritySettings>({
@@ -56,10 +62,11 @@ export const useSecurity = () => {
         requireMFAForAll: false,
         passwordExpiryDays: 90,
         maxFailedAttempts: 5,
-        lockoutDurationMinutes: 15
+        lockoutDurationMinutes: 15,
     });
 
-    const [sessionTimeoutId, setSessionTimeoutId] = useState<NodeJS.Timeout | null>(null);
+    const [sessionTimeoutId, setSessionTimeoutId] =
+        useState<NodeJS.Timeout | null>(null);
 
     // Initialize security context when user identity changes
     useEffect(() => {
@@ -94,7 +101,10 @@ export const useSecurity = () => {
                 clearTimeout(sessionTimeoutId);
             }
         };
-    }, [securityContext.isAuthenticated, securityContext.sessionTimeoutMinutes]);
+    }, [
+        securityContext.isAuthenticated,
+        securityContext.sessionTimeoutMinutes,
+    ]);
 
     const updateSecurityContext = useCallback((user: User) => {
         const userPermissions = getUserPermissions(user);
@@ -113,7 +123,7 @@ export const useSecurity = () => {
             permissions: userPermissions,
             deviceTrusted: checkDeviceTrust(),
             requiresMFA,
-            lastActivity: new Date()
+            lastActivity: new Date(),
         }));
     }, []);
 
@@ -122,22 +132,37 @@ export const useSecurity = () => {
         const rolePermissions: { [key: string]: string[] } = {
             admin: ['*'], // Full access
             manager: [
-                'users:read', 'users:create', 'settings:read',
-                'organizations:*', 'contacts:*', 'interactions:*',
-                'opportunities:*', 'products:*', 'deals:*',
-                'analytics:read', 'reports:*'
+                'users:read',
+                'users:create',
+                'settings:read',
+                'organizations:*',
+                'contacts:*',
+                'interactions:*',
+                'opportunities:*',
+                'products:*',
+                'deals:*',
+                'analytics:read',
+                'reports:*',
             ],
             broker: [
-                'organizations:read', 'organizations:update',
-                'contacts:*', 'interactions:*', 'opportunities:*',
-                'deals:*', 'products:read', 'visits:*', 'tasks:*'
-            ]
+                'organizations:read',
+                'organizations:update',
+                'contacts:*',
+                'interactions:*',
+                'opportunities:*',
+                'deals:*',
+                'products:read',
+                'visits:*',
+                'tasks:*',
+            ],
         };
 
         return rolePermissions[user.role] || [];
     };
 
-    const calculateRiskLevel = (user: User): 'low' | 'medium' | 'high' | 'critical' => {
+    const calculateRiskLevel = (
+        user: User
+    ): 'low' | 'medium' | 'high' | 'critical' => {
         let riskScore = 0;
 
         // Check various risk factors
@@ -174,7 +199,8 @@ export const useSecurity = () => {
 
     const checkMFARequirement = (user: User): boolean => {
         // Check if MFA is required based on role and settings
-        if (user.role === 'admin' && securitySettings.requireMFAForAdmin) return true;
+        if (user.role === 'admin' && securitySettings.requireMFAForAdmin)
+            return true;
         if (securitySettings.requireMFAForAll) return true;
         return false;
     };
@@ -182,7 +208,9 @@ export const useSecurity = () => {
     const checkDeviceTrust = (): boolean => {
         // In production, check device fingerprint and history
         const deviceId = localStorage.getItem('deviceId');
-        const trustedDevices = JSON.parse(localStorage.getItem('trustedDevices') || '[]');
+        const trustedDevices = JSON.parse(
+            localStorage.getItem('trustedDevices') || '[]'
+        );
         return trustedDevices.includes(deviceId);
     };
 
@@ -207,7 +235,7 @@ export const useSecurity = () => {
         const newTimeoutId = setTimeout(() => {
             logSecurityEvent({
                 type: 'session_timeout',
-                details: { reason: 'idle_timeout' }
+                details: { reason: 'idle_timeout' },
             });
             handleSessionTimeout();
         }, timeoutMs);
@@ -216,7 +244,9 @@ export const useSecurity = () => {
     }, [securityContext.sessionTimeoutMinutes, sessionTimeoutId]);
 
     const handleSessionTimeout = useCallback(() => {
-        notify('Your session has expired due to inactivity', { type: 'warning' });
+        notify('Your session has expired due to inactivity', {
+            type: 'warning',
+        });
         // In production, trigger logout
         window.location.href = '/login';
     }, [notify]);
@@ -224,7 +254,7 @@ export const useSecurity = () => {
     const updateLastActivity = useCallback(() => {
         setSecurityContext(prev => ({
             ...prev,
-            lastActivity: new Date()
+            lastActivity: new Date(),
         }));
 
         // Reset session timeout
@@ -233,30 +263,33 @@ export const useSecurity = () => {
         }
     }, [securityContext.isAuthenticated, setupSessionTimeout]);
 
-    const logSecurityEvent = useCallback(async (event: SecurityEvent) => {
-        try {
-            // In production, send to security logging API
-            const securityEventData = {
-                userId: securityContext.user?.id,
-                userEmail: securityContext.user?.email,
-                eventType: event.type,
-                eventCategory: getEventCategory(event.type),
-                action: event.type,
-                ipAddress: await getClientIP(),
-                userAgent: navigator.userAgent,
-                deviceFingerprint: getDeviceFingerprint(),
-                riskScore: event.riskScore || 0,
-                details: event.details || {},
-                success: true,
-                timestamp: new Date().toISOString()
-            };
+    const logSecurityEvent = useCallback(
+        async (event: SecurityEvent) => {
+            try {
+                // In production, send to security logging API
+                const securityEventData = {
+                    userId: securityContext.user?.id,
+                    userEmail: securityContext.user?.email,
+                    eventType: event.type,
+                    eventCategory: getEventCategory(event.type),
+                    action: event.type,
+                    ipAddress: await getClientIP(),
+                    userAgent: navigator.userAgent,
+                    deviceFingerprint: getDeviceFingerprint(),
+                    riskScore: event.riskScore || 0,
+                    details: event.details || {},
+                    success: true,
+                    timestamp: new Date().toISOString(),
+                };
 
-            console.log('Security event logged:', securityEventData);
-            // API call would go here
-        } catch (error) {
-            console.error('Failed to log security event:', error);
-        }
-    }, [securityContext.user]);
+                console.log('Security event logged:', securityEventData);
+                // API call would go here
+            } catch (error) {
+                console.error('Failed to log security event:', error);
+            }
+        },
+        [securityContext.user]
+    );
 
     const getEventCategory = (eventType: string): string => {
         const categoryMap: { [key: string]: string } = {
@@ -265,7 +298,7 @@ export const useSecurity = () => {
             session_timeout: 'authentication',
             suspicious_activity: 'security_violation',
             mfa_required: 'authentication',
-            permission_denied: 'authorization'
+            permission_denied: 'authorization',
         };
 
         return categoryMap[eventType] || 'security_violation';
@@ -295,37 +328,40 @@ export const useSecurity = () => {
             navigator.language,
             screen.width + 'x' + screen.height,
             new Date().getTimezoneOffset(),
-            canvas.toDataURL()
+            canvas.toDataURL(),
         ].join('|');
 
         // Simple hash function
         let hash = 0;
         for (let i = 0; i < fingerprint.length; i++) {
             const char = fingerprint.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
+            hash = (hash << 5) - hash + char;
             hash = hash & hash; // Convert to 32-bit integer
         }
 
         return Math.abs(hash).toString(16);
     };
 
-    const checkPermission = useCallback((permission: string): boolean => {
-        if (!securityContext.isAuthenticated) return false;
-        
-        const userPermissions = securityContext.permissions;
-        
-        // Check for wildcard permission (admin)
-        if (userPermissions.includes('*')) return true;
-        
-        // Check for exact permission match
-        if (userPermissions.includes(permission)) return true;
-        
-        // Check for resource wildcard (e.g., "organizations:*")
-        const [resource] = permission.split(':');
-        if (userPermissions.includes(`${resource}:*`)) return true;
-        
-        return false;
-    }, [securityContext.isAuthenticated, securityContext.permissions]);
+    const checkPermission = useCallback(
+        (permission: string): boolean => {
+            if (!securityContext.isAuthenticated) return false;
+
+            const userPermissions = securityContext.permissions;
+
+            // Check for wildcard permission (admin)
+            if (userPermissions.includes('*')) return true;
+
+            // Check for exact permission match
+            if (userPermissions.includes(permission)) return true;
+
+            // Check for resource wildcard (e.g., "organizations:*")
+            const [resource] = permission.split(':');
+            if (userPermissions.includes(`${resource}:*`)) return true;
+
+            return false;
+        },
+        [securityContext.isAuthenticated, securityContext.permissions]
+    );
 
     const requireMFA = useCallback(async (): Promise<boolean> => {
         if (!securityContext.requiresMFA) return true;
@@ -334,41 +370,57 @@ export const useSecurity = () => {
         logSecurityEvent({
             type: 'mfa_required',
             details: { reason: 'mfa_required_for_role' },
-            riskScore: 60
+            riskScore: 60,
         });
 
-        notify('Multi-factor authentication is required for your account', { type: 'error' });
+        notify('Multi-factor authentication is required for your account', {
+            type: 'error',
+        });
         return false;
-    }, [securityContext.requiresMFA, securityContext.mfaEnabled, logSecurityEvent, notify]);
+    }, [
+        securityContext.requiresMFA,
+        securityContext.mfaEnabled,
+        logSecurityEvent,
+        notify,
+    ]);
 
-    const validateAccess = useCallback(async (resource: string, action: string): Promise<boolean> => {
-        const permission = `${resource}:${action}`;
-        
-        // Check basic permission
-        if (!checkPermission(permission)) {
-            logSecurityEvent({
-                type: 'permission_denied',
-                details: { 
-                    resource, 
-                    action, 
-                    permission,
-                    userRole: securityContext.user?.role 
-                },
-                riskScore: 30
-            });
-            return false;
-        }
+    const validateAccess = useCallback(
+        async (resource: string, action: string): Promise<boolean> => {
+            const permission = `${resource}:${action}`;
 
-        // Check MFA requirement for sensitive operations
-        if (['delete', 'admin'].includes(action)) {
-            return await requireMFA();
-        }
+            // Check basic permission
+            if (!checkPermission(permission)) {
+                logSecurityEvent({
+                    type: 'permission_denied',
+                    details: {
+                        resource,
+                        action,
+                        permission,
+                        userRole: securityContext.user?.role,
+                    },
+                    riskScore: 30,
+                });
+                return false;
+            }
 
-        // Update activity tracking
-        updateLastActivity();
+            // Check MFA requirement for sensitive operations
+            if (['delete', 'admin'].includes(action)) {
+                return await requireMFA();
+            }
 
-        return true;
-    }, [checkPermission, requireMFA, updateLastActivity, logSecurityEvent, securityContext.user]);
+            // Update activity tracking
+            updateLastActivity();
+
+            return true;
+        },
+        [
+            checkPermission,
+            requireMFA,
+            updateLastActivity,
+            logSecurityEvent,
+            securityContext.user,
+        ]
+    );
 
     const loadSecuritySettings = useCallback(async () => {
         try {
@@ -381,29 +433,33 @@ export const useSecurity = () => {
                 requireMFAForAll: false,
                 passwordExpiryDays: 90,
                 maxFailedAttempts: 5,
-                lockoutDurationMinutes: 15
+                lockoutDurationMinutes: 15,
             };
 
             setSecuritySettings(defaultSettings);
-            
+
             // Update security context with new settings
             setSecurityContext(prev => ({
                 ...prev,
                 sessionTimeoutMinutes: defaultSettings.sessionTimeoutMinutes,
-                requiresMFA: identity ? checkMFARequirement({
-                    id: String(identity.id),
-                    email: identity.email || '',
-                    firstName: identity.firstName || '',
-                    lastName: identity.lastName || '',
-                    role: identity.role || 'broker',
-                    territory: identity.territory || [],
-                    principals: identity.principals || [],
-                    avatar: identity.avatar,
-                    isActive: identity.isActive ?? true,
-                    lastLoginAt: identity.lastLoginAt,
-                    createdAt: identity.createdAt || new Date().toISOString(),
-                    updatedAt: identity.updatedAt || new Date().toISOString(),
-                }) : false
+                requiresMFA: identity
+                    ? checkMFARequirement({
+                          id: String(identity.id),
+                          email: identity.email || '',
+                          firstName: identity.firstName || '',
+                          lastName: identity.lastName || '',
+                          role: identity.role || 'broker',
+                          territory: identity.territory || [],
+                          principals: identity.principals || [],
+                          avatar: identity.avatar,
+                          isActive: identity.isActive ?? true,
+                          lastLoginAt: identity.lastLoginAt,
+                          createdAt:
+                              identity.createdAt || new Date().toISOString(),
+                          updatedAt:
+                              identity.updatedAt || new Date().toISOString(),
+                      })
+                    : false,
             }));
         } catch (error) {
             console.error('Failed to load security settings:', error);
@@ -423,7 +479,7 @@ export const useSecurity = () => {
         requireMFA,
         updateLastActivity,
         logSecurityEvent,
-        loadSecuritySettings
+        loadSecuritySettings,
     };
 };
 

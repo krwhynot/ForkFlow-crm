@@ -126,7 +126,7 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
     const getActionPosition = (index: number) => {
         const spacing = 60; // pixels between actions
         const offset = (index + 1) * spacing;
-        
+
         switch (direction) {
             case 'up':
                 return { bottom: offset };
@@ -142,19 +142,23 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
     };
 
     return (
-        <div ref={speedDialRef} className={cn('fixed bottom-4 right-4 z-50', className)}>
+        <div
+            ref={speedDialRef}
+            className={cn('fixed bottom-4 right-4 z-50', className)}
+        >
             {/* Speed Dial Actions */}
-            {isOpen && React.Children.map(children, (child, index) => (
-                <div
-                    key={index}
-                    className="absolute transition-all duration-200 ease-in-out"
-                    style={getActionPosition(index)}
-                >
-                    {React.cloneElement(child as React.ReactElement, {
-                        onActionClick: handleClose,
-                    })}
-                </div>
-            ))}
+            {isOpen &&
+                React.Children.map(children, (child, index) => (
+                    <div
+                        key={index}
+                        className="absolute transition-all duration-200 ease-in-out"
+                        style={getActionPosition(index)}
+                    >
+                        {React.cloneElement(child as React.ReactElement, {
+                            onActionClick: handleClose,
+                        })}
+                    </div>
+                ))}
 
             {/* Main FAB */}
             <Fab
@@ -163,7 +167,12 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
                 aria-label={ariaLabel}
                 className="shadow-xl"
             >
-                <div className={cn('transition-transform duration-200', isOpen && 'rotate-45')}>
+                <div
+                    className={cn(
+                        'transition-transform duration-200',
+                        isOpen && 'rotate-45'
+                    )}
+                >
                     {icon}
                 </div>
             </Fab>
@@ -174,14 +183,9 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
 /**
  * Speed Dial Action component
  */
-export const SpeedDialAction: React.FC<SpeedDialActionProps & { onActionClick?: () => void }> = ({
-    icon,
-    tooltipTitle,
-    onClick,
-    color,
-    className,
-    onActionClick,
-}) => {
+export const SpeedDialAction: React.FC<
+    SpeedDialActionProps & { onActionClick?: () => void }
+> = ({ icon, tooltipTitle, onClick, color, className, onActionClick }) => {
     const handleClick = () => {
         onClick();
         if (onActionClick) onActionClick();
@@ -193,7 +197,7 @@ export const SpeedDialAction: React.FC<SpeedDialActionProps & { onActionClick?: 
             <div className="bg-gray-800 text-white px-2 py-1 rounded text-sm whitespace-nowrap">
                 {tooltipTitle}
             </div>
-            
+
             {/* Action Button */}
             <button
                 className={cn(

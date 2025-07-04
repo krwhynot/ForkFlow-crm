@@ -26,9 +26,8 @@ import {
     Stack,
     Alert,
     Chip,
-    TextField,
     Button,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     PhotoCamera as PhotoCameraIcon,
     Delete as DeleteIcon,
@@ -53,9 +52,7 @@ const generateRandomPassword = (): string => {
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
     let password = '';
     for (let i = 0; i < length; i++) {
-        password += charset.charAt(
-            Math.floor(Math.random() * charset.length)
-        );
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
     }
     return password;
 };
@@ -67,12 +64,7 @@ export const UserCreate = () => {
         <Create
             title="Create New User"
             redirect="list"
-            sx={{
-                '& .RaCreate-main': {
-                    maxWidth: isMobile ? '100%' : 800,
-                    margin: '0 auto',
-                },
-            }}
+            className={`${isMobile ? 'w-full' : 'max-w-4xl mx-auto'}`}
         >
             <UserCreateForm />
         </Create>
@@ -93,9 +85,7 @@ const UserCreateForm = () => {
     const redirect = useRedirect();
     const isMobile = useBreakpoint('sm');
 
-    const handleAvatarChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             // Validate file size (max 5MB)
@@ -114,7 +104,7 @@ const UserCreateForm = () => {
 
             // Create preview URL
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
                 setAvatarPreview(e.target?.result as string);
             };
             reader.readAsDataURL(file);
@@ -127,10 +117,7 @@ const UserCreateForm = () => {
     };
 
     const handleAddTerritory = () => {
-        if (
-            newTerritory.trim() &&
-            !territory.includes(newTerritory.trim())
-        ) {
+        if (newTerritory.trim() && !territory.includes(newTerritory.trim())) {
             const validation = validateTerritory([
                 ...territory,
                 newTerritory.trim(),
@@ -148,21 +135,18 @@ const UserCreateForm = () => {
     };
 
     const handleRemoveTerritory = (territoryToRemove: string) => {
-        setTerritory(territory.filter((t) => t !== territoryToRemove));
+        setTerritory(territory.filter(t => t !== territoryToRemove));
     };
 
     const handleAddPrincipal = () => {
-        if (
-            newPrincipal.trim() &&
-            !principals.includes(newPrincipal.trim())
-        ) {
+        if (newPrincipal.trim() && !principals.includes(newPrincipal.trim())) {
             setPrincipals([...principals, newPrincipal.trim()]);
             setNewPrincipal('');
         }
     };
 
     const handleRemovePrincipal = (principalToRemove: string) => {
-        setPrincipals(principals.filter((p) => p !== principalToRemove));
+        setPrincipals(principals.filter(p => p !== principalToRemove));
     };
 
     const handleGeneratePassword = () => {
@@ -191,32 +175,22 @@ const UserCreateForm = () => {
     };
 
     return (
-        <SimpleForm
-            toolbar={<UserCreateToolbar />}
-            sx={{ maxWidth: 'none' }}
-        >
-            <Card sx={{ mb: 3, width: '100%' }}>
+        <SimpleForm toolbar={<UserCreateToolbar />} className="max-w-none">
+            <Card className="mb-6 w-full">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Basic Information
                     </Typography>
 
                     {/* Avatar Section */}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            mb: 3,
-                        }}
-                    >
+                    <Box className="flex items-center gap-4 mb-6">
                         <Avatar
                             src={avatarPreview || undefined}
-                            sx={{
-                                width: isMobile ? 80 : 100,
-                                height: isMobile ? 80 : 100,
-                                fontSize: isMobile ? '2rem' : '2.5rem',
-                            }}
+                            className={`${
+                                isMobile
+                                    ? 'w-20 h-20 text-2xl'
+                                    : 'w-25 h-25 text-3xl'
+                            }`}
                         >
                             <PersonIcon fontSize="large" />
                         </Avatar>
@@ -230,19 +204,16 @@ const UserCreateForm = () => {
                             />
                             <label htmlFor="avatar-upload">
                                 <IconButton
-                                    color="primary"
+                                    className="text-blue-600 min-h-11 min-w-11"
                                     aria-label="upload picture"
-                                    component="span"
-                                    sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     <PhotoCameraIcon />
                                 </IconButton>
                             </label>
                             {avatarPreview && (
                                 <IconButton
-                                    color="error"
+                                    className="text-red-600 min-h-11 min-w-11"
                                     onClick={handleRemoveAvatar}
-                                    sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     <DeleteIcon />
                                 </IconButton>
@@ -254,15 +225,16 @@ const UserCreateForm = () => {
                     <Stack
                         direction={isMobile ? 'column' : 'row'}
                         spacing={2}
-                        sx={{ mb: 3 }}
+                        className="mb-6"
                     >
                         <TextInput
                             source="firstName"
                             label="First Name"
                             validate={[required(), minLength(2)]}
                             fullWidth
-                            sx={{
-                                '& .MuiInputBase-input': {
+                            className="text-base"
+                            inputProps={{
+                                style: {
                                     fontSize: isMobile ? '16px' : '14px',
                                 },
                             }}
@@ -272,8 +244,9 @@ const UserCreateForm = () => {
                             label="Last Name"
                             validate={[required(), minLength(2)]}
                             fullWidth
-                            sx={{
-                                '& .MuiInputBase-input': {
+                            className="text-base"
+                            inputProps={{
+                                style: {
                                     fontSize: isMobile ? '16px' : '14px',
                                 },
                             }}
@@ -286,9 +259,9 @@ const UserCreateForm = () => {
                         label="Email Address"
                         validate={[required(), email()]}
                         fullWidth
-                        sx={{
-                            mb: 3,
-                            '& .MuiInputBase-input': {
+                        className="mb-6 text-base"
+                        inputProps={{
+                            style: {
                                 fontSize: isMobile ? '16px' : '14px',
                             },
                         }}
@@ -301,12 +274,12 @@ const UserCreateForm = () => {
                         choices={roleChoices}
                         validate={[required()]}
                         fullWidth
-                        sx={{ mb: 3 }}
+                        className="mb-6"
                     />
 
                     <FormDataConsumer>
                         {({ formData }) => (
-                            <Box sx={{ mb: 3 }}>
+                            <Box className="mb-6">
                                 <Typography
                                     variant="body2"
                                     color="text.secondary"
@@ -328,59 +301,42 @@ const UserCreateForm = () => {
                         source="isActive"
                         label="Active User"
                         defaultValue={true}
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                     />
                 </CardContent>
             </Card>
 
             {/* Password Section */}
-            <Card sx={{ mb: 3, width: '100%' }}>
+            <Card className="mb-6 w-full">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Password Setup
                     </Typography>
 
-                    <Alert severity="info" sx={{ mb: 3 }}>
+                    <Alert variant="info" className="mb-6">
                         A secure password will be generated automatically. The
                         user will be able to change it after first login.
                     </Alert>
 
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 2,
-                            alignItems: 'center',
-                            mb: 2,
-                        }}
-                    >
+                    <Box className="flex gap-4 items-center mb-4">
                         <Button
                             variant="outlined"
                             onClick={handleGeneratePassword}
-                            sx={{ minHeight: 44 }}
+                            className="min-h-11"
                         >
                             Generate Password
                         </Button>
                         {password && showPassword && (
                             <Typography
                                 variant="body2"
-                                sx={{
-                                    fontFamily: 'monospace',
-                                    bgcolor: 'background.paper',
-                                    p: 1,
-                                    borderRadius: 1,
-                                    border: 1,
-                                    borderColor: 'divider',
-                                }}
+                                className="font-mono bg-white p-2 rounded border border-gray-300"
                             >
                                 {password}
                             </Typography>
                         )}
                     </Box>
 
-                    <Typography
-                        variant="caption"
-                        color="text.secondary"
-                    >
+                    <Typography variant="caption" color="text.secondary">
                         The generated password will be sent to the user via
                         email.
                     </Typography>
@@ -392,7 +348,7 @@ const UserCreateForm = () => {
                     formData.role === 'broker' && (
                         <>
                             {/* Territory Management */}
-                            <Card sx={{ mb: 3, width: '100%' }}>
+                            <Card className="mb-6 w-full">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Sales Territory
@@ -408,64 +364,41 @@ const UserCreateForm = () => {
                                         Angeles), or ZIP codes (90210).
                                     </Typography>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            mb: 2,
-                                            flexWrap: 'wrap',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <TextField
-                                            label="Add Territory"
+                                    <Box className="flex gap-2 mb-4 flex-wrap items-center">
+                                        <input
+                                            type="text"
+                                            placeholder="Add Territory"
                                             value={newTerritory}
-                                            onChange={(e) =>
+                                            onChange={e =>
                                                 setNewTerritory(e.target.value)
                                             }
-                                            size="small"
-                                            onKeyPress={(e) =>
+                                            onKeyPress={e =>
                                                 e.key === 'Enter' &&
                                                 (e.preventDefault(),
                                                 handleAddTerritory())
                                             }
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: isMobile
-                                                        ? '16px'
-                                                        : '14px',
-                                                },
-                                            }}
+                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                                isMobile ? 'text-base' : 'text-sm'
+                                            }`}
                                         />
                                         <IconButton
                                             onClick={handleAddTerritory}
-                                            color="primary"
+                                            className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newTerritory.trim()}
-                                            sx={{
-                                                minHeight: 44,
-                                                minWidth: 44,
-                                            }}
                                         >
                                             <AddIcon />
                                         </IconButton>
                                     </Box>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
-                                        {territory.map((area) => (
+                                    <Box className="flex gap-2 flex-wrap">
+                                        {territory.map(area => (
                                             <Chip
                                                 key={area}
                                                 label={area}
                                                 onDelete={() =>
                                                     handleRemoveTerritory(area)
                                                 }
-                                                color="primary"
-                                                variant="outlined"
+                                                className="border-blue-500 text-blue-500"
                                             />
                                         ))}
                                         {territory.length === 0 && (
@@ -481,7 +414,7 @@ const UserCreateForm = () => {
                             </Card>
 
                             {/* Principals Management */}
-                            <Card sx={{ mb: 3, width: '100%' }}>
+                            <Card className="mb-6 w-full">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Principals/Brands
@@ -496,56 +429,34 @@ const UserCreateForm = () => {
                                         or brands this broker represents.
                                     </Typography>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            mb: 2,
-                                            flexWrap: 'wrap',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <TextField
-                                            label="Add Principal"
+                                    <Box className="flex gap-2 mb-4 flex-wrap items-center">
+                                        <input
+                                            type="text"
+                                            placeholder="Add Principal"
                                             value={newPrincipal}
-                                            onChange={(e) =>
+                                            onChange={e =>
                                                 setNewPrincipal(e.target.value)
                                             }
-                                            size="small"
-                                            onKeyPress={(e) =>
+                                            onKeyPress={e =>
                                                 e.key === 'Enter' &&
                                                 (e.preventDefault(),
                                                 handleAddPrincipal())
                                             }
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: isMobile
-                                                        ? '16px'
-                                                        : '14px',
-                                                },
-                                            }}
+                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                                isMobile ? 'text-base' : 'text-sm'
+                                            }`}
                                         />
                                         <IconButton
                                             onClick={handleAddPrincipal}
-                                            color="primary"
+                                            className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newPrincipal.trim()}
-                                            sx={{
-                                                minHeight: 44,
-                                                minWidth: 44,
-                                            }}
                                         >
                                             <AddIcon />
                                         </IconButton>
                                     </Box>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 1,
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
-                                        {principals.map((principal) => (
+                                    <Box className="flex gap-2 flex-wrap">
+                                        {principals.map(principal => (
                                             <Chip
                                                 key={principal}
                                                 label={principal}
@@ -554,8 +465,7 @@ const UserCreateForm = () => {
                                                         principal
                                                     )
                                                 }
-                                                color="secondary"
-                                                variant="outlined"
+                                                className="border-gray-500 text-gray-600"
                                             />
                                         ))}
                                         {principals.length === 0 && (
@@ -578,10 +488,7 @@ const UserCreateForm = () => {
 };
 
 const UserCreateToolbar = () => (
-    <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <SaveButton
-            variant="contained"
-            sx={{ minHeight: 48, px: 4 }}
-        />
+    <Toolbar className="flex justify-between">
+        <SaveButton variant="contained" className="min-h-12 px-8" />
     </Toolbar>
 );

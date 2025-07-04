@@ -7,7 +7,7 @@ import {
     ShowButton,
     DeleteButton,
 } from 'react-admin';
-import { Box } from '@mui/material';
+import { Box } from '@/components/ui-kit';
 
 import { InteractionInputs } from './InteractionInputs';
 
@@ -29,15 +29,10 @@ export const InteractionEdit = () => {
         <Edit
             actions={<EditActions />}
             transform={transform}
-            sx={{
-                '& .RaEdit-main': {
-                    maxWidth: 800,
-                    margin: '0 auto',
-                },
-            }}
+            className="[&_.RaEdit-main]:max-w-4xl [&_.RaEdit-main]:mx-auto"
         >
             <SimpleForm>
-                <Box sx={{ width: '100%', maxWidth: 600 }}>
+                <Box className="w-full max-w-xl">
                     <InteractionInputs />
                 </Box>
             </SimpleForm>

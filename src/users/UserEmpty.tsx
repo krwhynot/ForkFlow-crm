@@ -25,15 +25,27 @@ export const UserEmpty = () => {
             </Typography>
 
             <Box className="mb-6">
-                <Typography variant="body2" component="div" className="text-left">
+                <Typography
+                    variant="body2"
+                    component="div"
+                    className="text-left"
+                >
                     • <strong>Admin:</strong> Full system access and user
                     management
                 </Typography>
-                <Typography variant="body2" component="div" className="text-left">
+                <Typography
+                    variant="body2"
+                    component="div"
+                    className="text-left"
+                >
                     • <strong>Manager:</strong> Team oversight and reporting
                     access
                 </Typography>
-                <Typography variant="body2" component="div" className="text-left">
+                <Typography
+                    variant="body2"
+                    component="div"
+                    className="text-left"
+                >
                     • <strong>Broker:</strong> Field sales with territory-based
                     access
                 </Typography>

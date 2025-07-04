@@ -6,11 +6,7 @@ type CardContentProps = React.HTMLAttributes<HTMLDivElement>;
 export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
     ({ className, ...props }, ref) => {
         return (
-            <div
-                ref={ref}
-                className={twMerge('p-4', className)}
-                {...props}
-            />
+            <div ref={ref} className={twMerge('p-4', className)} {...props} />
         );
     }
 );

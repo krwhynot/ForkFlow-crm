@@ -6,7 +6,7 @@ import {
     Box,
     Typography,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     FilterList,
     FilterListItem,
@@ -36,37 +36,29 @@ export const UserListFilter = () => {
     }
 
     return (
-        <Card
-            sx={{
-                order: -1,
-                mr: 2,
-                mt: 9,
-                width: 250,
-                minHeight: 'fit-content',
-                alignSelf: 'flex-start',
-            }}
-        >
-            <CardContent sx={{ pt: 1 }}>
+        <Card className="order-first mr-4 mt-24 w-64 min-h-fit self-start">
+            <CardContent className="pt-2">
                 <FilterLiveSearch
                     placeholder="Search users..."
-                    sx={{ mb: 2 }}
+                    className="mb-4"
                 />
 
-                <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem' }}>
+                <Typography variant="h6" gutterBottom className="text-base">
                     Filter Users
                 </Typography>
 
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-4" />
 
                 {/* Role Filters */}
-                <Box mb={2}>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontSize: '0.875rem' }}>
+                <Box className="mb-4">
+                    <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        className="text-sm"
+                    >
                         Role
                     </Typography>
-                    <FilterList
-                        label="Role"
-                        icon={<PersonIcon />}
-                    >
+                    <FilterList label="Role" icon={<PersonIcon />}>
                         <FilterListItem
                             label="Admin"
                             icon={<AdminIcon />}
@@ -85,17 +77,18 @@ export const UserListFilter = () => {
                     </FilterList>
                 </Box>
 
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-4" />
 
                 {/* Status Filters */}
-                <Box mb={2}>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontSize: '0.875rem' }}>
+                <Box className="mb-4">
+                    <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        className="text-sm"
+                    >
                         Status
                     </Typography>
-                    <FilterList
-                        label="Status"
-                        icon={<ActiveIcon />}
-                    >
+                    <FilterList label="Status" icon={<ActiveIcon />}>
                         <FilterListItem
                             label="Active Users"
                             icon={<ActiveIcon />}
@@ -109,29 +102,34 @@ export const UserListFilter = () => {
                     </FilterList>
                 </Box>
 
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-4" />
 
                 {/* Activity Filters */}
-                <Box mb={2}>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontSize: '0.875rem' }}>
+                <Box className="mb-4">
+                    <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        className="text-sm"
+                    >
                         Activity
                     </Typography>
-                    <FilterList
-                        label="Recent Activity"
-                        icon={<RecentIcon />}
-                    >
+                    <FilterList label="Recent Activity" icon={<RecentIcon />}>
                         <FilterListItem
                             label="Logged in this week"
                             icon={<RecentIcon />}
                             value={{
-                                lastLoginAt_gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                                lastLoginAt_gte: new Date(
+                                    Date.now() - 7 * 24 * 60 * 60 * 1000
+                                ).toISOString(),
                             }}
                         />
                         <FilterListItem
                             label="Logged in this month"
                             icon={<RecentIcon />}
                             value={{
-                                lastLoginAt_gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+                                lastLoginAt_gte: new Date(
+                                    Date.now() - 30 * 24 * 60 * 60 * 1000
+                                ).toISOString(),
                             }}
                         />
                         <FilterListItem
@@ -142,11 +140,15 @@ export const UserListFilter = () => {
                     </FilterList>
                 </Box>
 
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-4" />
 
                 {/* Territory Filters */}
-                <Box mb={2}>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontSize: '0.875rem' }}>
+                <Box className="mb-4">
+                    <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        className="text-sm"
+                    >
                         Territory
                     </Typography>
                     <FilterList
@@ -166,15 +168,20 @@ export const UserListFilter = () => {
                     </FilterList>
                 </Box>
 
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-4" />
 
                 {/* Quick Stats */}
-                <Box>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontSize: '0.875rem' }}>
+                <Box className="">
+                    <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        className="text-sm"
+                    >
                         Quick Stats
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        Use filters above to view specific user groups and manage access levels.
+                    <Typography variant="caption" className="text-gray-500">
+                        Use filters above to view specific user groups and
+                        manage access levels.
                     </Typography>
                 </Box>
             </CardContent>

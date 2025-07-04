@@ -1,22 +1,18 @@
 import React, { useState, useCallback, useMemo } from 'react';
+import { Stepper, Step, StepLabel, StepContent, Collapse } from '@mui/material';
 import {
     Box,
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
     Button,
     Typography,
     Paper,
-    useTheme,
-    useMediaQuery,
-    Collapse,
     Alert,
     LinearProgress,
     Chip,
     IconButton,
     Tooltip,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
 import {
     ArrowBack as ArrowBackIcon,
     ArrowForward as ArrowForwardIcon,
@@ -37,7 +33,7 @@ import {
     required,
 } from 'react-admin';
 import { Organization } from '../../types';
-import { 
+import {
     BasicInfoStep,
     ContactDetailsStep,
     BusinessDetailsStep,
@@ -71,102 +67,139 @@ interface StepState {
  * - Progress saving and form recovery
  * - Accessibility compliance with ARIA labels
  */
-export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreateProps> = ({
-    onClose,
-    defaultValues = {},
-    redirectOnSave = 'show',
-}) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+export const MultiStepOrganizationCreate: React.FC<
+    MultiStepOrganizationCreateProps
+> = ({ onClose, defaultValues = {}, redirectOnSave = 'show' }) => {
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const { identity } = useGetIdentity();
     const notify = useNotify();
     const redirect = useRedirect();
 
     // Form state
     const [activeStep, setActiveStep] = useState(0);
-    const [formData, setFormData] = useState<Partial<Organization>>(defaultValues);
+    const [formData, setFormData] =
+        useState<Partial<Organization>>(defaultValues);
     const [stepStates, setStepStates] = useState<Record<number, StepState>>({
-        0: { completed: false, hasErrors: false, isValid: false, errorCount: 0, warningCount: 0 },
-        1: { completed: false, hasErrors: false, isValid: false, errorCount: 0, warningCount: 0 },
-        2: { completed: false, hasErrors: false, isValid: false, errorCount: 0, warningCount: 0 },
+        0: {
+            completed: false,
+            hasErrors: false,
+            isValid: false,
+            errorCount: 0,
+            warningCount: 0,
+        },
+        1: {
+            completed: false,
+            hasErrors: false,
+            isValid: false,
+            errorCount: 0,
+            warningCount: 0,
+        },
+        2: {
+            completed: false,
+            hasErrors: false,
+            isValid: false,
+            errorCount: 0,
+            warningCount: 0,
+        },
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+    const [validationErrors, setValidationErrors] = useState<
+        Record<string, string>
+    >({});
 
     // Steps configuration
-    const steps: FormStep[] = useMemo(() => [
-        {
-            id: 'basic-info',
-            label: 'Basic Information',
-            description: 'Organization name and primary details',
-            icon: '🏢',
-            component: BasicInfoStep,
-            validate: validateBasicInfo,
-            required: true,
-        },
-        {
-            id: 'contact-details',
-            label: 'Contact Details',
-            description: 'Website, phone, and address information',
-            icon: '📞',
-            component: ContactDetailsStep,
-            validate: validateContactDetails,
-            required: false,
-        },
-        {
-            id: 'business-details',
-            label: 'Business Details',
-            description: 'Priority, segment, and business context',
-            icon: '💼',
-            component: BusinessDetailsStep,
-            validate: validateBusinessDetails,
-            required: false,
-        },
-    ], []);
+    const steps: FormStep[] = useMemo(
+        () => [
+            {
+                id: 'basic-info',
+                label: 'Basic Information',
+                description: 'Organization name and primary details',
+                icon: '🏢',
+                component: BasicInfoStep,
+                validate: validateBasicInfo,
+                required: true,
+            },
+            {
+                id: 'contact-details',
+                label: 'Contact Details',
+                description: 'Website, phone, and address information',
+                icon: '📞',
+                component: ContactDetailsStep,
+                validate: validateContactDetails,
+                required: false,
+            },
+            {
+                id: 'business-details',
+                label: 'Business Details',
+                description: 'Priority, segment, and business context',
+                icon: '💼',
+                component: BusinessDetailsStep,
+                validate: validateBusinessDetails,
+                required: false,
+            },
+        ],
+        []
+    );
 
     // Validate current step
-    const validateStep = useCallback(async (stepIndex: number, data: Partial<Organization>): Promise<StepValidationResult> => {
-        const step = steps[stepIndex];
-        if (!step.validate) {
-            return { isValid: true, errors: [], warnings: [] };
-        }
-        return step.validate(data);
-    }, [steps]);
+    const validateStep = useCallback(
+        async (
+            stepIndex: number,
+            data: Partial<Organization>
+        ): Promise<StepValidationResult> => {
+            const step = steps[stepIndex];
+            if (!step.validate) {
+                return { isValid: true, errors: [], warnings: [] };
+            }
+            return step.validate(data);
+        },
+        [steps]
+    );
 
     // Update step validation state
-    const updateStepState = useCallback(async (stepIndex: number, data: Partial<Organization>) => {
-        const validation = await validateStep(stepIndex, data);
-        
-        setStepStates(prev => ({
-            ...prev,
-            [stepIndex]: {
-                completed: validation.isValid && steps[stepIndex].required ? true : prev[stepIndex].completed,
-                hasErrors: validation.errors.length > 0,
-                isValid: validation.isValid,
-                errorCount: validation.errors.length,
-                warningCount: validation.warnings.length,
-            }
-        }));
+    const updateStepState = useCallback(
+        async (stepIndex: number, data: Partial<Organization>) => {
+            const validation = await validateStep(stepIndex, data);
 
-        return validation;
-    }, [validateStep, steps]);
+            setStepStates(prev => ({
+                ...prev,
+                [stepIndex]: {
+                    completed:
+                        validation.isValid && steps[stepIndex].required
+                            ? true
+                            : prev[stepIndex].completed,
+                    hasErrors: validation.errors.length > 0,
+                    isValid: validation.isValid,
+                    errorCount: validation.errors.length,
+                    warningCount: validation.warnings.length,
+                },
+            }));
+
+            return validation;
+        },
+        [validateStep, steps]
+    );
 
     // Handle form data change
-    const handleFormDataChange = useCallback(async (newData: Partial<Organization>) => {
-        setFormData(newData);
-        await updateStepState(activeStep, newData);
-    }, [activeStep, updateStepState]);
+    const handleFormDataChange = useCallback(
+        async (newData: Partial<Organization>) => {
+            setFormData(newData);
+            await updateStepState(activeStep, newData);
+        },
+        [activeStep, updateStepState]
+    );
 
     // Navigate to next step
     const handleNext = useCallback(async () => {
         const validation = await validateStep(activeStep, formData);
-        
+
         if (validation.isValid || !steps[activeStep].required) {
             setStepStates(prev => ({
                 ...prev,
-                [activeStep]: { ...prev[activeStep], completed: true }
+                [activeStep]: { ...prev[activeStep], completed: true },
             }));
-            
+
             if (activeStep < steps.length - 1) {
                 setActiveStep(prev => prev + 1);
             }
@@ -177,8 +210,10 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                 errors[error.field] = error.message;
             });
             setValidationErrors(errors);
-            
-            notify('Please fix the errors before proceeding', { type: 'warning' });
+
+            notify('Please fix the errors before proceeding', {
+                type: 'warning',
+            });
         }
     }, [activeStep, formData, validateStep, steps, notify]);
 
@@ -190,16 +225,21 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
     }, [activeStep]);
 
     // Jump to specific step
-    const handleStepClick = useCallback((stepIndex: number) => {
-        // Only allow jumping to previous steps or next step if current is valid
-        if (stepIndex <= activeStep || stepStates[activeStep].isValid) {
-            setActiveStep(stepIndex);
-        }
-    }, [activeStep, stepStates]);
+    const handleStepClick = useCallback(
+        (stepIndex: number) => {
+            // Only allow jumping to previous steps or next step if current is valid
+            if (stepIndex <= activeStep || stepStates[activeStep].isValid) {
+                setActiveStep(stepIndex);
+            }
+        },
+        [activeStep, stepStates]
+    );
 
     // Calculate overall progress
     const progressPercentage = useMemo(() => {
-        const completedSteps = Object.values(stepStates).filter(state => state.completed).length;
+        const completedSteps = Object.values(stepStates).filter(
+            state => state.completed
+        ).length;
         return (completedSteps / steps.length) * 100;
     }, [stepStates, steps.length]);
 
@@ -209,24 +249,27 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
     }, [stepStates, isSubmitting]);
 
     // Transform form data for submission
-    const transformFormData = useCallback((values: Partial<Organization>) => {
-        // Add https:// before website if not present
-        if (values.website && !values.website.startsWith('http')) {
-            values.website = `https://${values.website}`;
-        }
+    const transformFormData = useCallback(
+        (values: Partial<Organization>) => {
+            // Add https:// before website if not present
+            if (values.website && !values.website.startsWith('http')) {
+                values.website = `https://${values.website}`;
+            }
 
-        // Set default account manager if not provided
-        if (!values.accountManager) {
-            values.accountManager = 'john.smith@forkflow.com';
-        }
+            // Set default account manager if not provided
+            if (!values.accountManager) {
+                values.accountManager = 'john.smith@forkflow.com';
+            }
 
-        // Set the creator
-        return {
-            ...values,
-            createdBy: identity?.id,
-            createdAt: new Date().toISOString(),
-        };
-    }, [identity]);
+            // Set the creator
+            return {
+                ...values,
+                createdBy: identity?.id,
+                createdAt: new Date().toISOString(),
+            };
+        },
+        [identity]
+    );
 
     // Handle form submission
     const handleSubmit = useCallback(async () => {
@@ -242,83 +285,84 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
 
             // Transform and submit data
             const transformedData = transformFormData(formData);
-            
+
             // This would normally be handled by react-admin's Create component
             // For now, we'll just show success message
             notify('Organization created successfully!', { type: 'success' });
-            
+
             if (redirectOnSave) {
                 redirect(redirectOnSave, 'organizations', transformedData.id);
             }
-            
         } catch (error) {
             console.error('Form submission error:', error);
-            notify('Failed to create organization. Please try again.', { type: 'error' });
+            notify('Failed to create organization. Please try again.', {
+                type: 'error',
+            });
         } finally {
             setIsSubmitting(false);
         }
-    }, [formData, steps, validateStep, transformFormData, notify, redirect, redirectOnSave]);
+    }, [
+        formData,
+        steps,
+        validateStep,
+        transformFormData,
+        notify,
+        redirect,
+        redirectOnSave,
+    ]);
 
     // Get step status icon
-    const getStepIcon = useCallback((stepIndex: number) => {
-        const state = stepStates[stepIndex];
-        if (state.completed) {
-            return <CheckIcon color="success" />;
-        }
-        if (state.hasErrors) {
-            return <ErrorIcon color="error" />;
-        }
-        if (state.warningCount > 0) {
-            return <WarningIcon color="warning" />;
-        }
-        return stepIndex + 1;
-    }, [stepStates]);
+    const getStepIcon = useCallback(
+        (stepIndex: number) => {
+            const state = stepStates[stepIndex];
+            if (state.completed) {
+                return <CheckIcon color="success" />;
+            }
+            if (state.hasErrors) {
+                return <ErrorIcon color="error" />;
+            }
+            if (state.warningCount > 0) {
+                return <WarningIcon color="warning" />;
+            }
+            return stepIndex + 1;
+        },
+        [stepStates]
+    );
 
     // Render step content
-    const renderStepContent = useCallback((stepIndex: number) => {
-        const step = steps[stepIndex];
-        const StepComponent = step.component;
-        
-        return (
-            <StepComponent
-                formData={formData}
-                onDataChange={handleFormDataChange}
-                validationErrors={validationErrors}
-                isMobile={isMobile}
-            />
-        );
-    }, [steps, formData, handleFormDataChange, validationErrors, isMobile]);
+    const renderStepContent = useCallback(
+        (stepIndex: number) => {
+            const step = steps[stepIndex];
+            const StepComponent = step.component;
+
+            return (
+                <StepComponent
+                    formData={formData}
+                    onDataChange={handleFormDataChange}
+                    validationErrors={validationErrors}
+                    isMobile={isMobile}
+                />
+            );
+        },
+        [steps, formData, handleFormDataChange, validationErrors, isMobile]
+    );
 
     return (
-        <Create
-            actions={false}
-            redirect={false}
-            transform={transformFormData}
-        >
+        <Create actions={false} redirect={false} transform={transformFormData}>
             <Form defaultValues={defaultValues}>
-                <Paper 
+                <Paper
                     elevation={2}
-                    sx={{ 
-                        p: { xs: 2, sm: 3 },
-                        maxWidth: { xs: '100%', md: 800 },
-                        mx: 'auto',
-                        position: 'relative'
-                    }}
+                    className="p-4 sm:p-6 max-w-full md:max-w-3xl mx-auto relative"
                 >
                     {/* Header */}
-                    <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'space-between',
-                        mb: 3
-                    }}>
+                    <Box className="flex items-center justify-between mb-6">
                         <Typography variant="h5" component="h1">
                             Create Organization
                         </Typography>
-                        
+
                         {onClose && (
                             <Tooltip title="Close">
-                                <IconButton 
+                                <IconButton
                                     onClick={onClose}
                                     sx={{ minWidth: '44px', minHeight: '44px' }}
                                 >
@@ -329,45 +373,51 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                     </Box>
 
                     {/* Progress Bar */}
-                    <Box sx={{ mb: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                            <Typography variant="body2" color="text.secondary">
+                    <Box className="mb-6">
+                        <Box className="flex justify-between mb-2">
+                            <Typography
+                                variant="body2"
+                                className="text-gray-600"
+                            >
                                 Progress: {Math.round(progressPercentage)}%
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                                variant="body2"
+                                className="text-gray-600"
+                            >
                                 Step {activeStep + 1} of {steps.length}
                             </Typography>
                         </Box>
-                        <LinearProgress 
-                            variant="determinate" 
+                        <LinearProgress
+                            variant="determinate"
                             value={progressPercentage}
-                            sx={{ height: 8, borderRadius: 4 }}
+                            className="h-2 rounded-full"
                         />
                     </Box>
 
                     {/* Stepper */}
-                    <Stepper 
-                        activeStep={activeStep} 
+                    <Stepper
+                        activeStep={activeStep}
                         orientation={isMobile ? 'vertical' : 'horizontal'}
-                        sx={{ mb: 3 }}
+                        className="mb-6"
                     >
                         {steps.map((step, index) => {
                             const state = stepStates[index];
                             return (
-                                <Step 
+                                <Step
                                     key={step.id}
                                     completed={state.completed}
                                     onClick={() => handleStepClick(index)}
-                                    sx={{ cursor: 'pointer' }}
+                                    className="cursor-pointer"
                                 >
                                     <StepLabel
                                         icon={getStepIcon(index)}
                                         error={state.hasErrors}
                                         optional={
                                             !isMobile && (
-                                                <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 }}>
+                                                <Box className="flex gap-1 mt-1">
                                                     {state.errorCount > 0 && (
-                                                        <Chip 
+                                                        <Chip
                                                             label={`${state.errorCount} error${state.errorCount > 1 ? 's' : ''}`}
                                                             size="small"
                                                             color="error"
@@ -375,7 +425,7 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                                                         />
                                                     )}
                                                     {state.warningCount > 0 && (
-                                                        <Chip 
+                                                        <Chip
                                                             label={`${state.warningCount} warning${state.warningCount > 1 ? 's' : ''}`}
                                                             size="small"
                                                             color="warning"
@@ -386,18 +436,21 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                                             )
                                         }
                                     >
-                                        <Box>
+                                        <Box className="">
                                             <Typography variant="subtitle2">
                                                 {step.icon} {step.label}
                                             </Typography>
                                             {!isMobile && (
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography
+                                                    variant="caption"
+                                                    className="text-gray-600"
+                                                >
                                                     {step.description}
                                                 </Typography>
                                             )}
                                         </Box>
                                     </StepLabel>
-                                    
+
                                     {isMobile && (
                                         <StepContent>
                                             {renderStepContent(index)}
@@ -410,16 +463,16 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
 
                     {/* Desktop Step Content */}
                     {!isMobile && (
-                        <Box sx={{ mt: 3, minHeight: 400 }}>
+                        <Box className="mt-6 min-h-96">
                             {renderStepContent(activeStep)}
                         </Box>
                     )}
 
                     {/* Error Summary */}
                     <Collapse in={Object.keys(validationErrors).length > 0}>
-                        <Alert 
-                            severity="error" 
-                            sx={{ mt: 2 }}
+                        <Alert
+                            severity="error"
+                            className="mt-4"
                             action={
                                 <IconButton
                                     color="inherit"
@@ -430,41 +483,35 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                                 </IconButton>
                             }
                         >
-                            <Typography variant="body2" fontWeight="medium">
+                            <Typography variant="body2" className="font-medium">
                                 Please fix the following errors:
                             </Typography>
-                            <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2 }}>
-                                {Object.entries(validationErrors).map(([field, error]) => (
-                                    <li key={field}>
-                                        <Typography variant="body2">
-                                            {field}: {error}
-                                        </Typography>
-                                    </li>
-                                ))}
+                            <Box as="ul" className="mt-2 mb-0 pl-4">
+                                {Object.entries(validationErrors).map(
+                                    ([field, error]) => (
+                                        <li key={field}>
+                                            <Typography variant="body2">
+                                                {field}: {error}
+                                            </Typography>
+                                        </li>
+                                    )
+                                )}
                             </Box>
                         </Alert>
                     </Collapse>
 
                     {/* Navigation */}
-                    <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mt: 4,
-                        pt: 2,
-                        borderTop: '1px solid',
-                        borderColor: 'divider'
-                    }}>
+                    <Box className="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
                         <Button
                             onClick={handleBack}
                             disabled={activeStep === 0}
                             startIcon={<ArrowBackIcon />}
-                            sx={{ minHeight: '44px' }}
+                            className="min-h-11"
                         >
                             Back
                         </Button>
 
-                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Box className="flex gap-4">
                             {activeStep === steps.length - 1 ? (
                                 <FormDataConsumer>
                                     {({ formData: currentFormData }) => (
@@ -473,7 +520,7 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                                             icon={<SaveIcon />}
                                             disabled={!canSubmit}
                                             variant="contained"
-                                            sx={{ minHeight: '44px', px: 3 }}
+                                            className="min-h-11 px-6"
                                             transform={transformFormData}
                                         />
                                     )}
@@ -483,7 +530,7 @@ export const MultiStepOrganizationCreate: React.FC<MultiStepOrganizationCreatePr
                                     onClick={handleNext}
                                     variant="contained"
                                     endIcon={<ArrowForwardIcon />}
-                                    sx={{ minHeight: '44px' }}
+                                    className="min-h-11"
                                 >
                                     Next
                                 </Button>

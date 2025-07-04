@@ -45,7 +45,9 @@ const mockDataProvider = {
     getOne: jest.fn(),
     getMany: jest.fn(),
     getManyReference: jest.fn(),
-    create: jest.fn().mockResolvedValue({ data: { ...mockSettings[0], id: 3 } }),
+    create: jest
+        .fn()
+        .mockResolvedValue({ data: { ...mockSettings[0], id: 3 } }),
     update: jest.fn().mockResolvedValue({ data: mockSettings[0] }),
     updateMany: jest.fn(),
     delete: jest.fn().mockResolvedValue({ data: mockSettings[0] }),
@@ -53,9 +55,7 @@ const mockDataProvider = {
 };
 
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <TestContext dataProvider={mockDataProvider}>
-        {children}
-    </TestContext>
+    <TestContext dataProvider={mockDataProvider}>{children}</TestContext>
 );
 
 // Mock URL.createObjectURL and link click
@@ -63,7 +63,7 @@ global.URL.createObjectURL = jest.fn().mockReturnValue('mocked-url');
 global.URL.revokeObjectURL = jest.fn();
 
 const mockClick = jest.fn();
-jest.spyOn(document, 'createElement').mockImplementation((tagName) => {
+jest.spyOn(document, 'createElement').mockImplementation(tagName => {
     if (tagName === 'a') {
         return {
             href: '',
@@ -101,13 +101,15 @@ describe('SettingsBulkOperations', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('2 settings available')).toBeInTheDocument();
+            expect(
+                screen.getByText('2 settings available')
+            ).toBeInTheDocument();
         });
     });
 
     it('handles CSV export correctly', async () => {
         const Papa = require('papaparse');
-        
+
         render(
             <TestWrapper>
                 <SettingsBulkOperations />
@@ -125,7 +127,7 @@ describe('SettingsBulkOperations', () => {
                     category: 'priority',
                     key: 'a_priority',
                     label: 'A Priority',
-                })
+                }),
             ])
         );
         expect(mockClick).toHaveBeenCalled();
@@ -152,8 +154,12 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        expect(screen.getByText('Required columns: category, key, label')).toBeInTheDocument();
-        expect(screen.getByText('Optional columns: color, sortOrder, active')).toBeInTheDocument();
+        expect(
+            screen.getByText('Required columns: category, key, label')
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText('Optional columns: color, sortOrder, active')
+        ).toBeInTheDocument();
     });
 
     it('handles file selection and triggers import', async () => {
@@ -168,10 +174,16 @@ describe('SettingsBulkOperations', () => {
                         color: '#3b82f6',
                         sortOrder: '1',
                         active: 'true',
-                    }
+                    },
                 ],
                 errors: [],
-                meta: { delimiter: ',', linebreak: '\n', aborted: false, truncated: false, cursor: 0 }
+                meta: {
+                    delimiter: ',',
+                    linebreak: '\n',
+                    aborted: false,
+                    truncated: false,
+                    cursor: 0,
+                },
             });
         });
 
@@ -181,19 +193,25 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        const fileInput = screen.getByRole('button', { name: /select csv file/i });
-        
+        const fileInput = screen.getByRole('button', {
+            name: /select csv file/i,
+        });
+
         // Create a mock file
-        const file = new File(['test,csv,content'], 'test.csv', { type: 'text/csv' });
-        
+        const file = new File(['test,csv,content'], 'test.csv', {
+            type: 'text/csv',
+        });
+
         // Mock the file input element
-        const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        const hiddenInput = document.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement;
         if (hiddenInput) {
             Object.defineProperty(hiddenInput, 'files', {
                 value: [file],
                 writable: false,
             });
-            
+
             fireEvent.change(hiddenInput);
         }
 
@@ -218,10 +236,16 @@ describe('SettingsBulkOperations', () => {
                         category: 'invalid_category',
                         key: 'test',
                         label: 'Test',
-                    }
+                    },
                 ],
                 errors: [],
-                meta: { delimiter: ',', linebreak: '\n', aborted: false, truncated: false, cursor: 0 }
+                meta: {
+                    delimiter: ',',
+                    linebreak: '\n',
+                    aborted: false,
+                    truncated: false,
+                    cursor: 0,
+                },
             });
         });
 
@@ -231,15 +255,19 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        const file = new File(['test,csv,content'], 'test.csv', { type: 'text/csv' });
-        const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        
+        const file = new File(['test,csv,content'], 'test.csv', {
+            type: 'text/csv',
+        });
+        const hiddenInput = document.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement;
+
         if (hiddenInput) {
             Object.defineProperty(hiddenInput, 'files', {
                 value: [file],
                 writable: false,
             });
-            
+
             fireEvent.change(hiddenInput);
         }
 
@@ -261,10 +289,16 @@ describe('SettingsBulkOperations', () => {
                         color: '#3b82f6',
                         sortOrder: '1',
                         active: 'true',
-                    }
+                    },
                 ],
                 errors: [],
-                meta: { delimiter: ',', linebreak: '\n', aborted: false, truncated: false, cursor: 0 }
+                meta: {
+                    delimiter: ',',
+                    linebreak: '\n',
+                    aborted: false,
+                    truncated: false,
+                    cursor: 0,
+                },
             });
         });
 
@@ -274,15 +308,19 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        const file = new File(['test,csv,content'], 'test.csv', { type: 'text/csv' });
-        const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        
+        const file = new File(['test,csv,content'], 'test.csv', {
+            type: 'text/csv',
+        });
+        const hiddenInput = document.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement;
+
         if (hiddenInput) {
             Object.defineProperty(hiddenInput, 'files', {
                 value: [file],
                 writable: false,
             });
-            
+
             fireEvent.change(hiddenInput);
         }
 
@@ -295,7 +333,7 @@ describe('SettingsBulkOperations', () => {
                     color: '#3b82f6',
                     sortOrder: 1,
                     active: true,
-                })
+                }),
             });
         });
     });
@@ -313,10 +351,16 @@ describe('SettingsBulkOperations', () => {
                         color: '#22c55e',
                         sortOrder: '1',
                         active: 'true',
-                    }
+                    },
                 ],
                 errors: [],
-                meta: { delimiter: ',', linebreak: '\n', aborted: false, truncated: false, cursor: 0 }
+                meta: {
+                    delimiter: ',',
+                    linebreak: '\n',
+                    aborted: false,
+                    truncated: false,
+                    cursor: 0,
+                },
             });
         });
 
@@ -326,15 +370,19 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        const file = new File(['test,csv,content'], 'test.csv', { type: 'text/csv' });
-        const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        
+        const file = new File(['test,csv,content'], 'test.csv', {
+            type: 'text/csv',
+        });
+        const hiddenInput = document.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement;
+
         if (hiddenInput) {
             Object.defineProperty(hiddenInput, 'files', {
                 value: [file],
                 writable: false,
             });
-            
+
             fireEvent.change(hiddenInput);
         }
 
@@ -356,15 +404,19 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
-        const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        
+        const file = new File(['test content'], 'test.txt', {
+            type: 'text/plain',
+        });
+        const hiddenInput = document.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement;
+
         if (hiddenInput) {
             Object.defineProperty(hiddenInput, 'files', {
                 value: [file],
                 writable: false,
             });
-            
+
             fireEvent.change(hiddenInput);
         }
 
@@ -385,8 +437,8 @@ describe('SettingsBulkOperations', () => {
                             label: 'Manager',
                             sortOrder: '1',
                             active: 'true',
-                        }
-                    ]
+                        },
+                    ],
                 });
             }, 100);
         });
@@ -397,15 +449,19 @@ describe('SettingsBulkOperations', () => {
             </TestWrapper>
         );
 
-        const file = new File(['test,csv,content'], 'test.csv', { type: 'text/csv' });
-        const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-        
+        const file = new File(['test,csv,content'], 'test.csv', {
+            type: 'text/csv',
+        });
+        const hiddenInput = document.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement;
+
         if (hiddenInput) {
             Object.defineProperty(hiddenInput, 'files', {
                 value: [file],
                 writable: false,
             });
-            
+
             fireEvent.change(hiddenInput);
         }
 

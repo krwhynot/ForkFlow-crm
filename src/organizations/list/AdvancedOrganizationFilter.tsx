@@ -37,7 +37,9 @@ export const AdvancedOrganizationFilter: React.FC = () => {
     const { filterValues, setFilters } = useListContext();
     const [searchQuery, setSearchQuery] = useState(filterValues?.q || '');
     const [expanded, setExpanded] = useState(false);
-    const [revenueRange, setRevenueRange] = useState<[number, number]>([0, 10000000]);
+    const [revenueRange, setRevenueRange] = useState<[number, number]>([
+        0, 10000000,
+    ]);
 
     // Debounce search query for 300ms
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -45,14 +47,22 @@ export const AdvancedOrganizationFilter: React.FC = () => {
     // Update filters when debounced search changes
     React.useEffect(() => {
         if (debouncedSearchQuery !== filterValues?.q) {
-            setFilters({ ...filterValues, q: debouncedSearchQuery || undefined }, false);
+            setFilters(
+                { ...filterValues, q: debouncedSearchQuery || undefined },
+                false
+            );
         }
     }, [debouncedSearchQuery, filterValues, setFilters]);
 
     // Filter options with visual indicators
     const priorityOptions = [
         { value: 'high', label: 'High Priority', color: '#ef4444', icon: '🔴' },
-        { value: 'medium', label: 'Medium Priority', color: '#f59e0b', icon: '🟡' },
+        {
+            value: 'medium',
+            label: 'Medium Priority',
+            color: '#f59e0b',
+            icon: '🟡',
+        },
         { value: 'low', label: 'Low Priority', color: '#10b981', icon: '🟢' },
     ];
 
@@ -88,22 +98,28 @@ export const AdvancedOrganizationFilter: React.FC = () => {
         'Non-Profit',
     ];
 
-    const handleFilterChange = useCallback((key: keyof OrganizationFilter, value: any) => {
-        const newFilters = { ...filterValues };
-        if (value === '' || value === null || value === undefined) {
-            delete newFilters[key];
-        } else {
-            newFilters[key] = value;
-        }
-        setFilters(newFilters, false);
-    }, [filterValues, setFilters]);
+    const handleFilterChange = useCallback(
+        (key: keyof OrganizationFilter, value: any) => {
+            const newFilters = { ...filterValues };
+            if (value === '' || value === null || value === undefined) {
+                delete newFilters[key];
+            } else {
+                newFilters[key] = value;
+            }
+            setFilters(newFilters, false);
+        },
+        [filterValues, setFilters]
+    );
 
-    const handleRevenueRangeChange = useCallback((_: Event, newValue: number | number[]) => {
-        const range = newValue as [number, number];
-        setRevenueRange(range);
-        handleFilterChange('revenueMin', range[0]);
-        handleFilterChange('revenueMax', range[1]);
-    }, [handleFilterChange]);
+    const handleRevenueRangeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            const range = newValue as [number, number];
+            setRevenueRange(range);
+            handleFilterChange('revenueMin', range[0]);
+            handleFilterChange('revenueMax', range[1]);
+        },
+        [handleFilterChange]
+    );
 
     const clearAllFilters = useCallback(() => {
         setSearchQuery('');
@@ -112,8 +128,11 @@ export const AdvancedOrganizationFilter: React.FC = () => {
     }, [setFilters]);
 
     const activeFiltersCount = useMemo(() => {
-        return Object.keys(filterValues || {}).filter(key => 
-            key !== 'q' && filterValues?.[key] !== undefined && filterValues?.[key] !== ''
+        return Object.keys(filterValues || {}).filter(
+            key =>
+                key !== 'q' &&
+                filterValues?.[key] !== undefined &&
+                filterValues?.[key] !== ''
         ).length;
     }, [filterValues]);
 
@@ -129,12 +148,19 @@ export const AdvancedOrganizationFilter: React.FC = () => {
         <Card className="filter-container" sx={{ mb: 2 }}>
             <CardContent sx={{ pb: 2 }}>
                 {/* Search and Toggle Row */}
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: expanded ? 2 : 0 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        gap: 2,
+                        alignItems: 'center',
+                        mb: expanded ? 2 : 0,
+                    }}
+                >
                     <TextField
                         className="search-input"
                         placeholder="Search organizations..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={e => setSearchQuery(e.target.value)}
                         size="small"
                         InputProps={{
                             startAdornment: (
@@ -156,18 +182,22 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                         }}
                         sx={{ flexGrow: 1, maxWidth: 400 }}
                     />
-                    
+
                     <IconButton
                         onClick={() => setExpanded(!expanded)}
                         aria-label="toggle advanced filters"
-                        sx={{ 
-                            minHeight: '40px', 
+                        sx={{
+                            minHeight: '40px',
                             minWidth: '40px',
                             position: 'relative',
                         }}
                     >
                         <TuneIcon />
-                        {expanded ? <ExpandLessIcon sx={{ ml: 0.5 }} /> : <ExpandMoreIcon sx={{ ml: 0.5 }} />}
+                        {expanded ? (
+                            <ExpandLessIcon sx={{ ml: 0.5 }} />
+                        ) : (
+                            <ExpandMoreIcon sx={{ ml: 0.5 }} />
+                        )}
                         {activeFiltersCount > 0 && (
                             <Chip
                                 label={activeFiltersCount}
@@ -209,13 +239,27 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                 <InputLabel>Priority</InputLabel>
                                 <Select
                                     value={filterValues?.priority || ''}
-                                    onChange={(e) => handleFilterChange('priority', e.target.value)}
+                                    onChange={e =>
+                                        handleFilterChange(
+                                            'priority',
+                                            e.target.value
+                                        )
+                                    }
                                     label="Priority"
                                 >
                                     <MenuItem value="">All Priorities</MenuItem>
-                                    {priorityOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    {priorityOptions.map(option => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                }}
+                                            >
                                                 <span>{option.icon}</span>
                                                 <span>{option.label}</span>
                                             </Box>
@@ -231,13 +275,27 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                 <InputLabel>Status</InputLabel>
                                 <Select
                                     value={filterValues?.status || ''}
-                                    onChange={(e) => handleFilterChange('status', e.target.value)}
+                                    onChange={e =>
+                                        handleFilterChange(
+                                            'status',
+                                            e.target.value
+                                        )
+                                    }
                                     label="Status"
                                 >
                                     <MenuItem value="">All Statuses</MenuItem>
-                                    {statusOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    {statusOptions.map(option => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                }}
+                                            >
                                                 <span>{option.icon}</span>
                                                 <span>{option.label}</span>
                                             </Box>
@@ -253,13 +311,27 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                 <InputLabel>Business Type</InputLabel>
                                 <Select
                                     value={filterValues?.business_type || ''}
-                                    onChange={(e) => handleFilterChange('business_type', e.target.value)}
+                                    onChange={e =>
+                                        handleFilterChange(
+                                            'business_type',
+                                            e.target.value
+                                        )
+                                    }
                                     label="Business Type"
                                 >
                                     <MenuItem value="">All Types</MenuItem>
-                                    {businessTypeOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    {businessTypeOptions.map(option => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                }}
+                                            >
                                                 <span>{option.icon}</span>
                                                 <span>{option.label}</span>
                                             </Box>
@@ -275,13 +347,27 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                 <InputLabel>Size</InputLabel>
                                 <Select
                                     value={filterValues?.size || ''}
-                                    onChange={(e) => handleFilterChange('size', e.target.value)}
+                                    onChange={e =>
+                                        handleFilterChange(
+                                            'size',
+                                            e.target.value
+                                        )
+                                    }
                                     label="Size"
                                 >
                                     <MenuItem value="">All Sizes</MenuItem>
-                                    {sizeOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    {sizeOptions.map(option => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: 1,
+                                                }}
+                                            >
                                                 <span>{option.icon}</span>
                                                 <span>{option.label}</span>
                                             </Box>
@@ -297,8 +383,10 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                 size="small"
                                 options={segmentOptions}
                                 value={filterValues?.segment || null}
-                                onChange={(_, value) => handleFilterChange('segment', value)}
-                                renderInput={(params) => (
+                                onChange={(_, value) =>
+                                    handleFilterChange('segment', value)
+                                }
+                                renderInput={params => (
                                     <TextField {...params} label="Segment" />
                                 )}
                                 freeSolo
@@ -308,8 +396,14 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                         {/* Revenue Range Filter */}
                         <Grid item xs={12} md={8}>
                             <Box sx={{ px: 2, py: 1 }}>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    Revenue Range: {formatCurrency(revenueRange[0])} - {formatCurrency(revenueRange[1])}
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    gutterBottom
+                                >
+                                    Revenue Range:{' '}
+                                    {formatCurrency(revenueRange[0])} -{' '}
+                                    {formatCurrency(revenueRange[1])}
                                 </Typography>
                                 <Slider
                                     value={revenueRange}
@@ -343,47 +437,70 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                     variant="outlined"
                                 />
                             )}
-                            {Object.entries(filterValues || {}).map(([key, value]) => {
-                                if (key === 'q' || !value) return null;
-                                
-                                const getFilterLabel = () => {
-                                    switch (key) {
-                                        case 'priority':
-                                            const priorityOption = priorityOptions.find(opt => opt.value === value);
-                                            return `Priority: ${priorityOption?.icon} ${priorityOption?.label}`;
-                                        case 'status':
-                                            const statusOption = statusOptions.find(opt => opt.value === value);
-                                            return `Status: ${statusOption?.icon} ${statusOption?.label}`;
-                                        case 'business_type':
-                                            const businessOption = businessTypeOptions.find(opt => opt.value === value);
-                                            return `Type: ${businessOption?.icon} ${businessOption?.label}`;
-                                        case 'size':
-                                            const sizeOption = sizeOptions.find(opt => opt.value === value);
-                                            return `Size: ${sizeOption?.icon} ${sizeOption?.label}`;
-                                        case 'segment':
-                                            return `Segment: ${value}`;
-                                        case 'revenueMin':
-                                        case 'revenueMax':
-                                            return null; // Handled together as range
-                                        default:
-                                            return `${key}: ${value}`;
-                                    }
-                                };
+                            {Object.entries(filterValues || {}).map(
+                                ([key, value]) => {
+                                    if (key === 'q' || !value) return null;
 
-                                const label = getFilterLabel();
-                                if (!label) return null;
+                                    const getFilterLabel = () => {
+                                        switch (key) {
+                                            case 'priority':
+                                                const priorityOption =
+                                                    priorityOptions.find(
+                                                        opt =>
+                                                            opt.value === value
+                                                    );
+                                                return `Priority: ${priorityOption?.icon} ${priorityOption?.label}`;
+                                            case 'status':
+                                                const statusOption =
+                                                    statusOptions.find(
+                                                        opt =>
+                                                            opt.value === value
+                                                    );
+                                                return `Status: ${statusOption?.icon} ${statusOption?.label}`;
+                                            case 'business_type':
+                                                const businessOption =
+                                                    businessTypeOptions.find(
+                                                        opt =>
+                                                            opt.value === value
+                                                    );
+                                                return `Type: ${businessOption?.icon} ${businessOption?.label}`;
+                                            case 'size':
+                                                const sizeOption =
+                                                    sizeOptions.find(
+                                                        opt =>
+                                                            opt.value === value
+                                                    );
+                                                return `Size: ${sizeOption?.icon} ${sizeOption?.label}`;
+                                            case 'segment':
+                                                return `Segment: ${value}`;
+                                            case 'revenueMin':
+                                            case 'revenueMax':
+                                                return null; // Handled together as range
+                                            default:
+                                                return `${key}: ${value}`;
+                                        }
+                                    };
 
-                                return (
-                                    <Chip
-                                        key={key}
-                                        label={label}
-                                        onDelete={() => handleFilterChange(key as keyof OrganizationFilter, undefined)}
-                                        size="small"
-                                        color="primary"
-                                        variant="outlined"
-                                    />
-                                );
-                            })}
+                                    const label = getFilterLabel();
+                                    if (!label) return null;
+
+                                    return (
+                                        <Chip
+                                            key={key}
+                                            label={label}
+                                            onDelete={() =>
+                                                handleFilterChange(
+                                                    key as keyof OrganizationFilter,
+                                                    undefined
+                                                )
+                                            }
+                                            size="small"
+                                            color="primary"
+                                            variant="outlined"
+                                        />
+                                    );
+                                }
+                            )}
                         </Stack>
                     </Box>
                 )}

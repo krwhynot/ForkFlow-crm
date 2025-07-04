@@ -6,7 +6,10 @@ import { Typography } from '../components/Typography/Typography';
 import { Button } from '../components/Button/Button';
 import { LinearProgress } from '../components/Progress/LinearProgress';
 import useAppBarHeight from '../misc/useAppBarHeight';
-import { CheckCircleIcon, EllipsisHorizontalCircleIcon } from '@heroicons/react/24/outline';
+import {
+    CheckCircleIcon,
+    EllipsisHorizontalCircleIcon,
+} from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 import { CreateButton, Identifier } from 'react-admin';
 import { ContactImportButton } from '../contacts/ContactImportButton';
@@ -44,7 +47,9 @@ export const DashboardStepper = ({
                                 variant="determinate"
                                 value={(step / 3) * 100}
                             />
-                            <Typography className="text-right">{step}/3 done</Typography>
+                            <Typography className="text-right">
+                                {step}/3 done
+                            </Typography>
                         </Box>
                     </Stack>
                     <Stack spacing={6}>

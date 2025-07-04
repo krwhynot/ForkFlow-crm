@@ -1,4 +1,4 @@
-import { Card, Container, Typography } from '@mui/material';
+import { Card, Typography } from '../components/ui-kit';
 import { useMutation } from '@tanstack/react-query';
 import {
     SaveButton,
@@ -17,7 +17,7 @@ import { SalesInputs } from './SalesInputs';
 
 function EditToolbar() {
     return (
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Toolbar className="flex justify-between">
             <SaveButton />
         </Toolbar>
     );
@@ -51,7 +51,7 @@ export function SalesEdit() {
     };
 
     return (
-        <Container maxWidth="sm" sx={{ mt: 4 }}>
+        <div className="max-w-sm mx-auto mt-4">
             <Card>
                 <SimpleForm
                     toolbar={<EditToolbar />}
@@ -62,7 +62,7 @@ export function SalesEdit() {
                     <SalesInputs />
                 </SimpleForm>
             </Card>
-        </Container>
+        </div>
     );
 }
 

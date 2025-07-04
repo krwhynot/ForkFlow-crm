@@ -82,7 +82,7 @@ export const LayoutSelector: React.FC<LayoutSelectorProps> = ({
                 onChange={handleViewModeChange}
                 aria-label="view mode selector"
             >
-                {viewModeOptions.map((option) => (
+                {viewModeOptions.map(option => (
                     <Tooltip
                         key={option.value}
                         title={
@@ -129,9 +129,8 @@ export const LayoutSelector: React.FC<LayoutSelectorProps> = ({
             {isMobile && (
                 <Chip
                     label={
-                        viewModeOptions.find(
-                            (opt) => opt.value === viewMode.mode
-                        )?.label || 'Unknown'
+                        viewModeOptions.find(opt => opt.value === viewMode.mode)
+                            ?.label || 'Unknown'
                     }
                     size="small"
                     className="h-8 text-xs border"

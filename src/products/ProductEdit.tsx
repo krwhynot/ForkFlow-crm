@@ -53,7 +53,9 @@ const EnhancedPrincipalSelection = () => {
                     <Box className="flex items-center">
                         <Box
                             className="w-3 h-3 rounded-full mr-2"
-                            style={{ backgroundColor: choice.color || '#e0e0e0' }}
+                            style={{
+                                backgroundColor: choice.color || '#e0e0e0',
+                            }}
                         />
                         {choice.label}
                     </Box>

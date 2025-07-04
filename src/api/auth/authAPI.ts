@@ -15,33 +15,53 @@ import {
     requestPasswordReset,
     updatePassword,
 } from './authService';
-import { User, LoginCredentials, BrokerFormData, PasswordResetRequest, PasswordResetConfirm, UserProfileUpdate } from '../../types';
+import {
+    User,
+    LoginCredentials,
+    BrokerFormData,
+    PasswordResetRequest,
+    PasswordResetConfirm,
+    UserProfileUpdate,
+} from '../../types';
 import { supabase } from '../../providers/supabase/supabase';
 import { logAuditEvent } from '../../utils/auditLogging';
 
 export interface AuthAPI {
     // Authentication endpoints
-    login(credentials: LoginCredentials): Promise<{ user: User; token: string }>;
+    login(
+        credentials: LoginCredentials
+    ): Promise<{ user: User; token: string }>;
     logout(): Promise<void>;
     getCurrentUser(): Promise<User>;
     refreshToken(): Promise<{ accessToken: string; refreshToken: string }>;
     checkAuth(): Promise<boolean>;
-    
+
     // User management endpoints
     getUsers(params: any): Promise<{ data: User[]; total: number }>;
     getUser(id: Identifier): Promise<User>;
     createUser(userData: BrokerFormData): Promise<User>;
-    updateUser(id: Identifier, userData: Partial<BrokerFormData>): Promise<User>;
-    updateUserProfile(id: Identifier, userData: UserProfileUpdate): Promise<User>;
+    updateUser(
+        id: Identifier,
+        userData: Partial<BrokerFormData>
+    ): Promise<User>;
+    updateUserProfile(
+        id: Identifier,
+        userData: UserProfileUpdate
+    ): Promise<User>;
     deleteUser(id: Identifier): Promise<void>;
-    
+
     // Permission management
     getUserPermissions(userId?: Identifier): Promise<string[]>;
-    updateUserPermissions(userId: Identifier, permissions: string[]): Promise<void>;
-    
+    updateUserPermissions(
+        userId: Identifier,
+        permissions: string[]
+    ): Promise<void>;
+
     // Password management
     requestPasswordReset(data: PasswordResetRequest): Promise<void>;
-    confirmPasswordReset(data: PasswordResetConfirm): Promise<{ email: string }>;
+    confirmPasswordReset(
+        data: PasswordResetConfirm
+    ): Promise<{ email: string }>;
     updatePassword(newPassword: string): Promise<void>;
     forcePasswordReset(userId: Identifier): Promise<void>;
 }
@@ -50,7 +70,6 @@ export interface AuthAPI {
  * Authentication API implementation with Supabase backend
  */
 export class SupabaseAuthAPI implements AuthAPI {
-    
     /**
      * Helper method to get current user with null safety
      */
@@ -61,42 +80,55 @@ export class SupabaseAuthAPI implements AuthAPI {
         }
         return user;
     }
-    
+
     /**
      * Authenticate user with email/password
      */
-    async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
+    async login(
+        credentials: LoginCredentials
+    ): Promise<{ user: User; token: string }> {
         try {
             const response = await login(credentials);
-            
-            await logAuditEvent('api.auth.login', {
-                endpoint: '/api/auth/login',
-                method: 'POST',
-                userEmail: credentials.email,
-                rememberMe: credentials.rememberMe,
-            }, {
-                userId: response.user.id,
-                userEmail: response.user.email,
-                outcome: 'success',
-                message: 'User authenticated via API',
-            });
-            
+
+            await logAuditEvent(
+                'api.auth.login',
+                {
+                    endpoint: '/api/auth/login',
+                    method: 'POST',
+                    userEmail: credentials.email,
+                    rememberMe: credentials.rememberMe,
+                },
+                {
+                    userId: response.user.id,
+                    userEmail: response.user.email,
+                    outcome: 'success',
+                    message: 'User authenticated via API',
+                }
+            );
+
             return {
                 user: response.user,
                 token: response.accessToken,
             };
         } catch (error) {
-            await logAuditEvent('api.auth.login_failed', {
-                endpoint: '/api/auth/login',
-                method: 'POST',
-                userEmail: credentials.email,
-                error: error instanceof Error ? error.message : 'Unknown error',
-            }, {
-                userEmail: credentials.email,
-                outcome: 'failure',
-                severity: 'high',
-                message: 'API login attempt failed',
-            });
+            await logAuditEvent(
+                'api.auth.login_failed',
+                {
+                    endpoint: '/api/auth/login',
+                    method: 'POST',
+                    userEmail: credentials.email,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                },
+                {
+                    userEmail: credentials.email,
+                    outcome: 'failure',
+                    severity: 'high',
+                    message: 'API login attempt failed',
+                }
+            );
             throw error;
         }
     }
@@ -106,33 +138,44 @@ export class SupabaseAuthAPI implements AuthAPI {
      */
     async logout(): Promise<void> {
         const user = await getCurrentUser().catch(() => null);
-        
+
         try {
             await logout();
-            
-            await logAuditEvent('api.auth.logout', {
-                endpoint: '/api/auth/logout',
-                method: 'POST',
-                userId: user?.id,
-            }, {
-                userId: user?.id,
-                userEmail: user?.email,
-                outcome: 'success',
-                message: 'User logged out via API',
-            });
+
+            await logAuditEvent(
+                'api.auth.logout',
+                {
+                    endpoint: '/api/auth/logout',
+                    method: 'POST',
+                    userId: user?.id,
+                },
+                {
+                    userId: user?.id,
+                    userEmail: user?.email,
+                    outcome: 'success',
+                    message: 'User logged out via API',
+                }
+            );
         } catch (error) {
-            await logAuditEvent('api.auth.logout_error', {
-                endpoint: '/api/auth/logout',
-                method: 'POST',
-                userId: user?.id,
-                error: error instanceof Error ? error.message : 'Unknown error',
-            }, {
-                userId: user?.id,
-                userEmail: user?.email,
-                outcome: 'warning',
-                severity: 'medium',
-                message: 'API logout completed with errors',
-            });
+            await logAuditEvent(
+                'api.auth.logout_error',
+                {
+                    endpoint: '/api/auth/logout',
+                    method: 'POST',
+                    userId: user?.id,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                },
+                {
+                    userId: user?.id,
+                    userEmail: user?.email,
+                    outcome: 'warning',
+                    severity: 'medium',
+                    message: 'API logout completed with errors',
+                }
+            );
             // Don't throw error for logout - always clear local state
         }
     }
@@ -147,7 +190,10 @@ export class SupabaseAuthAPI implements AuthAPI {
     /**
      * Refresh authentication token
      */
-    async refreshToken(): Promise<{ accessToken: string; refreshToken: string }> {
+    async refreshToken(): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }> {
         const result = await refreshToken();
         return {
             accessToken: result.accessToken,
@@ -175,11 +221,14 @@ export class SupabaseAuthAPI implements AuthAPI {
             throw new Error('Insufficient permissions to list users');
         }
 
-        const { pagination = { page: 1, perPage: 10 }, sort = { field: 'createdAt', order: 'DESC' }, filter = {} } = params;
-        
-        let query = supabase
-            .from('users')
-            .select(`
+        const {
+            pagination = { page: 1, perPage: 10 },
+            sort = { field: 'createdAt', order: 'DESC' },
+            filter = {},
+        } = params;
+
+        let query = supabase.from('users').select(
+            `
                 id,
                 email,
                 first_name,
@@ -192,7 +241,9 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_login,
                 created_at,
                 updated_at
-            `, { count: 'exact' });
+            `,
+            { count: 'exact' }
+        );
 
         // Apply filters
         if (filter.role) {
@@ -202,16 +253,26 @@ export class SupabaseAuthAPI implements AuthAPI {
             query = query.eq('disabled', !filter.isActive);
         }
         if (filter.search) {
-            query = query.or(`first_name.ilike.%${filter.search}%,last_name.ilike.%${filter.search}%,email.ilike.%${filter.search}%`);
+            query = query.or(
+                `first_name.ilike.%${filter.search}%,last_name.ilike.%${filter.search}%,email.ilike.%${filter.search}%`
+            );
         }
 
         // Apply sorting
-        query = query.order(sort.field === 'firstName' ? 'first_name' : 
-                           sort.field === 'lastName' ? 'last_name' :
-                           sort.field === 'createdAt' ? 'created_at' :
-                           sort.field === 'updatedAt' ? 'updated_at' :
-                           sort.field === 'lastLoginAt' ? 'last_login' :
-                           sort.field, { ascending: sort.order === 'ASC' });
+        query = query.order(
+            sort.field === 'firstName'
+                ? 'first_name'
+                : sort.field === 'lastName'
+                  ? 'last_name'
+                  : sort.field === 'createdAt'
+                    ? 'created_at'
+                    : sort.field === 'updatedAt'
+                      ? 'updated_at'
+                      : sort.field === 'lastLoginAt'
+                        ? 'last_login'
+                        : sort.field,
+            { ascending: sort.order === 'ASC' }
+        );
 
         // Apply pagination
         const from = (pagination.page - 1) * pagination.perPage;
@@ -240,19 +301,23 @@ export class SupabaseAuthAPI implements AuthAPI {
             updatedAt: user.updated_at,
         }));
 
-        await logAuditEvent('api.users.list', {
-            endpoint: '/api/users',
-            method: 'GET',
-            requestedBy: currentUser.id,
-            pagination,
-            sort,
-            filter,
-            resultCount: users.length,
-        }, {
-            userId: currentUser.id,
-            outcome: 'success',
-            message: `Retrieved ${users.length} users`,
-        });
+        await logAuditEvent(
+            'api.users.list',
+            {
+                endpoint: '/api/users',
+                method: 'GET',
+                requestedBy: currentUser.id,
+                pagination,
+                sort,
+                filter,
+                resultCount: users.length,
+            },
+            {
+                userId: currentUser.id,
+                outcome: 'success',
+                message: `Retrieved ${users.length} users`,
+            }
+        );
 
         return {
             data: users,
@@ -265,7 +330,7 @@ export class SupabaseAuthAPI implements AuthAPI {
      */
     async getUser(id: Identifier): Promise<User> {
         const currentUser = await this.getCurrentUserRequired();
-        
+
         // Allow users to get their own data, or admin to get any user
         if (currentUser.role !== 'admin' && currentUser.id !== id) {
             throw new Error('Insufficient permissions to view user');
@@ -273,7 +338,8 @@ export class SupabaseAuthAPI implements AuthAPI {
 
         const { data, error } = await supabase
             .from('users')
-            .select(`
+            .select(
+                `
                 id,
                 email,
                 first_name,
@@ -286,7 +352,8 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_login,
                 created_at,
                 updated_at
-            `)
+            `
+            )
             .eq('id', id)
             .single();
 
@@ -330,32 +397,43 @@ export class SupabaseAuthAPI implements AuthAPI {
                 role: userData.administrator ? 'admin' : 'broker',
             });
 
-            await logAuditEvent('api.users.create', {
-                endpoint: '/api/users',
-                method: 'POST',
-                createdBy: currentUser.id,
-                newUserEmail: userData.email,
-                newUserRole: userData.administrator ? 'admin' : 'broker',
-            }, {
-                userId: currentUser.id,
-                outcome: 'success',
-                message: `Created new user: ${userData.email}`,
-            });
+            await logAuditEvent(
+                'api.users.create',
+                {
+                    endpoint: '/api/users',
+                    method: 'POST',
+                    createdBy: currentUser.id,
+                    newUserEmail: userData.email,
+                    newUserRole: userData.administrator ? 'admin' : 'broker',
+                },
+                {
+                    userId: currentUser.id,
+                    outcome: 'success',
+                    message: `Created new user: ${userData.email}`,
+                }
+            );
 
             return result.user;
         } catch (error) {
-            await logAuditEvent('api.users.create_failed', {
-                endpoint: '/api/users',
-                method: 'POST',
-                createdBy: currentUser.id,
-                email: userData.email,
-                error: error instanceof Error ? error.message : 'Unknown error',
-            }, {
-                userId: currentUser.id,
-                outcome: 'failure',
-                severity: 'high',
-                message: 'Failed to create user via API',
-            });
+            await logAuditEvent(
+                'api.users.create_failed',
+                {
+                    endpoint: '/api/users',
+                    method: 'POST',
+                    createdBy: currentUser.id,
+                    email: userData.email,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                },
+                {
+                    userId: currentUser.id,
+                    outcome: 'failure',
+                    severity: 'high',
+                    message: 'Failed to create user via API',
+                }
+            );
             throw error;
         }
     }
@@ -363,9 +441,12 @@ export class SupabaseAuthAPI implements AuthAPI {
     /**
      * Update user (admin only, or current user updating own profile)
      */
-    async updateUser(id: Identifier, userData: Partial<BrokerFormData>): Promise<User> {
+    async updateUser(
+        id: Identifier,
+        userData: Partial<BrokerFormData>
+    ): Promise<User> {
         const currentUser = await this.getCurrentUserRequired();
-        
+
         // Allow users to update their own profile, or admin to update any user
         if (currentUser.role !== 'admin' && currentUser.id !== id) {
             throw new Error('Insufficient permissions to update user');
@@ -379,10 +460,14 @@ export class SupabaseAuthAPI implements AuthAPI {
         if (userData.first_name) updateData.first_name = userData.first_name;
         if (userData.last_name) updateData.last_name = userData.last_name;
         if (userData.avatar) updateData.avatar = userData.avatar;
-        if (userData.disabled !== undefined) updateData.disabled = userData.disabled;
-        
+        if (userData.disabled !== undefined)
+            updateData.disabled = userData.disabled;
+
         // Only admin can change administrator status
-        if (currentUser.role === 'admin' && userData.administrator !== undefined) {
+        if (
+            currentUser.role === 'admin' &&
+            userData.administrator !== undefined
+        ) {
             updateData.role = userData.administrator ? 'admin' : 'broker';
         }
 
@@ -390,7 +475,8 @@ export class SupabaseAuthAPI implements AuthAPI {
             .from('users')
             .update(updateData)
             .eq('id', id)
-            .select(`
+            .select(
+                `
                 id,
                 email,
                 first_name,
@@ -403,11 +489,14 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_login,
                 created_at,
                 updated_at
-            `)
+            `
+            )
             .single();
 
         if (error || !data) {
-            throw new Error(`Failed to update user: ${error?.message || 'No data'}`);
+            throw new Error(
+                `Failed to update user: ${error?.message || 'No data'}`
+            );
         }
 
         const user: User = {
@@ -425,17 +514,21 @@ export class SupabaseAuthAPI implements AuthAPI {
             updatedAt: data.updated_at,
         };
 
-        await logAuditEvent('api.users.update', {
-            endpoint: `/api/users/${id}`,
-            method: 'PUT',
-            updatedBy: currentUser.id,
-            targetUserId: id,
-            changes: Object.keys(updateData),
-        }, {
-            userId: currentUser.id,
-            outcome: 'success',
-            message: `Updated user: ${user.email}`,
-        });
+        await logAuditEvent(
+            'api.users.update',
+            {
+                endpoint: `/api/users/${id}`,
+                method: 'PUT',
+                updatedBy: currentUser.id,
+                targetUserId: id,
+                changes: Object.keys(updateData),
+            },
+            {
+                userId: currentUser.id,
+                outcome: 'success',
+                message: `Updated user: ${user.email}`,
+            }
+        );
 
         return user;
     }
@@ -443,9 +536,12 @@ export class SupabaseAuthAPI implements AuthAPI {
     /**
      * Update user profile (simplified profile updates)
      */
-    async updateUserProfile(id: Identifier, userData: UserProfileUpdate): Promise<User> {
+    async updateUserProfile(
+        id: Identifier,
+        userData: UserProfileUpdate
+    ): Promise<User> {
         const currentUser = await this.getCurrentUserRequired();
-        
+
         // Allow users to update their own profile, or admin to update any user
         if (currentUser.role !== 'admin' && currentUser.id !== id) {
             throw new Error('Insufficient permissions to update user profile');
@@ -459,7 +555,7 @@ export class SupabaseAuthAPI implements AuthAPI {
         if (userData.lastName) updateData.last_name = userData.lastName;
         if (userData.territory) updateData.territory = userData.territory;
         if (userData.principals) updateData.principals = userData.principals;
-        
+
         // Handle avatar upload if it's a File
         if (userData.avatar) {
             if (userData.avatar instanceof File) {
@@ -475,7 +571,8 @@ export class SupabaseAuthAPI implements AuthAPI {
             .from('users')
             .update(updateData)
             .eq('id', id)
-            .select(`
+            .select(
+                `
                 id,
                 email,
                 first_name,
@@ -488,11 +585,14 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_login,
                 created_at,
                 updated_at
-            `)
+            `
+            )
             .single();
 
         if (error || !data) {
-            throw new Error(`Failed to update user profile: ${error?.message || 'No data'}`);
+            throw new Error(
+                `Failed to update user profile: ${error?.message || 'No data'}`
+            );
         }
 
         const user: User = {
@@ -510,17 +610,21 @@ export class SupabaseAuthAPI implements AuthAPI {
             updatedAt: data.updated_at,
         };
 
-        await logAuditEvent('api.users.profile_update', {
-            endpoint: `/api/users/${id}/profile`,
-            method: 'PUT',
-            updatedBy: currentUser.id,
-            targetUserId: id,
-            changes: Object.keys(updateData),
-        }, {
-            userId: currentUser.id,
-            outcome: 'success',
-            message: `Updated user profile: ${user.email}`,
-        });
+        await logAuditEvent(
+            'api.users.profile_update',
+            {
+                endpoint: `/api/users/${id}/profile`,
+                method: 'PUT',
+                updatedBy: currentUser.id,
+                targetUserId: id,
+                changes: Object.keys(updateData),
+            },
+            {
+                userId: currentUser.id,
+                outcome: 'success',
+                message: `Updated user profile: ${user.email}`,
+            }
+        );
 
         return user;
     }
@@ -541,27 +645,28 @@ export class SupabaseAuthAPI implements AuthAPI {
         // Get user info for audit log
         const userToDelete = await this.getUser(id);
 
-        const { error } = await supabase
-            .from('users')
-            .delete()
-            .eq('id', id);
+        const { error } = await supabase.from('users').delete().eq('id', id);
 
         if (error) {
             throw new Error(`Failed to delete user: ${error.message}`);
         }
 
-        await logAuditEvent('api.users.delete', {
-            endpoint: `/api/users/${id}`,
-            method: 'DELETE',
-            deletedBy: currentUser.id,
-            deletedUserEmail: userToDelete.email,
-            deletedUserRole: userToDelete.role,
-        }, {
-            userId: currentUser.id,
-            outcome: 'success',
-            severity: 'high',
-            message: `Deleted user: ${userToDelete.email}`,
-        });
+        await logAuditEvent(
+            'api.users.delete',
+            {
+                endpoint: `/api/users/${id}`,
+                method: 'DELETE',
+                deletedBy: currentUser.id,
+                deletedUserEmail: userToDelete.email,
+                deletedUserRole: userToDelete.role,
+            },
+            {
+                userId: currentUser.id,
+                outcome: 'success',
+                severity: 'high',
+                message: `Deleted user: ${userToDelete.email}`,
+            }
+        );
     }
 
     /**
@@ -578,25 +683,34 @@ export class SupabaseAuthAPI implements AuthAPI {
     /**
      * Update user permissions (admin only)
      */
-    async updateUserPermissions(userId: Identifier, permissions: string[]): Promise<void> {
+    async updateUserPermissions(
+        userId: Identifier,
+        permissions: string[]
+    ): Promise<void> {
         const currentUser = await this.getCurrentUserRequired();
         if (currentUser.role !== 'admin') {
-            throw new Error('Insufficient permissions to update user permissions');
+            throw new Error(
+                'Insufficient permissions to update user permissions'
+            );
         }
 
         // In this implementation, permissions are role-based
         // This method could be extended to support custom permissions
-        await logAuditEvent('api.users.permissions_update', {
-            endpoint: `/api/users/${userId}/permissions`,
-            method: 'PUT',
-            updatedBy: currentUser.id,
-            targetUserId: userId,
-            permissions,
-        }, {
-            userId: currentUser.id,
-            outcome: 'success',
-            message: `Updated permissions for user ${userId}`,
-        });
+        await logAuditEvent(
+            'api.users.permissions_update',
+            {
+                endpoint: `/api/users/${userId}/permissions`,
+                method: 'PUT',
+                updatedBy: currentUser.id,
+                targetUserId: userId,
+                permissions,
+            },
+            {
+                userId: currentUser.id,
+                outcome: 'success',
+                message: `Updated permissions for user ${userId}`,
+            }
+        );
     }
 
     /**
@@ -604,52 +718,69 @@ export class SupabaseAuthAPI implements AuthAPI {
      */
     async requestPasswordReset(data: PasswordResetRequest): Promise<void> {
         await requestPasswordReset(data.email);
-        
-        await logAuditEvent('api.auth.password_reset_request', {
-            endpoint: '/api/auth/password-reset',
-            method: 'POST',
-            email: data.email,
-        }, {
-            userEmail: data.email,
-            outcome: 'success',
-            message: 'Password reset requested via API',
-        });
+
+        await logAuditEvent(
+            'api.auth.password_reset_request',
+            {
+                endpoint: '/api/auth/password-reset',
+                method: 'POST',
+                email: data.email,
+            },
+            {
+                userEmail: data.email,
+                outcome: 'success',
+                message: 'Password reset requested via API',
+            }
+        );
     }
 
     /**
      * Confirm password reset with token
      */
-    async confirmPasswordReset(data: PasswordResetConfirm): Promise<{ email: string }> {
+    async confirmPasswordReset(
+        data: PasswordResetConfirm
+    ): Promise<{ email: string }> {
         // For now, we'll use the updatePassword method from authService
         // In a real implementation, this would verify the token and update the password
         try {
             await updatePassword(data.newPassword);
-            
+
             // Get current user to return email (this is a simplified implementation)
             const currentUser = await this.getCurrentUserRequired();
-            
-            await logAuditEvent('api.auth.password_reset_confirm', {
-                endpoint: '/api/auth/password-reset/confirm',
-                method: 'POST',
-                token: data.token.substring(0, 10) + '...', // Log partial token for security
-            }, {
-                userEmail: currentUser.email,
-                outcome: 'success',
-                message: 'Password reset confirmed via API',
-            });
+
+            await logAuditEvent(
+                'api.auth.password_reset_confirm',
+                {
+                    endpoint: '/api/auth/password-reset/confirm',
+                    method: 'POST',
+                    token: data.token.substring(0, 10) + '...', // Log partial token for security
+                },
+                {
+                    userEmail: currentUser.email,
+                    outcome: 'success',
+                    message: 'Password reset confirmed via API',
+                }
+            );
 
             return { email: currentUser.email };
         } catch (error) {
-            await logAuditEvent('api.auth.password_reset_confirm_failed', {
-                endpoint: '/api/auth/password-reset/confirm',
-                method: 'POST',
-                token: data.token.substring(0, 10) + '...',
-                error: error instanceof Error ? error.message : 'Unknown error',
-            }, {
-                outcome: 'failure',
-                severity: 'high',
-                message: 'Password reset confirmation failed',
-            });
+            await logAuditEvent(
+                'api.auth.password_reset_confirm_failed',
+                {
+                    endpoint: '/api/auth/password-reset/confirm',
+                    method: 'POST',
+                    token: data.token.substring(0, 10) + '...',
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                },
+                {
+                    outcome: 'failure',
+                    severity: 'high',
+                    message: 'Password reset confirmation failed',
+                }
+            );
             throw error;
         }
     }
@@ -659,19 +790,23 @@ export class SupabaseAuthAPI implements AuthAPI {
      */
     async updatePassword(newPassword: string): Promise<void> {
         const currentUser = await this.getCurrentUserRequired();
-        
+
         await updatePassword(newPassword);
-        
-        await logAuditEvent('api.auth.password_update', {
-            endpoint: '/api/auth/password',
-            method: 'PUT',
-            userId: currentUser.id,
-        }, {
-            userId: currentUser.id,
-            userEmail: currentUser.email,
-            outcome: 'success',
-            message: 'Password updated via API',
-        });
+
+        await logAuditEvent(
+            'api.auth.password_update',
+            {
+                endpoint: '/api/auth/password',
+                method: 'PUT',
+                userId: currentUser.id,
+            },
+            {
+                userId: currentUser.id,
+                userEmail: currentUser.email,
+                outcome: 'success',
+                message: 'Password updated via API',
+            }
+        );
     }
 
     /**
@@ -685,19 +820,23 @@ export class SupabaseAuthAPI implements AuthAPI {
 
         const targetUser = await this.getUser(userId);
         await requestPasswordReset(targetUser.email);
-        
-        await logAuditEvent('api.users.force_password_reset', {
-            endpoint: `/api/users/${userId}/force-password-reset`,
-            method: 'POST',
-            requestedBy: currentUser.id,
-            targetUserId: userId,
-            targetUserEmail: targetUser.email,
-        }, {
-            userId: currentUser.id,
-            outcome: 'success',
-            severity: 'medium',
-            message: `Forced password reset for user: ${targetUser.email}`,
-        });
+
+        await logAuditEvent(
+            'api.users.force_password_reset',
+            {
+                endpoint: `/api/users/${userId}/force-password-reset`,
+                method: 'POST',
+                requestedBy: currentUser.id,
+                targetUserId: userId,
+                targetUserEmail: targetUser.email,
+            },
+            {
+                userId: currentUser.id,
+                outcome: 'success',
+                severity: 'medium',
+                message: `Forced password reset for user: ${targetUser.email}`,
+            }
+        );
     }
 }
 
@@ -711,7 +850,10 @@ export const authAPI = new SupabaseAuthAPI();
  */
 export const authDataProviderMethods = {
     // User management for react-admin
-    async getList(resource: 'users', params: any): Promise<{ data: User[]; total: number }> {
+    async getList(
+        resource: 'users',
+        params: any
+    ): Promise<{ data: User[]; total: number }> {
         if (resource !== 'users') {
             throw new Error(`Unsupported resource: ${resource}`);
         }
@@ -734,7 +876,10 @@ export const authDataProviderMethods = {
         return { data: user };
     },
 
-    async update(resource: 'users', params: { id: Identifier; data: Partial<BrokerFormData> }) {
+    async update(
+        resource: 'users',
+        params: { id: Identifier; data: Partial<BrokerFormData> }
+    ) {
         if (resource !== 'users') {
             throw new Error(`Unsupported resource: ${resource}`);
         }

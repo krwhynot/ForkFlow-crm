@@ -47,15 +47,17 @@ const mockUsers: User[] = [
         isActive: false,
         createdAt: '2024-01-03T00:00:00Z',
         updatedAt: '2024-01-03T00:00:00Z',
-    }
+    },
 ];
 
 const defaultDataProvider = {
-    getList: () => Promise.resolve({ data: mockUsers as any[], total: mockUsers.length }),
+    getList: () =>
+        Promise.resolve({ data: mockUsers as any[], total: mockUsers.length }),
     getOne: () => Promise.resolve({ data: mockUsers[0] as any }),
     getMany: () => Promise.resolve({ data: mockUsers as any[] }),
     getManyReference: () => Promise.resolve({ data: [], total: 0 }),
-    create: () => Promise.resolve({ data: { ...mockUsers[0], id: '4' } as any }),
+    create: () =>
+        Promise.resolve({ data: { ...mockUsers[0], id: '4' } as any }),
     update: () => Promise.resolve({ data: mockUsers[0] as any }),
     updateMany: () => Promise.resolve({ data: ['1', '2'] }),
     delete: () => Promise.resolve({ data: mockUsers[0] as any }),
@@ -68,20 +70,19 @@ const defaultAuthProvider = {
     checkAuth: () => Promise.resolve(),
     checkError: () => Promise.resolve(),
     getPermissions: () => Promise.resolve(),
-    getIdentity: () => Promise.resolve({
-        id: '1',
-        fullName: 'Admin User',
-        role: 'admin'
-    }),
+    getIdentity: () =>
+        Promise.resolve({
+            id: '1',
+            fullName: 'Admin User',
+            role: 'admin',
+        }),
 };
 
 describe('User Management Integration Tests', () => {
     describe('UserList Component', () => {
         it('renders user list without errors', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
@@ -93,25 +94,27 @@ describe('User Management Integration Tests', () => {
 
         it('displays user data correctly', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
 
             await waitFor(() => {
-                expect(screen.getByText('admin@example.com')).toBeInTheDocument();
-                expect(screen.getByText('broker@example.com')).toBeInTheDocument();
-                expect(screen.getByText('manager@example.com')).toBeInTheDocument();
+                expect(
+                    screen.getByText('admin@example.com')
+                ).toBeInTheDocument();
+                expect(
+                    screen.getByText('broker@example.com')
+                ).toBeInTheDocument();
+                expect(
+                    screen.getByText('manager@example.com')
+                ).toBeInTheDocument();
             });
         });
 
         it('shows territory information for brokers', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
@@ -126,26 +129,26 @@ describe('User Management Integration Tests', () => {
     describe('UserCreate Component', () => {
         it('renders user creation form without errors', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserCreate />
                 </TestContext>
             );
 
             await waitFor(() => {
-                expect(screen.getByText('Basic Information')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Basic Information')
+                ).toBeInTheDocument();
                 expect(screen.getByLabelText('First Name')).toBeInTheDocument();
                 expect(screen.getByLabelText('Last Name')).toBeInTheDocument();
-                expect(screen.getByLabelText('Email Address')).toBeInTheDocument();
+                expect(
+                    screen.getByLabelText('Email Address')
+                ).toBeInTheDocument();
             });
         });
 
         it('shows territory fields for broker role', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserCreate />
                 </TestContext>
             );
@@ -161,16 +164,18 @@ describe('User Management Integration Tests', () => {
     describe('UserEdit Component', () => {
         it('renders user edit form without errors', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserEdit />
                 </TestContext>
             );
 
             await waitFor(() => {
-                expect(screen.getByText('Basic Information')).toBeInTheDocument();
-                expect(screen.getByText('Security Management')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Basic Information')
+                ).toBeInTheDocument();
+                expect(
+                    screen.getByText('Security Management')
+                ).toBeInTheDocument();
             });
         });
     });
@@ -178,16 +183,18 @@ describe('User Management Integration Tests', () => {
     describe('UserShow Component', () => {
         it('renders user details without errors', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserShow />
                 </TestContext>
             );
 
             await waitFor(() => {
-                expect(screen.getByText('Account Information')).toBeInTheDocument();
-                expect(screen.getByText('Activity Information')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Account Information')
+                ).toBeInTheDocument();
+                expect(
+                    screen.getByText('Activity Information')
+                ).toBeInTheDocument();
             });
         });
     });
@@ -200,7 +207,7 @@ describe('User Management Integration Tests', () => {
                 configurable: true,
                 value: 375,
             });
-            
+
             Object.defineProperty(window, 'matchMedia', {
                 writable: true,
                 value: jest.fn().mockImplementation(query => ({
@@ -218,9 +225,7 @@ describe('User Management Integration Tests', () => {
 
         it('adapts UserList for mobile screens', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
@@ -233,9 +238,7 @@ describe('User Management Integration Tests', () => {
 
         it('ensures touch targets are 44px minimum', async () => {
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
@@ -252,17 +255,16 @@ describe('User Management Integration Tests', () => {
         it('shows appropriate actions for admin users', async () => {
             const adminAuthProvider = {
                 ...defaultAuthProvider,
-                getIdentity: () => Promise.resolve({
-                    id: '1',
-                    fullName: 'Admin User',
-                    role: 'admin'
-                }),
+                getIdentity: () =>
+                    Promise.resolve({
+                        id: '1',
+                        fullName: 'Admin User',
+                        role: 'admin',
+                    }),
             };
 
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
@@ -275,18 +277,17 @@ describe('User Management Integration Tests', () => {
         it('applies territory filtering for broker users', async () => {
             const brokerAuthProvider = {
                 ...defaultAuthProvider,
-                getIdentity: () => Promise.resolve({
-                    id: '2',
-                    fullName: 'John Broker',
-                    role: 'broker',
-                    territory: ['CA']
-                }),
+                getIdentity: () =>
+                    Promise.resolve({
+                        id: '2',
+                        fullName: 'John Broker',
+                        role: 'broker',
+                        territory: ['CA'],
+                    }),
             };
 
             render(
-                <TestContext
-                    dataProvider={defaultDataProvider}
-                >
+                <TestContext dataProvider={defaultDataProvider}>
                     <UserList />
                 </TestContext>
             );
@@ -302,50 +303,56 @@ describe('User Management Integration Tests', () => {
         it('handles user creation workflow', async () => {
             const createDataProvider = {
                 ...defaultDataProvider,
-                create: jest.fn(() => Promise.resolve({ 
-                    data: { 
-                        id: '4', 
-                        email: 'new@example.com',
-                        firstName: 'New',
-                        lastName: 'User',
-                        role: 'broker',
-                        isActive: true,
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                    } as any
-                })),
+                create: jest.fn(() =>
+                    Promise.resolve({
+                        data: {
+                            id: '4',
+                            email: 'new@example.com',
+                            firstName: 'New',
+                            lastName: 'User',
+                            role: 'broker',
+                            isActive: true,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                        } as any,
+                    })
+                ),
             } as any;
 
             render(
-                <TestContext
-                    dataProvider={createDataProvider}
-                >
+                <TestContext dataProvider={createDataProvider}>
                     <UserCreate />
                 </TestContext>
             );
 
             await waitFor(() => {
-                expect(screen.getByText('Basic Information')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Basic Information')
+                ).toBeInTheDocument();
             });
         });
 
         it('handles user update workflow', async () => {
             const updateDataProvider = {
                 ...defaultDataProvider,
-                update: jest.fn(() => Promise.resolve({ data: mockUsers[0] as any })),
+                update: jest.fn(() =>
+                    Promise.resolve({ data: mockUsers[0] as any })
+                ),
             } as any;
 
             render(
-                <TestContext
-                    dataProvider={updateDataProvider}
-                >
+                <TestContext dataProvider={updateDataProvider}>
                     <UserEdit />
                 </TestContext>
             );
 
             await waitFor(() => {
-                expect(screen.getByText('Basic Information')).toBeInTheDocument();
-                expect(screen.getByText('Security Management')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Basic Information')
+                ).toBeInTheDocument();
+                expect(
+                    screen.getByText('Security Management')
+                ).toBeInTheDocument();
             });
         });
     });
@@ -358,9 +365,7 @@ describe('User Management Integration Tests', () => {
             } as any;
 
             render(
-                <TestContext
-                    dataProvider={errorDataProvider}
-                >
+                <TestContext dataProvider={errorDataProvider}>
                     <UserList />
                 </TestContext>
             );

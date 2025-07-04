@@ -1,9 +1,5 @@
 import { Stack, Typography } from '../components/ui-kit';
-import {
-    Divider,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Divider } from '@mui/material';
 import {
     AutocompleteArrayInput,
     AutocompleteInput,
@@ -20,17 +16,17 @@ import {
 } from 'react-admin';
 import { contactInputText, contactOptionText } from '../misc/ContactOption';
 import { useConfigurationContext } from '../root/ConfigurationContext';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const validateRequired = required();
 
 export const DealInputs = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md');
     return (
-        <Stack gap={4} p={1}>
+        <Stack className="gap-4 p-1">
             <DealInfoInputs />
 
-            <Stack gap={4} flexDirection={isMobile ? 'column' : 'row'}>
+            <Stack className={`gap-4 ${isMobile ? 'flex-col' : 'flex-row'}`}>
                 <DealLinkedToInputs />
                 <Divider
                     orientation={isMobile ? 'horizontal' : 'vertical'}
@@ -44,7 +40,7 @@ export const DealInputs = () => {
 
 const DealInfoInputs = () => {
     return (
-        <Stack gap={1} flex={1}>
+        <Stack className="gap-1 flex-1">
             <TextInput
                 source="name"
                 label="Deal name"
@@ -88,7 +84,7 @@ const DealLinkedToInputs = () => {
         }
     };
     return (
-        <Stack gap={1} flex={1}>
+        <Stack className="gap-1 flex-1">
             <Typography variant="subtitle1">Linked to</Typography>
             <ReferenceInput source="organizationId" reference="companies">
                 <AutocompleteInput
@@ -117,7 +113,7 @@ const DealLinkedToInputs = () => {
 const DealMiscInputs = () => {
     const { dealStages, dealCategories } = useConfigurationContext();
     return (
-        <Stack gap={1} flex={1}>
+        <Stack className="gap-1 flex-1">
             <Typography variant="subtitle1">Misc</Typography>
 
             <SelectInput

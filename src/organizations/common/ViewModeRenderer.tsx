@@ -4,17 +4,25 @@ import { useViewMode } from '../hooks/useViewMode';
 import { Organization } from '../../types';
 
 // Lazy load components for better performance
-const OrganizationTable = React.lazy(() => 
-    import('../list/OrganizationTable').then(module => ({ default: module.OrganizationTable }))
+const OrganizationTable = React.lazy(() =>
+    import('../list/OrganizationTable').then(module => ({
+        default: module.OrganizationTable,
+    }))
 );
-const OrganizationCards = React.lazy(() => 
-    import('../list/OrganizationCards').then(module => ({ default: module.OrganizationCards }))
+const OrganizationCards = React.lazy(() =>
+    import('../list/OrganizationCards').then(module => ({
+        default: module.OrganizationCards,
+    }))
 );
-const OrganizationKanban = React.lazy(() => 
-    import('../list/OrganizationKanban').then(module => ({ default: module.OrganizationKanban }))
+const OrganizationKanban = React.lazy(() =>
+    import('../list/OrganizationKanban').then(module => ({
+        default: module.OrganizationKanban,
+    }))
 );
-const OrganizationMapView = React.lazy(() => 
-    import('../list/OrganizationMapView').then(module => ({ default: module.OrganizationMapView }))
+const OrganizationMapView = React.lazy(() =>
+    import('../list/OrganizationMapView').then(module => ({
+        default: module.OrganizationMapView,
+    }))
 );
 
 interface ViewModeRendererProps {
@@ -38,13 +46,13 @@ export const ViewModeRenderer: React.FC<ViewModeRendererProps> = ({
 
     // Loading fallback component
     const LoadingFallback = () => (
-        <Box 
-            sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
+        <Box
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 minHeight: '200px',
-                width: '100%' 
+                width: '100%',
             }}
         >
             <CircularProgress size={40} />
@@ -54,27 +62,27 @@ export const ViewModeRenderer: React.FC<ViewModeRendererProps> = ({
     // Error display component
     if (error) {
         return (
-            <Box 
-                sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     minHeight: '200px',
                     flexDirection: 'column',
                     gap: 2,
-                    color: 'error.main'
+                    color: 'error.main',
                 }}
             >
                 <Box>Error loading organizations: {error}</Box>
                 {onRefresh && (
-                    <button 
+                    <button
                         onClick={onRefresh}
                         style={{
                             padding: '8px 16px',
                             borderRadius: '4px',
                             border: '1px solid',
                             background: 'transparent',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                         }}
                     >
                         Retry

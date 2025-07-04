@@ -12,7 +12,10 @@ export const OpportunityColumn = ({
     opportunities: Deal[];
 }) => {
     // Calculate total value for this stage
-    const totalValue = opportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0);
+    const totalValue = opportunities.reduce(
+        (sum, opp) => sum + (opp.amount || 0),
+        0
+    );
     const opportunityCount = opportunities.length;
 
     return (
@@ -53,7 +56,8 @@ export const OpportunityColumn = ({
                     />
                 </Box>
                 <Typography variant="body2" color="text.secondary">
-                    Total: {new Intl.NumberFormat('en-US', {
+                    Total:{' '}
+                    {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'USD',
                         minimumFractionDigits: 0,
@@ -87,7 +91,7 @@ export const OpportunityColumn = ({
                             />
                         ))}
                         {provided.placeholder}
-                        
+
                         {/* Empty State */}
                         {opportunities.length === 0 && (
                             <Box

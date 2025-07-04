@@ -44,9 +44,12 @@ import { createReportingProvider } from '../reporting/reportingProvider';
 const baseDataProvider = fakeRestDataProvider(generateData(), true, 300);
 
 // Performance tracking wrapper for API calls
-const withPerformanceTracking = (operation: () => Promise<any>, operationName: string) => {
+const withPerformanceTracking = (
+    operation: () => Promise<any>,
+    operationName: string
+) => {
     const startTime = Date.now();
-    
+
     return operation()
         .then(result => {
             performanceMonitor.trackApiCall(
@@ -599,17 +602,27 @@ const dataProviderWithCustomMethod = {
         });
 
         // Enrich interactions with type information and computed fields
-        const enrichedInteractions = interactionsResult.data.map((interaction: any) => {
-            const type = settingsResult.data.find((s: any) => s.id === interaction.typeId);
-            return {
-                ...interaction,
-                type,
-                typeLabel: type?.label || 'Unknown',
-                hasLocation: interaction.latitude != null && interaction.longitude != null,
-                isOverdue: interaction.followUpDate && new Date(interaction.followUpDate) < new Date(),
-                formattedDuration: interaction.duration ? `${interaction.duration} min` : undefined,
-            };
-        });
+        const enrichedInteractions = interactionsResult.data.map(
+            (interaction: any) => {
+                const type = settingsResult.data.find(
+                    (s: any) => s.id === interaction.typeId
+                );
+                return {
+                    ...interaction,
+                    type,
+                    typeLabel: type?.label || 'Unknown',
+                    hasLocation:
+                        interaction.latitude != null &&
+                        interaction.longitude != null,
+                    isOverdue:
+                        interaction.followUpDate &&
+                        new Date(interaction.followUpDate) < new Date(),
+                    formattedDuration: interaction.duration
+                        ? `${interaction.duration} min`
+                        : undefined,
+                };
+            }
+        );
 
         return {
             data: enrichedInteractions,
@@ -619,17 +632,42 @@ const dataProviderWithCustomMethod = {
 
     async getInteraction(params: any) {
         const result = await baseDataProvider.getOne('interactions', params);
-        
+
         // Get related entities
-        const [organizationResult, contactResult, opportunityResult, typeResult] = await Promise.all([
-            result.data.organizationId ? baseDataProvider.getOne('organizations', { id: result.data.organizationId }).catch(() => null) : null,
-            result.data.contactId ? baseDataProvider.getOne('contacts', { id: result.data.contactId }).catch(() => null) : null,
-            result.data.opportunityId ? baseDataProvider.getOne('deals', { id: result.data.opportunityId }).catch(() => null) : null,
-            baseDataProvider.getList('settings', { 
-                filter: { category: 'interaction_type', id: result.data.typeId },
-                pagination: { page: 1, perPage: 1 },
-                sort: { field: 'id', order: 'ASC' }
-            }).then(r => r.data[0]).catch(() => null)
+        const [
+            organizationResult,
+            contactResult,
+            opportunityResult,
+            typeResult,
+        ] = await Promise.all([
+            result.data.organizationId
+                ? baseDataProvider
+                      .getOne('organizations', {
+                          id: result.data.organizationId,
+                      })
+                      .catch(() => null)
+                : null,
+            result.data.contactId
+                ? baseDataProvider
+                      .getOne('contacts', { id: result.data.contactId })
+                      .catch(() => null)
+                : null,
+            result.data.opportunityId
+                ? baseDataProvider
+                      .getOne('deals', { id: result.data.opportunityId })
+                      .catch(() => null)
+                : null,
+            baseDataProvider
+                .getList('settings', {
+                    filter: {
+                        category: 'interaction_type',
+                        id: result.data.typeId,
+                    },
+                    pagination: { page: 1, perPage: 1 },
+                    sort: { field: 'id', order: 'ASC' },
+                })
+                .then(r => r.data[0])
+                .catch(() => null),
         ]);
 
         return {
@@ -640,9 +678,15 @@ const dataProviderWithCustomMethod = {
                 opportunity: opportunityResult?.data,
                 type: typeResult,
                 typeLabel: typeResult?.label || 'Unknown',
-                hasLocation: result.data.latitude != null && result.data.longitude != null,
-                isOverdue: result.data.followUpDate && new Date(result.data.followUpDate) < new Date(),
-                formattedDuration: result.data.duration ? `${result.data.duration} min` : undefined,
+                hasLocation:
+                    result.data.latitude != null &&
+                    result.data.longitude != null,
+                isOverdue:
+                    result.data.followUpDate &&
+                    new Date(result.data.followUpDate) < new Date(),
+                formattedDuration: result.data.duration
+                    ? `${result.data.duration} min`
+                    : undefined,
             },
         };
     },
@@ -651,8 +695,11 @@ const dataProviderWithCustomMethod = {
         // Check if we're offline - if so, queue the interaction
         if (!navigator.onLine) {
             console.log('Offline mode: Queueing interaction for later sync');
-            const queuedId = await offlineService.queueInteraction('create', params.data);
-            
+            const queuedId = await offlineService.queueInteraction(
+                'create',
+                params.data
+            );
+
             return {
                 data: {
                     ...params.data,
@@ -674,8 +721,11 @@ const dataProviderWithCustomMethod = {
         interactionValidator.updateSettings(settingsResult.data);
 
         // Sanitize and validate data
-        const sanitizedData = interactionValidator.sanitizeInteraction(params.data);
-        const validation = interactionValidator.validateInteraction(sanitizedData);
+        const sanitizedData = interactionValidator.sanitizeInteraction(
+            params.data
+        );
+        const validation =
+            interactionValidator.validateInteraction(sanitizedData);
 
         if (!validation.isValid) {
             throw new Error(
@@ -708,10 +758,18 @@ const dataProviderWithCustomMethod = {
             return result;
         } catch (error: any) {
             // If the request fails and we detect network issues, queue for offline
-            if (error.message.includes('network') || error.message.includes('fetch')) {
-                console.log('Network error detected: Queueing interaction for later sync');
-                const queuedId = await offlineService.queueInteraction('create', params.data);
-                
+            if (
+                error.message.includes('network') ||
+                error.message.includes('fetch')
+            ) {
+                console.log(
+                    'Network error detected: Queueing interaction for later sync'
+                );
+                const queuedId = await offlineService.queueInteraction(
+                    'create',
+                    params.data
+                );
+
                 return {
                     data: {
                         ...params.data,
@@ -728,7 +786,7 @@ const dataProviderWithCustomMethod = {
 
     async updateInteraction(params: any) {
         const startTime = Date.now();
-        
+
         try {
             // Get settings for validation
             const settingsResult = await baseDataProvider.getList('settings', {
@@ -740,8 +798,11 @@ const dataProviderWithCustomMethod = {
             interactionValidator.updateSettings(settingsResult.data);
 
             // Sanitize and validate data
-            const sanitizedData = interactionValidator.sanitizeInteraction(params.data);
-            const validation = interactionValidator.validateInteraction(sanitizedData);
+            const sanitizedData = interactionValidator.sanitizeInteraction(
+                params.data
+            );
+            const validation =
+                interactionValidator.validateInteraction(sanitizedData);
 
             if (!validation.isValid) {
                 throw new Error(
@@ -751,7 +812,10 @@ const dataProviderWithCustomMethod = {
 
             // Log warnings if any
             if (validation.warnings.length > 0) {
-                console.warn('Interaction update warnings:', validation.warnings);
+                console.warn(
+                    'Interaction update warnings:',
+                    validation.warnings
+                );
             }
 
             const result = await baseDataProvider.update('interactions', {
@@ -761,7 +825,7 @@ const dataProviderWithCustomMethod = {
                     updatedAt: new Date().toISOString(),
                 },
             });
-            
+
             // Track performance
             performanceMonitor.trackApiCall(
                 'updateInteraction',
@@ -769,7 +833,7 @@ const dataProviderWithCustomMethod = {
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -785,17 +849,20 @@ const dataProviderWithCustomMethod = {
 
     async deleteInteraction(params: any) {
         const startTime = Date.now();
-        
+
         try {
-            const result = await baseDataProvider.delete('interactions', params);
-            
+            const result = await baseDataProvider.delete(
+                'interactions',
+                params
+            );
+
             performanceMonitor.trackApiCall(
                 'deleteInteraction',
                 'DELETE',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -809,14 +876,20 @@ const dataProviderWithCustomMethod = {
         }
     },
 
-    async getOrganizationInteractions(organizationId: Identifier, params: any = {}) {
+    async getOrganizationInteractions(
+        organizationId: Identifier,
+        params: any = {}
+    ) {
         const startTime = Date.now();
-        
+
         try {
-            const interactionsResult = await baseDataProvider.getList('interactions', {
-                ...params,
-                filter: { ...params.filter, organizationId },
-            });
+            const interactionsResult = await baseDataProvider.getList(
+                'interactions',
+                {
+                    ...params,
+                    filter: { ...params.filter, organizationId },
+                }
+            );
 
             // Enrich with type information
             const settingsResult = await baseDataProvider.getList('settings', {
@@ -825,29 +898,37 @@ const dataProviderWithCustomMethod = {
                 sort: { field: 'id', order: 'ASC' },
             });
 
-            const enrichedInteractions = interactionsResult.data.map((interaction: any) => {
-                const type = settingsResult.data.find((s: any) => s.id === interaction.typeId);
-                return {
-                    ...interaction,
-                    type,
-                    typeLabel: type?.label || 'Unknown',
-                    hasLocation: interaction.latitude != null && interaction.longitude != null,
-                    isOverdue: interaction.followUpDate && new Date(interaction.followUpDate) < new Date(),
-                };
-            });
+            const enrichedInteractions = interactionsResult.data.map(
+                (interaction: any) => {
+                    const type = settingsResult.data.find(
+                        (s: any) => s.id === interaction.typeId
+                    );
+                    return {
+                        ...interaction,
+                        type,
+                        typeLabel: type?.label || 'Unknown',
+                        hasLocation:
+                            interaction.latitude != null &&
+                            interaction.longitude != null,
+                        isOverdue:
+                            interaction.followUpDate &&
+                            new Date(interaction.followUpDate) < new Date(),
+                    };
+                }
+            );
 
             const result = {
                 data: enrichedInteractions,
                 total: interactionsResult.total,
             };
-            
+
             performanceMonitor.trackApiCall(
                 'getOrganizationInteractions',
                 'GET',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -862,10 +943,13 @@ const dataProviderWithCustomMethod = {
     },
 
     async getContactInteractions(contactId: Identifier, params: any = {}) {
-        const interactionsResult = await baseDataProvider.getList('interactions', {
-            ...params,
-            filter: { ...params.filter, contactId },
-        });
+        const interactionsResult = await baseDataProvider.getList(
+            'interactions',
+            {
+                ...params,
+                filter: { ...params.filter, contactId },
+            }
+        );
 
         // Enrich with type information
         const settingsResult = await baseDataProvider.getList('settings', {
@@ -874,15 +958,21 @@ const dataProviderWithCustomMethod = {
             sort: { field: 'id', order: 'ASC' },
         });
 
-        const enrichedInteractions = interactionsResult.data.map((interaction: any) => {
-            const type = settingsResult.data.find((s: any) => s.id === interaction.typeId);
-            return {
-                ...interaction,
-                type,
-                typeLabel: type?.label || 'Unknown',
-                hasLocation: interaction.latitude != null && interaction.longitude != null,
-            };
-        });
+        const enrichedInteractions = interactionsResult.data.map(
+            (interaction: any) => {
+                const type = settingsResult.data.find(
+                    (s: any) => s.id === interaction.typeId
+                );
+                return {
+                    ...interaction,
+                    type,
+                    typeLabel: type?.label || 'Unknown',
+                    hasLocation:
+                        interaction.latitude != null &&
+                        interaction.longitude != null,
+                };
+            }
+        );
 
         return {
             data: enrichedInteractions,
@@ -890,11 +980,17 @@ const dataProviderWithCustomMethod = {
         };
     },
 
-    async getOpportunityInteractions(opportunityId: Identifier, params: any = {}) {
-        const interactionsResult = await baseDataProvider.getList('interactions', {
-            ...params,
-            filter: { ...params.filter, opportunityId },
-        });
+    async getOpportunityInteractions(
+        opportunityId: Identifier,
+        params: any = {}
+    ) {
+        const interactionsResult = await baseDataProvider.getList(
+            'interactions',
+            {
+                ...params,
+                filter: { ...params.filter, opportunityId },
+            }
+        );
 
         // Enrich with type information
         const settingsResult = await baseDataProvider.getList('settings', {
@@ -903,15 +999,21 @@ const dataProviderWithCustomMethod = {
             sort: { field: 'id', order: 'ASC' },
         });
 
-        const enrichedInteractions = interactionsResult.data.map((interaction: any) => {
-            const type = settingsResult.data.find((s: any) => s.id === interaction.typeId);
-            return {
-                ...interaction,
-                type,
-                typeLabel: type?.label || 'Unknown',
-                hasLocation: interaction.latitude != null && interaction.longitude != null,
-            };
-        });
+        const enrichedInteractions = interactionsResult.data.map(
+            (interaction: any) => {
+                const type = settingsResult.data.find(
+                    (s: any) => s.id === interaction.typeId
+                );
+                return {
+                    ...interaction,
+                    type,
+                    typeLabel: type?.label || 'Unknown',
+                    hasLocation:
+                        interaction.latitude != null &&
+                        interaction.longitude != null,
+                };
+            }
+        );
 
         return {
             data: enrichedInteractions,
@@ -921,67 +1023,80 @@ const dataProviderWithCustomMethod = {
 
     async getInteractionTimeline(params: any = {}) {
         const startTime = Date.now();
-        
+
         try {
-            const { startDate, endDate, organizationId, contactId, typeIds } = params;
-        
-        let filter: any = {};
-        if (organizationId) filter.organizationId = organizationId;
-        if (contactId) filter.contactId = contactId;
+            const { startDate, endDate, organizationId, contactId, typeIds } =
+                params;
 
-        const interactionsResult = await baseDataProvider.getList('interactions', {
-            filter,
-            pagination: { page: 1, perPage: 10000 },
-            sort: { field: 'scheduledDate', order: 'DESC' },
-        });
+            let filter: any = {};
+            if (organizationId) filter.organizationId = organizationId;
+            if (contactId) filter.contactId = contactId;
 
-        // Filter by date range and type if specified
-        let filteredInteractions = interactionsResult.data;
-        
-        if (startDate || endDate) {
-            filteredInteractions = filteredInteractions.filter((interaction: any) => {
-                const date = new Date(interaction.scheduledDate);
-                if (startDate && date < new Date(startDate)) return false;
-                if (endDate && date > new Date(endDate)) return false;
-                return true;
-            });
-        }
-
-        if (typeIds && typeIds.length > 0) {
-            filteredInteractions = filteredInteractions.filter((interaction: any) => 
-                typeIds.includes(interaction.typeId)
+            const interactionsResult = await baseDataProvider.getList(
+                'interactions',
+                {
+                    filter,
+                    pagination: { page: 1, perPage: 10000 },
+                    sort: { field: 'scheduledDate', order: 'DESC' },
+                }
             );
-        }
 
-        // Enrich with type information
-        const settingsResult = await baseDataProvider.getList('settings', {
-            filter: { category: 'interaction_type' },
-            pagination: { page: 1, perPage: 1000 },
-            sort: { field: 'id', order: 'ASC' },
-        });
+            // Filter by date range and type if specified
+            let filteredInteractions = interactionsResult.data;
 
-        const enrichedInteractions = filteredInteractions.map((interaction: any) => {
-            const type = settingsResult.data.find((s: any) => s.id === interaction.typeId);
-            return {
-                ...interaction,
-                type,
-                typeLabel: type?.label || 'Unknown',
-                hasLocation: interaction.latitude != null && interaction.longitude != null,
-            };
-        });
+            if (startDate || endDate) {
+                filteredInteractions = filteredInteractions.filter(
+                    (interaction: any) => {
+                        const date = new Date(interaction.scheduledDate);
+                        if (startDate && date < new Date(startDate))
+                            return false;
+                        if (endDate && date > new Date(endDate)) return false;
+                        return true;
+                    }
+                );
+            }
+
+            if (typeIds && typeIds.length > 0) {
+                filteredInteractions = filteredInteractions.filter(
+                    (interaction: any) => typeIds.includes(interaction.typeId)
+                );
+            }
+
+            // Enrich with type information
+            const settingsResult = await baseDataProvider.getList('settings', {
+                filter: { category: 'interaction_type' },
+                pagination: { page: 1, perPage: 1000 },
+                sort: { field: 'id', order: 'ASC' },
+            });
+
+            const enrichedInteractions = filteredInteractions.map(
+                (interaction: any) => {
+                    const type = settingsResult.data.find(
+                        (s: any) => s.id === interaction.typeId
+                    );
+                    return {
+                        ...interaction,
+                        type,
+                        typeLabel: type?.label || 'Unknown',
+                        hasLocation:
+                            interaction.latitude != null &&
+                            interaction.longitude != null,
+                    };
+                }
+            );
 
             const result = {
                 data: enrichedInteractions,
                 total: enrichedInteractions.length,
             };
-            
+
             performanceMonitor.trackApiCall(
                 'getInteractionTimeline',
                 'GET',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -997,35 +1112,44 @@ const dataProviderWithCustomMethod = {
 
     async getFollowUpReminders(params: any = {}) {
         const startTime = Date.now();
-        
+
         try {
             const { overdue = false, upcoming = false, days = 7 } = params;
-            
-            const interactionsResult = await baseDataProvider.getList('interactions', {
-                filter: { followUpRequired: true },
-                pagination: { page: 1, perPage: 10000 },
-                sort: { field: 'followUpDate', order: 'ASC' },
-            });
+
+            const interactionsResult = await baseDataProvider.getList(
+                'interactions',
+                {
+                    filter: { followUpRequired: true },
+                    pagination: { page: 1, perPage: 10000 },
+                    sort: { field: 'followUpDate', order: 'ASC' },
+                }
+            );
 
             const now = new Date();
             const futureDate = new Date();
             futureDate.setDate(now.getDate() + days);
 
-            let filteredInteractions = interactionsResult.data.filter((interaction: any) => 
-                interaction.followUpDate && !interaction.isCompleted
+            let filteredInteractions = interactionsResult.data.filter(
+                (interaction: any) =>
+                    interaction.followUpDate && !interaction.isCompleted
             );
 
             if (overdue) {
-                filteredInteractions = filteredInteractions.filter((interaction: any) => 
-                    new Date(interaction.followUpDate) < now
+                filteredInteractions = filteredInteractions.filter(
+                    (interaction: any) =>
+                        new Date(interaction.followUpDate) < now
                 );
             }
 
             if (upcoming) {
-                filteredInteractions = filteredInteractions.filter((interaction: any) => {
-                    const followUpDate = new Date(interaction.followUpDate);
-                    return followUpDate >= now && followUpDate <= futureDate;
-                });
+                filteredInteractions = filteredInteractions.filter(
+                    (interaction: any) => {
+                        const followUpDate = new Date(interaction.followUpDate);
+                        return (
+                            followUpDate >= now && followUpDate <= futureDate
+                        );
+                    }
+                );
             }
 
             // Enrich with type and organization information
@@ -1039,33 +1163,39 @@ const dataProviderWithCustomMethod = {
                     filter: {},
                     pagination: { page: 1, perPage: 10000 },
                     sort: { field: 'id', order: 'ASC' },
-                })
+                }),
             ]);
 
-            const enrichedInteractions = filteredInteractions.map((interaction: any) => {
-                const type = settingsResult.data.find((s: any) => s.id === interaction.typeId);
-                const organization = organizationsResult.data.find((o: any) => o.id === interaction.organizationId);
-                return {
-                    ...interaction,
-                    type,
-                    organization,
-                    typeLabel: type?.label || 'Unknown',
-                    isOverdue: new Date(interaction.followUpDate) < now,
-                };
-            });
+            const enrichedInteractions = filteredInteractions.map(
+                (interaction: any) => {
+                    const type = settingsResult.data.find(
+                        (s: any) => s.id === interaction.typeId
+                    );
+                    const organization = organizationsResult.data.find(
+                        (o: any) => o.id === interaction.organizationId
+                    );
+                    return {
+                        ...interaction,
+                        type,
+                        organization,
+                        typeLabel: type?.label || 'Unknown',
+                        isOverdue: new Date(interaction.followUpDate) < now,
+                    };
+                }
+            );
 
             const result = {
                 data: enrichedInteractions,
                 total: enrichedInteractions.length,
             };
-            
+
             performanceMonitor.trackApiCall(
                 'getFollowUpReminders',
                 'GET',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -1081,10 +1211,13 @@ const dataProviderWithCustomMethod = {
 
     async completeInteraction(id: Identifier, completionData: any = {}) {
         const startTime = Date.now();
-        
+
         try {
-            const { data: previousData } = await baseDataProvider.getOne('interactions', { id });
-            
+            const { data: previousData } = await baseDataProvider.getOne(
+                'interactions',
+                { id }
+            );
+
             const result = await baseDataProvider.update('interactions', {
                 id,
                 data: {
@@ -1097,14 +1230,14 @@ const dataProviderWithCustomMethod = {
                 },
                 previousData,
             });
-            
+
             performanceMonitor.trackApiCall(
                 'completeInteraction',
                 'PUT',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -1120,10 +1253,13 @@ const dataProviderWithCustomMethod = {
 
     async scheduleFollowUp(id: Identifier, followUpData: any) {
         const startTime = Date.now();
-        
+
         try {
-            const { data: previousData } = await baseDataProvider.getOne('interactions', { id });
-            
+            const { data: previousData } = await baseDataProvider.getOne(
+                'interactions',
+                { id }
+            );
+
             const result = await baseDataProvider.update('interactions', {
                 id,
                 data: {
@@ -1134,14 +1270,14 @@ const dataProviderWithCustomMethod = {
                 },
                 previousData,
             });
-            
+
             performanceMonitor.trackApiCall(
                 'scheduleFollowUp',
                 'PUT',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -1157,11 +1293,11 @@ const dataProviderWithCustomMethod = {
 
     async uploadInteractionAttachment(interactionId: Identifier, file: File) {
         const startTime = Date.now();
-        
+
         try {
             // Validate file attachment
             const validation = interactionValidator.validateAttachment(file);
-            
+
             if (!validation.isValid) {
                 throw new Error(
                     `File validation failed: ${validation.errors.map(e => e.message).join(', ')}`
@@ -1175,11 +1311,14 @@ const dataProviderWithCustomMethod = {
 
             // Mock file upload - in production this would upload to a file storage service
             const fileName = `interaction_${interactionId}_${Date.now()}_${file.name}`;
-            const { data: previousData } = await baseDataProvider.getOne('interactions', { id: interactionId });
-            
+            const { data: previousData } = await baseDataProvider.getOne(
+                'interactions',
+                { id: interactionId }
+            );
+
             const attachments = previousData.attachments || [];
             attachments.push(fileName);
-            
+
             const result = await baseDataProvider.update('interactions', {
                 id: interactionId,
                 data: {
@@ -1190,11 +1329,7 @@ const dataProviderWithCustomMethod = {
             });
 
             // Track upload performance
-            performanceMonitor.trackFileUpload(
-                file.size,
-                startTime,
-                true
-            );
+            performanceMonitor.trackFileUpload(file.size, startTime, true);
 
             return result;
         } catch (error: any) {
@@ -1210,14 +1345,22 @@ const dataProviderWithCustomMethod = {
         }
     },
 
-    async deleteInteractionAttachment(interactionId: Identifier, fileName: string) {
+    async deleteInteractionAttachment(
+        interactionId: Identifier,
+        fileName: string
+    ) {
         const startTime = Date.now();
-        
+
         try {
-            const { data: previousData } = await baseDataProvider.getOne('interactions', { id: interactionId });
-            
-            const attachments = (previousData.attachments || []).filter((name: string) => name !== fileName);
-            
+            const { data: previousData } = await baseDataProvider.getOne(
+                'interactions',
+                { id: interactionId }
+            );
+
+            const attachments = (previousData.attachments || []).filter(
+                (name: string) => name !== fileName
+            );
+
             const result = await baseDataProvider.update('interactions', {
                 id: interactionId,
                 data: {
@@ -1226,14 +1369,14 @@ const dataProviderWithCustomMethod = {
                 },
                 previousData,
             });
-            
+
             performanceMonitor.trackApiCall(
                 'deleteInteractionAttachment',
                 'DELETE',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -1252,7 +1395,7 @@ const dataProviderWithCustomMethod = {
         const startTime = Date.now();
         try {
             const result = await gpsService.getCurrentLocation();
-            
+
             // Track GPS performance
             if (result.coordinates) {
                 performanceMonitor.trackGPSAcquisition(
@@ -1268,7 +1411,7 @@ const dataProviderWithCustomMethod = {
                     result.error
                 );
             }
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackGPSAcquisition(
@@ -1281,13 +1424,18 @@ const dataProviderWithCustomMethod = {
         }
     },
 
-    async addLocationToInteraction(interactionId: Identifier, forceRefresh: boolean = false) {
+    async addLocationToInteraction(
+        interactionId: Identifier,
+        forceRefresh: boolean = false
+    ) {
         const startTime = Date.now();
-        
+
         try {
             // Try to get cached location first unless force refresh
-            let coordinates = forceRefresh ? null : gpsService.getCachedLocation();
-            
+            let coordinates = forceRefresh
+                ? null
+                : gpsService.getCachedLocation();
+
             if (!coordinates) {
                 const result = await gpsService.getCurrentLocation();
                 if (!result.coordinates) {
@@ -1296,8 +1444,11 @@ const dataProviderWithCustomMethod = {
                 coordinates = result.coordinates;
             }
 
-            const { data: previousData } = await baseDataProvider.getOne('interactions', { id: interactionId });
-            
+            const { data: previousData } = await baseDataProvider.getOne(
+                'interactions',
+                { id: interactionId }
+            );
+
             const result = await baseDataProvider.update('interactions', {
                 id: interactionId,
                 data: {
@@ -1308,14 +1459,14 @@ const dataProviderWithCustomMethod = {
                 },
                 previousData,
             });
-            
+
             performanceMonitor.trackApiCall(
                 'addLocationToInteraction',
                 'PUT',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -1331,17 +1482,19 @@ const dataProviderWithCustomMethod = {
 
     async syncOfflineInteractions() {
         const startTime = Date.now();
-        
+
         try {
-            const result = await offlineService.syncPendingActions(dataProviderWithCustomMethod);
-            
+            const result = await offlineService.syncPendingActions(
+                dataProviderWithCustomMethod
+            );
+
             performanceMonitor.trackApiCall(
                 'syncOfflineInteractions',
                 'POST',
                 startTime,
                 true
             );
-            
+
             return result;
         } catch (error: any) {
             performanceMonitor.trackApiCall(
@@ -1371,9 +1524,19 @@ const dataProviderWithCustomMethod = {
         return interactionValidator.validateAttachment(file);
     },
 
-    async compressImageForMobile(file: File, maxWidth: number = 1920, maxHeight: number = 1080, quality: number = 0.8) {
+    async compressImageForMobile(
+        file: File,
+        maxWidth: number = 1920,
+        maxHeight: number = 1080,
+        quality: number = 0.8
+    ) {
         try {
-            return await fileUploadService.compressImage(file, maxWidth, maxHeight, quality);
+            return await fileUploadService.compressImage(
+                file,
+                maxWidth,
+                maxHeight,
+                quality
+            );
         } catch (error: any) {
             throw new Error(`Image compression failed: ${error.message}`);
         }
@@ -1388,11 +1551,18 @@ const dataProviderWithCustomMethod = {
     },
 
     // Convenience method for mobile interaction creation with GPS
-    async createInteractionWithLocation(params: any, autoCapture: boolean = true) {
+    async createInteractionWithLocation(
+        params: any,
+        autoCapture: boolean = true
+    ) {
         let interactionData = { ...params.data };
 
         // If auto-capture is enabled and no GPS coordinates provided, try to get them
-        if (autoCapture && !interactionData.latitude && !interactionData.longitude) {
+        if (
+            autoCapture &&
+            !interactionData.latitude &&
+            !interactionData.longitude
+        ) {
             try {
                 const cachedLocation = gpsService.getCachedLocation();
                 if (cachedLocation) {
@@ -1408,7 +1578,7 @@ const dataProviderWithCustomMethod = {
                         timeout: 5000, // Quick timeout for mobile UX
                         enableHighAccuracy: false, // Faster, less battery drain
                     });
-                    
+
                     if (locationResult.coordinates) {
                         interactionData = {
                             ...interactionData,
@@ -1420,7 +1590,10 @@ const dataProviderWithCustomMethod = {
                 }
             } catch (error) {
                 // Don't fail the interaction if GPS fails, just log the warning
-                console.warn('Failed to capture GPS location for interaction:', error);
+                console.warn(
+                    'Failed to capture GPS location for interaction:',
+                    error
+                );
             }
         }
 
@@ -1466,7 +1639,9 @@ export const ensureDbResources = (db: any) => {
 };
 
 // Apply reporting extensions to the dataProvider
-const reportingDataProvider = createReportingProvider(dataProviderWithCustomMethod);
+const reportingDataProvider = createReportingProvider(
+    dataProviderWithCustomMethod
+);
 
 export const dataProvider = withLifecycleCallbacks(
     withSupabaseFilterAdapter(reportingDataProvider),
@@ -1830,17 +2005,23 @@ export const dataProvider = withLifecycleCallbacks(
             resource: 'interactions',
             beforeCreate: async params => {
                 // Get settings for validation
-                const settingsResult = await baseDataProvider.getList('settings', {
-                    filter: {},
-                    pagination: { page: 1, perPage: 1000 },
-                    sort: { field: 'id', order: 'ASC' },
-                });
+                const settingsResult = await baseDataProvider.getList(
+                    'settings',
+                    {
+                        filter: {},
+                        pagination: { page: 1, perPage: 1000 },
+                        sort: { field: 'id', order: 'ASC' },
+                    }
+                );
 
                 interactionValidator.updateSettings(settingsResult.data);
 
                 // Sanitize and validate data
-                const sanitizedData = interactionValidator.sanitizeInteraction(params.data);
-                const validation = interactionValidator.validateInteraction(sanitizedData);
+                const sanitizedData = interactionValidator.sanitizeInteraction(
+                    params.data
+                );
+                const validation =
+                    interactionValidator.validateInteraction(sanitizedData);
 
                 if (!validation.isValid) {
                     throw new Error(
@@ -1850,7 +2031,10 @@ export const dataProvider = withLifecycleCallbacks(
 
                 // Log warnings if any
                 if (validation.warnings.length > 0) {
-                    console.warn('Interaction creation warnings:', validation.warnings);
+                    console.warn(
+                        'Interaction creation warnings:',
+                        validation.warnings
+                    );
                 }
 
                 return {
@@ -1860,23 +2044,30 @@ export const dataProvider = withLifecycleCallbacks(
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString(),
                         isCompleted: sanitizedData.isCompleted || false,
-                        followUpRequired: sanitizedData.followUpRequired || false,
+                        followUpRequired:
+                            sanitizedData.followUpRequired || false,
                     },
                 };
             },
             beforeUpdate: async params => {
                 // Get settings for validation
-                const settingsResult = await baseDataProvider.getList('settings', {
-                    filter: {},
-                    pagination: { page: 1, perPage: 1000 },
-                    sort: { field: 'id', order: 'ASC' },
-                });
+                const settingsResult = await baseDataProvider.getList(
+                    'settings',
+                    {
+                        filter: {},
+                        pagination: { page: 1, perPage: 1000 },
+                        sort: { field: 'id', order: 'ASC' },
+                    }
+                );
 
                 interactionValidator.updateSettings(settingsResult.data);
 
                 // Sanitize and validate data
-                const sanitizedData = interactionValidator.sanitizeInteraction(params.data);
-                const validation = interactionValidator.validateInteraction(sanitizedData);
+                const sanitizedData = interactionValidator.sanitizeInteraction(
+                    params.data
+                );
+                const validation =
+                    interactionValidator.validateInteraction(sanitizedData);
 
                 if (!validation.isValid) {
                     throw new Error(
@@ -1886,7 +2077,10 @@ export const dataProvider = withLifecycleCallbacks(
 
                 // Log warnings if any
                 if (validation.warnings.length > 0) {
-                    console.warn('Interaction update warnings:', validation.warnings);
+                    console.warn(
+                        'Interaction update warnings:',
+                        validation.warnings
+                    );
                 }
 
                 return {
@@ -1900,14 +2094,19 @@ export const dataProvider = withLifecycleCallbacks(
             afterCreate: async result => {
                 // Update organization's last contact date
                 if (result.data.organizationId) {
-                    const { data: organization } = await dataProvider.getOne('organizations', {
-                        id: result.data.organizationId
-                    });
-                    
+                    const { data: organization } = await dataProvider.getOne(
+                        'organizations',
+                        {
+                            id: result.data.organizationId,
+                        }
+                    );
+
                     await dataProvider.update('organizations', {
                         id: result.data.organizationId,
                         data: {
-                            lastContactDate: result.data.scheduledDate || result.data.createdAt,
+                            lastContactDate:
+                                result.data.scheduledDate ||
+                                result.data.createdAt,
                         },
                         previousData: organization,
                     });
@@ -1915,21 +2114,29 @@ export const dataProvider = withLifecycleCallbacks(
 
                 // Update contact's last interaction date if contact is specified
                 if (result.data.contactId) {
-                    const { data: contact } = await dataProvider.getOne('contacts', {
-                        id: result.data.contactId
-                    });
-                    
+                    const { data: contact } = await dataProvider.getOne(
+                        'contacts',
+                        {
+                            id: result.data.contactId,
+                        }
+                    );
+
                     await dataProvider.update('contacts', {
                         id: result.data.contactId,
                         data: {
-                            lastInteractionDate: result.data.scheduledDate || result.data.createdAt,
-                            interactionCount: (contact.interactionCount || 0) + 1,
+                            lastInteractionDate:
+                                result.data.scheduledDate ||
+                                result.data.createdAt,
+                            interactionCount:
+                                (contact.interactionCount || 0) + 1,
                         },
                         previousData: contact,
                     });
                 }
 
-                console.log(`Interaction created: ${result.data.subject} (ID: ${result.data.id})`);
+                console.log(
+                    `Interaction created: ${result.data.subject} (ID: ${result.data.id})`
+                );
                 return result;
             },
             afterUpdate: async result => {
@@ -1937,14 +2144,22 @@ export const dataProvider = withLifecycleCallbacks(
                 if (result.data.isCompleted && result.data.completedDate) {
                     // Update organization's last contact date if this is the most recent interaction
                     if (result.data.organizationId) {
-                        const { data: organization } = await dataProvider.getOne('organizations', {
-                            id: result.data.organizationId
-                        });
-                        
+                        const { data: organization } =
+                            await dataProvider.getOne('organizations', {
+                                id: result.data.organizationId,
+                            });
+
                         const currentLastContact = organization.lastContactDate;
-                        const thisInteractionDate = result.data.completedDate || result.data.scheduledDate;
-                        
-                        if (!currentLastContact || (thisInteractionDate && new Date(thisInteractionDate) > new Date(currentLastContact))) {
+                        const thisInteractionDate =
+                            result.data.completedDate ||
+                            result.data.scheduledDate;
+
+                        if (
+                            !currentLastContact ||
+                            (thisInteractionDate &&
+                                new Date(thisInteractionDate) >
+                                    new Date(currentLastContact))
+                        ) {
                             await dataProvider.update('organizations', {
                                 id: result.data.organizationId,
                                 data: {
@@ -1956,26 +2171,36 @@ export const dataProvider = withLifecycleCallbacks(
                     }
                 }
 
-                console.log(`Interaction updated: ${result.data.subject} (ID: ${result.data.id})`);
+                console.log(
+                    `Interaction updated: ${result.data.subject} (ID: ${result.data.id})`
+                );
                 return result;
             },
             afterDelete: async result => {
                 // Update contact's interaction count if contact was specified
                 if (result.data.contactId) {
-                    const { data: contact } = await dataProvider.getOne('contacts', {
-                        id: result.data.contactId
-                    });
-                    
+                    const { data: contact } = await dataProvider.getOne(
+                        'contacts',
+                        {
+                            id: result.data.contactId,
+                        }
+                    );
+
                     await dataProvider.update('contacts', {
                         id: result.data.contactId,
                         data: {
-                            interactionCount: Math.max((contact.interactionCount || 1) - 1, 0),
+                            interactionCount: Math.max(
+                                (contact.interactionCount || 1) - 1,
+                                0
+                            ),
                         },
                         previousData: contact,
                     });
                 }
 
-                console.log(`Interaction deleted: ${result.data.subject} (ID: ${result.data.id})`);
+                console.log(
+                    `Interaction deleted: ${result.data.subject} (ID: ${result.data.id})`
+                );
                 return result;
             },
         } satisfies ResourceCallbacks<Interaction>,

@@ -79,11 +79,16 @@ export const SignupPage = () => {
             </div>
             <div className="flex-grow flex items-center justify-center">
                 <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-                    <h1 className="text-2xl font-bold mb-2">Welcome to Atomic CRM</h1>
+                    <h1 className="text-2xl font-bold mb-2">
+                        Welcome to Atomic CRM
+                    </h1>
                     <p className="text-gray-600 mb-6">
                         Create the first user account to complete the setup.
                     </p>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-6"
+                    >
                         <Input
                             {...register('first_name', { required: true })}
                             label="First name"

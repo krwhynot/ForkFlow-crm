@@ -7,16 +7,17 @@ import {
     Box,
     Chip,
     IconButton,
-    useTheme,
-    useMediaQuery,
     Avatar,
-    Skeleton,
     Tooltip,
     Menu,
     MenuItem,
+    List,
+    ListItem,
     ListItemIcon,
     ListItemText,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
 import {
     Phone as PhoneIcon,
     Email as EmailIcon,
@@ -49,9 +50,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
     onShare,
 }) => {
     const record = useRecordContext<Organization>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Updated breakpoint for mobile-first
-    const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)'); // Mobile breakpoint
+    const isTablet = useMediaQuery('(max-width: 1024px)'); // Tablet breakpoint
 
     // Lazy loading state
     const [isVisible, setIsVisible] = useState(!lazy);
@@ -205,31 +206,27 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         return (
             <Card 
                 ref={cardRef}
-                sx={{
-                    height: { xs: 200, sm: 220, md: 240 },
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
+                className="h-50 sm:h-55 md:h-60 flex flex-col"
             >
-                <CardContent sx={{ flex: 1, p: { xs: 2, sm: 3 } }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                        <Skeleton variant="circular" width={48} height={48} />
-                        <Box sx={{ flex: 1 }}>
-                            <Skeleton variant="text" width="70%" height={24} />
-                            <Skeleton variant="text" width="50%" height={20} />
+                <CardContent className="flex-1 p-4 sm:p-6">
+                    <Box className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
+                        <Box className="flex-1">
+                            <div className="w-3/4 h-6 bg-gray-200 rounded animate-pulse mb-2" />
+                            <div className="w-1/2 h-5 bg-gray-200 rounded animate-pulse" />
                         </Box>
                     </Box>
-                    <Skeleton variant="text" width="40%" height={20} sx={{ mb: 1 }} />
-                    <Skeleton variant="text" width="60%" height={20} sx={{ mb: 2 }} />
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        <Skeleton variant="rounded" width={80} height={24} />
-                        <Skeleton variant="rounded" width={60} height={24} />
+                    <div className="w-2/5 h-5 bg-gray-200 rounded animate-pulse mb-2" />
+                    <div className="w-3/5 h-5 bg-gray-200 rounded animate-pulse mb-4" />
+                    <Box className="flex gap-2 flex-wrap">
+                        <div className="w-20 h-6 bg-gray-200 rounded animate-pulse" />
+                        <div className="w-15 h-6 bg-gray-200 rounded animate-pulse" />
                     </Box>
                 </CardContent>
-                <CardActions sx={{ p: { xs: 1, sm: 2 }, pt: 0 }}>
-                    <Skeleton variant="circular" width={44} height={44} />
-                    <Skeleton variant="circular" width={44} height={44} />
-                    <Skeleton variant="circular" width={44} height={44} sx={{ ml: 'auto' }} />
+                <CardActions className="p-2 sm:p-4 pt-0">
+                    <div className="w-11 h-11 bg-gray-200 rounded-full animate-pulse" />
+                    <div className="w-11 h-11 bg-gray-200 rounded-full animate-pulse" />
+                    <div className="w-11 h-11 bg-gray-200 rounded-full animate-pulse ml-auto" />
                 </CardActions>
             </Card>
         );
@@ -249,42 +246,14 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 }
             }}
             onClick={() => onView?.(record.id)}
-            sx={{
-                height: { xs: 200, sm: 220, md: 240 }, // Mobile-first responsive heights
-                display: 'flex',
-                flexDirection: 'column',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: theme.shadows[6],
-                },
-                '&:focus': {
-                    outline: '2px solid',
-                    outlineColor: 'primary.main',
-                    outlineOffset: '2px',
-                },
-            }}
+            className="h-50 sm:h-55 md:h-60 flex flex-col cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
         >
-            <CardContent sx={{ 
-                flex: 1, 
-                p: { xs: 2, sm: 3 },
-                '&:last-child': { pb: { xs: 2, sm: 3 } }
-            }}>
+            <CardContent className="flex-1 p-4 sm:p-6">
                 {/* Header with Avatar and Name */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'flex-start', 
-                    gap: 2, 
-                    mb: 2 
-                }}>
+                <Box className="flex items-start gap-4 mb-4">
                     <Avatar
                         src={isVisible && record.logo ? record.logo : undefined}
-                        sx={{ 
-                            width: { xs: 40, sm: 48 }, 
-                            height: { xs: 40, sm: 48 },
-                            bgcolor: 'primary.main',
-                        }}
+                        className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600"
                         onLoad={() => setImageLoaded(true)}
                         onError={() => setImageError(true)}
                     >
@@ -318,12 +287,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 />
                                 <Typography 
                                     variant="caption" 
-                                    color="text.secondary"
-                                    sx={{ 
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
-                                    }}
+                                    className="text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap"
                                 >
                                     {record.city}
                                     {record.city && record.stateAbbr && ', '}
@@ -338,32 +302,28 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                         <Chip
                             label={priority.label}
                             size="small"
-                            sx={{
-                                backgroundColor:
-                                    priority.color || theme.palette.grey[300],
-                                color: theme.palette.getContrastText(
-                                    priority.color || theme.palette.grey[300]
-                                ),
-                                fontWeight: 600,
-                                fontSize: '0.7rem',
+                            className="font-semibold text-xs"
+                            style={{
+                                backgroundColor: priority.color || '#d1d5db',
+                                color: priority.color ? '#fff' : '#374151',
                             }}
                         />
                     )}
                 </Box>
 
                 {/* Contact Information */}
-                <Box sx={{ mb: 2 }}>
+                <Box className="mb-4">
                     {record.accountManager && (
                         <Typography 
                             variant="body2" 
-                            sx={{ mb: 0.5, fontWeight: 'medium' }}
+                            className="mb-1 font-medium"
                         >
                             {record.accountManager}
                         </Typography>
                     )}
                     
                     {/* Business Context - Compact */}
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                    <Box className="flex flex-wrap gap-2 mb-2">
                         {segment && (
                             <Typography variant="caption" color="text.secondary">
                                 {segment.label}
@@ -384,9 +344,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 
                 {/* Revenue */}
                 {record.revenue && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
+                    <Box className="flex items-center gap-1 mb-4">
                         <TrendingUpIcon fontSize="small" color="action" />
-                        <Typography variant="body2" fontWeight="medium">
+                        <Typography variant="body2" className="font-medium">
                             {formatRevenue(record.revenue)}
                         </Typography>
                     </Box>
@@ -397,13 +357,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                     <Typography
                         variant="caption"
                         color="text.secondary"
-                        sx={{ 
-                            mb: 1,
-                            display: 'block',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                        }}
+                        className="mb-2 block overflow-hidden text-ellipsis whitespace-nowrap text-gray-600"
                     >
                         {record.address && `${record.address}, `}
                         {record.city && record.state
@@ -414,13 +368,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 )}
 
                 {/* Status Chips */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    gap: 1, 
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    mt: 'auto'
-                }}>
+                <Box className="flex gap-2 flex-wrap items-center mt-auto">
                     {record.business_type && (
                         <Chip
                             label={record.business_type}
@@ -444,24 +392,15 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             </CardContent>
 
             {/* Enhanced Actions */}
-            <CardActions sx={{ 
-                p: { xs: 1, sm: 2 }, 
-                pt: 0,
-                justifyContent: 'space-between',
-            }}>
-                <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    {/* Primary Actions - Mobile Optimized */}
+            <CardActions className="p-2 sm:p-4 pt-0 justify-between">
+                <Box className="flex gap-1">
+                    {/* Primary Actions - Mobile Optimized */>
                     {record.phone && (
                         <Tooltip title="Call Organization">
                             <IconButton
                                 size="small"
                                 onClick={handlePhoneClick}
-                                sx={{
-                                    minWidth: '44px',
-                                    minHeight: '44px',
-                                    color: theme.palette.primary.main,
-                                    '&:hover': { bgcolor: 'action.hover' }
-                                }}
+                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Call organization"
                             >
                                 <PhoneIcon fontSize="small" />
@@ -474,12 +413,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handleEmailClick}
-                                sx={{
-                                    minWidth: '44px',
-                                    minHeight: '44px',
-                                    color: theme.palette.primary.main,
-                                    '&:hover': { bgcolor: 'action.hover' }
-                                }}
+                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Email account manager"
                             >
                                 <EmailIcon fontSize="small" />
@@ -492,12 +426,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handleWebsiteClick}
-                                sx={{
-                                    minWidth: '44px',
-                                    minHeight: '44px',
-                                    color: theme.palette.primary.main,
-                                    '&:hover': { bgcolor: 'action.hover' }
-                                }}
+                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Visit website"
                             >
                                 <WebsiteIcon fontSize="small" />
@@ -510,12 +439,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handleDirectionsClick}
-                                sx={{
-                                    minWidth: '44px',
-                                    minHeight: '44px',
-                                    color: theme.palette.primary.main,
-                                    '&:hover': { bgcolor: 'action.hover' }
-                                }}
+                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Get directions"
                             >
                                 <LocationIcon fontSize="small" />
@@ -553,12 +477,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 e.stopPropagation();
                                 onEdit?.(record.id);
                             }}
-                            sx={{
-                                minWidth: '44px',
-                                minHeight: '44px',
-                                color: theme.palette.text.secondary,
-                                '&:hover': { bgcolor: 'action.hover' }
-                            }}
+                            className="min-w-11 min-h-11 text-gray-600 hover:bg-gray-100"
                             aria-label="Edit organization"
                         >
                             <EditIcon fontSize="small" />
@@ -570,11 +489,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                         <IconButton 
                             size="small"
                             onClick={handleMenuOpen}
-                            sx={{ 
-                                minWidth: '44px', 
-                                minHeight: '44px',
-                                '&:hover': { bgcolor: 'action.hover' }
-                            }}
+                            className="min-w-11 min-h-11 hover:bg-gray-100"
                         >
                             <MoreVertIcon fontSize="small" />
                         </IconButton>
@@ -585,9 +500,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                         open={Boolean(menuAnchor)}
                         onClose={handleMenuClose}
                         onClick={(e) => e.stopPropagation()}
-                        PaperProps={{
-                            sx: { minWidth: 160 }
-                        }}
+                        className="min-w-40"
                     >
                         <MenuItem onClick={() => handleAction(() => onShare?.(record))}>
                             <ListItemIcon>

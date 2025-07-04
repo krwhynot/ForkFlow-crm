@@ -37,7 +37,8 @@ import { useNavigate } from 'react-router-dom';
 import { Organization, Interaction, Setting } from '../types';
 import { useOrganizationsNeedingVisit } from '../hooks/useReporting';
 
-interface OrganizationWithLastInteraction extends Omit<Organization, 'priority' | 'segment'> {
+interface OrganizationWithLastInteraction
+    extends Omit<Organization, 'priority' | 'segment'> {
     lastInteractionDate?: string;
     daysSinceLastInteraction: number;
     urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -53,7 +54,11 @@ export const NeedsVisitList = () => {
     const navigate = useNavigate();
 
     // Use the new reporting API for organizations needing visits
-    const { data: needsVisitData, loading: needsVisitLoading, fetch: fetchNeedsVisit } = useOrganizationsNeedingVisit();
+    const {
+        data: needsVisitData,
+        loading: needsVisitLoading,
+        fetch: fetchNeedsVisit,
+    } = useOrganizationsNeedingVisit();
 
     // Get priority and segment settings for color coding (still needed for legacy display)
     const { data: priorities } = useGetList<Setting>('settings', {
@@ -76,12 +81,15 @@ export const NeedsVisitList = () => {
         if (needsVisitData && needsVisitData.length > 0) {
             return needsVisitData.map(org => {
                 // Map the API data to the component's expected format
-                let urgencyLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
+                let urgencyLevel: 'low' | 'medium' | 'high' | 'critical' =
+                    'low';
                 if (org.daysSinceContact >= 60) urgencyLevel = 'critical';
                 else if (org.daysSinceContact >= 45) urgencyLevel = 'high';
                 else if (org.daysSinceContact >= 30) urgencyLevel = 'medium';
 
-                const priority = priorities?.find(p => p.label === org.priority);
+                const priority = priorities?.find(
+                    p => p.label === org.priority
+                );
                 const segment = segments?.find(s => s.label === org.segment);
 
                 return {
@@ -113,18 +121,26 @@ export const NeedsVisitList = () => {
 
         return {
             total: needsVisitData.length,
-            critical: needsVisitData.filter(org => org.daysSinceContact >= 90).length,
-            high: needsVisitData.filter(org => org.daysSinceContact >= 60 && org.daysSinceContact < 90).length,
-            neverContacted: needsVisitData.filter(org => !org.lastContactDate).length,
+            critical: needsVisitData.filter(org => org.daysSinceContact >= 90)
+                .length,
+            high: needsVisitData.filter(
+                org => org.daysSinceContact >= 60 && org.daysSinceContact < 90
+            ).length,
+            neverContacted: needsVisitData.filter(org => !org.lastContactDate)
+                .length,
         };
     }, [needsVisitData]);
 
     const getUrgencyColor = (urgencyLevel: string) => {
         switch (urgencyLevel) {
-            case 'critical': return theme.palette.error.main;
-            case 'high': return theme.palette.warning.main;
-            case 'medium': return theme.palette.info.main;
-            default: return theme.palette.success.main;
+            case 'critical':
+                return theme.palette.error.main;
+            case 'high':
+                return theme.palette.warning.main;
+            case 'medium':
+                return theme.palette.info.main;
+            default:
+                return theme.palette.success.main;
         }
     };
 
@@ -142,7 +158,10 @@ export const NeedsVisitList = () => {
         navigate(`/organizations/${org.id}/show`);
     };
 
-    const handleCreateInteraction = (orgId: number, event: React.MouseEvent) => {
+    const handleCreateInteraction = (
+        orgId: number,
+        event: React.MouseEvent
+    ) => {
         event.stopPropagation();
         navigate(`/interactions/create?organizationId=${orgId}`);
     };
@@ -163,11 +182,17 @@ export const NeedsVisitList = () => {
     return (
         <Card>
             <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography variant="h6">
-                        Needs Attention
-                    </Typography>
-                    <Link to="/organizations" style={{ textDecoration: 'none' }}>
+                <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={2}
+                >
+                    <Typography variant="h6">Needs Attention</Typography>
+                    <Link
+                        to="/organizations"
+                        style={{ textDecoration: 'none' }}
+                    >
                         <Button size="small" color="primary">
                             View All
                         </Button>
@@ -175,7 +200,12 @@ export const NeedsVisitList = () => {
                 </Box>
 
                 {/* Quick Stats */}
-                <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    flexWrap="wrap"
+                    sx={{ mb: 2 }}
+                >
                     <Chip
                         size="small"
                         icon={<WarningIcon />}
@@ -201,7 +231,10 @@ export const NeedsVisitList = () => {
 
                 {organizationsNeedingVisit.length === 0 ? (
                     <Box textAlign="center" py={3}>
-                        <BusinessIcon color="disabled" sx={{ fontSize: 48, mb: 1 }} />
+                        <BusinessIcon
+                            color="disabled"
+                            sx={{ fontSize: 48, mb: 1 }}
+                        />
                         <Typography variant="body2" color="textSecondary">
                             All organizations are up to date!
                         </Typography>
@@ -220,22 +253,29 @@ export const NeedsVisitList = () => {
                                         borderLeft: `4px solid ${getUrgencyColor(org.urgencyLevel)}`,
                                         mb: 1,
                                         borderRadius: 1,
-                                        backgroundColor: org.urgencyLevel === 'critical' 
-                                            ? theme.palette.error.main + '08'
-                                            : org.urgencyLevel === 'high'
-                                                ? theme.palette.warning.main + '08'
-                                                : 'transparent',
+                                        backgroundColor:
+                                            org.urgencyLevel === 'critical'
+                                                ? theme.palette.error.main +
+                                                  '08'
+                                                : org.urgencyLevel === 'high'
+                                                  ? theme.palette.warning.main +
+                                                    '08'
+                                                  : 'transparent',
                                     }}
                                 >
                                     <ListItemIcon sx={{ minWidth: 36 }}>
                                         <Badge
                                             badgeContent={
                                                 org.priority ? (
-                                                    <PriorityIcon 
-                                                        sx={{ 
-                                                            fontSize: 12, 
-                                                            color: org.priorityColor || theme.palette.primary.main 
-                                                        }} 
+                                                    <PriorityIcon
+                                                        sx={{
+                                                            fontSize: 12,
+                                                            color:
+                                                                org.priorityColor ||
+                                                                theme.palette
+                                                                    .primary
+                                                                    .main,
+                                                        }}
                                                     />
                                                 ) : null
                                             }
@@ -244,12 +284,20 @@ export const NeedsVisitList = () => {
                                             {getUrgencyIcon(org)}
                                         </Badge>
                                     </ListItemIcon>
-                                    
+
                                     <ListItemText
                                         primary={
-                                            <Box display="flex" alignItems="center" gap={1}>
-                                                <Typography 
-                                                    variant={isMobile ? "body2" : "subtitle2"}
+                                            <Box
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={1}
+                                            >
+                                                <Typography
+                                                    variant={
+                                                        isMobile
+                                                            ? 'body2'
+                                                            : 'subtitle2'
+                                                    }
                                                     noWrap={isMobile}
                                                     fontWeight="medium"
                                                 >
@@ -258,10 +306,20 @@ export const NeedsVisitList = () => {
                                                 {org.segment && (
                                                     <Chip
                                                         size="small"
-                                                        label={String(org.segment)}
+                                                        label={String(
+                                                            org.segment
+                                                        )}
                                                         sx={{
-                                                            backgroundColor: org.segmentColor || theme.palette.grey[200],
-                                                            color: theme.palette.getContrastText(org.segmentColor || theme.palette.grey[200]),
+                                                            backgroundColor:
+                                                                org.segmentColor ||
+                                                                theme.palette
+                                                                    .grey[200],
+                                                            color: theme.palette.getContrastText(
+                                                                org.segmentColor ||
+                                                                    theme
+                                                                        .palette
+                                                                        .grey[200]
+                                                            ),
                                                             height: 20,
                                                             fontSize: '0.7rem',
                                                         }}
@@ -272,28 +330,53 @@ export const NeedsVisitList = () => {
                                         secondary={
                                             <Stack spacing={0.5}>
                                                 {org.address && (
-                                                    <Box display="flex" alignItems="center" gap={1}>
-                                                        <LocationIcon sx={{ fontSize: 14 }} />
-                                                        <Typography variant="caption" noWrap={isMobile}>
-                                                            {org.city}, {org.state}
+                                                    <Box
+                                                        display="flex"
+                                                        alignItems="center"
+                                                        gap={1}
+                                                    >
+                                                        <LocationIcon
+                                                            sx={{
+                                                                fontSize: 14,
+                                                            }}
+                                                        />
+                                                        <Typography
+                                                            variant="caption"
+                                                            noWrap={isMobile}
+                                                        >
+                                                            {org.city},{' '}
+                                                            {org.state}
                                                         </Typography>
                                                     </Box>
                                                 )}
-                                                
-                                                <Typography 
-                                                    variant="caption" 
-                                                    color={org.urgencyLevel === 'critical' ? 'error' : 'textSecondary'}
-                                                    fontWeight={org.urgencyLevel === 'critical' ? 'bold' : 'normal'}
-                                                >
-                                                    {org.lastInteractionDate 
-                                                        ? `Last contact ${formatDistanceToNow(new Date(org.lastInteractionDate))} ago`
-                                                        : 'Never contacted'
+
+                                                <Typography
+                                                    variant="caption"
+                                                    color={
+                                                        org.urgencyLevel ===
+                                                        'critical'
+                                                            ? 'error'
+                                                            : 'textSecondary'
                                                     }
+                                                    fontWeight={
+                                                        org.urgencyLevel ===
+                                                        'critical'
+                                                            ? 'bold'
+                                                            : 'normal'
+                                                    }
+                                                >
+                                                    {org.lastInteractionDate
+                                                        ? `Last contact ${formatDistanceToNow(new Date(org.lastInteractionDate))} ago`
+                                                        : 'Never contacted'}
                                                 </Typography>
-                                                
+
                                                 {org.accountManager && (
-                                                    <Typography variant="caption" color="textSecondary">
-                                                        Account Manager: {org.accountManager}
+                                                    <Typography
+                                                        variant="caption"
+                                                        color="textSecondary"
+                                                    >
+                                                        Account Manager:{' '}
+                                                        {org.accountManager}
                                                     </Typography>
                                                 )}
                                             </Stack>
@@ -303,27 +386,41 @@ export const NeedsVisitList = () => {
                                     <ListItemSecondaryAction>
                                         <Stack direction="row" spacing={0.5}>
                                             {org.phone && (
-                                                <IconButton 
-                                                    size="small" 
+                                                <IconButton
+                                                    size="small"
                                                     href={`tel:${org.phone}`}
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
                                                     title="Call organization"
                                                 >
-                                                    <PhoneIcon sx={{ fontSize: 16 }} />
+                                                    <PhoneIcon
+                                                        sx={{ fontSize: 16 }}
+                                                    />
                                                 </IconButton>
                                             )}
-                                            <IconButton 
+                                            <IconButton
                                                 size="small"
-                                                onClick={(e) => handleCreateInteraction(org.id, e)}
+                                                onClick={e =>
+                                                    handleCreateInteraction(
+                                                        org.id,
+                                                        e
+                                                    )
+                                                }
                                                 title="Log interaction"
                                                 color="primary"
                                             >
-                                                <AddIcon sx={{ fontSize: 16 }} />
+                                                <AddIcon
+                                                    sx={{ fontSize: 16 }}
+                                                />
                                             </IconButton>
                                         </Stack>
                                     </ListItemSecondaryAction>
                                 </ListItem>
-                                {index < organizationsNeedingVisit.length - 1 && <Divider />}
+                                {index <
+                                    organizationsNeedingVisit.length - 1 && (
+                                    <Divider />
+                                )}
                             </React.Fragment>
                         ))}
                     </List>
@@ -331,9 +428,12 @@ export const NeedsVisitList = () => {
 
                 {/* Quick Action Button */}
                 <Box mt={2}>
-                    <Link to="/interactions/create" style={{ textDecoration: 'none', width: '100%' }}>
-                        <Button 
-                            variant="outlined" 
+                    <Link
+                        to="/interactions/create"
+                        style={{ textDecoration: 'none', width: '100%' }}
+                    >
+                        <Button
+                            variant="outlined"
                             fullWidth={isMobile}
                             size="small"
                             startIcon={<AddIcon />}

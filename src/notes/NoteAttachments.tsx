@@ -1,4 +1,5 @@
-import { ImageList, ImageListItem, Stack } from '@mui/material';
+import { Stack } from '@/components/ui-kit';
+import { ImageList, ImageListItem } from '@mui/material';
 import { ContactNote, DealNote, RAFile } from '../types';
 import { FileField } from 'react-admin';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -16,7 +17,7 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
     );
 
     return (
-        <Stack direction="column">
+        <Stack className="flex-col">
             {imageAttachments.length > 0 && (
                 <ImageList cols={4} gap={8}>
                     {imageAttachments.map(
@@ -44,7 +45,7 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
             )}
             {otherAttachments.length > 0 &&
                 otherAttachments.map((attachment: RAFile, index: number) => (
-                    <Stack key={index} direction="row" alignItems="center">
+                    <Stack key={index} className="flex-row items-center">
                         <AttachFileIcon fontSize="small" />
                         <FileField
                             record={{ attachment }}

@@ -1,7 +1,5 @@
 import * as React from 'react';
-import {
-    ClipboardDocumentListIcon,
-} from '@heroicons/react/24/outline';
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 import { AddTask } from '../tasks/AddTask';
 import {
     startOfToday,

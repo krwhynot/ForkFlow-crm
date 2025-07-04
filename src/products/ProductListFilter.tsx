@@ -1,19 +1,14 @@
 import * as React from 'react';
-import {
-    TextInput,
-    SelectInput,
-    BooleanInput,
-    useGetList,
-} from 'react-admin';
+import { TextInput, SelectInput, BooleanInput, useGetList } from 'react-admin';
 
 import { Setting } from '../types';
 
 /**
  * ProductListFilter - Filter components for products
- * 
+ *
  * Note: This file is kept for backward compatibility and potential future use.
  * The main ProductList component now uses inline filters with FilterForm.
- * 
+ *
  * These filter components can be used in other contexts if needed.
  */
 
@@ -25,11 +20,12 @@ const usePrincipalChoices = () => {
         pagination: { page: 1, perPage: 100 },
     });
 
-    return React.useMemo(() => 
-        principalSettings?.map(setting => ({
-            id: setting.id,
-            name: setting.label,
-        })) || [],
+    return React.useMemo(
+        () =>
+            principalSettings?.map(setting => ({
+                id: setting.id,
+                name: setting.label,
+            })) || [],
         [principalSettings]
     );
 };
@@ -80,7 +76,7 @@ export const ProductCategoryFilter = (props: any) => (
 
 export const ProductPrincipalFilter = (props: any) => {
     const principalChoices = usePrincipalChoices();
-    
+
     return (
         <SelectInput
             source="principalId"
@@ -94,11 +90,7 @@ export const ProductPrincipalFilter = (props: any) => {
 };
 
 export const ProductActiveFilter = (props: any) => (
-    <BooleanInput
-        source="active"
-        label="Active products only"
-        {...props}
-    />
+    <BooleanInput source="active" label="Active products only" {...props} />
 );
 
 // Array of all product filters (for use with FilterForm)
@@ -115,7 +107,7 @@ export const ProductListFilter = () => {
     console.warn(
         'ProductListFilter is deprecated. Use getProductFilters() with FilterForm instead.'
     );
-    
+
     return (
         <div style={{ padding: '16px', minWidth: '200px' }}>
             <h3>Product Filters (Legacy)</h3>

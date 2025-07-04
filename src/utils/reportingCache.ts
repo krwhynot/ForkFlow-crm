@@ -18,17 +18,17 @@ class ReportingCache {
      */
     get<T>(key: string): T | null {
         const entry = this.cache.get(key);
-        
+
         if (!entry) {
             return null;
         }
-        
+
         const now = Date.now();
         if (now - entry.timestamp > entry.ttl) {
             this.cache.delete(key);
             return null;
         }
-        
+
         return entry.data;
     }
 
@@ -43,13 +43,13 @@ class ReportingCache {
                 this.cache.delete(oldestKey);
             }
         }
-        
+
         const entry: CacheEntry<T> = {
             data,
             timestamp: Date.now(),
             ttl: ttlMinutes * 60 * 1000, // Convert to milliseconds
         };
-        
+
         this.cache.set(key, entry);
     }
 
@@ -92,7 +92,7 @@ class ReportingCache {
         const now = Date.now();
         let validEntries = 0;
         let expiredEntries = 0;
-        
+
         for (const entry of this.cache.values()) {
             if (now - entry.timestamp <= entry.ttl) {
                 validEntries++;
@@ -100,7 +100,7 @@ class ReportingCache {
                 expiredEntries++;
             }
         }
-        
+
         return {
             totalEntries: this.cache.size,
             validEntries,
@@ -115,13 +115,13 @@ class ReportingCache {
     cleanup(): void {
         const now = Date.now();
         const expiredKeys: string[] = [];
-        
+
         for (const [key, entry] of this.cache.entries()) {
             if (now - entry.timestamp > entry.ttl) {
                 expiredKeys.push(key);
             }
         }
-        
+
         expiredKeys.forEach(key => this.cache.delete(key));
     }
 }
@@ -134,7 +134,11 @@ export const reportingCache = new ReportingCache();
  */
 export const CacheKeys = {
     dashboard: () => 'dashboard-summary',
-    interactions: (startDate?: string, endDate?: string, filters?: Record<string, any>) => {
+    interactions: (
+        startDate?: string,
+        endDate?: string,
+        filters?: Record<string, any>
+    ) => {
         const params = new URLSearchParams();
         if (startDate) params.set('start', startDate);
         if (endDate) params.set('end', endDate);
@@ -172,17 +176,17 @@ export function withCache<T extends any[], R>(
 ) {
     return async (...args: T): Promise<R> => {
         const cacheKey = keyGenerator(...args);
-        
+
         // Try to get from cache first
         const cached = reportingCache.get<R>(cacheKey);
         if (cached !== null) {
             return cached;
         }
-        
+
         // Execute function and cache result
         const result = await fn(...args);
         reportingCache.set(cacheKey, result, ttlMinutes);
-        
+
         return result;
     };
 }
@@ -190,7 +194,9 @@ export function withCache<T extends any[], R>(
 /**
  * Invalidate cache when data changes
  */
-export function invalidateReportingCache(type: 'all' | 'dashboard' | 'interactions' | 'organizations' = 'all'): void {
+export function invalidateReportingCache(
+    type: 'all' | 'dashboard' | 'interactions' | 'organizations' = 'all'
+): void {
     switch (type) {
         case 'all':
             reportingCache.clear();
@@ -214,6 +220,9 @@ export function invalidateReportingCache(type: 'all' | 'dashboard' | 'interactio
 /**
  * Auto cleanup expired entries every 10 minutes
  */
-setInterval(() => {
-    reportingCache.cleanup();
-}, 10 * 60 * 1000);
+setInterval(
+    () => {
+        reportingCache.cleanup();
+    },
+    10 * 60 * 1000
+);

@@ -1,4 +1,14 @@
-import { Box, CircularProgress, Stack, Typography, Alert, Dialog, DialogActions, DialogContent, DialogTitle } from '../components/ui-kit';
+import {
+    Box,
+    CircularProgress,
+    Stack,
+    Typography,
+    Alert,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from '../components/ui-kit';
 import { Link as MuiLink } from 'react-router-dom';
 import {
     Button,
@@ -150,7 +160,12 @@ export function ContactImportDialog({
                                 <FileInput
                                     source="csv"
                                     label="CSV File"
-                                    accept={{ 'text/csv': ['.csv'], 'application/csv': ['.csv'] } as any}
+                                    accept={
+                                        {
+                                            'text/csv': ['.csv'],
+                                            'application/csv': ['.csv'],
+                                        } as any
+                                    }
                                     onChange={handleFileChange}
                                 >
                                     <FileField source="src" title="title" />

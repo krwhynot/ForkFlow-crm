@@ -186,8 +186,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             category: 'security',
             key: 'max_failed_attempts',
             value: '5',
-            description:
-                'Maximum failed login attempts before lockout',
+            description: 'Maximum failed login attempts before lockout',
             type: 'number',
             min: 3,
             max: 10,
@@ -283,7 +282,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     };
 
     const handleSettingChange = (settingId: string, value: any) => {
-        setEditingSettings((prev) => ({
+        setEditingSettings(prev => ({
             ...prev,
             [settingId]: value,
         }));
@@ -294,7 +293,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
         setLoading(true);
         try {
             // In production, save to API
-            const updatedSettings = settings.map((setting) => ({
+            const updatedSettings = settings.map(setting => ({
                 ...setting,
                 value: editingSettings[setting.id] || setting.value,
             }));
@@ -304,7 +303,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             setSaveDialogOpen(false);
 
             // Notify parent component of changes
-            updatedSettings.forEach((setting) => {
+            updatedSettings.forEach(setting => {
                 if (onSettingChange) {
                     onSettingChange(setting);
                 }
@@ -343,7 +342,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                         control={
                             <Switch
                                 checked={currentValue === 'true'}
-                                onChange={(e) =>
+                                onChange={e =>
                                     handleSettingChange(
                                         setting.id,
                                         e.target.checked.toString()
@@ -361,7 +360,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     <TextField
                         type="number"
                         value={currentValue}
-                        onChange={(e) =>
+                        onChange={e =>
                             handleSettingChange(setting.id, e.target.value)
                         }
                         size="small"
@@ -379,11 +378,11 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     <FormControl size="small" sx={{ minWidth: 120 }}>
                         <Select
                             value={currentValue}
-                            onChange={(e) =>
+                            onChange={e =>
                                 handleSettingChange(setting.id, e.target.value)
                             }
                         >
-                            {setting.options?.map((option) => (
+                            {setting.options?.map(option => (
                                 <MenuItem key={option} value={option}>
                                     {option}
                                 </MenuItem>
@@ -396,7 +395,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                 return (
                     <TextField
                         value={currentValue}
-                        onChange={(e) =>
+                        onChange={e =>
                             handleSettingChange(setting.id, e.target.value)
                         }
                         size="small"
@@ -436,13 +435,16 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
         }
     };
 
-    const groupedSettings = settings.reduce((acc, setting) => {
-        if (!acc[setting.category]) {
-            acc[setting.category] = [];
-        }
-        acc[setting.category].push(setting);
-        return acc;
-    }, {} as { [key: string]: SecuritySetting[] });
+    const groupedSettings = settings.reduce(
+        (acc, setting) => {
+            if (!acc[setting.category]) {
+                acc[setting.category] = [];
+            }
+            acc[setting.category].push(setting);
+            return acc;
+        },
+        {} as { [key: string]: SecuritySetting[] }
+    );
 
     // Check if user has admin permissions
     const isAdmin = identity?.role === 'admin';
@@ -562,10 +564,9 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                                                                 isMobile
                                                                     ? 'column'
                                                                     : 'row',
-                                                            alignItems:
-                                                                isMobile
-                                                                    ? 'flex-start'
-                                                                    : 'center',
+                                                            alignItems: isMobile
+                                                                ? 'flex-start'
+                                                                : 'center',
                                                             py: 2,
                                                         }}
                                                     >

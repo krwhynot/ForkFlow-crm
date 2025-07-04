@@ -1,14 +1,5 @@
-import {
-    Stack,
-    Typography,
-    Button,
-    Box,
-} from '../../components/ui-kit';
-import {
-    Divider,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Stack, Typography, Button, Box } from '../../components/ui-kit';
+import { Divider, useMediaQuery, useTheme } from '@mui/material';
 import { LocationOn as LocationIcon } from '@mui/icons-material';
 import {
     ReferenceInput,
@@ -198,7 +189,7 @@ const OrganizationContextInputs = () => {
 
 const OrganizationAddressInputs = () => {
     const record = useRecordContext<Organization>();
-    
+
     // Get form inputs for GPS coordinates
     const latitudeInput = useInput({ source: 'latitude' });
     const longitudeInput = useInput({ source: 'longitude' });
@@ -208,11 +199,11 @@ const OrganizationAddressInputs = () => {
             navigator.geolocation.getCurrentPosition(
                 position => {
                     const { latitude, longitude } = position.coords;
-                    
+
                     // Update form values
                     latitudeInput.field.onChange(latitude);
                     longitudeInput.field.onChange(longitude);
-                    
+
                     console.log('GPS Coordinates captured:', {
                         latitude,
                         longitude,
@@ -266,23 +257,31 @@ const OrganizationAddressInputs = () => {
                 helperText={false}
                 validate={isZipCode}
             />
-            
+
             {/* Hidden GPS coordinate inputs */}
-            <TextInput
-                source="latitude"
-                sx={{ display: 'none' }}
-            />
-            <TextInput
-                source="longitude"
-                sx={{ display: 'none' }}
-            />
-            
+            <TextInput source="latitude" sx={{ display: 'none' }} />
+            <TextInput source="longitude" sx={{ display: 'none' }} />
+
             {/* GPS Coordinates Display */}
-            {(record?.latitude && record?.longitude) || (latitudeInput.field.value && longitudeInput.field.value) ? (
-                <Box sx={{ mt: 1, p: 1, bgcolor: 'success.light', borderRadius: 1 }}>
+            {(record?.latitude && record?.longitude) ||
+            (latitudeInput.field.value && longitudeInput.field.value) ? (
+                <Box
+                    sx={{
+                        mt: 1,
+                        p: 1,
+                        bgcolor: 'success.light',
+                        borderRadius: 1,
+                    }}
+                >
                     <Typography variant="caption" color="success.contrastText">
-                        📍 GPS: {(latitudeInput.field.value || record?.latitude)?.toFixed(6)},{' '}
-                        {(longitudeInput.field.value || record?.longitude)?.toFixed(6)}
+                        📍 GPS:{' '}
+                        {(
+                            latitudeInput.field.value || record?.latitude
+                        )?.toFixed(6)}
+                        ,{' '}
+                        {(
+                            longitudeInput.field.value || record?.longitude
+                        )?.toFixed(6)}
                     </Typography>
                 </Box>
             ) : null}

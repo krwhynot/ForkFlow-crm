@@ -16,7 +16,8 @@ export const Chip = ({
     style,
     onClick,
 }: ChipProps) => {
-    const sizeClasses = size === 'small' ? 'h-5 px-2 text-xs' : 'h-6 px-3 text-sm';
+    const sizeClasses =
+        size === 'small' ? 'h-5 px-2 text-xs' : 'h-6 px-3 text-sm';
 
     return (
         <div

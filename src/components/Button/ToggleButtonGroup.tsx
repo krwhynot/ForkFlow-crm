@@ -36,11 +36,14 @@ export const ToggleButtonGroup = ({
 
     return (
         <div className={twMerge('inline-flex rounded-md shadow-sm', className)}>
-            {React.Children.map(children, (child) => {
+            {React.Children.map(children, child => {
                 if (!React.isValidElement(child)) {
                     return null;
                 }
-                const childProps = child.props as { value: any; selected?: boolean };
+                const childProps = child.props as {
+                    value: any;
+                    selected?: boolean;
+                };
                 return React.cloneElement(child, {
                     selected: exclusive
                         ? value === childProps.value
@@ -48,7 +51,10 @@ export const ToggleButtonGroup = ({
                           value.includes(childProps.value),
                     onClick: (e: React.MouseEvent<HTMLElement>) =>
                         handleChange(e, childProps.value),
-                } as React.Attributes & { selected: boolean; onClick: (e: React.MouseEvent<HTMLElement>) => void; });
+                } as React.Attributes & {
+                    selected: boolean;
+                    onClick: (e: React.MouseEvent<HTMLElement>) => void;
+                });
             })}
         </div>
     );

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Status } from '../misc/Status';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 
-export const StatusSelector = ({ status, setStatus, sx }: any) => {
+export const StatusSelector = ({ status, setStatus, className }: any) => {
     const { noteStatuses } = useConfigurationContext();
     const noteStatusesTyped: (string | { value: string; label: string })[] =
         noteStatuses ?? [];
@@ -20,7 +20,7 @@ export const StatusSelector = ({ status, setStatus, sx }: any) => {
             label={false}
             margin="none"
             size="small"
-            sx={sx}
+            className={className}
         >
             {noteStatusesTyped.map(status => {
                 if (

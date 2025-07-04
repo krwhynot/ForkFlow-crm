@@ -34,7 +34,11 @@ const getBusinessTypeIcon = (type: string) => {
         distributor: <DistributorIcon className="h-5 w-5" />,
         other: <BusinessIcon className="h-5 w-5" />,
     };
-    return iconMap[type as keyof typeof iconMap] || <BusinessIcon className="h-5 w-5" />;
+    return (
+        iconMap[type as keyof typeof iconMap] || (
+            <BusinessIcon className="h-5 w-5" />
+        )
+    );
 };
 
 const getBusinessTypeColor = (type: string) => {
@@ -100,10 +104,7 @@ export const TerritoryOverview = ({
             {/* Business Type Distribution */}
             <Card>
                 <CardContent>
-                    <Typography
-                        variant="h6"
-                        className="mb-2 flex items-center"
-                    >
+                    <Typography variant="h6" className="mb-2 flex items-center">
                         <BusinessIcon className="h-5 w-5 mr-2" />
                         Business Mix
                     </Typography>

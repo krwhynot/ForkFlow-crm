@@ -11,10 +11,7 @@ const times = (nbChildren: number, fn: (key: number) => any) =>
 const LoadingGridList = () => (
     <Box className="flex flex-wrap gap-1" style={{ width: 1008 }}>
         {times(15, key => (
-            <Paper
-                className="h-50 w-48 flex flex-col bg-gray-200"
-                key={key}
-            />
+            <Paper className="h-50 w-48 flex flex-col bg-gray-200" key={key} />
         ))}
     </Box>
 );
@@ -28,7 +25,7 @@ const LoadedGridList = () => {
         <Box
             className="w-full gap-1 grid"
             style={{
-                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))'
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
             }}
         >
             {data.map(record => (
@@ -37,9 +34,7 @@ const LoadedGridList = () => {
                 </RecordContextProvider>
             ))}
 
-            {data.length === 0 && (
-                <p className="p-2">No companies found</p>
-            )}
+            {data.length === 0 && <p className="p-2">No companies found</p>}
         </Box>
     );
 };

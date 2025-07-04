@@ -2,23 +2,24 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useGetMany, useGetList, Loading } from 'react-admin';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Table,
     TableHead,
     TableBody,
     TableRow,
     TableCell,
-    Box,
-    Typography,
-    Chip,
     IconButton,
     Paper,
     Stack,
-    Divider,
 } from '@mui/material';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    Box,
+    Typography,
+    Chip,
+    Button,
+} from '@/components/ui-kit';
 import {
     Close as CloseIcon,
     CheckCircle as ActiveIcon,
@@ -27,7 +28,6 @@ import {
 
 import { Product, Setting } from '../types';
 import { PriceField } from './PriceField';
-import { Button } from '../components/Button/Button';
 
 interface ProductComparisonProps {
     open: boolean;
@@ -72,9 +72,9 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
                         No products selected for comparison.
                     </Typography>
                 </DialogContent>
-                <DialogActions>
+                <Box className="flex justify-end gap-2 p-4 border-t">
                     <Button onClick={onClose}>Close</Button>
-                </DialogActions>
+                </Box>
             </Dialog>
         );
     }
@@ -192,13 +192,12 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
                                         <Chip
                                             label={product.category || 'N/A'}
                                             size="small"
-                                            sx={{
+                                            className="text-white font-medium"
+                                            style={{
                                                 backgroundColor:
                                                     getCategoryColor(
                                                         product.category || ''
                                                     ),
-                                                color: 'white',
-                                                fontWeight: 500,
                                             }}
                                         />
                                     </TableCell>
@@ -269,28 +268,16 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
                                         sx={{ textAlign: 'center' }}
                                     >
                                         <Chip
-                                            icon={
-                                                product.active ? (
-                                                    <ActiveIcon />
-                                                ) : (
-                                                    <InactiveIcon />
-                                                )
-                                            }
                                             label={
                                                 product.active
                                                     ? 'Active'
                                                     : 'Inactive'
                                             }
                                             size="small"
-                                            color={
+                                            className={
                                                 product.active
-                                                    ? 'success'
-                                                    : 'default'
-                                            }
-                                            variant={
-                                                product.active
-                                                    ? 'filled'
-                                                    : 'outlined'
+                                                    ? 'bg-green-500 text-white'
+                                                    : 'border border-gray-400 text-gray-600'
                                             }
                                         />
                                     </TableCell>
@@ -375,17 +362,14 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
                 </Paper>
             </DialogContent>
 
-            <DialogActions>
-                <Typography
-                    variant="body2"
-                    className="text-gray-500 mr-auto"
-                >
+            <Box className="flex justify-between items-center p-4 border-t">
+                <Typography variant="body2" className="text-gray-500">
                     Compare up to 4 products side by side
                 </Typography>
                 <Button onClick={onClose} variant="primary">
                     Close Comparison
                 </Button>
-            </DialogActions>
+            </Box>
         </Dialog>
     );
 };

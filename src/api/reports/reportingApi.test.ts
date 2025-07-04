@@ -80,9 +80,27 @@ const mockDeals = [
 ];
 
 const mockSettings = [
-    { id: 1, category: 'priority', key: 'high', label: 'High Priority', color: '#ff0000' },
-    { id: 2, category: 'segment', key: 'fine_dining', label: 'Fine Dining', color: '#0000ff' },
-    { id: 3, category: 'interaction_type', key: 'call', label: 'Phone Call', color: '#00ff00' },
+    {
+        id: 1,
+        category: 'priority',
+        key: 'high',
+        label: 'High Priority',
+        color: '#ff0000',
+    },
+    {
+        id: 2,
+        category: 'segment',
+        key: 'fine_dining',
+        label: 'Fine Dining',
+        color: '#0000ff',
+    },
+    {
+        id: 3,
+        category: 'interaction_type',
+        key: 'call',
+        label: 'Phone Call',
+        color: '#00ff00',
+    },
 ];
 
 describe('Reporting API', () => {
@@ -91,20 +109,35 @@ describe('Reporting API', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         // Setup mock responses
-        mockDataProvider.getList.mockImplementation((resource) => {
+        mockDataProvider.getList.mockImplementation(resource => {
             switch (resource) {
                 case 'organizations':
-                    return Promise.resolve({ data: mockOrganizations, total: mockOrganizations.length });
+                    return Promise.resolve({
+                        data: mockOrganizations,
+                        total: mockOrganizations.length,
+                    });
                 case 'contacts':
-                    return Promise.resolve({ data: mockContacts, total: mockContacts.length });
+                    return Promise.resolve({
+                        data: mockContacts,
+                        total: mockContacts.length,
+                    });
                 case 'interactions':
-                    return Promise.resolve({ data: mockInteractions, total: mockInteractions.length });
+                    return Promise.resolve({
+                        data: mockInteractions,
+                        total: mockInteractions.length,
+                    });
                 case 'deals':
-                    return Promise.resolve({ data: mockDeals, total: mockDeals.length });
+                    return Promise.resolve({
+                        data: mockDeals,
+                        total: mockDeals.length,
+                    });
                 case 'settings':
-                    return Promise.resolve({ data: mockSettings, total: mockSettings.length });
+                    return Promise.resolve({
+                        data: mockSettings,
+                        total: mockSettings.length,
+                    });
                 default:
                     return Promise.resolve({ data: [], total: 0 });
             }
@@ -190,11 +223,17 @@ describe('Reporting API', () => {
                 completedDate: '2023-01-01T00:00:00Z',
             };
 
-            mockDataProvider.getList.mockImplementation((resource) => {
+            mockDataProvider.getList.mockImplementation(resource => {
                 if (resource === 'interactions') {
-                    return Promise.resolve({ data: [oldInteraction], total: 1 });
+                    return Promise.resolve({
+                        data: [oldInteraction],
+                        total: 1,
+                    });
                 }
-                return Promise.resolve({ data: resource === 'organizations' ? mockOrganizations : [], total: 0 });
+                return Promise.resolve({
+                    data: resource === 'organizations' ? mockOrganizations : [],
+                    total: 0,
+                });
             });
 
             const result = await reportingApi.organizationsNeedsVisit();
@@ -219,7 +258,9 @@ describe('Reporting API', () => {
 
             if (result.length > 1) {
                 for (let i = 0; i < result.length - 1; i++) {
-                    expect(result[i].urgencyScore).toBeGreaterThanOrEqual(result[i + 1].urgencyScore);
+                    expect(result[i].urgencyScore).toBeGreaterThanOrEqual(
+                        result[i + 1].urgencyScore
+                    );
                 }
             }
         });
@@ -231,7 +272,9 @@ describe('Reporting API', () => {
 
             expect(result).toMatchObject({
                 data: expect.any(String),
-                filename: expect.stringMatching(/organizations-export-\d{4}-\d{2}-\d{2}\.csv/),
+                filename: expect.stringMatching(
+                    /organizations-export-\d{4}-\d{2}-\d{2}\.csv/
+                ),
                 mimeType: 'text/csv',
             });
 
@@ -245,7 +288,9 @@ describe('Reporting API', () => {
 
             expect(result).toMatchObject({
                 data: expect.any(String),
-                filename: expect.stringMatching(/interactions-export-\d{4}-\d{2}-\d{2}\.csv/),
+                filename: expect.stringMatching(
+                    /interactions-export-\d{4}-\d{2}-\d{2}\.csv/
+                ),
                 mimeType: 'text/csv',
             });
 
@@ -261,7 +306,7 @@ describe('Reporting API', () => {
                 notes: 'Notes with "quotes" and, commas',
             };
 
-            mockDataProvider.getList.mockImplementation((resource) => {
+            mockDataProvider.getList.mockImplementation(resource => {
                 if (resource === 'organizations') {
                     return Promise.resolve({ data: [orgWithQuotes], total: 1 });
                 }
@@ -277,13 +322,20 @@ describe('Reporting API', () => {
 
     describe('Error Handling', () => {
         it('should handle data provider errors gracefully', async () => {
-            mockDataProvider.getList.mockRejectedValue(new Error('Database connection failed'));
+            mockDataProvider.getList.mockRejectedValue(
+                new Error('Database connection failed')
+            );
 
-            await expect(reportingApi.dashboard()).rejects.toThrow('Failed to generate dashboard report');
+            await expect(reportingApi.dashboard()).rejects.toThrow(
+                'Failed to generate dashboard report'
+            );
         });
 
         it('should handle missing data gracefully', async () => {
-            mockDataProvider.getList.mockResolvedValue({ data: null, total: 0 });
+            mockDataProvider.getList.mockResolvedValue({
+                data: null,
+                total: 0,
+            });
 
             const result = await reportingApi.dashboard();
 
@@ -309,9 +361,12 @@ describe('Reporting API', () => {
                 name: `Restaurant ${i + 1}`,
             }));
 
-            mockDataProvider.getList.mockImplementation((resource) => {
+            mockDataProvider.getList.mockImplementation(resource => {
                 if (resource === 'organizations') {
-                    return Promise.resolve({ data: largeOrganizations, total: 1000 });
+                    return Promise.resolve({
+                        data: largeOrganizations,
+                        total: 1000,
+                    });
                 }
                 return Promise.resolve({ data: [], total: 0 });
             });
@@ -332,7 +387,9 @@ describe('Data Provider Integration', () => {
 
         expect(typeof reportingProvider.getDashboardReport).toBe('function');
         expect(typeof reportingProvider.getInteractionReport).toBe('function');
-        expect(typeof reportingProvider.getOrganizationsNeedingVisit).toBe('function');
+        expect(typeof reportingProvider.getOrganizationsNeedingVisit).toBe(
+            'function'
+        );
         expect(typeof reportingProvider.exportOrganizations).toBe('function');
         expect(typeof reportingProvider.exportInteractions).toBe('function');
 

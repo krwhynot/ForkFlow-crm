@@ -36,13 +36,7 @@ export const Filter = ({
     );
 };
 
-export const FilterItem = ({
-    label,
-    value,
-}: {
-    label: string;
-    value: any;
-}) => {
+export const FilterItem = ({ label, value }: { label: string; value: any }) => {
     const { filterValues, setFilters } = useListContext();
 
     const handleClick = () => {

@@ -99,13 +99,9 @@ export const Alert: React.FC<AlertProps> = ({
                 </div>
                 <div className="ml-3 flex-1">
                     {title && (
-                        <h3 className="text-sm font-medium mb-1">
-                            {title}
-                        </h3>
+                        <h3 className="text-sm font-medium mb-1">{title}</h3>
                     )}
-                    <div className="text-sm">
-                        {children}
-                    </div>
+                    <div className="text-sm">{children}</div>
                 </div>
                 {onClose && (
                     <div className="ml-auto pl-3">
@@ -114,15 +110,22 @@ export const Alert: React.FC<AlertProps> = ({
                                 type="button"
                                 className={cn(
                                     'inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors',
-                                    severity === 'success' && 'text-green-500 hover:bg-green-100 focus:ring-green-600',
-                                    severity === 'warning' && 'text-yellow-500 hover:bg-yellow-100 focus:ring-yellow-600',
-                                    severity === 'info' && 'text-blue-500 hover:bg-blue-100 focus:ring-blue-600',
-                                    severity === 'error' && 'text-red-500 hover:bg-red-100 focus:ring-red-600'
+                                    severity === 'success' &&
+                                        'text-green-500 hover:bg-green-100 focus:ring-green-600',
+                                    severity === 'warning' &&
+                                        'text-yellow-500 hover:bg-yellow-100 focus:ring-yellow-600',
+                                    severity === 'info' &&
+                                        'text-blue-500 hover:bg-blue-100 focus:ring-blue-600',
+                                    severity === 'error' &&
+                                        'text-red-500 hover:bg-red-100 focus:ring-red-600'
                                 )}
                                 onClick={onClose}
                             >
                                 <span className="sr-only">Dismiss</span>
-                                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                <XMarkIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                />
                             </button>
                         </div>
                     </div>

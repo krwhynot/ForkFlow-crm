@@ -1,5 +1,15 @@
 import { UserPlusIcon } from '@heroicons/react/24/outline';
-import { Box, Button, Card, List, ListItem, ListItemAvatar, ListItemButton, ListItemSecondaryAction, ListItemText } from '../components/ui-kit';
+import {
+    Box,
+    Button,
+    Card,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemSecondaryAction,
+    ListItemText,
+} from '../components/ui-kit';
 import { formatDistance } from 'date-fns';
 import {
     RecordContextProvider,
@@ -44,9 +54,7 @@ const CompanyShowContent = () => {
                         </h1>
                     </Box>
 
-                    <TabbedShowLayout
-                        className="[&_.RaTabbedShowLayout-content]:p-0"
-                    >
+                    <TabbedShowLayout className="[&_.RaTabbedShowLayout-content]:p-0">
                         <TabbedShowLayout.Tab label="Activity">
                             <ActivityLog
                                 companyId={record.id}

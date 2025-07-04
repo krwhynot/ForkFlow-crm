@@ -1,11 +1,6 @@
 // src/users/UserShow.tsx
 import React from 'react';
-import {
-    EmailField,
-    Show,
-    SimpleShowLayout,
-    TextField,
-} from 'react-admin';
+import { EmailField, Show, SimpleShowLayout, TextField } from 'react-admin';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export const UserShow = () => {

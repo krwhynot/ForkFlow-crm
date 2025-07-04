@@ -11,17 +11,15 @@ import {
     TopToolbar,
     useRecordContext,
 } from 'react-admin';
-import {
-    Card,
-    CardContent,
-    Grid,
-    Typography,
-    Chip,
-    Box,
-    Divider,
-    Stack,
-} from '@mui/material';
 import { Product } from '../types';
+import { Card } from '../components/Card/Card';
+import { CardContent } from '../components/Card/CardContent';
+import { Grid } from '@/components/ui-kit';
+import { Typography } from '../components/Typography/Typography';
+import { Chip } from '../components/DataDisplay/Chip';
+import { Box } from '../components/Layout/Box';
+import { Divider } from '@/components/ui-kit';
+import { Stack } from '../components/Layout/Stack';
 import { PriceField } from './PriceField';
 import {
     TrendingUp as TrendingUpIcon,
@@ -43,52 +41,53 @@ const ProductHeader = () => {
     const record = useRecordContext();
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-2">
             <CardContent>
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} md={8}>
-                        <Typography variant="h4" component="h1" gutterBottom>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div className="md:col-span-2">
+                        <Typography
+                            variant="h4"
+                            component="h1"
+                            className="mb-2"
+                        >
                             <TextField source="name" variant="h4" />
                         </Typography>
-                        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                        <Stack direction="row" spacing={1} className="mb-2">
                             <Chip
                                 label={<TextField source="category" />}
-                                color="primary"
-                                variant="outlined"
+                                className="border-blue-500 text-blue-500"
                             />
                             <BooleanField source="active" />
                             {/* Active Status Chip */}
                             {record?.active ? (
                                 <Chip
                                     label="Active"
-                                    color="success"
+                                    className="bg-green-500 text-white"
                                     size="small"
                                 />
                             ) : (
                                 <Chip
                                     label="Inactive"
-                                    color="default"
+                                    className="bg-gray-200 text-gray-700"
                                     size="small"
                                 />
                             )}
                         </Stack>
-                        <Typography variant="body1" color="textSecondary">
+                        <Typography variant="body1" className="text-gray-500">
                             <TextField source="description" />
                         </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Box textAlign={{ xs: 'left', md: 'right' }}>
-                            <PriceField
-                                variant="h3"
-                                color="primary.main"
-                                sx={{ mb: 1 }}
-                            />
-                            <Typography variant="body2" color="textSecondary">
-                                per <TextField source="unitOfMeasure" />
-                            </Typography>
-                        </Box>
-                    </Grid>
-                </Grid>
+                    </div>
+                    <div className="text-left md:text-right">
+                        <PriceField
+                            variant="h3"
+                            color="primary.main"
+                            className="mb-1"
+                        />
+                        <Typography variant="body2" className="text-gray-500">
+                            per <TextField source="unitOfMeasure" />
+                        </Typography>
+                    </div>
+                </div>
             </CardContent>
         </Card>
     );
@@ -100,18 +99,17 @@ const ProductDetails = () => {
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" className="mb-2">
                     Product Details
                 </Typography>
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-2" />
 
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                        <Box sx={{ mb: 2 }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <Box className="mb-2">
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
-                                gutterBottom
+                                className="text-gray-500 mb-1"
                             >
                                 SKU
                             </Typography>
@@ -120,11 +118,10 @@ const ProductDetails = () => {
                             </Typography>
                         </Box>
 
-                        <Box sx={{ mb: 2 }}>
+                        <Box className="mb-2">
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
-                                gutterBottom
+                                className="text-gray-500 mb-1"
                             >
                                 Package Size
                             </Typography>
@@ -133,11 +130,10 @@ const ProductDetails = () => {
                             </Typography>
                         </Box>
 
-                        <Box sx={{ mb: 2 }}>
+                        <Box className="mb-2">
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
-                                gutterBottom
+                                className="text-gray-500 mb-1"
                             >
                                 Unit of Measure
                             </Typography>
@@ -145,14 +141,13 @@ const ProductDetails = () => {
                                 <TextField source="unitOfMeasure" />
                             </Typography>
                         </Box>
-                    </Grid>
+                    </div>
 
-                    <Grid item xs={12} md={6}>
-                        <Box sx={{ mb: 2 }}>
+                    <div>
+                        <Box className="mb-2">
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
-                                gutterBottom
+                                className="text-gray-500 mb-1"
                             >
                                 Principal/Brand
                             </Typography>
@@ -165,11 +160,10 @@ const ProductDetails = () => {
                             </ReferenceField>
                         </Box>
 
-                        <Box sx={{ mb: 2 }}>
+                        <Box className="mb-2">
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
-                                gutterBottom
+                                className="text-gray-500 mb-1"
                             >
                                 Status
                             </Typography>
@@ -178,25 +172,24 @@ const ProductDetails = () => {
                             {record?.active ? (
                                 <Typography
                                     variant="body1"
-                                    color="success.main"
+                                    className="text-green-600"
                                 >
                                     Active
                                 </Typography>
                             ) : (
                                 <Typography
                                     variant="body1"
-                                    color="text.secondary"
+                                    className="text-gray-500"
                                 >
                                     Inactive
                                 </Typography>
                             )}
                         </Box>
 
-                        <Box sx={{ mb: 2 }}>
+                        <Box className="mb-2">
                             <Typography
                                 variant="subtitle2"
-                                color="textSecondary"
-                                gutterBottom
+                                className="text-gray-500 mb-1"
                             >
                                 Created By
                             </Typography>
@@ -204,8 +197,8 @@ const ProductDetails = () => {
                                 <TextField source="createdBy" />
                             </Typography>
                         </Box>
-                    </Grid>
-                </Grid>
+                    </div>
+                </div>
             </CardContent>
         </Card>
     );
@@ -214,7 +207,7 @@ const ProductDetails = () => {
 // Related Opportunities - Enhanced with Navigation Component
 const RelatedOpportunities = () => {
     const record = useRecordContext<Product>();
-    
+
     return (
         <RelatedEntitiesSection
             entityType="product"
@@ -231,37 +224,22 @@ const RelatedOpportunities = () => {
 
 // Price History Placeholder
 const PriceHistory = () => (
-    <Card sx={{ mb: 2 }}>
+    <Card className="mb-2">
         <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <TrendingUpIcon sx={{ mr: 1, color: 'primary.main' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Box className="flex items-center mb-2">
+                <TrendingUpIcon className="mr-1 text-blue-500" />
+                <Typography variant="h6" className="font-semibold">
                     Price History
                 </Typography>
             </Box>
-            <Divider sx={{ mb: 2 }} />
-            <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontStyle: 'italic' }}
-            >
+            <Divider className="mb-2" />
+            <Typography variant="body2" className="text-gray-500 italic">
                 Historical pricing data and trends will be displayed here. Track
                 price changes over time, seasonal variations, and market trends
                 for this product.
             </Typography>
-            <Box
-                sx={{
-                    mt: 2,
-                    height: 200,
-                    border: '2px dashed',
-                    borderColor: 'divider',
-                    borderRadius: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Typography variant="body2" color="text.secondary">
+            <Box className="mt-2 h-52 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                <Typography variant="body2" className="text-gray-500">
                     📈 Interactive Price Chart Coming Soon
                 </Typography>
             </Box>
@@ -288,7 +266,7 @@ const ProductImages = () => {
             // For now, create local URLs - in production this would upload to storage
             const newImageUrls = files.map(file => URL.createObjectURL(file));
             setImages(prev => [...prev, ...newImageUrls]);
-            
+
             // TODO: Implement actual upload to Supabase storage
             // const uploadedUrls = await uploadToSupabase(files);
             // setImages(prev => [...prev, ...uploadedUrls]);
@@ -304,120 +282,75 @@ const ProductImages = () => {
     };
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-2">
             <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PhotoIcon sx={{ mr: 1, color: 'primary.main' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Box className="flex items-center mb-2">
+                    <PhotoIcon className="mr-1 text-blue-500" />
+                    <Typography variant="h6" className="font-semibold">
                         Product Images
                     </Typography>
                 </Box>
-                <Divider sx={{ mb: 2 }} />
-                
+                <Divider className="mb-2" />
+
                 {/* Upload Area */}
                 <Box
                     component="label"
-                    sx={{
-                        display: 'block',
-                        p: 2,
-                        border: '2px dashed',
-                        borderColor: 'primary.main',
-                        borderRadius: 1,
-                        textAlign: 'center',
-                        cursor: 'pointer',
-                        mb: 2,
-                        backgroundColor: 'action.hover',
-                        '&:hover': {
-                            backgroundColor: 'action.selected',
-                        },
-                    }}
+                    className="block p-2 border-2 border-dashed border-blue-500 rounded-lg text-center cursor-pointer mb-2 bg-gray-50 hover:bg-gray-100"
                 >
                     <input
                         type="file"
                         accept="image/*"
                         multiple
                         hidden
-                        onChange={(e) => {
+                        onChange={e => {
                             if (e.target.files) {
                                 handleImageUpload(Array.from(e.target.files));
                             }
                         }}
                     />
-                    <PhotoIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-                    <Typography variant="body1" color="primary">
+                    <PhotoIcon className="text-5xl text-blue-500 mb-1" />
+                    <Typography variant="body1" className="text-blue-500">
                         {uploading ? 'Uploading...' : 'Click to upload images'}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" className="text-gray-500">
                         JPG, PNG, GIF up to 10MB each
                     </Typography>
                 </Box>
 
                 {/* Image Gallery */}
                 {images.length > 0 ? (
-                    <Grid container spacing={2}>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {images.map((imageSrc, index) => (
-                            <Grid item xs={6} sm={3} key={index}>
-                                <Box
-                                    sx={{
-                                        position: 'relative',
-                                        aspectRatio: '1',
-                                        borderRadius: 1,
-                                        overflow: 'hidden',
-                                        backgroundColor: 'grey.100',
+                            <div
+                                key={index}
+                                className="relative aspect-square rounded-lg overflow-hidden bg-gray-100"
+                            >
+                                <img
+                                    src={imageSrc}
+                                    alt={`Product ${index + 1}`}
+                                    className="w-full h-full object-cover cursor-pointer"
+                                    onClick={() =>
+                                        window.open(imageSrc, '_blank')
+                                    }
+                                />
+                                <div
+                                    className="absolute top-1 right-1 bg-black bg-opacity-70 rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        handleRemoveImage(index);
                                     }}
                                 >
-                                    <Box
-                                        component="img"
-                                        src={imageSrc}
-                                        alt={`Product ${index + 1}`}
-                                        sx={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover',
-                                            cursor: 'pointer',
-                                        }}
-                                        onClick={() => window.open(imageSrc, '_blank')}
-                                    />
-                                    <Box
-                                        sx={{
-                                            position: 'absolute',
-                                            top: 4,
-                                            right: 4,
-                                            backgroundColor: 'rgba(0,0,0,0.7)',
-                                            borderRadius: '50%',
-                                            minWidth: '24px',
-                                            minHeight: '24px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            cursor: 'pointer',
-                                        }}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleRemoveImage(index);
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="caption"
-                                            sx={{ color: 'white', fontSize: '12px' }}
-                                        >
-                                            ×
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            </Grid>
+                                    <Typography className="text-white text-xs">
+                                        ×
+                                    </Typography>
+                                </div>
+                            </div>
                         ))}
-                    </Grid>
+                    </div>
                 ) : (
-                    <Box
-                        sx={{
-                            p: 3,
-                            textAlign: 'center',
-                            color: 'text.secondary',
-                            fontStyle: 'italic',
-                        }}
-                    >
-                        No images uploaded yet. Use the upload area above to add product photos.
+                    <Box className="p-3 text-center text-gray-500 italic">
+                        No images uploaded yet. Use the upload area above to add
+                        product photos.
                     </Box>
                 )}
             </CardContent>
@@ -430,32 +363,19 @@ const EnhancedPrincipalDisplay = () => {
     const record = useRecordContext<Product>();
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-2">
             <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Box className="flex items-center mb-2">
+                    <BusinessIcon className="mr-1 text-blue-500" />
+                    <Typography variant="h6" className="font-semibold">
                         Principal/Brand Information
                     </Typography>
                 </Box>
-                <Divider sx={{ mb: 2 }} />
+                <Divider className="mb-2" />
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box
-                        sx={{
-                            width: 60,
-                            height: 60,
-                            border: '2px dashed',
-                            borderColor: 'divider',
-                            borderRadius: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            mr: 2,
-                            backgroundColor: 'grey.50',
-                        }}
-                    >
-                        <BusinessIcon color="disabled" />
+                <Box className="flex items-center mb-2">
+                    <Box className="w-15 h-15 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center mr-2 bg-gray-50">
+                        <BusinessIcon className="text-gray-400" />
                     </Box>
                     <Box>
                         <ReferenceField
@@ -463,21 +383,17 @@ const EnhancedPrincipalDisplay = () => {
                             reference="settings"
                             link={false}
                         >
-                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                            <Typography variant="h6" className="font-semibold">
                                 <TextField source="label" />
                             </Typography>
                         </ReferenceField>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-500">
                             Food Service Principal
                         </Typography>
                     </Box>
                 </Box>
 
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ fontStyle: 'italic' }}
-                >
+                <Typography variant="body2" className="text-gray-500 italic">
                     Principal branding, contact information, and product
                     portfolio details will be enhanced here in future updates.
                 </Typography>
@@ -490,22 +406,22 @@ export const ProductShow = () => {
     return (
         <Show actions={<ProductShowActions />}>
             <SimpleShowLayout>
-                <RelationshipBreadcrumbs 
+                <RelationshipBreadcrumbs
                     currentEntity="product"
                     showContext={true}
                 />
                 <ProductHeader />
-                <Grid container spacing={3}>
-                    <Grid item xs={12} lg={8}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
                         <ProductDetails />
                         <RelatedOpportunities />
                         <PriceHistory />
-                    </Grid>
-                    <Grid item xs={12} lg={4}>
+                    </div>
+                    <div className="lg:col-span-1">
                         <EnhancedPrincipalDisplay />
                         <ProductImages />
-                    </Grid>
-                </Grid>
+                    </div>
+                </div>
             </SimpleShowLayout>
         </Show>
     );

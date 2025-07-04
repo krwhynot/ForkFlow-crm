@@ -68,41 +68,51 @@ export const isDevelopmentEnvironment = (): boolean => {
 /**
  * Enforce HTTPS connection
  */
-export const enforceHTTPS = (config: HTTPSConfig = DEFAULT_HTTPS_CONFIG): void => {
+export const enforceHTTPS = (
+    config: HTTPSConfig = DEFAULT_HTTPS_CONFIG
+): void => {
     const isSecure = isConnectionSecure();
     const isDev = isDevelopmentEnvironment();
-    
+
     // Skip enforcement in development if configured
     if (isDev && config.allowLocalDevelopment) {
         console.log('🔓 HTTPS enforcement skipped for local development');
         return;
     }
-    
+
     if (!isSecure && config.enforceHTTPS) {
         const httpsUrl = location.href.replace(/^http:/, 'https:');
-        
-        logAuditEvent('security.https_enforcement', {
-            originalUrl: location.href,
-            redirectUrl: httpsUrl,
-            userAgent: navigator.userAgent,
-        }, {
-            severity: 'medium',
-            message: 'Redirecting to HTTPS',
-        });
-        
+
+        logAuditEvent(
+            'security.https_enforcement',
+            {
+                originalUrl: location.href,
+                redirectUrl: httpsUrl,
+                userAgent: navigator.userAgent,
+            },
+            {
+                severity: 'medium',
+                message: 'Redirecting to HTTPS',
+            }
+        );
+
         console.log('🔒 Redirecting to HTTPS:', httpsUrl);
         location.replace(httpsUrl);
         return;
     }
-    
+
     if (isSecure) {
-        logAuditEvent('security.https_verified', {
-            url: location.href,
-            protocol: location.protocol,
-        }, {
-            severity: 'low',
-            message: 'Secure connection verified',
-        });
+        logAuditEvent(
+            'security.https_verified',
+            {
+                url: location.href,
+                protocol: location.protocol,
+            },
+            {
+                severity: 'low',
+                message: 'Secure connection verified',
+            }
+        );
     }
 };
 
@@ -118,39 +128,51 @@ export const setupStrictTransportSecurity = (
         console.warn('⚠️ HSTS can only be set over HTTPS connections');
         return;
     }
-    
+
     let hstsValue = `max-age=${maxAge}`;
     if (includeSubDomains) hstsValue += '; includeSubDomains';
     if (preload) hstsValue += '; preload';
-    
+
     // Add HSTS meta tag (informational - real HSTS must be set by server)
-    let metaTag = document.querySelector('meta[name="strict-transport-security"]') as HTMLMetaElement;
+    let metaTag = document.querySelector(
+        'meta[name="strict-transport-security"]'
+    ) as HTMLMetaElement;
     if (!metaTag) {
         metaTag = document.createElement('meta');
         metaTag.name = 'strict-transport-security';
         document.head.appendChild(metaTag);
     }
     metaTag.content = hstsValue;
-    
+
     console.log('🔒 HSTS configured:', hstsValue);
-    
-    logAuditEvent('security.hsts_configured', {
-        value: hstsValue,
-        maxAge,
-        includeSubDomains,
-        preload,
-    }, {
-        severity: 'low',
-        message: 'HSTS configured',
-    });
+
+    logAuditEvent(
+        'security.hsts_configured',
+        {
+            value: hstsValue,
+            maxAge,
+            includeSubDomains,
+            preload,
+        },
+        {
+            severity: 'low',
+            message: 'HSTS configured',
+        }
+    );
 };
 
 /**
  * Setup security headers via meta tags
  */
-export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SECURITY_HEADERS): void => {
-    const headers: Array<{ name: string; content: string; description: string }> = [];
-    
+export const setupSecurityHeaders = (
+    config: SecurityHeadersConfig = DEFAULT_SECURITY_HEADERS
+): void => {
+    const headers: Array<{
+        name: string;
+        content: string;
+        description: string;
+    }> = [];
+
     if (config.contentTypeOptions) {
         headers.push({
             name: 'x-content-type-options',
@@ -158,7 +180,7 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
             description: 'Prevents MIME type sniffing',
         });
     }
-    
+
     if (config.frameOptions) {
         headers.push({
             name: 'x-frame-options',
@@ -166,7 +188,7 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
             description: 'Prevents clickjacking attacks',
         });
     }
-    
+
     if (config.xssProtection) {
         headers.push({
             name: 'x-xss-protection',
@@ -174,7 +196,7 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
             description: 'Enables XSS filtering',
         });
     }
-    
+
     if (config.referrerPolicy) {
         headers.push({
             name: 'referrer-policy',
@@ -182,7 +204,7 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
             description: 'Controls referrer information',
         });
     }
-    
+
     if (config.permissionsPolicy) {
         headers.push({
             name: 'permissions-policy',
@@ -190,10 +212,12 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
             description: 'Controls browser features',
         });
     }
-    
+
     // Apply headers as meta tags
     headers.forEach(header => {
-        let metaTag = document.querySelector(`meta[name="${header.name}"]`) as HTMLMetaElement;
+        let metaTag = document.querySelector(
+            `meta[name="${header.name}"]`
+        ) as HTMLMetaElement;
         if (!metaTag) {
             metaTag = document.createElement('meta');
             metaTag.name = header.name;
@@ -201,18 +225,22 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
         }
         metaTag.content = header.content;
     });
-    
+
     if (process.env.NODE_ENV === 'development') {
         console.log('🛡️ Security headers configured:', headers);
     }
-    
-    logAuditEvent('security.headers_configured', {
-        headers: headers.map(h => ({ name: h.name, content: h.content })),
-        count: headers.length,
-    }, {
-        severity: 'low',
-        message: 'Security headers configured',
-    });
+
+    logAuditEvent(
+        'security.headers_configured',
+        {
+            headers: headers.map(h => ({ name: h.name, content: h.content })),
+            count: headers.length,
+        },
+        {
+            severity: 'low',
+            message: 'Security headers configured',
+        }
+    );
 };
 
 /**
@@ -220,10 +248,10 @@ export const setupSecurityHeaders = (config: SecurityHeadersConfig = DEFAULT_SEC
  */
 export const setupContentSecurityPolicy = (): void => {
     const isDev = isDevelopmentEnvironment();
-    
+
     const directives = [
         "default-src 'self'",
-        isDev 
+        isDev
             ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com http://localhost:*"
             : "script-src 'self' https://*.googleapis.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -236,29 +264,35 @@ export const setupContentSecurityPolicy = (): void => {
         "base-uri 'self'",
         "form-action 'self'",
         "frame-ancestors 'none'",
-        ...(isConnectionSecure() ? ["upgrade-insecure-requests"] : []),
+        ...(isConnectionSecure() ? ['upgrade-insecure-requests'] : []),
     ];
-    
+
     const cspContent = directives.join('; ');
-    
-    let metaTag = document.querySelector('meta[http-equiv="Content-Security-Policy"]') as HTMLMetaElement;
+
+    let metaTag = document.querySelector(
+        'meta[http-equiv="Content-Security-Policy"]'
+    ) as HTMLMetaElement;
     if (!metaTag) {
         metaTag = document.createElement('meta');
         metaTag.httpEquiv = 'Content-Security-Policy';
         document.head.appendChild(metaTag);
     }
     metaTag.content = cspContent;
-    
+
     console.log('🔐 CSP configured:', cspContent);
-    
-    logAuditEvent('security.csp_configured', {
-        policy: cspContent,
-        directiveCount: directives.length,
-        isDevelopment: isDev,
-    }, {
-        severity: 'low',
-        message: 'Content Security Policy configured',
-    });
+
+    logAuditEvent(
+        'security.csp_configured',
+        {
+            policy: cspContent,
+            directiveCount: directives.length,
+            isDevelopment: isDev,
+        },
+        {
+            severity: 'low',
+            message: 'Content Security Policy configured',
+        }
+    );
 };
 
 /**
@@ -268,25 +302,25 @@ export const monitorMixedContent = (): (() => void) => {
     if (!isConnectionSecure()) {
         return () => {}; // No monitoring needed for HTTP
     }
-    
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     checkElementForMixedContent(node as Element);
                 }
             });
         });
     });
-    
+
     observer.observe(document.body, {
         childList: true,
         subtree: true,
     });
-    
+
     // Initial scan
     checkElementForMixedContent(document.body);
-    
+
     return () => observer.disconnect();
 };
 
@@ -302,23 +336,27 @@ const checkElementForMixedContent = (element: Element): void => {
         'video[src^="http:"]',
         'audio[src^="http:"]',
     ];
-    
+
     insecureElements.forEach(selector => {
         const elements = element.querySelectorAll(selector);
         elements.forEach(el => {
             const src = el.getAttribute('src') || el.getAttribute('href');
             if (src && src.startsWith('http://')) {
                 console.warn('⚠️ Mixed content detected:', el);
-                
-                logAuditEvent('security.mixed_content_detected', {
-                    elementType: el.tagName.toLowerCase(),
-                    url: src,
-                    location: window.location.href,
-                }, {
-                    severity: 'medium',
-                    message: 'Mixed content detected',
-                    outcome: 'warning',
-                });
+
+                logAuditEvent(
+                    'security.mixed_content_detected',
+                    {
+                        elementType: el.tagName.toLowerCase(),
+                        url: src,
+                        location: window.location.href,
+                    },
+                    {
+                        severity: 'medium',
+                        message: 'Mixed content detected',
+                        outcome: 'warning',
+                    }
+                );
             }
         });
     });
@@ -331,22 +369,28 @@ export const setupCertificateTransparency = (): void => {
     if (!isConnectionSecure()) {
         return;
     }
-    
+
     // Add Expect-CT header via meta tag (informational)
-    let metaTag = document.querySelector('meta[name="expect-ct"]') as HTMLMetaElement;
+    let metaTag = document.querySelector(
+        'meta[name="expect-ct"]'
+    ) as HTMLMetaElement;
     if (!metaTag) {
         metaTag = document.createElement('meta');
         metaTag.name = 'expect-ct';
         document.head.appendChild(metaTag);
     }
     metaTag.content = 'max-age=86400, enforce';
-    
-    logAuditEvent('security.certificate_transparency_configured', {
-        policy: 'max-age=86400, enforce',
-    }, {
-        severity: 'low',
-        message: 'Certificate transparency configured',
-    });
+
+    logAuditEvent(
+        'security.certificate_transparency_configured',
+        {
+            policy: 'max-age=86400, enforce',
+        },
+        {
+            severity: 'low',
+            message: 'Certificate transparency configured',
+        }
+    );
 };
 
 /**
@@ -363,38 +407,42 @@ export const getSecurityStatus = (): {
 } => {
     const isSecure = isConnectionSecure();
     const isDev = isDevelopmentEnvironment();
-    const hasCSP = !!document.querySelector('meta[http-equiv="Content-Security-Policy"]');
-    const hasHSTS = !!document.querySelector('meta[name="strict-transport-security"]');
-    
+    const hasCSP = !!document.querySelector(
+        'meta[http-equiv="Content-Security-Policy"]'
+    );
+    const hasHSTS = !!document.querySelector(
+        'meta[name="strict-transport-security"]'
+    );
+
     const recommendations: string[] = [];
     let securityScore = 0;
-    
+
     if (isSecure) {
         securityScore += 40;
     } else {
         recommendations.push('Enable HTTPS for secure communication');
     }
-    
+
     if (hasCSP) {
         securityScore += 20;
     } else {
         recommendations.push('Configure Content Security Policy');
     }
-    
+
     if (hasHSTS) {
         securityScore += 20;
     } else if (isSecure) {
         recommendations.push('Enable Strict Transport Security');
     }
-    
+
     if (isSecure && !isDev) {
         securityScore += 20;
     }
-    
+
     if (recommendations.length === 0) {
         recommendations.push('Security configuration is optimal');
     }
-    
+
     return {
         isSecure,
         isDevelopment: isDev,
@@ -414,40 +462,47 @@ export const initializeHTTPSSecurity = (
     headersConfig: Partial<SecurityHeadersConfig> = {}
 ): (() => void) => {
     const finalHTTPSConfig = { ...DEFAULT_HTTPS_CONFIG, ...httpsConfig };
-    const finalHeadersConfig = { ...DEFAULT_SECURITY_HEADERS, ...headersConfig };
-    
+    const finalHeadersConfig = {
+        ...DEFAULT_SECURITY_HEADERS,
+        ...headersConfig,
+    };
+
     // Enforce HTTPS
     enforceHTTPS(finalHTTPSConfig);
-    
+
     // Setup security headers
     setupSecurityHeaders(finalHeadersConfig);
-    
+
     // Setup CSP
     setupContentSecurityPolicy();
-    
+
     // Setup HSTS (only on HTTPS)
     if (isConnectionSecure() && finalHTTPSConfig.strictTransportSecurity) {
         setupStrictTransportSecurity();
     }
-    
+
     // Setup certificate transparency
     if (finalHeadersConfig.expectCertificateTransparency) {
         setupCertificateTransparency();
     }
-    
+
     // Monitor mixed content
     const stopMixedContentMonitor = monitorMixedContent();
-    
-    logAuditEvent('security.https_initialized', {
-        httpsConfig: finalHTTPSConfig,
-        headersConfig: finalHeadersConfig,
-        isSecure: isConnectionSecure(),
-        isDevelopment: isDevelopmentEnvironment(),
-    }, {
-        severity: 'low',
-        message: 'HTTPS security initialized',
-    });
-    
+
+    logAuditEvent(
+        'security.https_initialized',
+        {
+            httpsConfig: finalHTTPSConfig,
+            headersConfig: finalHeadersConfig,
+            isSecure: isConnectionSecure(),
+            isDevelopment: isDevelopmentEnvironment(),
+        },
+        {
+            severity: 'low',
+            message: 'HTTPS security initialized',
+        }
+    );
+
     return () => {
         stopMixedContentMonitor();
     };

@@ -1,4 +1,5 @@
-import { Collapse, Link, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@/components/ui-kit';
+import { Collapse, Link } from '@mui/material';
 import {
     DateTimeInput,
     FileField,
@@ -35,7 +36,7 @@ export const NoteInputs = ({
                 helperText={false}
             />
             {!displayMore && (
-                <Stack gap={0.5} direction="row" justifyContent="flex-end">
+                <Stack className="gap-0.5 flex-row justify-end">
                     <Link
                         variant="caption"
                         href="#"
@@ -47,14 +48,14 @@ export const NoteInputs = ({
                     >
                         Show options
                     </Link>
-                    <Typography variant="caption" color="textSecondary">
+                    <Typography variant="caption" className="text-gray-500">
                         (attach files, or change details)
                     </Typography>
                 </Stack>
             )}
             <Collapse in={displayMore}>
-                <Stack gap={1} mt={1}>
-                    <Stack direction="row" spacing={2}>
+                <Stack className="gap-1 mt-1">
+                    <Stack className="flex-row space-x-2">
                         {showStatus && (
                             <SelectInput
                                 source="status"
@@ -73,10 +74,19 @@ export const NoteInputs = ({
                             parse={formatNoteDate}
                         />
                     </Stack>
-                    <FileInput 
-                        source="attachments" 
+                    <FileInput
+                        source="attachments"
                         multiple
-                        accept={{"application/pdf": [".pdf"], "application/msword": [".doc"], "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"], "text/plain": [".txt"], "text/csv": [".csv"]} as any}
+                        accept={
+                            {
+                                'application/pdf': ['.pdf'],
+                                'application/msword': ['.doc'],
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                    ['.docx'],
+                                'text/plain': ['.txt'],
+                                'text/csv': ['.csv'],
+                            } as any
+                        }
                     >
                         <FileField source="src" title="title" />
                     </FileInput>

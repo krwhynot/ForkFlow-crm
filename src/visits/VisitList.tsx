@@ -17,8 +17,8 @@ import {
     Typography,
     Box,
     Chip,
-    IconButton,
-} from '@mui/material';
+    Button,
+} from '@/components/ui-kit';
 import {
     LocationOn as LocationIcon,
     AccessTime as TimeIcon,
@@ -67,39 +67,21 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
     };
 
     return (
-        <Card sx={{ mb: 1, cursor: 'pointer' }}>
-            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        mb: 1,
-                    }}
-                >
+        <Card className="mb-1 cursor-pointer">
+            <CardContent className="p-2 [&:last-child]:pb-2">
+                <Box className="flex justify-between items-start mb-1">
                     <Typography
                         variant="h6"
-                        sx={{ fontWeight: 600, fontSize: '1rem' }}
+                        className="font-semibold text-base"
                     >
                         {record.organization?.name ||
                             `Customer #${record.organizationId}`}
                     </Typography>
-                    <Chip
-                        label={'Visit'}
-                        color={'primary'}
-                        size="small"
-                    />
+                    <Chip label={'Visit'} color={'primary'} size="small" />
                 </Box>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mb: 1,
-                        color: 'text.secondary',
-                    }}
-                >
-                    <TimeIcon fontSize="small" sx={{ mr: 0.5 }} />
+                <Box className="flex items-center mb-1 text-gray-500">
+                    <TimeIcon fontSize="small" className="mr-0.5" />
                     <Typography variant="body2">
                         {new Date(record.date).toLocaleDateString()} at{' '}
                         {new Date(record.date).toLocaleTimeString([], {
@@ -107,49 +89,43 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                             minute: '2-digit',
                         })}
                         {record.duration && (
-                            <span>
-                                {' '}
-                                • {formatDuration(record.duration)}
-                            </span>
+                            <span> • {formatDuration(record.duration)}</span>
                         )}
                     </Typography>
                 </Box>
 
                 {hasLocation && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Box className="flex items-center mb-1">
                         <LocationIcon
                             fontSize="small"
-                            color="success"
-                            sx={{ mr: 0.5 }}
+                            className="mr-0.5 text-green-600"
                         />
                         <Typography
                             variant="body2"
-                            color="text.secondary"
-                            sx={{ flex: 1 }}
+                            className="text-gray-500 flex-1"
                         >
                             {record.location?.latitude?.toFixed(4)},{' '}
                             {record.location?.longitude?.toFixed(4)}
                         </Typography>
-                        <IconButton
-                            size="small"
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={openMaps}
-                            sx={{ p: 0.5 }}
+                            className="p-0.5 min-w-8 min-h-8"
                         >
                             <DirectionsIcon fontSize="small" />
-                        </IconButton>
+                        </Button>
                     </Box>
                 )}
 
                 {record.notes && (
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{
+                        className="text-gray-500 line-clamp-2 overflow-hidden mt-1"
+                        style={{
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            mt: 1,
                         }}
                     >
                         {record.notes}
@@ -165,8 +141,8 @@ const MobileVisitList = () => {
 
     if (!visits?.length) {
         return (
-            <Box sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="body1" color="text.secondary">
+            <Box className="p-2 text-center">
+                <Typography variant="body1" className="text-gray-500">
                     No visits logged yet. Start by logging your first customer
                     visit!
                 </Typography>
@@ -175,7 +151,7 @@ const MobileVisitList = () => {
     }
 
     return (
-        <Box sx={{ p: 1 }}>
+        <Box className="p-1">
             {visits.map(visit => (
                 <MobileVisitCard key={visit.id} record={visit} />
             ))}
@@ -197,11 +173,7 @@ const DesktopVisitList = () => (
         <FunctionField
             label="Visit Type"
             render={(record: Visit) => (
-                <Chip
-                    label={'Visit'}
-                    size="small"
-                    variant="outlined"
-                />
+                <Chip label={'Visit'} size="small" variant="outlined" />
             )}
         />
 
@@ -225,18 +197,17 @@ const DesktopVisitList = () => (
             render={(record: Visit) => {
                 if (record.location?.latitude && record.location?.longitude) {
                     return (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box className="flex items-center">
                             <LocationIcon
                                 fontSize="small"
-                                color="success"
-                                sx={{ mr: 0.5 }}
+                                className="mr-0.5 text-green-600"
                             />
                             <Typography variant="body2">GPS</Typography>
                         </Box>
                     );
                 }
                 return (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" className="text-gray-500">
                         No location
                     </Typography>
                 );
@@ -246,12 +217,7 @@ const DesktopVisitList = () => (
         <TextField
             source="notes"
             label="Notes"
-            sx={{
-                maxWidth: 200,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-            }}
+            className="max-w-48 overflow-hidden text-ellipsis whitespace-nowrap"
         />
     </Datagrid>
 );

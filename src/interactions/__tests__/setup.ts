@@ -7,12 +7,14 @@ global.IntersectionObserver = class IntersectionObserver {
     root = null;
     rootMargin = '0px';
     thresholds = [0];
-    
+
     constructor() {}
     disconnect() {}
     observe() {}
     unobserve() {}
-    takeRecords() { return []; }
+    takeRecords() {
+        return [];
+    }
 } as any;
 
 // Mock ResizeObserver
@@ -68,7 +70,7 @@ global.File = class extends Blob {
     name: string;
     lastModified: number;
     webkitRelativePath: string = '';
-    
+
     constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
         super(bits, options);
         this.name = name;
@@ -81,27 +83,37 @@ global.FileReader = class {
     static readonly EMPTY = 0;
     static readonly LOADING = 1;
     static readonly DONE = 2;
-    
+
     result: string | ArrayBuffer | null = null;
     error: DOMException | null = null;
     readyState: number = 0;
-    
-    onload: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
-    onerror: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
-    onabort: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
-    onloadend: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
-    onloadstart: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
-    onprogress: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
-    
+
+    onload: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null =
+        null;
+    onerror: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null =
+        null;
+    onabort: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null =
+        null;
+    onloadend:
+        | ((this: FileReader, ev: ProgressEvent<FileReader>) => any)
+        | null = null;
+    onloadstart:
+        | ((this: FileReader, ev: ProgressEvent<FileReader>) => any)
+        | null = null;
+    onprogress:
+        | ((this: FileReader, ev: ProgressEvent<FileReader>) => any)
+        | null = null;
+
     readAsArrayBuffer(file: Blob) {}
     readAsBinaryString(file: Blob) {}
     abort() {}
-    
+
     readAsDataURL(file: Blob) {
         const self = this as any;
         self.readyState = 1;
         setTimeout(() => {
-            self.result = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A/9k=';
+            self.result =
+                'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A/9k=';
             self.readyState = 2;
             if (self.onload) {
                 self.onload({} as ProgressEvent<FileReader>);
@@ -111,7 +123,7 @@ global.FileReader = class {
             }
         }, 10);
     }
-    
+
     readAsText(file: Blob) {
         const self = this as any;
         self.readyState = 1;
@@ -126,10 +138,12 @@ global.FileReader = class {
             }
         }, 10);
     }
-    
+
     addEventListener() {}
     removeEventListener() {}
-    dispatchEvent() { return true; }
+    dispatchEvent() {
+        return true;
+    }
 } as any;
 
 // Mock URL.createObjectURL and revokeObjectURL
@@ -149,7 +163,7 @@ afterEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
-    
+
     // Reset navigator.onLine
     Object.defineProperty(navigator, 'onLine', {
         value: true,
@@ -164,12 +178,14 @@ afterAll(() => {
 
 // Global test utilities
 export const mockGeolocationSuccess = (coords: GeolocationCoordinates) => {
-    (navigator.geolocation.getCurrentPosition as any).mockImplementation((success: PositionCallback) => {
-        success({
-            coords,
-            timestamp: Date.now(),
-        } as GeolocationPosition);
-    });
+    (navigator.geolocation.getCurrentPosition as any).mockImplementation(
+        (success: PositionCallback) => {
+            success({
+                coords,
+                timestamp: Date.now(),
+            } as GeolocationPosition);
+        }
+    );
 };
 
 export const mockGeolocationError = (code: number, message: string) => {
@@ -197,7 +213,11 @@ export const mockOnlineMode = () => {
     });
 };
 
-export const createMockFile = (name: string, type: string, size: number = 1024) => {
+export const createMockFile = (
+    name: string,
+    type: string,
+    size: number = 1024
+) => {
     const file = new File(['x'.repeat(size)], name, { type });
     Object.defineProperty(file, 'size', { value: size });
     return file;
@@ -205,18 +225,22 @@ export const createMockFile = (name: string, type: string, size: number = 1024) 
 
 export const mockLocalStorage = (data: Record<string, string> = {}) => {
     const storage: Record<string, string> = { ...data };
-    
-    (localStorage.getItem as any).mockImplementation((key: string) => storage[key] || null);
-    (localStorage.setItem as any).mockImplementation((key: string, value: string) => {
-        storage[key] = value;
-    });
+
+    (localStorage.getItem as any).mockImplementation(
+        (key: string) => storage[key] || null
+    );
+    (localStorage.setItem as any).mockImplementation(
+        (key: string, value: string) => {
+            storage[key] = value;
+        }
+    );
     (localStorage.removeItem as any).mockImplementation((key: string) => {
         delete storage[key];
     });
     (localStorage.clear as any).mockImplementation(() => {
         Object.keys(storage).forEach(key => delete storage[key]);
     });
-    
+
     return storage;
 };
 

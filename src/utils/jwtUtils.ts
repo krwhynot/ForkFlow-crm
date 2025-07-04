@@ -14,18 +14,18 @@ let tokenExpirationTimer: NodeJS.Timeout | null = null;
  */
 export const setAccessToken = (token: string): void => {
     accessToken = token;
-    
+
     // Clear existing timer
     if (tokenExpirationTimer) {
         clearTimeout(tokenExpirationTimer);
     }
-    
+
     // Set automatic refresh timer (refresh 5 minutes before expiration)
     const payload = decodeJWT(token);
     if (payload) {
         const expiresIn = payload.exp * 1000 - Date.now();
-        const refreshTime = Math.max(expiresIn - (5 * 60 * 1000), 60000); // 5 min buffer, minimum 1 min
-        
+        const refreshTime = Math.max(expiresIn - 5 * 60 * 1000, 60000); // 5 min buffer, minimum 1 min
+
         tokenExpirationTimer = setTimeout(() => {
             // Trigger token refresh
             window.dispatchEvent(new CustomEvent('tokenExpiring'));
@@ -60,7 +60,7 @@ export const decodeJWT = (token: string): JWTPayload | null => {
         if (parts.length !== 3) {
             return null;
         }
-        
+
         const payload = JSON.parse(atob(parts[1]));
         return payload as JWTPayload;
     } catch (error) {
@@ -75,9 +75,9 @@ export const decodeJWT = (token: string): JWTPayload | null => {
 export const isTokenExpired = (token: string): boolean => {
     const payload = decodeJWT(token);
     if (!payload) return true;
-    
+
     const now = Math.floor(Date.now() / 1000);
-    return payload.exp <= (now + 60); // 1 minute buffer
+    return payload.exp <= now + 60; // 1 minute buffer
 };
 
 /**
@@ -86,7 +86,7 @@ export const isTokenExpired = (token: string): boolean => {
 export const getUserFromToken = (token: string): Partial<User> | null => {
     const payload = decodeJWT(token);
     if (!payload) return null;
-    
+
     return {
         id: payload.sub,
         email: payload.email,
@@ -115,13 +115,16 @@ export const AUTH_STATE_KEY = 'authState';
  * Store authentication state (non-sensitive data only)
  * Used for session persistence across browser refreshes
  */
-export const setAuthState = (user: Partial<User>, rememberMe: boolean = false): void => {
+export const setAuthState = (
+    user: Partial<User>,
+    rememberMe: boolean = false
+): void => {
     const authState = {
         user,
         rememberMe,
         timestamp: Date.now(),
     };
-    
+
     if (rememberMe) {
         localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(authState));
     } else {
@@ -132,7 +135,11 @@ export const setAuthState = (user: Partial<User>, rememberMe: boolean = false): 
 /**
  * Get authentication state from storage
  */
-export const getAuthState = (): { user: Partial<User>; rememberMe: boolean; timestamp: number } | null => {
+export const getAuthState = (): {
+    user: Partial<User>;
+    rememberMe: boolean;
+    timestamp: number;
+} | null => {
     try {
         // Check localStorage first (remember me)
         let stored = localStorage.getItem(AUTH_STATE_KEY);
@@ -140,14 +147,14 @@ export const getAuthState = (): { user: Partial<User>; rememberMe: boolean; time
             const data = JSON.parse(stored);
             return { ...data, rememberMe: true };
         }
-        
+
         // Check sessionStorage (session only)
         stored = sessionStorage.getItem(AUTH_STATE_KEY);
         if (stored) {
             const data = JSON.parse(stored);
             return { ...data, rememberMe: false };
         }
-        
+
         return null;
     } catch (error) {
         console.error('Failed to get auth state:', error);
@@ -166,32 +173,36 @@ export const clearAuthState = (): void => {
 /**
  * Password strength validation for food service CRM
  */
-export const validatePassword = (password: string): { isValid: boolean; errors: string[] } => {
+export const validatePassword = (
+    password: string
+): { isValid: boolean; errors: string[] } => {
     const errors: string[] = [];
-    
+
     if (password.length < 8) {
         errors.push('Password must be at least 8 characters long');
     }
-    
+
     if (!/[a-z]/.test(password)) {
         errors.push('Password must contain at least one lowercase letter');
     }
-    
+
     if (!/[A-Z]/.test(password)) {
         errors.push('Password must contain at least one uppercase letter');
     }
-    
+
     if (!/[0-9]/.test(password)) {
         errors.push('Password must contain at least one number');
     }
-    
+
     if (!/[!@#$%^&*]/.test(password)) {
-        errors.push('Password must contain at least one special character (!@#$%^&*)');
+        errors.push(
+            'Password must contain at least one special character (!@#$%^&*)'
+        );
     }
-    
+
     return {
         isValid: errors.length === 0,
-        errors
+        errors,
     };
 };
 
@@ -201,7 +212,9 @@ export const validatePassword = (password: string): { isValid: boolean; errors: 
 export const generateCSRFToken = (): string => {
     const array = new Uint8Array(32);
     crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join(
+        ''
+    );
 };
 
 /**
@@ -209,30 +222,34 @@ export const generateCSRFToken = (): string => {
  */
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>();
 
-export const checkRateLimit = (email: string, maxAttempts: number = 5, windowMs: number = 15 * 60 * 1000): boolean => {
+export const checkRateLimit = (
+    email: string,
+    maxAttempts: number = 5,
+    windowMs: number = 15 * 60 * 1000
+): boolean => {
     const now = Date.now();
     const attempts = loginAttempts.get(email);
-    
+
     if (!attempts) {
         loginAttempts.set(email, { count: 1, lastAttempt: now });
         return true;
     }
-    
+
     // Reset if window has expired
     if (now - attempts.lastAttempt > windowMs) {
         loginAttempts.set(email, { count: 1, lastAttempt: now });
         return true;
     }
-    
+
     // Check if rate limited
     if (attempts.count >= maxAttempts) {
         return false;
     }
-    
+
     // Increment attempts
     attempts.count += 1;
     attempts.lastAttempt = now;
-    
+
     return true;
 };
 

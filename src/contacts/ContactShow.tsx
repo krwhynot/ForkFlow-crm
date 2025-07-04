@@ -132,7 +132,7 @@ const ContactShowContent = () => {
                 currentEntity="contact"
                 showContext={true}
                 relationships={{
-                    organization: organization
+                    organization: organization,
                 }}
             />
             <Grid container spacing={3}>
@@ -147,7 +147,9 @@ const ContactShowContent = () => {
                                     className="mr-6 font-semibold text-3xl"
                                     style={{
                                         backgroundColor: getInfluenceColor(),
-                                        color: getContrastText(getInfluenceColor()),
+                                        color: getContrastText(
+                                            getInfluenceColor()
+                                        ),
                                     }}
                                 >
                                     {getInitials()}
@@ -187,8 +189,13 @@ const ContactShowContent = () => {
                                                 label={`${influenceLevel.label} Influence`}
                                                 className="font-semibold"
                                                 style={{
-                                                    backgroundColor: influenceLevel.color || '#d1d5db', // gray-300
-                                                    color: getContrastText(influenceLevel.color || '#d1d5db'),
+                                                    backgroundColor:
+                                                        influenceLevel.color ||
+                                                        '#d1d5db', // gray-300
+                                                    color: getContrastText(
+                                                        influenceLevel.color ||
+                                                            '#d1d5db'
+                                                    ),
                                                 }}
                                             />
                                         )}
@@ -197,7 +204,9 @@ const ContactShowContent = () => {
                                                 label={decisionRole.label}
                                                 variant="outlined"
                                                 style={{
-                                                    borderColor: decisionRole.color || '#9ca3af', // gray-400
+                                                    borderColor:
+                                                        decisionRole.color ||
+                                                        '#9ca3af', // gray-400
                                                 }}
                                             />
                                         )}
@@ -254,8 +263,12 @@ const ContactShowContent = () => {
                                         aria-label="LinkedIn profile"
                                     >
                                         {/* Using a generic external link icon since LinkedIn is not in Heroicons */}
-                                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                        <svg
+                                            className="h-5 w-5"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                         </svg>
                                     </IconButton>
                                 )}
@@ -384,8 +397,11 @@ const ContactShowContent = () => {
                                             size="small"
                                             className="mt-2"
                                             style={{
-                                                backgroundColor: role.color || '#d1d5db', // gray-300
-                                                color: getContrastText(role.color || '#d1d5db'),
+                                                backgroundColor:
+                                                    role.color || '#d1d5db', // gray-300
+                                                color: getContrastText(
+                                                    role.color || '#d1d5db'
+                                                ),
                                             }}
                                         />
                                     </Box>
@@ -404,8 +420,13 @@ const ContactShowContent = () => {
                                             size="small"
                                             className="mt-2"
                                             style={{
-                                                backgroundColor: influenceLevel.color || '#d1d5db', // gray-300
-                                                color: getContrastText(influenceLevel.color || '#d1d5db'),
+                                                backgroundColor:
+                                                    influenceLevel.color ||
+                                                    '#d1d5db', // gray-300
+                                                color: getContrastText(
+                                                    influenceLevel.color ||
+                                                        '#d1d5db'
+                                                ),
                                             }}
                                         />
                                     </Box>
@@ -424,8 +445,13 @@ const ContactShowContent = () => {
                                             size="small"
                                             className="mt-2"
                                             style={{
-                                                backgroundColor: decisionRole.color || '#d1d5db', // gray-300
-                                                color: getContrastText(decisionRole.color || '#d1d5db'),
+                                                backgroundColor:
+                                                    decisionRole.color ||
+                                                    '#d1d5db', // gray-300
+                                                color: getContrastText(
+                                                    decisionRole.color ||
+                                                        '#d1d5db'
+                                                ),
                                             }}
                                         />
                                     </Box>

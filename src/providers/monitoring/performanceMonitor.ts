@@ -42,7 +42,7 @@ export class PerformanceMonitor {
     private apiMetrics: ApiPerformanceData[] = [];
     private gpsMetrics: GPSPerformanceData[] = [];
     private uploadMetrics: UploadPerformanceData[] = [];
-    
+
     // Configuration
     private readonly MAX_METRICS = 1000; // Keep last 1000 metrics
     private readonly STORAGE_KEY = 'forkflow_performance_metrics';
@@ -76,7 +76,7 @@ export class PerformanceMonitor {
         errorMessage?: string
     ): void {
         const duration = Date.now() - startTime;
-        
+
         const apiData: ApiPerformanceData = {
             endpoint,
             method,
@@ -87,7 +87,7 @@ export class PerformanceMonitor {
         };
 
         this.apiMetrics.push(apiData);
-        
+
         // Add to general metrics
         this.addMetric({
             name: `api_${method.toLowerCase()}_${endpoint.replace(/[^a-zA-Z0-9]/g, '_')}`,
@@ -99,7 +99,9 @@ export class PerformanceMonitor {
 
         // Warn about slow API calls
         if (duration > this.WARNING_THRESHOLDS.apiResponseTime) {
-            console.warn(`Slow API call detected: ${method} ${endpoint} took ${duration}ms`);
+            console.warn(
+                `Slow API call detected: ${method} ${endpoint} took ${duration}ms`
+            );
         }
 
         this.trimMetrics();
@@ -116,7 +118,7 @@ export class PerformanceMonitor {
         errorType?: string
     ): void {
         const acquisitionTime = Date.now() - startTime;
-        
+
         const gpsData: GPSPerformanceData = {
             accuracy,
             acquisitionTime,
@@ -126,7 +128,7 @@ export class PerformanceMonitor {
         };
 
         this.gpsMetrics.push(gpsData);
-        
+
         // Add to general metrics
         this.addMetric({
             name: 'gps_acquisition_time',
@@ -148,7 +150,7 @@ export class PerformanceMonitor {
         if (acquisitionTime > this.WARNING_THRESHOLDS.gpsAcquisitionTime) {
             console.warn(`Slow GPS acquisition: ${acquisitionTime}ms`);
         }
-        
+
         if (accuracy > this.WARNING_THRESHOLDS.lowAccuracy) {
             console.warn(`Low GPS accuracy: ±${accuracy}m`);
         }
@@ -168,7 +170,7 @@ export class PerformanceMonitor {
         errorMessage?: string
     ): void {
         const uploadTime = Date.now() - startTime;
-        
+
         const uploadData: UploadPerformanceData = {
             fileSize,
             uploadTime,
@@ -179,7 +181,7 @@ export class PerformanceMonitor {
         };
 
         this.uploadMetrics.push(uploadData);
-        
+
         // Add to general metrics
         this.addMetric({
             name: 'file_upload_time',
@@ -209,7 +211,9 @@ export class PerformanceMonitor {
 
         // Warn about slow uploads
         if (uploadTime > this.WARNING_THRESHOLDS.uploadTime) {
-            console.warn(`Slow file upload: ${uploadTime}ms for ${fileSize} bytes`);
+            console.warn(
+                `Slow file upload: ${uploadTime}ms for ${fileSize} bytes`
+            );
         }
 
         this.trimMetrics();
@@ -242,7 +246,7 @@ export class PerformanceMonitor {
      */
     getPerformanceSummary() {
         const now = Date.now();
-        const oneHourAgo = now - (60 * 60 * 1000);
+        const oneHourAgo = now - 60 * 60 * 1000;
         const recentMetrics = this.metrics.filter(
             metric => new Date(metric.timestamp).getTime() > oneHourAgo
         );
@@ -251,40 +255,57 @@ export class PerformanceMonitor {
         const recentApiMetrics = this.apiMetrics.filter(
             metric => new Date(metric.timestamp).getTime() > oneHourAgo
         );
-        
-        const apiSuccessRate = recentApiMetrics.length > 0 
-            ? (recentApiMetrics.filter(m => m.success).length / recentApiMetrics.length) * 100 
-            : 100;
-        
-        const avgApiResponseTime = recentApiMetrics.length > 0
-            ? recentApiMetrics.reduce((sum, m) => sum + m.duration, 0) / recentApiMetrics.length
-            : 0;
+
+        const apiSuccessRate =
+            recentApiMetrics.length > 0
+                ? (recentApiMetrics.filter(m => m.success).length /
+                      recentApiMetrics.length) *
+                  100
+                : 100;
+
+        const avgApiResponseTime =
+            recentApiMetrics.length > 0
+                ? recentApiMetrics.reduce((sum, m) => sum + m.duration, 0) /
+                  recentApiMetrics.length
+                : 0;
 
         // GPS metrics
         const recentGpsMetrics = this.gpsMetrics.filter(
             metric => new Date(metric.timestamp).getTime() > oneHourAgo
         );
-        
-        const gpsSuccessRate = recentGpsMetrics.length > 0
-            ? (recentGpsMetrics.filter(m => m.success).length / recentGpsMetrics.length) * 100
-            : 100;
-        
-        const avgGpsAcquisitionTime = recentGpsMetrics.length > 0
-            ? recentGpsMetrics.reduce((sum, m) => sum + m.acquisitionTime, 0) / recentGpsMetrics.length
-            : 0;
 
-        const avgGpsAccuracy = recentGpsMetrics.length > 0
-            ? recentGpsMetrics.reduce((sum, m) => sum + m.accuracy, 0) / recentGpsMetrics.length
-            : 0;
+        const gpsSuccessRate =
+            recentGpsMetrics.length > 0
+                ? (recentGpsMetrics.filter(m => m.success).length /
+                      recentGpsMetrics.length) *
+                  100
+                : 100;
+
+        const avgGpsAcquisitionTime =
+            recentGpsMetrics.length > 0
+                ? recentGpsMetrics.reduce(
+                      (sum, m) => sum + m.acquisitionTime,
+                      0
+                  ) / recentGpsMetrics.length
+                : 0;
+
+        const avgGpsAccuracy =
+            recentGpsMetrics.length > 0
+                ? recentGpsMetrics.reduce((sum, m) => sum + m.accuracy, 0) /
+                  recentGpsMetrics.length
+                : 0;
 
         // Upload metrics
         const recentUploadMetrics = this.uploadMetrics.filter(
             metric => new Date(metric.timestamp).getTime() > oneHourAgo
         );
-        
-        const uploadSuccessRate = recentUploadMetrics.length > 0
-            ? (recentUploadMetrics.filter(m => m.success).length / recentUploadMetrics.length) * 100
-            : 100;
+
+        const uploadSuccessRate =
+            recentUploadMetrics.length > 0
+                ? (recentUploadMetrics.filter(m => m.success).length /
+                      recentUploadMetrics.length) *
+                  100
+                : 100;
 
         return {
             timeRange: 'Last Hour',
@@ -292,29 +313,52 @@ export class PerformanceMonitor {
                 totalCalls: recentApiMetrics.length,
                 successRate: Math.round(apiSuccessRate),
                 avgResponseTime: Math.round(avgApiResponseTime),
-                slowCalls: recentApiMetrics.filter(m => m.duration > this.WARNING_THRESHOLDS.apiResponseTime).length,
+                slowCalls: recentApiMetrics.filter(
+                    m => m.duration > this.WARNING_THRESHOLDS.apiResponseTime
+                ).length,
             },
             gps: {
                 totalAcquisitions: recentGpsMetrics.length,
                 successRate: Math.round(gpsSuccessRate),
                 avgAcquisitionTime: Math.round(avgGpsAcquisitionTime),
                 avgAccuracy: Math.round(avgGpsAccuracy),
-                lowAccuracyCount: recentGpsMetrics.filter(m => m.accuracy > this.WARNING_THRESHOLDS.lowAccuracy).length,
+                lowAccuracyCount: recentGpsMetrics.filter(
+                    m => m.accuracy > this.WARNING_THRESHOLDS.lowAccuracy
+                ).length,
             },
             uploads: {
                 totalUploads: recentUploadMetrics.length,
                 successRate: Math.round(uploadSuccessRate),
-                avgUploadTime: recentUploadMetrics.length > 0
-                    ? Math.round(recentUploadMetrics.reduce((sum, m) => sum + m.uploadTime, 0) / recentUploadMetrics.length)
-                    : 0,
-                totalDataUploaded: recentUploadMetrics.reduce((sum, m) => sum + m.fileSize, 0),
+                avgUploadTime:
+                    recentUploadMetrics.length > 0
+                        ? Math.round(
+                              recentUploadMetrics.reduce(
+                                  (sum, m) => sum + m.uploadTime,
+                                  0
+                              ) / recentUploadMetrics.length
+                          )
+                        : 0,
+                totalDataUploaded: recentUploadMetrics.reduce(
+                    (sum, m) => sum + m.fileSize,
+                    0
+                ),
             },
             warnings: {
-                slowApiCalls: recentApiMetrics.filter(m => m.duration > this.WARNING_THRESHOLDS.apiResponseTime).length,
-                slowGpsAcquisitions: recentGpsMetrics.filter(m => m.acquisitionTime > this.WARNING_THRESHOLDS.gpsAcquisitionTime).length,
-                lowGpsAccuracy: recentGpsMetrics.filter(m => m.accuracy > this.WARNING_THRESHOLDS.lowAccuracy).length,
-                slowUploads: recentUploadMetrics.filter(m => m.uploadTime > this.WARNING_THRESHOLDS.uploadTime).length,
-            }
+                slowApiCalls: recentApiMetrics.filter(
+                    m => m.duration > this.WARNING_THRESHOLDS.apiResponseTime
+                ).length,
+                slowGpsAcquisitions: recentGpsMetrics.filter(
+                    m =>
+                        m.acquisitionTime >
+                        this.WARNING_THRESHOLDS.gpsAcquisitionTime
+                ).length,
+                lowGpsAccuracy: recentGpsMetrics.filter(
+                    m => m.accuracy > this.WARNING_THRESHOLDS.lowAccuracy
+                ).length,
+                slowUploads: recentUploadMetrics.filter(
+                    m => m.uploadTime > this.WARNING_THRESHOLDS.uploadTime
+                ).length,
+            },
         };
     }
 
@@ -351,7 +395,7 @@ export class PerformanceMonitor {
             metric.category,
             metric.name,
             metric.value.toString(),
-            metric.unit
+            metric.unit,
         ]);
 
         return [headers, ...rows].map(row => row.join(',')).join('\n');
@@ -387,7 +431,10 @@ export class PerformanceMonitor {
             };
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
         } catch (error) {
-            console.warn('Failed to save performance metrics to storage:', error);
+            console.warn(
+                'Failed to save performance metrics to storage:',
+                error
+            );
         }
     }
 
@@ -402,7 +449,10 @@ export class PerformanceMonitor {
                 this.uploadMetrics = data.uploadMetrics || [];
             }
         } catch (error) {
-            console.warn('Failed to load performance metrics from storage:', error);
+            console.warn(
+                'Failed to load performance metrics from storage:',
+                error
+            );
             this.metrics = [];
             this.apiMetrics = [];
             this.gpsMetrics = [];
@@ -412,24 +462,27 @@ export class PerformanceMonitor {
 
     private startPeriodicCleanup(): void {
         // Clean up old metrics every hour
-        setInterval(() => {
-            const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-            
-            this.metrics = this.metrics.filter(
-                metric => new Date(metric.timestamp).getTime() > oneWeekAgo
-            );
-            this.apiMetrics = this.apiMetrics.filter(
-                metric => new Date(metric.timestamp).getTime() > oneWeekAgo
-            );
-            this.gpsMetrics = this.gpsMetrics.filter(
-                metric => new Date(metric.timestamp).getTime() > oneWeekAgo
-            );
-            this.uploadMetrics = this.uploadMetrics.filter(
-                metric => new Date(metric.timestamp).getTime() > oneWeekAgo
-            );
-            
-            this.saveMetricsToStorage();
-        }, 60 * 60 * 1000); // 1 hour
+        setInterval(
+            () => {
+                const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+                this.metrics = this.metrics.filter(
+                    metric => new Date(metric.timestamp).getTime() > oneWeekAgo
+                );
+                this.apiMetrics = this.apiMetrics.filter(
+                    metric => new Date(metric.timestamp).getTime() > oneWeekAgo
+                );
+                this.gpsMetrics = this.gpsMetrics.filter(
+                    metric => new Date(metric.timestamp).getTime() > oneWeekAgo
+                );
+                this.uploadMetrics = this.uploadMetrics.filter(
+                    metric => new Date(metric.timestamp).getTime() > oneWeekAgo
+                );
+
+                this.saveMetricsToStorage();
+            },
+            60 * 60 * 1000
+        ); // 1 hour
     }
 }
 

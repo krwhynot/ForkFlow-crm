@@ -3,7 +3,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Organization } from '../../../types';
 
 // Mock Supabase functions endpoint
-const ORGANIZATIONS_API_URL = 'http://127.0.0.1:54321/functions/v1/organizations';
+const ORGANIZATIONS_API_URL =
+    'http://127.0.0.1:54321/functions/v1/organizations';
 
 describe('Organization API - Supabase Integration', () => {
     let testOrganization: Partial<Organization>;
@@ -13,7 +14,7 @@ describe('Organization API - Supabase Integration', () => {
     beforeEach(() => {
         // Mock auth token for testing
         authToken = 'test-auth-token';
-        
+
         testOrganization = {
             name: 'Test Restaurant',
             address: '123 Main St',
@@ -25,7 +26,7 @@ describe('Organization API - Supabase Integration', () => {
             notes: 'Test organization for API validation',
             website: 'https://testrestaurant.com',
             latitude: 40.7128,
-            longitude: -74.0060,
+            longitude: -74.006,
         };
     });
 
@@ -36,7 +37,7 @@ describe('Organization API - Supabase Integration', () => {
                 await fetch(`${ORGANIZATIONS_API_URL}/${id}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        Authorization: `Bearer ${authToken}`,
                         'Content-Type': 'application/json',
                     },
                 });
@@ -52,7 +53,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -60,14 +61,14 @@ describe('Organization API - Supabase Integration', () => {
 
             expect(response.status).toBe(201);
             const result = await response.json();
-            
+
             expect(result.data).toBeDefined();
             expect(result.data.name).toBe('Test Restaurant');
             expect(result.data.address).toBe('123 Main St');
             expect(result.data.createdAt).toBeDefined();
             expect(result.data.updatedAt).toBeDefined();
             expect(result.data.id).toBeDefined();
-            
+
             createdOrganizationIds.push(result.data.id);
         });
 
@@ -81,7 +82,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(invalidOrganization),
@@ -101,7 +102,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(invalidPhoneOrganization),
@@ -121,7 +122,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(invalidWebsiteOrganization),
@@ -139,7 +140,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -148,12 +149,15 @@ describe('Organization API - Supabase Integration', () => {
             createdOrganizationIds.push(created.data.id);
 
             // Then get it by ID
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -165,7 +169,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(`${ORGANIZATIONS_API_URL}/999999`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                 },
             });
 
@@ -173,12 +177,15 @@ describe('Organization API - Supabase Integration', () => {
         });
 
         it('should get organizations with pagination', async () => {
-            const response = await fetch(`${ORGANIZATIONS_API_URL}?page=1&limit=10`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}?page=1&limit=10`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -190,12 +197,15 @@ describe('Organization API - Supabase Integration', () => {
         });
 
         it('should filter organizations by priority', async () => {
-            const response = await fetch(`${ORGANIZATIONS_API_URL}?priorityId=1`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}?priorityId=1`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -210,7 +220,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -224,14 +234,17 @@ describe('Organization API - Supabase Integration', () => {
                 notes: 'Updated notes',
             };
 
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateData),
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData),
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -245,7 +258,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -258,14 +271,17 @@ describe('Organization API - Supabase Integration', () => {
                 name: '', // Empty name should fail
             };
 
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(invalidUpdate),
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(invalidUpdate),
+                }
+            );
 
             expect(response.status).toBe(400);
         });
@@ -277,7 +293,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -285,22 +301,28 @@ describe('Organization API - Supabase Integration', () => {
             const created = await createResponse.json();
 
             // Then delete it
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
 
             // Verify it's deleted
-            const getResponse = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const getResponse = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
             expect(getResponse.status).toBe(404);
         });
 
@@ -308,7 +330,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(`${ORGANIZATIONS_API_URL}/999999`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                 },
             });
 
@@ -322,7 +344,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
@@ -334,26 +356,36 @@ describe('Organization API - Supabase Integration', () => {
             createdOrganizationIds.push(created.data.id);
 
             // Then search for it
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/search?q=Unique Search Test`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/search?q=Unique Search Test`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
             expect(result.data.length).toBeGreaterThan(0);
-            expect(result.data.some((org: any) => org.name.includes('Unique Search Test'))).toBe(true);
+            expect(
+                result.data.some((org: any) =>
+                    org.name.includes('Unique Search Test')
+                )
+            ).toBe(true);
         });
 
         it('should search organizations with multiple filters', async () => {
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/search?q=restaurant&city=Test City&limit=5`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/search?q=restaurant&city=Test City&limit=5`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -368,7 +400,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -377,12 +409,15 @@ describe('Organization API - Supabase Integration', () => {
             createdOrganizationIds.push(created.data.id);
 
             // Search for nearby organizations
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/nearby?lat=40.7128&lng=-74.0060&radius=10`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/nearby?lat=40.7128&lng=-74.0060&radius=10`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -397,7 +432,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(testOrganization),
@@ -406,12 +441,15 @@ describe('Organization API - Supabase Integration', () => {
             createdOrganizationIds.push(created.data.id);
 
             // Get analytics
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}/analytics`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}/analytics`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(200);
             const result = await response.json();
@@ -429,7 +467,7 @@ describe('Organization API - Supabase Integration', () => {
             const createResponse = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
@@ -442,12 +480,15 @@ describe('Organization API - Supabase Integration', () => {
             createdOrganizationIds.push(created.data.id);
 
             // Geocode the address
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/${created.data.id}/geocode`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/${created.data.id}/geocode`,
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             // Note: This may return an error if geocoding service is not implemented
             // but should not return 500 errors
@@ -474,14 +515,17 @@ describe('Organization API - Supabase Integration', () => {
                 },
             ];
 
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/bulk-import`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ organizations: bulkData }),
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/bulk-import`,
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ organizations: bulkData }),
+                }
+            );
 
             expect(response.status).toBeOneOf([200, 201]);
             const result = await response.json();
@@ -501,12 +545,15 @@ describe('Organization API - Supabase Integration', () => {
         });
 
         it('should return 400 for invalid organization ID', async () => {
-            const response = await fetch(`${ORGANIZATIONS_API_URL}/invalid-id`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
+            const response = await fetch(
+                `${ORGANIZATIONS_API_URL}/invalid-id`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }
+            );
 
             expect(response.status).toBe(400);
         });
@@ -515,7 +562,7 @@ describe('Organization API - Supabase Integration', () => {
             const response = await fetch(ORGANIZATIONS_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: 'invalid-json',

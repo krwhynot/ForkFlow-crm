@@ -11,7 +11,7 @@ import {
     Tooltip,
     Chip,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Phone as PhoneIcon,
     Email as EmailIcon,
@@ -21,10 +21,7 @@ import {
     Gps as GpsIcon,
     Check as CheckIcon,
 } from '@mui/icons-material';
-import {
-    TextInput,
-    FormDataConsumer,
-} from 'react-admin';
+import { TextInput, FormDataConsumer } from 'react-admin';
 import { StepComponentProps } from './types';
 
 /**
@@ -43,7 +40,9 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
     // Handle GPS location capture
     const captureGPSLocation = useCallback(() => {
         if (!navigator.geolocation) {
-            setGpsError('GPS location capture is not supported by this browser');
+            setGpsError(
+                'GPS location capture is not supported by this browser'
+            );
             return;
         }
 
@@ -51,7 +50,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
         setGpsError(null);
 
         navigator.geolocation.getCurrentPosition(
-            (position) => {
+            position => {
                 const { latitude, longitude } = position.coords;
                 const updatedData = {
                     ...formData,
@@ -61,7 +60,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                 onDataChange(updatedData);
                 setGpsLoading(false);
             },
-            (error) => {
+            error => {
                 console.error('GPS capture error:', error);
                 let errorMessage = 'Unable to capture GPS location. ';
                 switch (error.code) {
@@ -90,16 +89,19 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
     }, [formData, onDataChange]);
 
     // Handle form field changes
-    const handleFieldChange = useCallback((field: string, value: string) => {
-        const updatedData = { ...formData, [field]: value };
-        onDataChange(updatedData);
-    }, [formData, onDataChange]);
+    const handleFieldChange = useCallback(
+        (field: string, value: string) => {
+            const updatedData = { ...formData, [field]: value };
+            onDataChange(updatedData);
+        },
+        [formData, onDataChange]
+    );
 
     // Format phone number as user types
     const formatPhoneNumber = useCallback((value: string) => {
         // Remove all non-digits
         const digits = value.replace(/\D/g, '');
-        
+
         // Format as (XXX) XXX-XXXX
         if (digits.length >= 6) {
             return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
@@ -114,26 +116,32 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
     const hasGPSCoordinates = formData.latitude && formData.longitude;
 
     return (
-        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <Box className="p-4 md:p-6">
             {/* Header */}
-            <Box sx={{ mb: 3, textAlign: 'center' }}>
-                <PhoneIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-                <Typography variant="h6" gutterBottom>
+            <Box className="mb-6 text-center">
+                <PhoneIcon
+                    sx={{ fontSize: 48, color: 'primary.main', mb: 1 }}
+                />
+                <Typography variant="h6" className="mb-2">
                     Contact Information
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Add contact details and address information for the organization
+                <Typography variant="body2" className="text-gray-600">
+                    Add contact details and address information for the
+                    organization
                 </Typography>
             </Box>
 
-            <Stack spacing={4}>
+            <Stack gap={8}>
                 {/* Contact Methods */}
-                <Paper elevation={1} sx={{ p: 3 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Paper elevation={1} className="p-6">
+                    <Typography
+                        variant="subtitle1"
+                        className="mb-2 flex items-center gap-2"
+                    >
                         <PhoneIcon fontSize="small" />
                         Contact Methods
                     </Typography>
-                    
+
                     <Grid container spacing={3}>
                         {/* Website */}
                         <Grid item xs={12} md={6}>
@@ -144,17 +152,32 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="Website"
                                         fullWidth
                                         placeholder="https://example.com"
-                                        helperText={validationErrors.website || "Organization's website URL"}
+                                        helperText={
+                                            validationErrors.website ||
+                                            "Organization's website URL"
+                                        }
                                         error={!!validationErrors.website}
                                         InputProps={{
-                                            startAdornment: <WebsiteIcon sx={{ mr: 1, color: 'action.active' }} />,
+                                            startAdornment: (
+                                                <WebsiteIcon
+                                                    sx={{
+                                                        mr: 1,
+                                                        color: 'action.active',
+                                                    }}
+                                                />
+                                            ),
                                         }}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('website', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'website',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -169,19 +192,34 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="Phone Number"
                                         fullWidth
                                         placeholder="(555) 123-4567"
-                                        helperText={validationErrors.phone || "Primary phone number"}
+                                        helperText={
+                                            validationErrors.phone ||
+                                            'Primary phone number'
+                                        }
                                         error={!!validationErrors.phone}
                                         InputProps={{
-                                            startAdornment: <PhoneIcon sx={{ mr: 1, color: 'action.active' }} />,
+                                            startAdornment: (
+                                                <PhoneIcon
+                                                    sx={{
+                                                        mr: 1,
+                                                        color: 'action.active',
+                                                    }}
+                                                />
+                                            ),
                                         }}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => {
-                                            const formatted = formatPhoneNumber(e.target.value);
-                                            handleFieldChange('phone', formatted);
+                                        onChange={e => {
+                                            const formatted = formatPhoneNumber(
+                                                e.target.value
+                                            );
+                                            handleFieldChange(
+                                                'phone',
+                                                formatted
+                                            );
                                         }}
                                     />
                                 )}
@@ -197,17 +235,32 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="Email Address"
                                         fullWidth
                                         placeholder="contact@example.com"
-                                        helperText={validationErrors.email || "Primary email address"}
+                                        helperText={
+                                            validationErrors.email ||
+                                            'Primary email address'
+                                        }
                                         error={!!validationErrors.email}
                                         InputProps={{
-                                            startAdornment: <EmailIcon sx={{ mr: 1, color: 'action.active' }} />,
+                                            startAdornment: (
+                                                <EmailIcon
+                                                    sx={{
+                                                        mr: 1,
+                                                        color: 'action.active',
+                                                    }}
+                                                />
+                                            ),
                                         }}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('email', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'email',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -222,17 +275,34 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="Primary Contact Person"
                                         fullWidth
                                         placeholder="John Smith"
-                                        helperText={validationErrors.contact_person || "Main contact at the organization"}
-                                        error={!!validationErrors.contact_person}
+                                        helperText={
+                                            validationErrors.contact_person ||
+                                            'Main contact at the organization'
+                                        }
+                                        error={
+                                            !!validationErrors.contact_person
+                                        }
                                         InputProps={{
-                                            startAdornment: <PersonIcon sx={{ mr: 1, color: 'action.active' }} />,
+                                            startAdornment: (
+                                                <PersonIcon
+                                                    sx={{
+                                                        mr: 1,
+                                                        color: 'action.active',
+                                                    }}
+                                                />
+                                            ),
                                         }}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('contact_person', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'contact_person',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -241,18 +311,16 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                 </Paper>
 
                 {/* Address Information */}
-                <Paper elevation={1} sx={{ p: 3 }}>
-                    <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'space-between',
-                        mb: 2
-                    }}>
-                        <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Paper elevation={1} className="p-6">
+                    <Box className="flex items-center justify-between mb-4">
+                        <Typography
+                            variant="subtitle1"
+                            className="flex items-center gap-2"
+                        >
                             <LocationIcon fontSize="small" />
                             Address & Location
                         </Typography>
-                        
+
                         <Tooltip title="Capture current GPS location">
                             <Button
                                 size="small"
@@ -260,12 +328,13 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                 startIcon={gpsLoading ? null : <GpsIcon />}
                                 onClick={captureGPSLocation}
                                 disabled={gpsLoading}
-                                sx={{ 
-                                    minHeight: '40px',
-                                    minWidth: { xs: '40px', sm: 'auto' }
-                                }}
+                                className="min-h-10 min-w-10 sm:min-w-auto"
                             >
-                                {gpsLoading ? 'Getting GPS...' : isMobile ? '' : 'Capture GPS'}
+                                {gpsLoading
+                                    ? 'Getting GPS...'
+                                    : isMobile
+                                      ? ''
+                                      : 'Capture GPS'}
                             </Button>
                         </Tooltip>
                     </Box>
@@ -280,14 +349,22 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="Street Address"
                                         fullWidth
                                         placeholder="123 Main Street"
-                                        helperText={validationErrors.address || "Physical address of the organization"}
+                                        helperText={
+                                            validationErrors.address ||
+                                            'Physical address of the organization'
+                                        }
                                         error={!!validationErrors.address}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('address', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'address',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -302,14 +379,19 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="City"
                                         fullWidth
                                         placeholder="San Francisco"
-                                        helperText={validationErrors.city || ""}
+                                        helperText={validationErrors.city || ''}
                                         error={!!validationErrors.city}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('city', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'city',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -324,14 +406,21 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="State"
                                         fullWidth
                                         placeholder="CA"
-                                        helperText={validationErrors.state || ""}
+                                        helperText={
+                                            validationErrors.state || ''
+                                        }
                                         error={!!validationErrors.state}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('state', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'state',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -346,14 +435,22 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         label="ZIP Code"
                                         fullWidth
                                         placeholder="94105"
-                                        helperText={validationErrors.zipCode || "5-digit ZIP code"}
+                                        helperText={
+                                            validationErrors.zipCode ||
+                                            '5-digit ZIP code'
+                                        }
                                         error={!!validationErrors.zipCode}
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 minHeight: '56px',
-                                            }
+                                            },
                                         }}
-                                        onChange={(e) => handleFieldChange('zipCode', e.target.value)}
+                                        onChange={e =>
+                                            handleFieldChange(
+                                                'zipCode',
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                 )}
                             </FormDataConsumer>
@@ -362,18 +459,20 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
 
                     {/* GPS Status */}
                     {hasGPSCoordinates && (
-                        <Alert severity="success" sx={{ mt: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Alert severity="success" className="mt-4">
+                            <Box className="flex items-center gap-2">
                                 <CheckIcon fontSize="small" />
                                 <Typography variant="body2">
-                                    GPS coordinates captured: {formData.latitude?.toFixed(6)}, {formData.longitude?.toFixed(6)}
+                                    GPS coordinates captured:{' '}
+                                    {formData.latitude?.toFixed(6)},{' '}
+                                    {formData.longitude?.toFixed(6)}
                                 </Typography>
                             </Box>
                         </Alert>
                     )}
 
                     {gpsError && (
-                        <Alert severity="error" sx={{ mt: 2 }}>
+                        <Alert severity="error" className="mt-4">
                             {gpsError}
                         </Alert>
                     )}
@@ -381,11 +480,11 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
 
                 {/* Contact Summary */}
                 {(formData.phone || formData.email || formData.website) && (
-                    <Paper elevation={1} sx={{ p: 3, backgroundColor: 'grey.50' }}>
-                        <Typography variant="subtitle2" gutterBottom>
+                    <Paper elevation={1} className="p-6 bg-gray-50">
+                        <Typography variant="subtitle2" className="mb-2">
                             Contact Summary
                         </Typography>
-                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Stack direction="row" gap={2} className="flex-wrap">
                             {formData.phone && (
                                 <Chip
                                     icon={<PhoneIcon />}
@@ -419,12 +518,18 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
 
                 {/* Quick Tips */}
                 <Alert severity="info">
-                    <Typography variant="body2" fontWeight="medium" gutterBottom>
+                    <Typography variant="body2" className="font-medium mb-2">
                         💡 Contact Information Tips:
                     </Typography>
-                    <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2 }}>
-                        <li>Add at least one contact method (phone or email) for effective communication</li>
-                        <li>GPS coordinates help with location-based features and directions</li>
+                    <Box as="ul" className="mt-2 mb-0 pl-4">
+                        <li>
+                            Add at least one contact method (phone or email) for
+                            effective communication
+                        </li>
+                        <li>
+                            GPS coordinates help with location-based features
+                            and directions
+                        </li>
                         <li>All contact information can be updated later</li>
                     </Box>
                 </Alert>

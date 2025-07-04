@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test';
 
 export class VisitsPage {
-    constructor(private page: Page) { }
+    constructor(private page: Page) {}
 
     async gotoList() {
         await this.page.goto('/visits');
@@ -25,7 +25,9 @@ export class VisitsPage {
     }
 
     async deleteByLocation(location: string) {
-        await this.page.click(`tr:has-text("${location}") button:has-text("Delete")`);
+        await this.page.click(
+            `tr:has-text("${location}") button:has-text("Delete")`
+        );
         await this.page.click('button:has-text("Confirm")');
     }
-} 
+}

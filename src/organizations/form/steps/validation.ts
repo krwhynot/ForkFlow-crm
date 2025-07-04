@@ -1,8 +1,13 @@
 import { Organization } from '../../../types';
-import { StepValidationResult, ValidationError, ValidationWarning } from './types';
+import {
+    StepValidationResult,
+    ValidationError,
+    ValidationWarning,
+} from './types';
 
 // URL validation regex
-const URL_REGEX = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
+const URL_REGEX =
+    /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
 
 // Email validation regex
 const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -16,7 +21,9 @@ const ZIP_REGEX = /^\d{5}(-\d{4})?$/;
 /**
  * Validate basic information step
  */
-export async function validateBasicInfo(data: Partial<Organization>): Promise<StepValidationResult> {
+export async function validateBasicInfo(
+    data: Partial<Organization>
+): Promise<StepValidationResult> {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
@@ -25,51 +32,63 @@ export async function validateBasicInfo(data: Partial<Organization>): Promise<St
         errors.push({
             field: 'name',
             message: 'Organization name is required',
-            severity: 'error'
+            severity: 'error',
         });
     } else if (data.name.trim().length < 2) {
         errors.push({
             field: 'name',
             message: 'Organization name must be at least 2 characters',
-            severity: 'error'
+            severity: 'error',
         });
     } else if (data.name.trim().length > 100) {
         errors.push({
             field: 'name',
             message: 'Organization name must be less than 100 characters',
-            severity: 'error'
+            severity: 'error',
         });
     }
 
     // Warning: Very short names
-    if (data.name && data.name.trim().length > 0 && data.name.trim().length < 5) {
+    if (
+        data.name &&
+        data.name.trim().length > 0 &&
+        data.name.trim().length < 5
+    ) {
         warnings.push({
             field: 'name',
-            message: 'Organization name is quite short. Consider using the full name.',
-            severity: 'warning'
+            message:
+                'Organization name is quite short. Consider using the full name.',
+            severity: 'warning',
         });
     }
 
     // Business type validation
-    if (data.business_type && !['restaurant', 'grocery', 'distributor', 'other'].includes(data.business_type)) {
+    if (
+        data.business_type &&
+        !['restaurant', 'grocery', 'distributor', 'other'].includes(
+            data.business_type
+        )
+    ) {
         warnings.push({
             field: 'business_type',
             message: 'Uncommon business type. Please verify this is correct.',
-            severity: 'warning'
+            severity: 'warning',
         });
     }
 
     return {
         isValid: errors.length === 0,
         errors,
-        warnings
+        warnings,
     };
 }
 
 /**
  * Validate contact details step
  */
-export async function validateContactDetails(data: Partial<Organization>): Promise<StepValidationResult> {
+export async function validateContactDetails(
+    data: Partial<Organization>
+): Promise<StepValidationResult> {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
@@ -79,7 +98,7 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
             errors.push({
                 field: 'website',
                 message: 'Please enter a valid website URL',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -90,13 +109,13 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
             errors.push({
                 field: 'phone',
                 message: 'Please enter a valid phone number',
-                severity: 'error'
+                severity: 'error',
             });
         } else if (data.phone.replace(/\D/g, '').length < 10) {
             errors.push({
                 field: 'phone',
                 message: 'Phone number must have at least 10 digits',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -107,7 +126,7 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
             errors.push({
                 field: 'email',
                 message: 'Please enter a valid email address',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -118,7 +137,7 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
             errors.push({
                 field: 'contact_person',
                 message: 'Contact person name must be at least 2 characters',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -129,7 +148,7 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
             errors.push({
                 field: 'zipcode',
                 message: 'Please enter a valid ZIP code (12345 or 12345-6789)',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -138,8 +157,9 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
     if (!data.phone && !data.email) {
         warnings.push({
             field: 'contact',
-            message: 'Consider adding either a phone number or email for better communication',
-            severity: 'warning'
+            message:
+                'Consider adding either a phone number or email for better communication',
+            severity: 'warning',
         });
     }
 
@@ -147,7 +167,7 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
         warnings.push({
             field: 'city',
             message: 'City is recommended when address is provided',
-            severity: 'warning'
+            severity: 'warning',
         });
     }
 
@@ -155,21 +175,23 @@ export async function validateContactDetails(data: Partial<Organization>): Promi
         warnings.push({
             field: 'stateAbbr',
             message: 'State is recommended when city is provided',
-            severity: 'warning'
+            severity: 'warning',
         });
     }
 
     return {
         isValid: errors.length === 0,
         errors,
-        warnings
+        warnings,
     };
 }
 
 /**
  * Validate business details step
  */
-export async function validateBusinessDetails(data: Partial<Organization>): Promise<StepValidationResult> {
+export async function validateBusinessDetails(
+    data: Partial<Organization>
+): Promise<StepValidationResult> {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
@@ -179,7 +201,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
             errors.push({
                 field: 'accountManager',
                 message: 'Account manager must be a valid email address',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -190,13 +212,13 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
             errors.push({
                 field: 'revenue',
                 message: 'Revenue cannot be negative',
-                severity: 'error'
+                severity: 'error',
             });
         } else if (data.revenue > 1000000000) {
             warnings.push({
                 field: 'revenue',
                 message: 'Revenue amount seems unusually high. Please verify.',
-                severity: 'warning'
+                severity: 'warning',
             });
         }
     }
@@ -206,7 +228,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
         errors.push({
             field: 'notes',
             message: 'Notes must be less than 500 characters',
-            severity: 'error'
+            severity: 'error',
         });
     }
 
@@ -215,7 +237,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
         warnings.push({
             field: 'priority',
             message: 'Setting a priority helps with organization management',
-            severity: 'warning'
+            severity: 'warning',
         });
     }
 
@@ -223,7 +245,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
         warnings.push({
             field: 'segment',
             message: 'Business segment helps with categorization and reporting',
-            severity: 'warning'
+            severity: 'warning',
         });
     }
 
@@ -233,7 +255,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
             errors.push({
                 field: 'latitude',
                 message: 'Latitude must be between -90 and 90 degrees',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -243,7 +265,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
             errors.push({
                 field: 'longitude',
                 message: 'Longitude must be between -180 and 180 degrees',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -251,7 +273,7 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
     return {
         isValid: errors.length === 0,
         errors,
-        warnings
+        warnings,
     };
 }
 
@@ -259,10 +281,12 @@ export async function validateBusinessDetails(data: Partial<Organization>): Prom
  * Validate duplicate organization name
  * This would typically make an API call to check for duplicates
  */
-export async function validateDuplicateOrganization(name: string): Promise<boolean> {
+export async function validateDuplicateOrganization(
+    name: string
+): Promise<boolean> {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Mock duplicate check - in real app, this would query the database
     const mockExistingNames = [
         'acme corporation',
@@ -270,14 +294,16 @@ export async function validateDuplicateOrganization(name: string): Promise<boole
         'metro restaurant group',
         'sunshine grocery',
     ];
-    
+
     return !mockExistingNames.includes(name.toLowerCase().trim());
 }
 
 /**
  * Comprehensive form validation for final submission
  */
-export async function validateCompleteForm(data: Partial<Organization>): Promise<StepValidationResult> {
+export async function validateCompleteForm(
+    data: Partial<Organization>
+): Promise<StepValidationResult> {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
@@ -302,7 +328,7 @@ export async function validateCompleteForm(data: Partial<Organization>): Promise
             errors.push({
                 field: 'name',
                 message: 'An organization with this name already exists',
-                severity: 'error'
+                severity: 'error',
             });
         }
     }
@@ -310,6 +336,6 @@ export async function validateCompleteForm(data: Partial<Organization>): Promise
     return {
         isValid: errors.length === 0,
         errors,
-        warnings
+        warnings,
     };
 }

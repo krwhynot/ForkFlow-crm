@@ -1,7 +1,4 @@
-import {
-    UserGroupIcon,
-    PlusCircleIcon,
-} from '@heroicons/react/24/outline';
+import { UserGroupIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useGetIdentity, useGetList } from 'react-admin';
 import { Link } from 'react-router-dom';
 

@@ -1,4 +1,11 @@
-import { Button, Stack, Typography, Dialog, DialogTitle, DialogContent } from '@/components/ui-kit';
+import {
+    Button,
+    Stack,
+    Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+} from '@/components/ui-kit';
 import {
     DeleteButton,
     EditBase,

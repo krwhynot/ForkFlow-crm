@@ -23,7 +23,9 @@ export const CustomerListFilter = () => {
                     <div className="space-y-4 mt-4">
                         <Filter
                             label="Business Type"
-                            icon={<BuildingStorefrontIcon className="h-5 w-5" />}
+                            icon={
+                                <BuildingStorefrontIcon className="h-5 w-5" />
+                            }
                         >
                             <FilterItem
                                 label="Restaurants"

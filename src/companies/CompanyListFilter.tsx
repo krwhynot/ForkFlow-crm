@@ -1,5 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { BuildingOfficeIcon, TruckIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import {
+    BuildingOfficeIcon,
+    TruckIcon,
+    UserGroupIcon,
+} from '@heroicons/react/24/outline';
 import { Box } from '../components/ui-kit';
 import {
     FilterList,
@@ -22,7 +26,10 @@ export const CompanyListFilter = () => {
         <Box className="w-52 min-w-52 -order-1 mr-2 mt-5">
             <FilterLiveSearch hiddenLabel />
 
-            <FilterList label="Size" icon={<BuildingOfficeIcon className="h-5 w-5" />}>
+            <FilterList
+                label="Size"
+                icon={<BuildingOfficeIcon className="h-5 w-5" />}
+            >
                 {sizes.map(size => (
                     <FilterListItem
                         key={size.id}

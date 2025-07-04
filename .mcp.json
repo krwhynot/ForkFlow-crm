@@ -35,10 +35,7 @@
         },
         "knowledge": {
             "command": "npx",
-            "args": [
-                "-y",
-                "@modelcontextprotocol/server-memory"
-            ],
+            "args": ["-y", "@modelcontextprotocol/server-memory"],
             "env": {
                 "STORAGE_PATH": "/mnt/c/Projects/ForkFlow-crm/.knowledge",
                 "MCP_LOG_LEVEL": "info"

@@ -23,7 +23,9 @@ export interface TerritoryFilterOptions {
  * Apply territory-based filtering for broker users
  * Admins and managers see all data, brokers only see their territory
  */
-export function applyTerritoryFilter(options: TerritoryFilterOptions): GetListParams {
+export function applyTerritoryFilter(
+    options: TerritoryFilterOptions
+): GetListParams {
     const { user, resource, params } = options;
 
     // Admins and managers see all data
@@ -75,7 +77,10 @@ function applyBrokerTerritoryFilter(
 /**
  * Build territory filter based on resource type
  */
-function buildTerritoryFilter(territory: string[], resource: string): Record<string, any> {
+function buildTerritoryFilter(
+    territory: string[],
+    resource: string
+): Record<string, any> {
     const territoryFilter: Record<string, any> = {};
 
     // Parse territory configuration

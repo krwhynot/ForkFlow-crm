@@ -4,10 +4,12 @@ import ContentSave from '@mui/icons-material/Save';
 import {
     Box,
     Button,
-    IconButton,
     Stack,
-    Tooltip,
     Typography,
+} from '@/components/ui-kit';
+import {
+    IconButton,
+    Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
 import {
@@ -86,9 +88,9 @@ export const Note = ({
         <Box
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            pb={1}
+            className="pb-1"
         >
-            <Stack direction="row" spacing={1} alignItems="center" width="100%">
+            <Stack className="flex-row space-x-1 items-center w-full">
                 {resource === 'contactNote' ? (
                     <Avatar width={20} height={20} />
                 ) : (
@@ -100,7 +102,7 @@ export const Note = ({
                         <CompanyAvatar width={20} height={20} />
                     </ReferenceField>
                 )}
-                <Typography color="text.secondary" variant="body2">
+                <Typography className="text-gray-500" variant="body2">
                     <ReferenceField
                         record={note}
                         resource={resource}
@@ -118,10 +120,7 @@ export const Note = ({
                     )}
                     <Box
                         component="span"
-                        sx={{
-                            ml: 2,
-                            visibility: isHover ? 'visible' : 'hidden',
-                        }}
+                        className={`ml-2 ${isHover ? 'visible' : 'invisible'}`}
                     >
                         <Tooltip title="Edit note">
                             <IconButton
@@ -138,9 +137,9 @@ export const Note = ({
                         </Tooltip>
                     </Box>
                 </Typography>
-                <Box flex={1}></Box>
+                <Box className="flex-1"></Box>
                 <Typography
-                    color="textSecondary"
+                    className="text-gray-500"
                     variant="body2"
                     component="span"
                 >
@@ -150,7 +149,7 @@ export const Note = ({
             {isEditing ? (
                 <Form onSubmit={handleNoteUpdate} record={note}>
                     <NoteInputs showStatus={showStatus} edition />
-                    <Box display="flex" justifyContent="flex-start" mt={1}>
+                    <Box className="flex justify-start mt-1">
                         <Button
                             type="submit"
                             color="primary"
@@ -161,7 +160,7 @@ export const Note = ({
                             Update Note
                         </Button>
                         <Button
-                            sx={{ ml: 1 }}
+                            className="ml-1"
                             onClick={handleCancelEdit}
                             color="primary"
                         >
@@ -171,13 +170,7 @@ export const Note = ({
                 </Form>
             ) : (
                 <Stack
-                    sx={{
-                        paddingTop: '0.5em',
-                        display: 'flex',
-                        '& p:empty': {
-                            minHeight: '0.75em',
-                        },
-                    }}
+                    className="pt-2 flex [&_p:empty]:min-h-3"
                 >
                     {note.content}
 

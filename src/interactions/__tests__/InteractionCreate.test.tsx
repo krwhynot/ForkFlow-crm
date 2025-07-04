@@ -10,10 +10,14 @@ import { InteractionCreate } from '../InteractionCreate';
 vi.mock('../hooks/useInteractionAPI', () => ({
     useInteractionAPI: () => ({
         createWithLocation: vi.fn().mockResolvedValue({
-            data: { id: 'test-interaction-1', subject: 'Test Interaction' }
+            data: { id: 'test-interaction-1', subject: 'Test Interaction' },
         }),
         getCurrentLocation: vi.fn().mockResolvedValue({
-            coordinates: { latitude: 37.7749, longitude: -122.4194, accuracy: 10 }
+            coordinates: {
+                latitude: 37.7749,
+                longitude: -122.4194,
+                accuracy: 10,
+            },
         }),
         getOfflineStatus: () => ({
             isOnline: true,
@@ -68,14 +72,14 @@ describe('InteractionCreate', () => {
 
     it('should render the create form', () => {
         renderInteractionCreate();
-        
+
         expect(screen.getByRole('form')).toBeInTheDocument();
         expect(screen.getByText('Get GPS')).toBeInTheDocument();
     });
 
     it('should show GPS button in toolbar', () => {
         renderInteractionCreate();
-        
+
         const gpsButton = screen.getByText('Get GPS');
         expect(gpsButton).toBeInTheDocument();
         expect(gpsButton).not.toBeDisabled();
@@ -83,9 +87,13 @@ describe('InteractionCreate', () => {
 
     it('should handle GPS button click', async () => {
         const mockGetCurrentLocation = vi.fn().mockResolvedValue({
-            coordinates: { latitude: 37.7749, longitude: -122.4194, accuracy: 10 }
+            coordinates: {
+                latitude: 37.7749,
+                longitude: -122.4194,
+                accuracy: 10,
+            },
         });
-        
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: vi.fn(),
@@ -96,10 +104,10 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         const gpsButton = screen.getByText('Get GPS');
         await user.click(gpsButton);
-        
+
         expect(mockGetCurrentLocation).toHaveBeenCalled();
     });
 
@@ -108,21 +116,24 @@ describe('InteractionCreate', () => {
             useInteractionAPI: () => ({
                 createWithLocation: vi.fn(),
                 getCurrentLocation: vi.fn(),
-                getOfflineStatus: () => ({ isOnline: false, pendingActions: 2 }),
+                getOfflineStatus: () => ({
+                    isOnline: false,
+                    pendingActions: 2,
+                }),
                 syncOfflineData: vi.fn(),
             }),
         }));
 
         renderInteractionCreate();
-        
+
         expect(screen.getByText('Offline Mode')).toBeInTheDocument();
     });
 
     it('should handle form submission', async () => {
         const mockCreateWithLocation = vi.fn().mockResolvedValue({
-            data: { id: 'test-interaction-1', subject: 'Test Interaction' }
+            data: { id: 'test-interaction-1', subject: 'Test Interaction' },
         });
-        
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: mockCreateWithLocation,
@@ -133,27 +144,38 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         // Fill out the form (simplified for test)
         // In a real test, you'd fill out all required fields
-        
+
         // Submit the form
         const submitButton = screen.getByRole('button', { name: /save/i });
         if (submitButton) {
             await user.click(submitButton);
         }
-        
+
         // Note: This test would need more complex setup to properly test form submission
         // as it involves react-admin's form handling
     });
 
     it('should show loading state when getting GPS', async () => {
-        const mockGetCurrentLocation = vi.fn().mockImplementation(() => 
-            new Promise(resolve => setTimeout(() => resolve({
-                coordinates: { latitude: 37.7749, longitude: -122.4194, accuracy: 10 }
-            }), 100))
+        const mockGetCurrentLocation = vi.fn().mockImplementation(
+            () =>
+                new Promise(resolve =>
+                    setTimeout(
+                        () =>
+                            resolve({
+                                coordinates: {
+                                    latitude: 37.7749,
+                                    longitude: -122.4194,
+                                    accuracy: 10,
+                                },
+                            }),
+                        100
+                    )
+                )
         );
-        
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: vi.fn(),
@@ -164,22 +186,22 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         const gpsButton = screen.getByText('Get GPS');
         await user.click(gpsButton);
-        
+
         expect(screen.getByText('Getting Location...')).toBeInTheDocument();
-        
+
         await waitFor(() => {
             expect(screen.getByText('Get GPS')).toBeInTheDocument();
         });
     });
 
     it('should handle GPS errors gracefully', async () => {
-        const mockGetCurrentLocation = vi.fn().mockRejectedValue(
-            new Error('Location access denied')
-        );
-        
+        const mockGetCurrentLocation = vi
+            .fn()
+            .mockRejectedValue(new Error('Location access denied'));
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: vi.fn(),
@@ -190,10 +212,10 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         const gpsButton = screen.getByText('Get GPS');
         await user.click(gpsButton);
-        
+
         // Error handling would typically show a notification
         // The exact behavior depends on how errors are handled in the component
         expect(mockGetCurrentLocation).toHaveBeenCalled();
@@ -201,17 +223,17 @@ describe('InteractionCreate', () => {
 
     it('should apply mobile-first styling', () => {
         renderInteractionCreate();
-        
+
         const main = document.querySelector('.RaCreate-main');
         expect(main).toHaveStyle({ maxWidth: '800px', margin: '0 auto' });
     });
 
     it('should have proper accessibility attributes', () => {
         renderInteractionCreate();
-        
+
         const gpsButton = screen.getByText('Get GPS');
         expect(gpsButton).toHaveAttribute('type', 'button');
-        
+
         const form = screen.getByRole('form');
         expect(form).toBeInTheDocument();
     });
@@ -219,9 +241,9 @@ describe('InteractionCreate', () => {
     it('should handle create success and redirect', async () => {
         const mockRedirect = vi.fn();
         const mockCreateWithLocation = vi.fn().mockResolvedValue({
-            data: { id: 'test-interaction-1', subject: 'Test Interaction' }
+            data: { id: 'test-interaction-1', subject: 'Test Interaction' },
         });
-        
+
         vi.doMock('react-admin', async () => {
             const actual = await vi.importActual('react-admin');
             return {
@@ -232,7 +254,7 @@ describe('InteractionCreate', () => {
                 useRedirect: () => mockRedirect,
             };
         });
-        
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: mockCreateWithLocation,
@@ -243,17 +265,17 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         // Simulate form submission success
         // This would trigger the redirect logic
         // Note: Actual implementation would need more complex form simulation
     });
 
     it('should handle create failure gracefully', async () => {
-        const mockCreateWithLocation = vi.fn().mockRejectedValue(
-            new Error('Failed to create interaction')
-        );
-        
+        const mockCreateWithLocation = vi
+            .fn()
+            .mockRejectedValue(new Error('Failed to create interaction'));
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: mockCreateWithLocation,
@@ -264,16 +286,16 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         // Test error handling during create
         // The exact behavior depends on the error handling implementation
     });
 
     it('should transform data correctly before submission', async () => {
         const mockCreateWithLocation = vi.fn().mockResolvedValue({
-            data: { id: 'test-interaction-1' }
+            data: { id: 'test-interaction-1' },
         });
-        
+
         vi.doMock('../hooks/useInteractionAPI', () => ({
             useInteractionAPI: () => ({
                 createWithLocation: mockCreateWithLocation,
@@ -284,7 +306,7 @@ describe('InteractionCreate', () => {
         }));
 
         renderInteractionCreate();
-        
+
         // Test data transformation
         // The transform function should add createdBy, isCompleted, scheduledDate, etc.
         // This would require simulating actual form submission
@@ -295,18 +317,18 @@ describe('InteractionCreate', () => {
             useInteractionAPI: () => ({
                 createWithLocation: vi.fn(),
                 getCurrentLocation: vi.fn(),
-                getOfflineStatus: () => ({ 
-                    isOnline: false, 
+                getOfflineStatus: () => ({
+                    isOnline: false,
                     pendingActions: 3,
                     storageUsed: 1024,
-                    lastSync: '2023-01-01T12:00:00Z'
+                    lastSync: '2023-01-01T12:00:00Z',
                 }),
                 syncOfflineData: vi.fn(),
             }),
         }));
 
         renderInteractionCreate();
-        
+
         expect(screen.getByText('Offline Mode')).toBeInTheDocument();
     });
 });

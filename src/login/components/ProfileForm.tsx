@@ -38,8 +38,13 @@ interface ProfileFormData {
     principals: string[];
 }
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => {
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar || null);
+export const ProfileForm: React.FC<ProfileFormProps> = ({
+    user,
+    onSuccess,
+}) => {
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(
+        user.avatar || null
+    );
     const [newTerritory, setNewTerritory] = useState('');
     const [newPrincipal, setNewPrincipal] = useState('');
     const dataProvider = useDataProvider<CrmDataProvider>();
@@ -99,10 +104,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
             }
 
             setValue('avatar', file);
-            
+
             // Create preview URL
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
                 setAvatarPreview(e.target?.result as string);
             };
             reader.readAsDataURL(file);
@@ -115,25 +120,37 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
     };
 
     const handleAddTerritory = () => {
-        if (newTerritory.trim() && !watchedTerritory.includes(newTerritory.trim())) {
+        if (
+            newTerritory.trim() &&
+            !watchedTerritory.includes(newTerritory.trim())
+        ) {
             setValue('territory', [...watchedTerritory, newTerritory.trim()]);
             setNewTerritory('');
         }
     };
 
     const handleRemoveTerritory = (territoryToRemove: string) => {
-        setValue('territory', watchedTerritory.filter(t => t !== territoryToRemove));
+        setValue(
+            'territory',
+            watchedTerritory.filter(t => t !== territoryToRemove)
+        );
     };
 
     const handleAddPrincipal = () => {
-        if (newPrincipal.trim() && !watchedPrincipals.includes(newPrincipal.trim())) {
+        if (
+            newPrincipal.trim() &&
+            !watchedPrincipals.includes(newPrincipal.trim())
+        ) {
             setValue('principals', [...watchedPrincipals, newPrincipal.trim()]);
             setNewPrincipal('');
         }
     };
 
     const handleRemovePrincipal = (principalToRemove: string) => {
-        setValue('principals', watchedPrincipals.filter(p => p !== principalToRemove));
+        setValue(
+            'principals',
+            watchedPrincipals.filter(p => p !== principalToRemove)
+        );
     };
 
     const onSubmit = (data: ProfileFormData) => {
@@ -160,7 +177,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
 
                 {error && (
                     <Alert severity="error">
-                        {error instanceof Error ? error.message : 'Failed to update profile'}
+                        {error instanceof Error
+                            ? error.message
+                            : 'Failed to update profile'}
                     </Alert>
                 )}
 
@@ -168,13 +187,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar
                         src={avatarPreview || undefined}
-                        sx={{ 
-                            width: isMobile ? 80 : 100, 
+                        sx={{
+                            width: isMobile ? 80 : 100,
                             height: isMobile ? 80 : 100,
-                            fontSize: isMobile ? '2rem' : '2.5rem'
+                            fontSize: isMobile ? '2rem' : '2.5rem',
                         }}
                     >
-                        {user.firstName[0]}{user.lastName[0]}
+                        {user.firstName[0]}
+                        {user.lastName[0]}
                     </Avatar>
                     <Stack>
                         <input
@@ -185,9 +205,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                             onChange={handleAvatarChange}
                         />
                         <label htmlFor="avatar-upload">
-                            <IconButton 
-                                color="primary" 
-                                aria-label="upload picture" 
+                            <IconButton
+                                color="primary"
+                                aria-label="upload picture"
                                 component="span"
                                 sx={{ minHeight: 44, minWidth: 44 }}
                             >
@@ -195,8 +215,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                             </IconButton>
                         </label>
                         {avatarPreview && (
-                            <IconButton 
-                                color="error" 
+                            <IconButton
+                                color="error"
                                 onClick={handleRemoveAvatar}
                                 sx={{ minHeight: 44, minWidth: 44 }}
                             >
@@ -207,31 +227,39 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                 </Box>
 
                 {/* Name Fields */}
-                <Stack direction={isMobile ? "column" : "row"} spacing={2}>
+                <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
                     <TextField
-                        {...register('firstName', { 
+                        {...register('firstName', {
                             required: 'First name is required',
-                            minLength: { value: 2, message: 'First name must be at least 2 characters' }
+                            minLength: {
+                                value: 2,
+                                message:
+                                    'First name must be at least 2 characters',
+                            },
                         })}
                         label="First Name"
                         fullWidth
                         error={!!errors.firstName}
                         helperText={errors.firstName?.message}
                         inputProps={{
-                            style: { fontSize: isMobile ? '16px' : '14px' }
+                            style: { fontSize: isMobile ? '16px' : '14px' },
                         }}
                     />
                     <TextField
-                        {...register('lastName', { 
+                        {...register('lastName', {
                             required: 'Last name is required',
-                            minLength: { value: 2, message: 'Last name must be at least 2 characters' }
+                            minLength: {
+                                value: 2,
+                                message:
+                                    'Last name must be at least 2 characters',
+                            },
                         })}
                         label="Last Name"
                         fullWidth
                         error={!!errors.lastName}
                         helperText={errors.lastName?.message}
                         inputProps={{
-                            style: { fontSize: isMobile ? '16px' : '14px' }
+                            style: { fontSize: isMobile ? '16px' : '14px' },
                         }}
                     />
                 </Stack>
@@ -244,19 +272,21 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                     disabled
                     helperText="Email cannot be changed"
                     inputProps={{
-                        style: { fontSize: isMobile ? '16px' : '14px' }
+                        style: { fontSize: isMobile ? '16px' : '14px' },
                     }}
                 />
 
                 {/* Role (Read-only) */}
                 <TextField
                     label="Role"
-                    value={user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    value={
+                        user.role.charAt(0).toUpperCase() + user.role.slice(1)
+                    }
                     fullWidth
                     disabled
                     helperText="Role is assigned by administrators"
                     inputProps={{
-                        style: { fontSize: isMobile ? '16px' : '14px' }
+                        style: { fontSize: isMobile ? '16px' : '14px' },
                     }}
                 />
 
@@ -265,19 +295,30 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                     <Typography variant="h6" gutterBottom>
                         Sales Territory
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 1,
+                            mb: 2,
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                        }}
+                    >
                         <TextField
                             label="Add Territory"
                             value={newTerritory}
-                            onChange={(e) => setNewTerritory(e.target.value)}
+                            onChange={e => setNewTerritory(e.target.value)}
                             size="small"
-                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTerritory())}
+                            onKeyPress={e =>
+                                e.key === 'Enter' &&
+                                (e.preventDefault(), handleAddTerritory())
+                            }
                             inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                style: { fontSize: isMobile ? '16px' : '14px' },
                             }}
                         />
-                        <IconButton 
-                            onClick={handleAddTerritory} 
+                        <IconButton
+                            onClick={handleAddTerritory}
                             color="primary"
                             disabled={!newTerritory.trim()}
                             sx={{ minHeight: 44, minWidth: 44 }}
@@ -286,11 +327,13 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                         </IconButton>
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {watchedTerritory.map((territory) => (
+                        {watchedTerritory.map(territory => (
                             <Chip
                                 key={territory}
                                 label={territory}
-                                onDelete={() => handleRemoveTerritory(territory)}
+                                onDelete={() =>
+                                    handleRemoveTerritory(territory)
+                                }
                                 color="primary"
                                 variant="outlined"
                             />
@@ -308,19 +351,30 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                     <Typography variant="h6" gutterBottom>
                         Principals/Brands
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 1,
+                            mb: 2,
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                        }}
+                    >
                         <TextField
                             label="Add Principal"
                             value={newPrincipal}
-                            onChange={(e) => setNewPrincipal(e.target.value)}
+                            onChange={e => setNewPrincipal(e.target.value)}
                             size="small"
-                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddPrincipal())}
+                            onKeyPress={e =>
+                                e.key === 'Enter' &&
+                                (e.preventDefault(), handleAddPrincipal())
+                            }
                             inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' }
+                                style: { fontSize: isMobile ? '16px' : '14px' },
                             }}
                         />
-                        <IconButton 
-                            onClick={handleAddPrincipal} 
+                        <IconButton
+                            onClick={handleAddPrincipal}
                             color="primary"
                             disabled={!newPrincipal.trim()}
                             sx={{ minHeight: 44, minWidth: 44 }}
@@ -329,11 +383,13 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                         </IconButton>
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {watchedPrincipals.map((principal) => (
+                        {watchedPrincipals.map(principal => (
                             <Chip
                                 key={principal}
                                 label={principal}
-                                onDelete={() => handleRemovePrincipal(principal)}
+                                onDelete={() =>
+                                    handleRemovePrincipal(principal)
+                                }
                                 color="secondary"
                                 variant="outlined"
                             />
@@ -352,7 +408,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user, onSuccess }) => 
                     variant="contained"
                     size="large"
                     disabled={!isValid || isPending}
-                    sx={{ 
+                    sx={{
                         mt: 3,
                         minHeight: 48,
                         fontSize: '1.1rem',

@@ -20,7 +20,7 @@ import {
     Tooltip,
     Alert,
     LinearProgress,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Person as PersonIcon,
     Security as SecurityIcon,
@@ -41,7 +41,10 @@ import {
 
 import { User } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
-import { TerritoryDisplay, TerritoryBadge } from '../components/TerritoryDisplay';
+import {
+    TerritoryDisplay,
+    TerritoryBadge,
+} from '../components/TerritoryDisplay';
 import { UserActivityTracker } from './UserActivityTracker';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
@@ -68,7 +71,7 @@ function CustomTabPanel(props: TabPanelProps) {
             aria-labelledby={`user-tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
+            {value === index && <Box className="py-3">{children}</Box>}
         </div>
     );
 }
@@ -103,31 +106,45 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
     };
 
     const recentActivities = [
-        { action: 'Updated profile information', time: '2 hours ago', type: 'edit' },
-        { action: 'Logged in from San Francisco', time: '2 hours ago', type: 'login' },
-        { action: 'Created new organization: Acme Corp', time: '1 day ago', type: 'create' },
-        { action: 'Modified contact: John Smith', time: '2 days ago', type: 'edit' },
+        {
+            action: 'Updated profile information',
+            time: '2 hours ago',
+            type: 'edit',
+        },
+        {
+            action: 'Logged in from San Francisco',
+            time: '2 hours ago',
+            type: 'login',
+        },
+        {
+            action: 'Created new organization: Acme Corp',
+            time: '1 day ago',
+            type: 'create',
+        },
+        {
+            action: 'Modified contact: John Smith',
+            time: '2 days ago',
+            type: 'edit',
+        },
     ];
 
     return (
         <Box>
             {/* User Header */}
-            <Card sx={{ mb: 3 }}>
+            <Card className="mb-3">
                 <CardContent>
-                    <Box display="flex" alignItems="center" gap={3} mb={3}>
+                    <Box className="flex items-center gap-3 mb-3">
                         <Avatar
                             src={user.avatar?.src}
-                            sx={{
-                                width: isMobile ? 80 : 120,
-                                height: isMobile ? 80 : 120,
-                                fontSize: isMobile ? '2rem' : '3rem',
-                            }}
+                            className={`${
+                                isMobile ? 'w-20 h-20 text-2xl' : 'w-30 h-30 text-5xl'
+                            }`}
                         >
                             {user.firstName?.[0]}
                             {user.lastName?.[0]}
                         </Avatar>
 
-                        <Box flex={1}>
+                        <Box className="flex-1">
                             <Typography
                                 variant={isMobile ? 'h5' : 'h4'}
                                 component="h1"
@@ -136,13 +153,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 {user.firstName} {user.lastName}
                             </Typography>
 
-                            <Box
-                                display="flex"
-                                alignItems="center"
-                                gap={1}
-                                mb={2}
-                                flexWrap="wrap"
-                            >
+                            <Box className="flex items-center gap-1 mb-2 flex-wrap">
                                 <MailIcon color="action" fontSize="small" />
                                 <Typography
                                     variant="body1"
@@ -152,12 +163,14 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 </Typography>
                             </Box>
 
-                            <Box display="flex" gap={1} flexWrap="wrap">
+                            <Box className="flex gap-1 flex-wrap">
                                 <RoleChip role={user.role || 'user'} />
 
                                 <Chip
                                     label={
-                                        user.administrator ? 'Active' : 'Inactive'
+                                        user.administrator
+                                            ? 'Active'
+                                            : 'Inactive'
                                     }
                                     color={
                                         user.administrator ? 'success' : 'error'
@@ -177,13 +190,13 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             </Box>
                         </Box>
 
-                        <Box display="flex" flexDirection="column" gap={1}>
+                        <Box className="flex flex-col gap-1">
                             {onEdit && (
                                 <Button
                                     variant="contained"
                                     startIcon={<EditIcon />}
                                     onClick={onEdit}
-                                    sx={{ minHeight: 44 }}
+                                    className="min-h-11"
                                 >
                                     Edit Profile
                                 </Button>
@@ -194,7 +207,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                     variant="outlined"
                                     startIcon={<RefreshIcon />}
                                     onClick={onRefresh}
-                                    sx={{ minHeight: 44 }}
+                                    className="min-h-11"
                                 >
                                     Refresh
                                 </Button>
@@ -205,7 +218,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                     {/* Quick Stats */}
                     <Grid container spacing={2}>
                         <Grid item xs={6} sm={3}>
-                            <Box textAlign="center">
+                            <Box className="text-center">
                                 <Typography variant="h6" color="primary">
                                     {userStats.totalLogins}
                                 </Typography>
@@ -219,7 +232,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                         </Grid>
 
                         <Grid item xs={6} sm={3}>
-                            <Box textAlign="center">
+                            <Box className="text-center">
                                 <Typography variant="h6" color="success.main">
                                     {userStats.accountAge}d
                                 </Typography>
@@ -233,7 +246,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                         </Grid>
 
                         <Grid item xs={6} sm={3}>
-                            <Box textAlign="center">
+                            <Box className="text-center">
                                 <Typography variant="h6" color="info.main">
                                     {userStats.dataCreated}
                                 </Typography>
@@ -247,7 +260,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                         </Grid>
 
                         <Grid item xs={6} sm={3}>
-                            <Box textAlign="center">
+                            <Box className="text-center">
                                 <Typography variant="h6" color="warning.main">
                                     {userStats.securityScore}%
                                 </Typography>
@@ -265,7 +278,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
 
             {/* Tabs Navigation */}
             <Card>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Box className="border-b border-gray-300">
                     <Tabs
                         value={currentTab}
                         onChange={handleTabChange}
@@ -337,7 +350,9 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                                 primary="Role"
                                                 secondary={
                                                     <RoleChip
-                                                        role={user.role || 'user'}
+                                                        role={
+                                                            user.role || 'user'
+                                                        }
                                                         size="small"
                                                     />
                                                 }
@@ -417,9 +432,9 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                                 userStats.securityScore > 80
                                                     ? 'success'
                                                     : userStats.securityScore >
-                                                      60
-                                                    ? 'warning'
-                                                    : 'error'
+                                                        60
+                                                      ? 'warning'
+                                                      : 'error'
                                             }
                                         />
                                     </Box>

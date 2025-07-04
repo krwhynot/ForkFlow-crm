@@ -13,7 +13,7 @@ export const ImageList = () => {
     // Determine grid spacing and columns based on screen size
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-1 mb-2 px-1">
-            {data?.map((record) => (
+            {data?.map(record => (
                 <div key={record.id} className="flex">
                     <RecordContextProvider value={record}>
                         <OrganizationCard />

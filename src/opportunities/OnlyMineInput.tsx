@@ -2,7 +2,7 @@ import { BooleanInput, useGetIdentity } from 'react-admin';
 
 export const OnlyMineInput = () => {
     const { identity } = useGetIdentity();
-    
+
     if (!identity) return null;
 
     return (

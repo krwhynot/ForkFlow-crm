@@ -52,19 +52,27 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
     const getBusinessTypeColor = (type?: string) => {
         switch (type) {
-            case 'restaurant': return 'warning';
-            case 'grocery': return 'success';
-            case 'distributor': return 'secondary';
-            default: return 'default';
+            case 'restaurant':
+                return 'warning';
+            case 'grocery':
+                return 'success';
+            case 'distributor':
+                return 'secondary';
+            default:
+                return 'default';
         }
     };
 
     const getPriorityColor = (priority?: string) => {
         switch (priority) {
-            case 'high': return 'error';
-            case 'medium': return 'warning';
-            case 'low': return 'success';
-            default: return 'default';
+            case 'high':
+                return 'error';
+            case 'medium':
+                return 'warning';
+            case 'low':
+                return 'success';
+            default:
+                return 'default';
         }
     };
 
@@ -94,7 +102,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                         <TableCell>
                             <TableSortLabel
                                 active={viewMode.sortField === 'name'}
-                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
+                                direction={
+                                    viewMode.sortOrder.toLowerCase() as
+                                        | 'asc'
+                                        | 'desc'
+                                }
                                 onClick={() => handleSort('name')}
                             >
                                 Organization
@@ -103,7 +115,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                         <TableCell>
                             <TableSortLabel
                                 active={viewMode.sortField === 'business_type'}
-                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
+                                direction={
+                                    viewMode.sortOrder.toLowerCase() as
+                                        | 'asc'
+                                        | 'desc'
+                                }
                                 onClick={() => handleSort('business_type')}
                             >
                                 Type
@@ -113,7 +129,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                         <TableCell>
                             <TableSortLabel
                                 active={viewMode.sortField === 'revenue'}
-                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
+                                direction={
+                                    viewMode.sortOrder.toLowerCase() as
+                                        | 'asc'
+                                        | 'desc'
+                                }
                                 onClick={() => handleSort('revenue')}
                             >
                                 Revenue
@@ -122,7 +142,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                         <TableCell>
                             <TableSortLabel
                                 active={viewMode.sortField === 'nb_contacts'}
-                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
+                                direction={
+                                    viewMode.sortOrder.toLowerCase() as
+                                        | 'asc'
+                                        | 'desc'
+                                }
                                 onClick={() => handleSort('nb_contacts')}
                             >
                                 Contacts
@@ -131,7 +155,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                         <TableCell>
                             <TableSortLabel
                                 active={viewMode.sortField === 'nb_deals'}
-                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
+                                direction={
+                                    viewMode.sortOrder.toLowerCase() as
+                                        | 'asc'
+                                        | 'desc'
+                                }
                                 onClick={() => handleSort('nb_deals')}
                             >
                                 Deals
@@ -143,29 +171,45 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {organizations.map((org) => (
-                        <TableRow 
+                    {organizations.map(org => (
+                        <TableRow
                             key={org.id}
                             hover
-                            sx={{ 
-                                '&:last-child td, &:last-child th': { border: 0 },
+                            sx={{
+                                '&:last-child td, &:last-child th': {
+                                    border: 0,
+                                },
                                 cursor: 'pointer',
                             }}
                         >
                             <TableCell>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <Avatar 
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                    }}
+                                >
+                                    <Avatar
                                         src={org.logo}
                                         sx={{ width: 40, height: 40 }}
                                     >
                                         <BusinessIcon />
                                     </Avatar>
                                     <Box>
-                                        <Typography variant="subtitle2" fontWeight="medium">
+                                        <Typography
+                                            variant="subtitle2"
+                                            fontWeight="medium"
+                                        >
                                             {org.name}
                                         </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            {org.city && org.stateAbbr && `${org.city}, ${org.stateAbbr}`}
+                                        <Typography
+                                            variant="caption"
+                                            color="text.secondary"
+                                        >
+                                            {org.city &&
+                                                org.stateAbbr &&
+                                                `${org.city}, ${org.stateAbbr}`}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -174,7 +218,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                 <Chip
                                     label={org.business_type || 'Other'}
                                     size="small"
-                                    color={getBusinessTypeColor(org.business_type) as any}
+                                    color={
+                                        getBusinessTypeColor(
+                                            org.business_type
+                                        ) as any
+                                    }
                                     variant="outlined"
                                 />
                             </TableCell>
@@ -183,7 +231,10 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                     <Typography variant="body2">
                                         {org.contact_person || 'N/A'}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
                                         {org.email}
                                     </Typography>
                                 </Box>
@@ -208,7 +259,11 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                     <Chip
                                         label={org.priority}
                                         size="small"
-                                        color={getPriorityColor(org.priority) as any}
+                                        color={
+                                            getPriorityColor(
+                                                org.priority
+                                            ) as any
+                                        }
                                         variant="filled"
                                     />
                                 )}
@@ -225,17 +280,23 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                             </TableCell>
                             <TableCell align="right">
                                 <Box sx={{ display: 'flex', gap: 0.5 }}>
-                                    <IconButton 
-                                        size="small" 
+                                    <IconButton
+                                        size="small"
                                         aria-label={`View ${org.name}`}
-                                        sx={{ minHeight: '32px', minWidth: '32px' }}
+                                        sx={{
+                                            minHeight: '32px',
+                                            minWidth: '32px',
+                                        }}
                                     >
                                         <ViewIcon fontSize="small" />
                                     </IconButton>
-                                    <IconButton 
-                                        size="small" 
+                                    <IconButton
+                                        size="small"
                                         aria-label={`Edit ${org.name}`}
-                                        sx={{ minHeight: '32px', minWidth: '32px' }}
+                                        sx={{
+                                            minHeight: '32px',
+                                            minWidth: '32px',
+                                        }}
                                     >
                                         <EditIcon fontSize="small" />
                                     </IconButton>

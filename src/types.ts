@@ -58,7 +58,7 @@ export interface Organization {
     revenue?: number;
     tax_identifier?: string;
     description?: string;
-    context_links?: Array<{name: string; url: string}>;
+    context_links?: Array<{ name: string; url: string }>;
     createdAt: string;
     updatedAt?: string;
     // Enhanced fields for roadmap features
@@ -108,7 +108,8 @@ export interface OrganizationListViewMode {
     itemsPerPage: number;
 }
 
-export interface OrganizationFormData extends Omit<Organization, 'id' | 'createdAt'> {
+export interface OrganizationFormData
+    extends Omit<Organization, 'id' | 'createdAt'> {
     // Form-specific fields for creation/editing
     confirmEmail?: string;
     agreedToTerms?: boolean;

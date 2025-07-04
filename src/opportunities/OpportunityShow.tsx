@@ -100,19 +100,30 @@ const OpportunityHeader = () => {
                             <Chip
                                 label={stageInfo?.name || record.stage}
                                 sx={{
-                                    backgroundColor: stageInfo?.color || '#e0e0e0',
+                                    backgroundColor:
+                                        stageInfo?.color || '#e0e0e0',
                                     color: 'text.primary',
                                     fontWeight: 500,
                                 }}
                             />
                             <Chip
                                 label={`${probability}% Probability`}
-                                color={probability >= 80 ? 'success' : probability >= 50 ? 'warning' : 'default'}
+                                color={
+                                    probability >= 80
+                                        ? 'success'
+                                        : probability >= 50
+                                          ? 'warning'
+                                          : 'default'
+                                }
                                 variant="outlined"
                             />
                             <Chip
                                 label={record.status}
-                                color={record.status === 'active' ? 'primary' : 'default'}
+                                color={
+                                    record.status === 'active'
+                                        ? 'primary'
+                                        : 'default'
+                                }
                             />
                         </Stack>
                         <Typography variant="body1" color="textSecondary">
@@ -121,11 +132,30 @@ const OpportunityHeader = () => {
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <Box textAlign={{ xs: 'left', md: 'right' }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
-                                <MoneyIcon sx={{ mr: 1, color: 'success.main', fontSize: 32 }} />
-                                <Typography variant="h3" color="success.main" sx={{ fontWeight: 600 }}>
-                                    <NumberField 
-                                        source="amount" 
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: {
+                                        xs: 'flex-start',
+                                        md: 'flex-end',
+                                    },
+                                }}
+                            >
+                                <MoneyIcon
+                                    sx={{
+                                        mr: 1,
+                                        color: 'success.main',
+                                        fontSize: 32,
+                                    }}
+                                />
+                                <Typography
+                                    variant="h3"
+                                    color="success.main"
+                                    sx={{ fontWeight: 600 }}
+                                >
+                                    <NumberField
+                                        source="amount"
                                         options={{
                                             style: 'currency',
                                             currency: 'USD',
@@ -135,8 +165,13 @@ const OpportunityHeader = () => {
                                     />
                                 </Typography>
                             </Box>
-                            <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                                Expected close: <DateField source="expectedClosingDate" />
+                            <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                sx={{ mt: 1 }}
+                            >
+                                Expected close:{' '}
+                                <DateField source="expectedClosingDate" />
                             </Typography>
                         </Box>
                     </Grid>
@@ -148,11 +183,15 @@ const OpportunityHeader = () => {
 
 const OpportunityDetails = () => {
     const record = useRecordContext<Deal>();
-    
+
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
                     <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
                     Opportunity Details
                 </Typography>
@@ -160,45 +199,78 @@ const OpportunityDetails = () => {
 
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                        <Typography
+                            variant="subtitle2"
+                            color="textSecondary"
+                            gutterBottom
+                        >
                             Organization
                         </Typography>
-                        <ReferenceField source="organizationId" reference="organizations" link="show">
+                        <ReferenceField
+                            source="organizationId"
+                            reference="organizations"
+                            link="show"
+                        >
                             <TextField source="name" />
                         </ReferenceField>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                        <Typography
+                            variant="subtitle2"
+                            color="textSecondary"
+                            gutterBottom
+                        >
                             Primary Contact
                         </Typography>
                         {record?.contactId ? (
-                            <ReferenceField source="contactId" reference="contacts" link="show">
+                            <ReferenceField
+                                source="contactId"
+                                reference="contacts"
+                                link="show"
+                            >
                                 <Typography>
-                                    <TextField source="firstName" /> <TextField source="lastName" />
+                                    <TextField source="firstName" />{' '}
+                                    <TextField source="lastName" />
                                 </Typography>
                             </ReferenceField>
                         ) : (
-                            <Typography color="textSecondary">No contact assigned</Typography>
+                            <Typography color="textSecondary">
+                                No contact assigned
+                            </Typography>
                         )}
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                        <Typography
+                            variant="subtitle2"
+                            color="textSecondary"
+                            gutterBottom
+                        >
                             Created By
                         </Typography>
-                        <Typography><TextField source="createdBy" /></Typography>
+                        <Typography>
+                            <TextField source="createdBy" />
+                        </Typography>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                        <Typography
+                            variant="subtitle2"
+                            color="textSecondary"
+                            gutterBottom
+                        >
                             Created Date
                         </Typography>
                         <DateField source="createdAt" showTime />
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+                        <Typography
+                            variant="subtitle2"
+                            color="textSecondary"
+                            gutterBottom
+                        >
                             Internal Notes
                         </Typography>
                         <Typography variant="body2">
@@ -220,14 +292,22 @@ const StageProgress = () => {
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
                     <TrendingUpIcon sx={{ mr: 1, color: 'primary.main' }} />
                     Pipeline Progress
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
-                
+
                 <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2" color="textSecondary" gutterBottom>
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        gutterBottom
+                    >
                         Stage Progress: {Math.round(progress)}%
                     </Typography>
                     <LinearProgress
@@ -245,15 +325,22 @@ const StageProgress = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2" color="textSecondary" gutterBottom>
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        gutterBottom
+                    >
                         Close Probability: {record.probability || 0}%
                     </Typography>
                     <LinearProgress
                         variant="determinate"
                         value={record.probability || 0}
                         color={
-                            (record.probability || 0) >= 80 ? 'success' :
-                            (record.probability || 0) >= 50 ? 'warning' : 'primary'
+                            (record.probability || 0) >= 80
+                                ? 'success'
+                                : (record.probability || 0) >= 50
+                                  ? 'warning'
+                                  : 'primary'
                         }
                         sx={{
                             height: 8,
@@ -272,11 +359,15 @@ const StageProgress = () => {
 
 const ContactInfo = () => {
     const record = useRecordContext<Deal>();
-    
+
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
                     <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
                     Contact Information
                 </Typography>
@@ -286,9 +377,10 @@ const ContactInfo = () => {
                     <ReferenceField source="contactId" reference="contacts">
                         <Stack spacing={2}>
                             <Typography variant="h6">
-                                <TextField source="firstName" /> <TextField source="lastName" />
+                                <TextField source="firstName" />{' '}
+                                <TextField source="lastName" />
                             </Typography>
-                            
+
                             <Stack spacing={1}>
                                 <Button
                                     startIcon={<PhoneIcon />}
@@ -299,7 +391,7 @@ const ContactInfo = () => {
                                 >
                                     <TextField source="phone" />
                                 </Button>
-                                
+
                                 <Button
                                     startIcon={<EmailIcon />}
                                     variant="outlined"
@@ -309,7 +401,7 @@ const ContactInfo = () => {
                                 >
                                     <TextField source="email" />
                                 </Button>
-                                
+
                                 {record.contact?.linkedInUrl && (
                                     <Button
                                         startIcon={<LinkedInIcon />}
@@ -336,11 +428,15 @@ const ContactInfo = () => {
 
 const ProductInfo = () => {
     const record = useRecordContext<Deal>();
-    
+
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
                     <ProductIcon sx={{ mr: 1, color: 'primary.main' }} />
                     Product Information
                 </Typography>
@@ -349,7 +445,10 @@ const ProductInfo = () => {
                 {record?.productId ? (
                     <ReferenceField source="productId" reference="products">
                         <Stack spacing={1}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ fontWeight: 600 }}
+                            >
                                 <TextField source="name" />
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
@@ -374,12 +473,16 @@ const InteractionTimeline = () => {
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
                     <HistoryIcon sx={{ mr: 1, color: 'primary.main' }} />
                     Interaction Timeline
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
-                
+
                 <Box
                     sx={{
                         p: 3,
@@ -390,12 +493,21 @@ const InteractionTimeline = () => {
                         backgroundColor: 'grey.50',
                     }}
                 >
-                    <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                        Interaction timeline will be displayed here once the Interactions system 
-                        is implemented (Task 33). This will show all communications, meetings, 
-                        and touchpoints related to this opportunity.
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontStyle: 'italic' }}
+                    >
+                        Interaction timeline will be displayed here once the
+                        Interactions system is implemented (Task 33). This will
+                        show all communications, meetings, and touchpoints
+                        related to this opportunity.
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                    >
                         📞 Calls • 📧 Emails • 🤝 Meetings • 📝 Notes
                     </Typography>
                 </Box>

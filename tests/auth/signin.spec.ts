@@ -50,7 +50,9 @@ test.describe('Authentication - Sign In', () => {
         await auth.checkAccessibility();
     });
 
-    test('should set Secure and HttpOnly on session cookie after login', async ({ page }) => {
+    test('should set Secure and HttpOnly on session cookie after login', async ({
+        page,
+    }) => {
         const auth = new AuthHelpers(page);
         await auth.gotoSignIn();
         await auth.fillSignInForm('user@example.com', 'Password123!');
@@ -87,7 +89,9 @@ test.describe('Authentication - Sign In', () => {
         await expect(page).toHaveURL('/dashboard');
     });
 
-    test('should have proper ARIA attributes for screen readers', async ({ page }) => {
+    test('should have proper ARIA attributes for screen readers', async ({
+        page,
+    }) => {
         const auth = new AuthHelpers(page);
         await auth.gotoSignIn();
         const emailInput = page.locator('[data-testid="email"]');
@@ -100,7 +104,9 @@ test.describe('Authentication - Sign In', () => {
         await page.goto('/forgot-password');
         await page.fill('[data-testid="email"]', 'user@example.com');
         await page.click('[data-testid="submit"]');
-        await expect(page.locator('[data-testid="reset-message"]')).toBeVisible();
+        await expect(
+            page.locator('[data-testid="reset-message"]')
+        ).toBeVisible();
     });
 
     test('should support MFA challenge', async ({ page }) => {
@@ -108,15 +114,19 @@ test.describe('Authentication - Sign In', () => {
         await auth.gotoSignIn();
         await auth.fillSignInForm('mfauser@example.com', 'Password123!');
         await auth.submitSignIn();
-        await expect(page.locator('[data-testid="mfa-challenge"]')).toBeVisible();
+        await expect(
+            page.locator('[data-testid="mfa-challenge"]')
+        ).toBeVisible();
         await page.fill('[data-testid="mfa-code"]', '123456');
         await page.click('[data-testid="submit-mfa"]');
         await expect(page).toHaveURL('/dashboard');
     });
 
-    test('should load the sign-in page without JS or console errors', async ({ page }) => {
+    test('should load the sign-in page without JS or console errors', async ({
+        page,
+    }) => {
         const errors: string[] = [];
-        page.on('pageerror', (err) => errors.push(err.message));
+        page.on('pageerror', err => errors.push(err.message));
         page.on('console', msg => {
             if (msg.type() === 'error') errors.push(msg.text());
         });
@@ -128,4 +138,4 @@ test.describe('Authentication - Sign In', () => {
 
         expect(errors).toEqual([]);
     });
-}); 
+});

@@ -7,7 +7,7 @@
  */
 export const formatCurrency = (amount: number | null | undefined): string => {
     if (amount === null || amount === undefined) return '$0.00';
-    
+
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -20,11 +20,11 @@ export const formatCurrency = (amount: number | null | undefined): string => {
  */
 export const formatDate = (date: string | Date | null | undefined): string => {
     if (!date) return '';
-    
+
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    
+
     if (isNaN(dateObj.getTime())) return '';
-    
+
     return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: 'short',
@@ -35,13 +35,15 @@ export const formatDate = (date: string | Date | null | undefined): string => {
 /**
  * Format date and time for display
  */
-export const formatDateTime = (date: string | Date | null | undefined): string => {
+export const formatDateTime = (
+    date: string | Date | null | undefined
+): string => {
     if (!date) return '';
-    
+
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    
+
     if (isNaN(dateObj.getTime())) return '';
-    
+
     return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: 'short',
@@ -56,15 +58,15 @@ export const formatDateTime = (date: string | Date | null | undefined): string =
  */
 export const formatPhoneNumber = (phone: string | null | undefined): string => {
     if (!phone) return '';
-    
+
     // Remove all non-digit characters
     const digits = phone.replace(/\D/g, '');
-    
+
     // Format as (XXX) XXX-XXXX for US numbers
     if (digits.length === 10) {
         return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
     }
-    
+
     // For international or non-standard numbers, return as-is
     return phone;
 };
@@ -74,7 +76,7 @@ export const formatPhoneNumber = (phone: string | null | undefined): string => {
  */
 export const formatPercentage = (value: number | null | undefined): string => {
     if (value === null || value === undefined) return '0%';
-    
+
     return new Intl.NumberFormat('en-US', {
         style: 'percent',
         minimumFractionDigits: 0,
@@ -85,9 +87,11 @@ export const formatPercentage = (value: number | null | undefined): string => {
 /**
  * Format large numbers with compact notation (K, M, B)
  */
-export const formatCompactNumber = (value: number | null | undefined): string => {
+export const formatCompactNumber = (
+    value: number | null | undefined
+): string => {
     if (value === null || value === undefined) return '0';
-    
+
     return new Intl.NumberFormat('en-US', {
         notation: 'compact',
         compactDisplay: 'short',
@@ -98,18 +102,22 @@ export const formatCompactNumber = (value: number | null | undefined): string =>
 /**
  * Format relative time (e.g., "2 days ago", "in 3 hours")
  */
-export const formatRelativeTime = (date: string | Date | null | undefined): string => {
+export const formatRelativeTime = (
+    date: string | Date | null | undefined
+): string => {
     if (!date) return '';
-    
+
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    
+
     if (isNaN(dateObj.getTime())) return '';
-    
+
     const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
-    
+    const diffInSeconds = Math.floor(
+        (now.getTime() - dateObj.getTime()) / 1000
+    );
+
     const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-    
+
     if (Math.abs(diffInSeconds) < 60) {
         return rtf.format(-diffInSeconds, 'second');
     } else if (Math.abs(diffInSeconds) < 3600) {
@@ -128,11 +136,14 @@ export const formatRelativeTime = (date: string | Date | null | undefined): stri
 /**
  * Truncate text to specified length with ellipsis
  */
-export const truncateText = (text: string | null | undefined, maxLength: number): string => {
+export const truncateText = (
+    text: string | null | undefined,
+    maxLength: number
+): string => {
     if (!text) return '';
-    
+
     if (text.length <= maxLength) return text;
-    
+
     return `${text.slice(0, maxLength)}...`;
 };
 
@@ -141,9 +152,9 @@ export const truncateText = (text: string | null | undefined, maxLength: number)
  */
 export const formatFileSize = (bytes: number | null | undefined): string => {
     if (!bytes || bytes === 0) return '0 B';
-    
+
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    
+
     return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
 };

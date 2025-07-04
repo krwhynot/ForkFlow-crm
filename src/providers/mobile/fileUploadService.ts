@@ -60,7 +60,10 @@ export class FileUploadService {
     /**
      * Validate file before upload
      */
-    validateFile(file: File, options?: UploadOptions): { valid: boolean; error?: string } {
+    validateFile(
+        file: File,
+        options?: UploadOptions
+    ): { valid: boolean; error?: string } {
         const opts = { ...this.DEFAULT_OPTIONS, ...options };
 
         // Check file size
@@ -133,7 +136,7 @@ export class FileUploadService {
             return result;
         } catch (error: any) {
             this.uploadQueue.delete(uploadId);
-            
+
             if (error.name === 'AbortError') {
                 return {
                     success: false,
@@ -165,7 +168,7 @@ export class FileUploadService {
      * Cancel all ongoing uploads
      */
     cancelAllUploads(): void {
-        this.uploadQueue.forEach((controller) => {
+        this.uploadQueue.forEach(controller => {
             controller.abort();
         });
         this.uploadQueue.clear();
@@ -205,7 +208,7 @@ export class FileUploadService {
                 ctx!.drawImage(img, 0, 0, width, height);
 
                 canvas.toBlob(
-                    (blob) => {
+                    blob => {
                         if (blob) {
                             const compressedFile = new File([blob], file.name, {
                                 type: file.type,
@@ -256,19 +259,29 @@ export class FileUploadService {
                 // Draw cropped and scaled image
                 ctx!.drawImage(
                     img,
-                    cropX, cropY, minDimension, minDimension,
-                    0, 0, size, size
+                    cropX,
+                    cropY,
+                    minDimension,
+                    minDimension,
+                    0,
+                    0,
+                    size,
+                    size
                 );
 
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
 
                 canvas.toBlob(
-                    (blob) => {
+                    blob => {
                         if (blob) {
-                            const thumbnailFile = new File([blob], `thumb_${file.name}`, {
-                                type: 'image/jpeg',
-                                lastModified: Date.now(),
-                            });
+                            const thumbnailFile = new File(
+                                [blob],
+                                `thumb_${file.name}`,
+                                {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now(),
+                                }
+                            );
                             resolve({
                                 thumbnail: thumbnailFile,
                                 dataUrl,
@@ -282,7 +295,8 @@ export class FileUploadService {
                 );
             };
 
-            img.onerror = () => reject(new Error('Failed to load image for thumbnail'));
+            img.onerror = () =>
+                reject(new Error('Failed to load image for thumbnail'));
 
             img.src = URL.createObjectURL(file);
         });
@@ -312,7 +326,10 @@ export class FileUploadService {
         return 'file';
     }
 
-    private async processFile(file: File, options: UploadOptions): Promise<File> {
+    private async processFile(
+        file: File,
+        options: UploadOptions
+    ): Promise<File> {
         // For images, apply compression if enabled
         if (file.type.startsWith('image/') && options.compression) {
             return await this.compressImage(
@@ -342,12 +359,14 @@ export class FileUploadService {
 
             // Set up progress tracking
             if (onProgress) {
-                xhr.upload.addEventListener('progress', (event) => {
+                xhr.upload.addEventListener('progress', event => {
                     if (event.lengthComputable) {
                         const progress: UploadProgress = {
                             loaded: event.loaded,
                             total: event.total,
-                            percentage: Math.round((event.loaded / event.total) * 100),
+                            percentage: Math.round(
+                                (event.loaded / event.total) * 100
+                            ),
                         };
                         onProgress(progress);
                     }
@@ -371,7 +390,9 @@ export class FileUploadService {
                         });
                     }
                 } else {
-                    reject(new Error(`Upload failed with status ${xhr.status}`));
+                    reject(
+                        new Error(`Upload failed with status ${xhr.status}`)
+                    );
                 }
             });
 
@@ -402,7 +423,10 @@ export class FileUploadService {
         maxWidth: number,
         maxHeight: number
     ): { width: number; height: number } {
-        let { width, height } = { width: originalWidth, height: originalHeight };
+        let { width, height } = {
+            width: originalWidth,
+            height: originalHeight,
+        };
 
         // Only resize if image is larger than max dimensions
         if (width > maxWidth || height > maxHeight) {

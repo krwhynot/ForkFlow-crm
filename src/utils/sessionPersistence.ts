@@ -35,12 +35,15 @@ const ACTIVITY_TIMEOUT = 4 * 60 * 60 * 1000; // 4 hours of inactivity
 export const getDeviceInfo = (): DeviceInfo => {
     const nav = navigator;
     const screen = window.screen;
-    
+
     return {
         userAgent: nav.userAgent,
         platform: nav.platform,
         vendor: nav.vendor || 'unknown',
-        isMobile: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(nav.userAgent),
+        isMobile:
+            /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                nav.userAgent
+            ),
         isStandalone: window.matchMedia('(display-mode: standalone)').matches,
         screenResolution: `${screen.width}x${screen.height}`,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -59,24 +62,25 @@ export const generateSessionId = (): string => {
 /**
  * Get current location for session tracking (optional)
  */
-export const getCurrentLocation = (): Promise<GeolocationCoordinates | null> => {
-    return new Promise((resolve) => {
-        if (!navigator.geolocation) {
-            resolve(null);
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => resolve(position.coords),
-            () => resolve(null), // Fail silently for location
-            {
-                timeout: 10000,
-                enableHighAccuracy: false,
-                maximumAge: 60000, // 1 minute cache
+export const getCurrentLocation =
+    (): Promise<GeolocationCoordinates | null> => {
+        return new Promise(resolve => {
+            if (!navigator.geolocation) {
+                resolve(null);
+                return;
             }
-        );
-    });
-};
+
+            navigator.geolocation.getCurrentPosition(
+                position => resolve(position.coords),
+                () => resolve(null), // Fail silently for location
+                {
+                    timeout: 10000,
+                    enableHighAccuracy: false,
+                    maximumAge: 60000, // 1 minute cache
+                }
+            );
+        });
+    };
 
 /**
  * Save session information for persistence
@@ -86,7 +90,7 @@ export const saveSession = async (user: User): Promise<void> => {
         const deviceInfo = getDeviceInfo();
         const sessionId = generateSessionId();
         const loginLocation = await getCurrentLocation();
-        
+
         const sessionInfo: SessionInfo = {
             user,
             lastActivity: Date.now(),
@@ -98,11 +102,17 @@ export const saveSession = async (user: User): Promise<void> => {
         // Save to appropriate storage based on remember me preference
         const authState = getAuthState();
         const useLocalStorage = authState?.rememberMe !== false;
-        
+
         if (useLocalStorage) {
-            localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionInfo));
+            localStorage.setItem(
+                SESSION_STORAGE_KEY,
+                JSON.stringify(sessionInfo)
+            );
         } else {
-            sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionInfo));
+            sessionStorage.setItem(
+                SESSION_STORAGE_KEY,
+                JSON.stringify(sessionInfo)
+            );
         }
 
         console.log('📱 Session saved:', {
@@ -125,7 +135,7 @@ export const loadSession = (): SessionInfo | null => {
         // Check localStorage first (remember me), then sessionStorage
         let stored = localStorage.getItem(SESSION_STORAGE_KEY);
         let isRemembered = true;
-        
+
         if (!stored) {
             stored = sessionStorage.getItem(SESSION_STORAGE_KEY);
             isRemembered = false;
@@ -145,7 +155,10 @@ export const loadSession = (): SessionInfo | null => {
         }
 
         // Check activity timeout for non-remembered sessions
-        if (!isRemembered && now - sessionInfo.lastActivity > ACTIVITY_TIMEOUT) {
+        if (
+            !isRemembered &&
+            now - sessionInfo.lastActivity > ACTIVITY_TIMEOUT
+        ) {
             clearSession();
             return null;
         }
@@ -164,19 +177,25 @@ export const loadSession = (): SessionInfo | null => {
 export const updateLastActivity = (): void => {
     try {
         const now = Date.now();
-        
+
         // Update in session info
         const sessionInfo = loadSession();
         if (sessionInfo) {
             sessionInfo.lastActivity = now;
-            
+
             const authState = getAuthState();
             const useLocalStorage = authState?.rememberMe !== false;
-            
+
             if (useLocalStorage) {
-                localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionInfo));
+                localStorage.setItem(
+                    SESSION_STORAGE_KEY,
+                    JSON.stringify(sessionInfo)
+                );
             } else {
-                sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionInfo));
+                sessionStorage.setItem(
+                    SESSION_STORAGE_KEY,
+                    JSON.stringify(sessionInfo)
+                );
             }
         }
 
@@ -196,7 +215,7 @@ export const clearSession = (): void => {
         sessionStorage.removeItem(SESSION_STORAGE_KEY);
         localStorage.removeItem(ACTIVITY_STORAGE_KEY);
         clearAuthState();
-        
+
         console.log('📱 Session cleared');
     } catch (error) {
         console.error('Failed to clear session:', error);
@@ -222,14 +241,14 @@ export const getSessionSummary = (): {
     deviceInfo?: DeviceInfo;
 } => {
     const sessionInfo = loadSession();
-    
+
     if (!sessionInfo) {
         return { isValid: false };
     }
 
     const now = Date.now();
     const sessionAge = now - (sessionInfo.lastActivity || 0);
-    
+
     return {
         isValid: true,
         user: `${sessionInfo.user.firstName} ${sessionInfo.user.lastName} (${sessionInfo.user.role})`,
@@ -243,7 +262,14 @@ export const getSessionSummary = (): {
  * Setup automatic activity tracking
  */
 export const setupActivityTracking = (): (() => void) => {
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    const events = [
+        'mousedown',
+        'mousemove',
+        'keypress',
+        'scroll',
+        'touchstart',
+        'click',
+    ];
     let activityTimeout: NodeJS.Timeout;
 
     const handleActivity = () => {
@@ -274,7 +300,10 @@ export const setupActivityTracking = (): (() => void) => {
         events.forEach(event => {
             document.removeEventListener(event, handleActivity);
         });
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener(
+            'visibilitychange',
+            handleVisibilityChange
+        );
     };
 };
 
@@ -287,11 +316,13 @@ export const checkSessionConflict = (): boolean => {
         if (!currentSession) return false;
 
         const currentDeviceInfo = getDeviceInfo();
-        
+
         // Check if device info has changed significantly
-        const deviceChanged = 
-            currentSession.deviceInfo.userAgent !== currentDeviceInfo.userAgent ||
-            currentSession.deviceInfo.screenResolution !== currentDeviceInfo.screenResolution;
+        const deviceChanged =
+            currentSession.deviceInfo.userAgent !==
+                currentDeviceInfo.userAgent ||
+            currentSession.deviceInfo.screenResolution !==
+                currentDeviceInfo.screenResolution;
 
         if (deviceChanged) {
             console.warn('📱 Device change detected in session');

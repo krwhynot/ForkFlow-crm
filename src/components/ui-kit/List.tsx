@@ -53,9 +53,15 @@ interface ListItemSecondaryActionProps {
 /**
  * List container component
  */
-export const List: React.FC<ListProps> = ({ children, dense = false, className }) => {
+export const List: React.FC<ListProps> = ({
+    children,
+    dense = false,
+    className,
+}) => {
     return (
-        <ul className={cn('list-none p-0 m-0', dense && 'space-y-1', className)}>
+        <ul
+            className={cn('list-none p-0 m-0', dense && 'space-y-1', className)}
+        >
             {children}
         </ul>
     );
@@ -64,7 +70,11 @@ export const List: React.FC<ListProps> = ({ children, dense = false, className }
 /**
  * List item component
  */
-export const ListItem: React.FC<ListItemProps> = ({ children, className, style }) => {
+export const ListItem: React.FC<ListItemProps> = ({
+    children,
+    className,
+    style,
+}) => {
     return (
         <li className={cn('flex items-center py-2', className)} style={style}>
             {children}
@@ -75,14 +85,14 @@ export const ListItem: React.FC<ListItemProps> = ({ children, className, style }
 /**
  * List item button component
  */
-export const ListItemButton: React.FC<ListItemButtonProps> = ({ 
-    children, 
-    className, 
-    component = 'button', 
-    to, 
+export const ListItemButton: React.FC<ListItemButtonProps> = ({
+    children,
+    className,
+    component = 'button',
+    to,
     state,
     onClick,
-    disablePadding = false
+    disablePadding = false,
 }) => {
     const Component = component;
     const baseClasses = cn(
@@ -92,9 +102,9 @@ export const ListItemButton: React.FC<ListItemButtonProps> = ({
         'transition-colors duration-200',
         className
     );
-    
+
     return (
-        <Component 
+        <Component
             className={baseClasses}
             to={to}
             state={state}
@@ -108,7 +118,11 @@ export const ListItemButton: React.FC<ListItemButtonProps> = ({
 /**
  * List item icon component
  */
-export const ListItemIcon: React.FC<ListItemIconProps> = ({ children, className, style }) => {
+export const ListItemIcon: React.FC<ListItemIconProps> = ({
+    children,
+    className,
+    style,
+}) => {
     return (
         <div className={cn('mr-3 flex-shrink-0', className)} style={style}>
             {children}
@@ -119,7 +133,11 @@ export const ListItemIcon: React.FC<ListItemIconProps> = ({ children, className,
 /**
  * List item text component
  */
-export const ListItemText: React.FC<ListItemTextProps> = ({ primary, secondary, className }) => {
+export const ListItemText: React.FC<ListItemTextProps> = ({
+    primary,
+    secondary,
+    className,
+}) => {
     return (
         <div className={cn('flex-grow', className)}>
             <div className="text-sm font-medium text-gray-900">{primary}</div>
@@ -133,22 +151,23 @@ export const ListItemText: React.FC<ListItemTextProps> = ({ primary, secondary, 
 /**
  * List item avatar component
  */
-export const ListItemAvatar: React.FC<ListItemAvatarProps> = ({ children, className }) => {
+export const ListItemAvatar: React.FC<ListItemAvatarProps> = ({
+    children,
+    className,
+}) => {
     return (
-        <div className={cn('mr-3 flex-shrink-0', className)}>
-            {children}
-        </div>
+        <div className={cn('mr-3 flex-shrink-0', className)}>{children}</div>
     );
 };
 
 /**
  * List item secondary action component
  */
-export const ListItemSecondaryAction: React.FC<ListItemSecondaryActionProps> = ({ children, className }) => {
+export const ListItemSecondaryAction: React.FC<
+    ListItemSecondaryActionProps
+> = ({ children, className }) => {
     return (
-        <div className={cn('ml-auto flex-shrink-0', className)}>
-            {children}
-        </div>
+        <div className={cn('ml-auto flex-shrink-0', className)}>{children}</div>
     );
 };
 

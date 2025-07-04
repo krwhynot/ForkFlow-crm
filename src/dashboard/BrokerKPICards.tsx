@@ -65,7 +65,7 @@ const KPICard = ({
     <Card className="h-full">
         <CardContent className="p-4">
             <Box className="flex items-start justify-between mb-2">
-                <Box 
+                <Box
                     className="rounded p-2 flex items-center"
                     style={{
                         backgroundColor: getColorValue(color, 'light'),
@@ -81,19 +81,15 @@ const KPICard = ({
                             trend === 'up'
                                 ? 'bg-green-500 text-white'
                                 : trend === 'down'
-                                ? 'bg-red-500 text-white'
-                                : 'bg-gray-200 text-gray-700'
+                                  ? 'bg-red-500 text-white'
+                                  : 'bg-gray-200 text-gray-700'
                         }`}
                         size="small"
                     />
                 )}
             </Box>
 
-            <Typography
-                variant="h4"
-                component="div"
-                className="font-bold mb-1"
-            >
+            <Typography variant="h4" component="div" className="font-bold mb-1">
                 {value}
             </Typography>
 

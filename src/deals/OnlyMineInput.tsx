@@ -17,7 +17,7 @@ export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
         setFilters(newFilterValues, displayedFilters);
     };
     return (
-        <Box sx={{ marginBottom: 1, marginLeft: 1 }}>
+        <Box className="mb-1 ml-1">
             <FormControlLabel
                 control={
                     <Switch

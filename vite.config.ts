@@ -55,6 +55,9 @@ export default defineConfig({
     esbuild: {
         // Use esbuild for faster transpilation
         target: 'es2015',
-        drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+        drop:
+            process.env.NODE_ENV === 'production'
+                ? ['console', 'debugger']
+                : [],
     },
 });

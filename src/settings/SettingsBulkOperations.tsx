@@ -69,7 +69,7 @@ export const SettingsBulkOperations: React.FC = () => {
 
                 if (format === 'csv') {
                     const csvData = Papa.unparse(
-                        allSettings.map((setting) => ({
+                        allSettings.map(setting => ({
                             id: setting.id,
                             category: setting.category,
                             key: setting.key,
@@ -128,7 +128,7 @@ export const SettingsBulkOperations: React.FC = () => {
 
             Papa.parse(file, {
                 header: true,
-                complete: async (results) => {
+                complete: async results => {
                     const { data } = results;
                     const result: BulkOperationResult = {
                         success: 0,
@@ -181,7 +181,7 @@ export const SettingsBulkOperations: React.FC = () => {
 
                                 // Check for duplicates
                                 const existingDuplicate = allSettings?.find(
-                                    (s) =>
+                                    s =>
                                         s.category === row.category &&
                                         s.key === row.key
                                 );
@@ -276,16 +276,15 @@ export const SettingsBulkOperations: React.FC = () => {
                         }
                     } catch (error) {
                         console.error('Import error:', error);
-                        notify(
-                            'Import failed due to an unexpected error',
-                            { type: 'error' }
-                        );
+                        notify('Import failed due to an unexpected error', {
+                            type: 'error',
+                        });
                     } finally {
                         setIsProcessing(false);
                         setProgress(0);
                     }
                 },
-                error: (error) => {
+                error: error => {
                     console.error('CSV parsing error:', error);
                     notify('Failed to parse CSV file', { type: 'error' });
                     setIsProcessing(false);
@@ -443,10 +442,7 @@ export const SettingsBulkOperations: React.FC = () => {
                                 value={progress}
                                 sx={{ mb: 1 }}
                             />
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 {Math.round(progress)}% complete
                             </Typography>
                         </CardContent>
@@ -463,12 +459,7 @@ export const SettingsBulkOperations: React.FC = () => {
                                 Import Results
                             </Typography>
 
-                            <Box
-                                display="flex"
-                                gap={1}
-                                mb={2}
-                                flexWrap="wrap"
-                            >
+                            <Box display="flex" gap={1} mb={2} flexWrap="wrap">
                                 <Chip
                                     icon={<CheckIcon />}
                                     label={`${operationResult.success} Success`}

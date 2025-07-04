@@ -4,12 +4,10 @@ import {
     CardContent,
     Typography,
     Box,
-    Grid,
     Chip,
     Stack,
-    useTheme,
-    useMediaQuery,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { BarChart } from '@/components/ui-kit/Chart';
 import {
     TrendingUp as TrendingUpIcon,
     TrendingDown as TrendingDownIcon,
@@ -21,9 +19,16 @@ import {
     Reply as FollowUpIcon,
     Assignment as InteractionIcon,
 } from '@mui/icons-material';
-import { ResponsiveBar } from '@nivo/bar';
 import { useGetList } from 'react-admin';
-import { format, startOfWeek, startOfMonth, subDays, subWeeks, subMonths } from 'date-fns';
+import {
+    format,
+    startOfWeek,
+    startOfMonth,
+    subDays,
+    subWeeks,
+    subMonths,
+} from 'date-fns';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 import { Interaction, Setting } from '../types';
 import { safeTrend, validateChartData, safeAmount } from '../utils/chartSafety';
@@ -50,9 +55,8 @@ interface InteractionMetric {
 }
 
 export const InteractionMetricsCard = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    
+    const isMobile = useBreakpoint('md');
+
     // Get interaction types from settings
     const { data: interactionTypes } = useGetList<Setting>('settings', {
         filter: { category: 'interaction_type' },
@@ -62,20 +66,27 @@ export const InteractionMetricsCard = () => {
 
     // Get interactions from the last 3 months for trend analysis
     const threeMonthsAgo = subMonths(new Date(), 3).toISOString();
-    const { data: interactions, isPending } = useGetList<Interaction>('interactions', {
-        pagination: { page: 1, perPage: 1000 },
-        sort: { field: 'completedDate', order: 'DESC' },
-        filter: {
-            isCompleted: true,
-            'completedDate@gte': threeMonthsAgo,
-        },
-    });
+    const { data: interactions, isPending } = useGetList<Interaction>(
+        'interactions',
+        {
+            pagination: { page: 1, perPage: 1000 },
+            sort: { field: 'completedDate', order: 'DESC' },
+            filter: {
+                isCompleted: true,
+                'completedDate@gte': threeMonthsAgo,
+            },
+        }
+    );
 
     const metrics = useMemo(() => {
         const validInteractions = validateChartData(interactions);
         const validInteractionTypes = validateChartData(interactionTypes);
-        
-        if (validInteractions.length === 0 || validInteractionTypes.length === 0) return null;
+
+        if (
+            validInteractions.length === 0 ||
+            validInteractionTypes.length === 0
+        )
+            return null;
 
         const now = new Date();
         const weekStart = startOfWeek(now);
@@ -111,37 +122,48 @@ export const InteractionMetricsCard = () => {
         };
 
         // Today's interactions
-        const todayInteractions = validInteractions.filter(i => 
-            i.completedDate && format(new Date(i.completedDate), 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')
+        const todayInteractions = validInteractions.filter(
+            i =>
+                i.completedDate &&
+                format(new Date(i.completedDate), 'yyyy-MM-dd') ===
+                    format(now, 'yyyy-MM-dd')
         );
 
         // This week's interactions
-        const thisWeekInteractions = validInteractions.filter(i => 
-            i.completedDate && new Date(i.completedDate) >= weekStart
+        const thisWeekInteractions = validInteractions.filter(
+            i => i.completedDate && new Date(i.completedDate) >= weekStart
         );
 
         // Last week's interactions
-        const lastWeekInteractions = validInteractions.filter(i => 
-            i.completedDate && 
-            new Date(i.completedDate) >= lastWeekStart && 
-            new Date(i.completedDate) < weekStart
+        const lastWeekInteractions = validInteractions.filter(
+            i =>
+                i.completedDate &&
+                new Date(i.completedDate) >= lastWeekStart &&
+                new Date(i.completedDate) < weekStart
         );
 
         // This month's interactions
-        const thisMonthInteractions = validInteractions.filter(i => 
-            i.completedDate && new Date(i.completedDate) >= monthStart
+        const thisMonthInteractions = validInteractions.filter(
+            i => i.completedDate && new Date(i.completedDate) >= monthStart
         );
 
         // Last month's interactions
-        const lastMonthInteractions = validInteractions.filter(i => 
-            i.completedDate && 
-            new Date(i.completedDate) >= lastMonthStart && 
-            new Date(i.completedDate) < monthStart
+        const lastMonthInteractions = validInteractions.filter(
+            i =>
+                i.completedDate &&
+                new Date(i.completedDate) >= lastMonthStart &&
+                new Date(i.completedDate) < monthStart
         );
 
         // Calculate trends safely
-        const weeklyTrend = safeTrend(thisWeekInteractions.length, lastWeekInteractions.length);
-        const monthlyTrend = safeTrend(thisMonthInteractions.length, lastMonthInteractions.length);
+        const weeklyTrend = safeTrend(
+            thisWeekInteractions.length,
+            lastWeekInteractions.length
+        );
+        const monthlyTrend = safeTrend(
+            thisMonthInteractions.length,
+            lastMonthInteractions.length
+        );
 
         // Weekly breakdown for chart
         const weeklyData: InteractionMetric[] = [];
@@ -152,8 +174,13 @@ export const InteractionMetricsCard = () => {
                 if (!interaction.completedDate) return false;
                 const interactionDate = new Date(interaction.completedDate);
                 const weekStartDate = startOfWeek(weekDate);
-                const weekEndDate = new Date(weekStartDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-                return interactionDate >= weekStartDate && interactionDate < weekEndDate;
+                const weekEndDate = new Date(
+                    weekStartDate.getTime() + 7 * 24 * 60 * 60 * 1000
+                );
+                return (
+                    interactionDate >= weekStartDate &&
+                    interactionDate < weekEndDate
+                );
             });
 
             const typeCounts = countByType(weeklyInteractions);
@@ -200,95 +227,132 @@ export const InteractionMetricsCard = () => {
                 <Typography variant="h6" gutterBottom>
                     Interaction Activity
                 </Typography>
-                
-                <Grid container spacing={2} sx={{ mb: 3 }}>
+
+                <div className={`grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3`}>
                     {/* Today's Count */}
-                    <Grid item xs={12} sm={4}>
-                        <Box textAlign="center">
-                            <Typography variant="h3" color="primary.main">
-                                {safeAmount(metrics.today)}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                Today
-                            </Typography>
-                        </Box>
-                    </Grid>
+                    <Box className="text-center">
+                        <Typography variant="h3" className="text-blue-600">
+                            {safeAmount(metrics.today)}
+                        </Typography>
+                        <Typography variant="body2" className="text-gray-500">
+                            Today
+                        </Typography>
+                    </Box>
 
                     {/* This Week */}
-                    <Grid item xs={12} sm={4}>
-                        <Box textAlign="center">
-                            <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
-                                <Typography variant="h3" color="secondary.main">
-                                    {safeAmount(metrics.thisWeek)}
-                                </Typography>
-                                <Chip
-                                    size="small"
-                                    icon={metrics.weeklyTrend >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
-                                    label={`${safeAmount(metrics.weeklyTrend).toFixed(0)}%`}
-                                    color={metrics.weeklyTrend >= 0 ? 'success' : 'error'}
-                                    variant="outlined"
-                                />
-                            </Stack>
-                            <Typography variant="body2" color="textSecondary">
-                                This Week
+                    <Box className="text-center">
+                        <Stack className="flex flex-row items-center justify-center space-x-1">
+                            <Typography
+                                variant="h3"
+                                className="text-purple-600"
+                            >
+                                {safeAmount(metrics.thisWeek)}
                             </Typography>
-                        </Box>
-                    </Grid>
+                            <Chip
+                                size="small"
+                                icon={
+                                    metrics.weeklyTrend >= 0 ? (
+                                        <TrendingUpIcon />
+                                    ) : (
+                                        <TrendingDownIcon />
+                                    )
+                                }
+                                label={`${safeAmount(metrics.weeklyTrend).toFixed(0)}%`}
+                                className={`${
+                                    metrics.weeklyTrend >= 0
+                                        ? 'text-green-600 border-green-600'
+                                        : 'text-red-600 border-red-600'
+                                } bg-transparent`}
+                                variant="outlined"
+                            />
+                        </Stack>
+                        <Typography variant="body2" className="text-gray-500">
+                            This Week
+                        </Typography>
+                    </Box>
 
                     {/* This Month */}
-                    <Grid item xs={12} sm={4}>
-                        <Box textAlign="center">
-                            <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
-                                <Typography variant="h3" color="info.main">
-                                    {safeAmount(metrics.thisMonth)}
-                                </Typography>
-                                <Chip
-                                    size="small"
-                                    icon={metrics.monthlyTrend >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
-                                    label={`${safeAmount(metrics.monthlyTrend).toFixed(0)}%`}
-                                    color={metrics.monthlyTrend >= 0 ? 'success' : 'error'}
-                                    variant="outlined"
-                                />
-                            </Stack>
-                            <Typography variant="body2" color="textSecondary">
-                                This Month
+                    <Box className="text-center">
+                        <Stack className="flex flex-row items-center justify-center space-x-1">
+                            <Typography variant="h3" className="text-blue-500">
+                                {safeAmount(metrics.thisMonth)}
                             </Typography>
-                        </Box>
-                    </Grid>
-                </Grid>
+                            <Chip
+                                size="small"
+                                icon={
+                                    metrics.monthlyTrend >= 0 ? (
+                                        <TrendingUpIcon />
+                                    ) : (
+                                        <TrendingDownIcon />
+                                    )
+                                }
+                                label={`${safeAmount(metrics.monthlyTrend).toFixed(0)}%`}
+                                className={`${
+                                    metrics.monthlyTrend >= 0
+                                        ? 'text-green-600 border-green-600'
+                                        : 'text-red-600 border-red-600'
+                                } bg-transparent`}
+                                variant="outlined"
+                            />
+                        </Stack>
+                        <Typography variant="body2" className="text-gray-500">
+                            This Month
+                        </Typography>
+                    </Box>
+                </div>
 
                 {/* Interaction Types Breakdown */}
-                <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" className="mt-2" gutterBottom>
                     This Week by Type
                 </Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
-                    {Object.entries(metrics.thisWeekByType).map(([type, count]) => (
-                        <Chip
-                            key={type}
-                            size="small"
-                            icon={interactionTypeIcons[type] || <InteractionIcon />}
-                            label={`${type}: ${count}`}
-                            variant="outlined"
-                            sx={{ mb: 1 }}
-                        />
-                    ))}
+                <Stack className="flex flex-row space-x-1 flex-wrap mb-2">
+                    {Object.entries(metrics.thisWeekByType).map(
+                        ([type, count]) => (
+                            <Chip
+                                key={type}
+                                size="small"
+                                icon={
+                                    interactionTypeIcons[type] || (
+                                        <InteractionIcon />
+                                    )
+                                }
+                                label={`${type}: ${count}`}
+                                variant="outlined"
+                                className="mb-1"
+                            />
+                        )
+                    )}
                 </Stack>
 
                 {/* Weekly Trend Chart */}
-                <Box sx={{ height: isMobile ? 200 : 250, mt: 2 }}>
+                <Box className="mt-2">
                     {metrics.weeklyData && metrics.weeklyData.length > 0 ? (
-                        <ResponsiveBar
+                        <BarChart
                             data={metrics.weeklyData}
-                            keys={['calls', 'emails', 'inPerson', 'demos', 'quotes', 'followUps']}
+                            keys={[
+                                'calls',
+                                'emails',
+                                'inPerson',
+                                'demos',
+                                'quotes',
+                                'followUps',
+                            ]}
                             indexBy="period"
-                            margin={{ 
-                                top: 20, 
-                                right: isMobile ? 10 : 30, 
-                                bottom: isMobile ? 40 : 50, 
-                                left: isMobile ? 10 : 30 
+                            height={isMobile ? 200 : 250}
+                            margin={{
+                                top: 20,
+                                right: isMobile ? 10 : 30,
+                                bottom: isMobile ? 40 : 50,
+                                left: isMobile ? 10 : 30,
                             }}
-                            padding={0.3}
-                            colors={['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#F44336', '#00BCD4']}
+                            colors={[
+                                '#2196F3',
+                                '#4CAF50',
+                                '#FF9800',
+                                '#9C27B0',
+                                '#F44336',
+                                '#00BCD4',
+                            ]}
                             enableGridY={false}
                             enableGridX={false}
                             enableLabel={false}
@@ -296,45 +360,13 @@ export const InteractionMetricsCard = () => {
                                 tickSize: 0,
                                 tickPadding: 5,
                                 tickRotation: isMobile ? -45 : 0,
-                                format: (value: string) => isMobile ? value.split(' ')[1] : value,
+                                format: (value: string) =>
+                                    isMobile ? value.split(' ')[1] : value,
                             }}
                             axisLeft={null}
-                            axisRight={null}
-                            animate
-                            motionConfig="gentle"
-                            tooltip={({ id, value, color, indexValue }) => (
-                                <div
-                                    style={{
-                                        background: 'white',
-                                        padding: '9px 12px',
-                                        border: '1px solid #ccc',
-                                        borderRadius: '4px',
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                    }}
-                                >
-                                    <strong>{indexValue}</strong><br />
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <div
-                                            style={{
-                                                width: '12px',
-                                                height: '12px',
-                                                backgroundColor: color,
-                                                borderRadius: '2px',
-                                            }}
-                                        />
-                                        {id}: {safeAmount(value)}
-                                    </div>
-                                </div>
-                            )}
                         />
                     ) : (
-                        <Box 
-                            display="flex" 
-                            alignItems="center" 
-                            justifyContent="center" 
-                            height="100%"
-                            color="text.secondary"
-                        >
+                        <Box className="flex items-center justify-center h-48 text-gray-500">
                             <Typography variant="body2">
                                 No interaction data available
                             </Typography>

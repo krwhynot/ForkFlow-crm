@@ -67,7 +67,8 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
 
         // Check territory assignment for brokers
         if (identity.role === 'broker') {
-            if (identity.territory && identity.territory.length > 0) score += 20;
+            if (identity.territory && identity.territory.length > 0)
+                score += 20;
             else {
                 issues.push('No territory assigned');
                 recommendations.push('Get territory assignment from manager');
@@ -79,7 +80,8 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
         // Check recent activity
         if (identity.lastLoginAt) {
             const lastLogin = new Date(identity.lastLoginAt);
-            const daysSinceLogin = (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
+            const daysSinceLogin =
+                (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
             if (daysSinceLogin < 7) score += 20;
             else {
                 issues.push('Inactive account');
@@ -116,11 +118,15 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
             case 'medium':
                 return <ShieldCheckIcon className="h-4 w-4 text-yellow-600" />;
             case 'low':
-                return <ShieldExclamationIcon className="h-4 w-4 text-yellow-600" />;
+                return (
+                    <ShieldExclamationIcon className="h-4 w-4 text-yellow-600" />
+                );
             case 'critical':
                 return <XCircleIcon className="h-4 w-4 text-red-600" />;
             default:
-                return <ExclamationTriangleIcon className="h-4 w-4 text-gray-600" />;
+                return (
+                    <ExclamationTriangleIcon className="h-4 w-4 text-gray-600" />
+                );
         }
     };
 
@@ -174,9 +180,11 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
                     <div>
                         <strong>Recommendations:</strong>
                         <ul className="m-0 pl-4">
-                            {securityStatus.recommendations.map((rec, index) => (
-                                <li key={index}>{rec}</li>
-                            ))}
+                            {securityStatus.recommendations.map(
+                                (rec, index) => (
+                                    <li key={index}>{rec}</li>
+                                )
+                            )}
                         </ul>
                     </div>
                 )}
@@ -208,9 +216,13 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
     return (
         <div className="flex items-center gap-2">
             {showDetails && identity && (
-                <RoleChip role={identity.role} size="small" variant="outlined" />
+                <RoleChip
+                    role={identity.role}
+                    size="small"
+                    variant="outlined"
+                />
             )}
-            
+
             <Tooltip content={getTooltipContent()}>
                 <Badge
                     badgeContent={securityStatus.issues.length || null}

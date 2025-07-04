@@ -45,13 +45,17 @@ export class InteractionValidator {
 
     updateSettings(settings: Setting[]): void {
         this.settings = settings;
-        this.interactionTypes = settings.filter(s => s.category === 'interaction_type');
+        this.interactionTypes = settings.filter(
+            s => s.category === 'interaction_type'
+        );
     }
 
     /**
      * Comprehensive validation of interaction data
      */
-    validateInteraction(interaction: Partial<Interaction>): InteractionValidationResult {
+    validateInteraction(
+        interaction: Partial<Interaction>
+    ): InteractionValidationResult {
         const errors: InteractionValidationError[] = [];
         const warnings: InteractionValidationError[] = [];
 
@@ -86,7 +90,9 @@ export class InteractionValidator {
     /**
      * Sanitize interaction data before validation/storage
      */
-    sanitizeInteraction(interaction: Partial<Interaction>): Partial<Interaction> {
+    sanitizeInteraction(
+        interaction: Partial<Interaction>
+    ): Partial<Interaction> {
         const sanitized = { ...interaction };
 
         // Trim string fields
@@ -112,10 +118,12 @@ export class InteractionValidator {
 
         // Round GPS coordinates to reasonable precision (6 decimal places)
         if (sanitized.latitude !== undefined) {
-            sanitized.latitude = Math.round(sanitized.latitude * 1000000) / 1000000;
+            sanitized.latitude =
+                Math.round(sanitized.latitude * 1000000) / 1000000;
         }
         if (sanitized.longitude !== undefined) {
-            sanitized.longitude = Math.round(sanitized.longitude * 1000000) / 1000000;
+            sanitized.longitude =
+                Math.round(sanitized.longitude * 1000000) / 1000000;
         }
 
         // Ensure duration is positive integer
@@ -195,7 +203,8 @@ export class InteractionValidator {
         ) {
             errors.push({
                 field: 'latitude',
-                message: 'Both latitude and longitude must be provided together',
+                message:
+                    'Both latitude and longitude must be provided together',
                 code: 'INCOMPLETE_GPS_COORDINATES',
             });
             return;
@@ -234,7 +243,8 @@ export class InteractionValidator {
             if (interaction.latitude === 0 && interaction.longitude === 0) {
                 warnings.push({
                     field: 'latitude',
-                    message: 'GPS coordinates appear to be default values (0,0)',
+                    message:
+                        'GPS coordinates appear to be default values (0,0)',
                     code: 'SUSPICIOUS_GPS_COORDINATES',
                 });
             }
@@ -273,7 +283,8 @@ export class InteractionValidator {
                 if (scheduledDate > oneYearFromNow) {
                     warnings.push({
                         field: 'scheduledDate',
-                        message: 'Scheduled date is more than a year in the future',
+                        message:
+                            'Scheduled date is more than a year in the future',
                         code: 'FUTURE_SCHEDULED_DATE',
                     });
                 }
@@ -383,7 +394,8 @@ export class InteractionValidator {
                     code: 'INVALID_DURATION',
                 });
             }
-            if (interaction.duration > 1440) { // 24 hours
+            if (interaction.duration > 1440) {
+                // 24 hours
                 warnings.push({
                     field: 'duration',
                     message: 'Duration exceeds 24 hours - please verify',
@@ -410,7 +422,8 @@ export class InteractionValidator {
         if (interaction.description && interaction.description.length > 500) {
             warnings.push({
                 field: 'description',
-                message: 'Long descriptions may be difficult to read on mobile devices',
+                message:
+                    'Long descriptions may be difficult to read on mobile devices',
                 code: 'MOBILE_USABILITY_CONCERN',
             });
         }
@@ -419,7 +432,8 @@ export class InteractionValidator {
         if (!interaction.subject || interaction.subject.trim().length < 3) {
             warnings.push({
                 field: 'subject',
-                message: 'Clear subjects help with mobile interaction management',
+                message:
+                    'Clear subjects help with mobile interaction management',
                 code: 'MOBILE_WORKFLOW_RECOMMENDATION',
             });
         }
@@ -463,7 +477,8 @@ export class InteractionValidator {
         }
 
         // Warn about large files for mobile users
-        if (file.size > 2 * 1024 * 1024) { // 2MB
+        if (file.size > 2 * 1024 * 1024) {
+            // 2MB
             warnings.push({
                 field: 'attachment',
                 message: 'Large files may upload slowly on mobile networks',

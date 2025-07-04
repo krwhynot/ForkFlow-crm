@@ -74,29 +74,31 @@ const SQL_INJECTION_PATTERNS = [
 /**
  * Initialize security middleware
  */
-export const initializeSecurity = (config: Partial<SecurityConfig> = {}): SecurityConfig => {
+export const initializeSecurity = (
+    config: Partial<SecurityConfig> = {}
+): SecurityConfig => {
     const securityConfig = { ...DEFAULT_SECURITY_CONFIG, ...config };
-    
+
     // Initialize CSRF token
     if (securityConfig.csrfProtection) {
         initializeCSRFProtection();
     }
-    
+
     // Setup Content Security Policy
     if (securityConfig.contentSecurityPolicy) {
         setupContentSecurityPolicy();
     }
-    
+
     // Setup HTTP security headers
     if (securityConfig.httpSecurityHeaders) {
         setupSecurityHeaders();
     }
-    
+
     logAuditEvent('system.startup', {
         securityConfig,
         message: 'Security middleware initialized',
     });
-    
+
     return securityConfig;
 };
 
@@ -107,9 +109,11 @@ const initializeCSRFProtection = (): void => {
     // Generate initial CSRF token
     currentCSRFToken = generateCSRFToken();
     sessionStorage.setItem(CSRF_TOKEN_KEY, currentCSRFToken);
-    
+
     // Set meta tag for forms
-    let metaTag = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+    let metaTag = document.querySelector(
+        'meta[name="csrf-token"]'
+    ) as HTMLMetaElement;
     if (!metaTag) {
         metaTag = document.createElement('meta');
         metaTag.name = 'csrf-token';
@@ -123,7 +127,8 @@ const initializeCSRFProtection = (): void => {
  */
 export const getCSRFToken = (): string => {
     if (!currentCSRFToken) {
-        currentCSRFToken = sessionStorage.getItem(CSRF_TOKEN_KEY) || generateCSRFToken();
+        currentCSRFToken =
+            sessionStorage.getItem(CSRF_TOKEN_KEY) || generateCSRFToken();
         sessionStorage.setItem(CSRF_TOKEN_KEY, currentCSRFToken);
     }
     return currentCSRFToken;
@@ -152,11 +157,13 @@ const setupContentSecurityPolicy = (): void => {
         "base-uri 'self'",
         "form-action 'self'",
         "frame-ancestors 'none'",
-        "upgrade-insecure-requests",
+        'upgrade-insecure-requests',
     ].join('; ');
-    
+
     // Add CSP meta tag
-    let metaTag = document.querySelector('meta[http-equiv="Content-Security-Policy"]') as HTMLMetaElement;
+    let metaTag = document.querySelector(
+        'meta[http-equiv="Content-Security-Policy"]'
+    ) as HTMLMetaElement;
     if (!metaTag) {
         metaTag = document.createElement('meta');
         metaTag.httpEquiv = 'Content-Security-Policy';
@@ -176,11 +183,15 @@ const setupSecurityHeaders = (): void => {
         'X-XSS-Protection': '1; mode=block',
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Permissions-Policy': 'geolocation=(self), microphone=(), camera=()',
-        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+        'Strict-Transport-Security':
+            'max-age=31536000; includeSubDomains; preload',
     };
-    
+
     if (process.env.NODE_ENV === 'development') {
-        console.log('🔒 Recommended HTTP Security Headers for server:', recommendedHeaders);
+        console.log(
+            '🔒 Recommended HTTP Security Headers for server:',
+            recommendedHeaders
+        );
     }
 };
 
@@ -192,7 +203,7 @@ export const validateRequestSecurity = async (
     config: SecurityConfig = DEFAULT_SECURITY_CONFIG
 ): Promise<SecurityViolation[]> => {
     const violations: SecurityViolation[] = [];
-    
+
     try {
         // CSRF Protection
         if (config.csrfProtection && isStateChangingMethod(context.method)) {
@@ -210,101 +221,125 @@ export const validateRequestSecurity = async (
                     blocked: true,
                 };
                 violations.push(violation);
-                
-                await logAuditEvent('security.csrf_violation', violation.details, {
-                    severity: 'critical',
-                    outcome: 'failure',
-                    userId: context.userId,
-                    sessionId: context.sessionId,
-                });
+
+                await logAuditEvent(
+                    'security.csrf_violation',
+                    violation.details,
+                    {
+                        severity: 'critical',
+                        outcome: 'failure',
+                        userId: context.userId,
+                        sessionId: context.sessionId,
+                    }
+                );
             }
         }
-        
+
         // Rate Limiting
         if (config.rateLimitingEnabled && context.ipAddress) {
-            const rateLimitViolation = checkRequestRateLimit(context.ipAddress, context.url);
+            const rateLimitViolation = checkRequestRateLimit(
+                context.ipAddress,
+                context.url
+            );
             if (rateLimitViolation) {
                 violations.push(rateLimitViolation);
-                
-                await logAuditEvent('security.rate_limit_exceeded', {
-                    ipAddress: context.ipAddress,
-                    url: context.url,
-                    method: context.method,
-                }, {
-                    severity: 'high',
-                    outcome: 'failure',
-                    userId: context.userId,
-                });
+
+                await logAuditEvent(
+                    'security.rate_limit_exceeded',
+                    {
+                        ipAddress: context.ipAddress,
+                        url: context.url,
+                        method: context.method,
+                    },
+                    {
+                        severity: 'high',
+                        outcome: 'failure',
+                        userId: context.userId,
+                    }
+                );
             }
         }
-        
+
         // XSS Protection
         if (config.xssProtection && context.body) {
             const xssViolation = detectXSSAttempt(context.body);
             if (xssViolation) {
                 violations.push(xssViolation);
-                
-                await logAuditEvent('security.xss_attempt', {
-                    url: context.url,
-                    method: context.method,
-                    suspiciousContent: xssViolation.details.pattern,
-                }, {
-                    severity: 'critical',
-                    outcome: 'failure',
-                    userId: context.userId,
-                });
+
+                await logAuditEvent(
+                    'security.xss_attempt',
+                    {
+                        url: context.url,
+                        method: context.method,
+                        suspiciousContent: xssViolation.details.pattern,
+                    },
+                    {
+                        severity: 'critical',
+                        outcome: 'failure',
+                        userId: context.userId,
+                    }
+                );
             }
         }
-        
+
         // SQL Injection Protection
         if (config.sqlInjectionProtection && context.body) {
             const sqlViolation = detectSQLInjectionAttempt(context.body);
             if (sqlViolation) {
                 violations.push(sqlViolation);
-                
-                await logAuditEvent('security.sql_injection_attempt', {
-                    url: context.url,
-                    method: context.method,
-                    suspiciousContent: sqlViolation.details.pattern,
-                }, {
-                    severity: 'critical',
-                    outcome: 'failure',
-                    userId: context.userId,
-                });
+
+                await logAuditEvent(
+                    'security.sql_injection_attempt',
+                    {
+                        url: context.url,
+                        method: context.method,
+                        suspiciousContent: sqlViolation.details.pattern,
+                    },
+                    {
+                        severity: 'critical',
+                        outcome: 'failure',
+                        userId: context.userId,
+                    }
+                );
             }
         }
-        
+
         // Request Validation
         if (config.requestValidation) {
             const validationViolation = validateRequestFormat(context);
             if (validationViolation) {
                 violations.push(validationViolation);
-                
-                await logAuditEvent('security.malformed_request', {
-                    url: context.url,
-                    method: context.method,
-                    issue: validationViolation.message,
-                }, {
-                    severity: 'medium',
-                    outcome: 'warning',
-                    userId: context.userId,
-                });
+
+                await logAuditEvent(
+                    'security.malformed_request',
+                    {
+                        url: context.url,
+                        method: context.method,
+                        issue: validationViolation.message,
+                    },
+                    {
+                        severity: 'medium',
+                        outcome: 'warning',
+                        userId: context.userId,
+                    }
+                );
             }
         }
-        
     } catch (error) {
         console.error('Security validation error:', error);
-        
+
         const systemViolation: SecurityViolation = {
             type: 'malformed_request',
             severity: 'medium',
             message: 'Security validation failed',
-            details: { error: error instanceof Error ? error.message : 'Unknown error' },
+            details: {
+                error: error instanceof Error ? error.message : 'Unknown error',
+            },
             blocked: false,
         };
         violations.push(systemViolation);
     }
-    
+
     return violations;
 };
 
@@ -327,15 +362,15 @@ const checkRequestRateLimit = (
     const key = `${identifier}:${endpoint}`;
     const now = Date.now();
     const rateLimitData = rateLimitMap.get(key);
-    
+
     if (!rateLimitData || now > rateLimitData.resetTime) {
         // Reset or initialize rate limit
         rateLimitMap.set(key, { count: 1, resetTime: now + windowMs });
         return null;
     }
-    
+
     rateLimitData.count++;
-    
+
     if (rateLimitData.count > maxRequests) {
         return {
             type: 'rate_limit',
@@ -351,7 +386,7 @@ const checkRequestRateLimit = (
             blocked: true,
         };
     }
-    
+
     return null;
 };
 
@@ -360,7 +395,7 @@ const checkRequestRateLimit = (
  */
 const detectXSSAttempt = (content: any): SecurityViolation | null => {
     const contentStr = JSON.stringify(content).toLowerCase();
-    
+
     for (const pattern of XSS_PATTERNS) {
         if (pattern.test(contentStr)) {
             return {
@@ -375,7 +410,7 @@ const detectXSSAttempt = (content: any): SecurityViolation | null => {
             };
         }
     }
-    
+
     return null;
 };
 
@@ -384,7 +419,7 @@ const detectXSSAttempt = (content: any): SecurityViolation | null => {
  */
 const detectSQLInjectionAttempt = (content: any): SecurityViolation | null => {
     const contentStr = JSON.stringify(content).toLowerCase();
-    
+
     for (const pattern of SQL_INJECTION_PATTERNS) {
         if (pattern.test(contentStr)) {
             return {
@@ -399,16 +434,19 @@ const detectSQLInjectionAttempt = (content: any): SecurityViolation | null => {
             };
         }
     }
-    
+
     return null;
 };
 
 /**
  * Validate request format
  */
-const validateRequestFormat = (context: RequestContext): SecurityViolation | null => {
+const validateRequestFormat = (
+    context: RequestContext
+): SecurityViolation | null => {
     // Check for extremely large payloads
-    if (context.body && JSON.stringify(context.body).length > 1024 * 1024) { // 1MB limit
+    if (context.body && JSON.stringify(context.body).length > 1024 * 1024) {
+        // 1MB limit
         return {
             type: 'malformed_request',
             severity: 'medium',
@@ -420,12 +458,12 @@ const validateRequestFormat = (context: RequestContext): SecurityViolation | nul
             blocked: true,
         };
     }
-    
+
     // Check for suspicious user agents
     if (context.userAgent) {
         const suspiciousAgents = ['bot', 'crawler', 'spider', 'scraper'];
         const agentLower = context.userAgent.toLowerCase();
-        
+
         if (suspiciousAgents.some(agent => agentLower.includes(agent))) {
             return {
                 type: 'malformed_request',
@@ -438,27 +476,36 @@ const validateRequestFormat = (context: RequestContext): SecurityViolation | nul
             };
         }
     }
-    
+
     return null;
 };
 
 /**
  * Create secure HTTP client wrapper
  */
-export const createSecureHttpClient = (baseURL: string, config: SecurityConfig = DEFAULT_SECURITY_CONFIG) => {
-    return async (url: string, options: RequestInit = {}): Promise<Response> => {
+export const createSecureHttpClient = (
+    baseURL: string,
+    config: SecurityConfig = DEFAULT_SECURITY_CONFIG
+) => {
+    return async (
+        url: string,
+        options: RequestInit = {}
+    ): Promise<Response> => {
         const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
         const headers = new Headers(options.headers);
-        
+
         // Add CSRF token for state-changing requests
-        if (config.csrfProtection && isStateChangingMethod(options.method || 'GET')) {
+        if (
+            config.csrfProtection &&
+            isStateChangingMethod(options.method || 'GET')
+        ) {
             headers.set('X-CSRF-Token', getCSRFToken());
         }
-        
+
         // Add security headers
         headers.set('X-Requested-With', 'XMLHttpRequest');
         headers.set('Cache-Control', 'no-cache');
-        
+
         // Create request context for validation
         const context: RequestContext = {
             method: options.method || 'GET',
@@ -467,36 +514,42 @@ export const createSecureHttpClient = (baseURL: string, config: SecurityConfig =
             body: options.body ? JSON.parse(options.body as string) : undefined,
             userAgent: navigator.userAgent,
         };
-        
+
         // Validate request security
         const violations = await validateRequestSecurity(context, config);
-        
+
         // Block request if critical violations found
         const criticalViolations = violations.filter(v => v.blocked);
         if (criticalViolations.length > 0) {
-            const error = new Error(`Security violation: ${criticalViolations[0].message}`);
+            const error = new Error(
+                `Security violation: ${criticalViolations[0].message}`
+            );
             (error as any).violations = violations;
             throw error;
         }
-        
+
         // Make the request
         const response = await fetch(fullURL, {
             ...options,
             headers,
         });
-        
+
         // Log successful request
         if (response.ok) {
-            await logAuditEvent('data.read', {
-                method: context.method,
-                url: fullURL,
-                status: response.status,
-            }, {
-                severity: 'low',
-                outcome: 'success',
-            });
+            await logAuditEvent(
+                'data.read',
+                {
+                    method: context.method,
+                    url: fullURL,
+                    status: response.status,
+                },
+                {
+                    severity: 'low',
+                    outcome: 'success',
+                }
+            );
         }
-        
+
         return response;
     };
 };
@@ -511,20 +564,23 @@ export const getSecurityStatistics = (): {
     securityLevel: 'low' | 'medium' | 'high';
 } => {
     const now = Date.now();
-    const activeRateLimits = Array.from(rateLimitMap.values())
-        .filter(data => now < data.resetTime).length;
-    
-    const csrfTokenAge = currentCSRFToken ? now - parseInt(currentCSRFToken.substr(-8), 16) : 0;
-    
+    const activeRateLimits = Array.from(rateLimitMap.values()).filter(
+        data => now < data.resetTime
+    ).length;
+
+    const csrfTokenAge = currentCSRFToken
+        ? now - parseInt(currentCSRFToken.substr(-8), 16)
+        : 0;
+
     // Calculate security level based on various factors
     let securityLevel: 'low' | 'medium' | 'high' = 'medium';
-    
+
     if (activeRateLimits > 10 || csrfTokenAge > 24 * 60 * 60 * 1000) {
         securityLevel = 'low';
     } else if (activeRateLimits === 0 && csrfTokenAge < 60 * 60 * 1000) {
         securityLevel = 'high';
     }
-    
+
     return {
         activeRateLimits,
         recentViolations: 0, // Would come from audit log analysis

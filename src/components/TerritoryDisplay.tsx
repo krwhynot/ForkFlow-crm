@@ -1,7 +1,10 @@
 // src/components/TerritoryDisplay.tsx
 import React from 'react';
-import { Chip, Tooltip, Box, Typography } from '@mui/material';
-import { LocationOn as LocationIcon, Info as InfoIcon } from '@mui/icons-material';
+import { Chip, Tooltip, Box, Typography } from '@/components/ui-kit';
+import {
+    LocationOn as LocationIcon,
+    Info as InfoIcon,
+} from '@mui/icons-material';
 import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
 import { parseTerritory } from '../utils/territoryFilter';
 
@@ -10,22 +13,22 @@ interface TerritoryDisplayProps {
      * Show tooltip with detailed territory breakdown
      */
     showTooltip?: boolean;
-    
+
     /**
      * Size of the chip
      */
     size?: 'small' | 'medium';
-    
+
     /**
      * Variant of the chip
      */
     variant?: 'filled' | 'outlined';
-    
+
     /**
      * Color of the chip
      */
     color?: 'default' | 'primary' | 'secondary' | 'info';
-    
+
     /**
      * Custom territory to display (if not using current user's territory)
      */
@@ -37,15 +40,16 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
     size = 'small',
     variant = 'outlined',
     color = 'primary',
-    territory: customTerritory
+    territory: customTerritory,
 }) => {
-    const { hasRestrictions, territoryDisplayName, user } = useTerritoryFilter();
-    
+    const { hasRestrictions, territoryDisplayName, user } =
+        useTerritoryFilter();
+
     const territory = customTerritory || user?.territory || [];
-    const displayName = customTerritory 
+    const displayName = customTerritory
         ? getTerritoryDisplayName(customTerritory)
         : territoryDisplayName;
-    
+
     // Only show if user has territory restrictions or custom territory is provided
     if (!hasRestrictions && !customTerritory) {
         return null;
@@ -64,13 +68,13 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
     }
 
     const { states, cities, zipCodes } = parseTerritory(territory.join(','));
-    
+
     const tooltipContent = (
         <Box>
             <Typography variant="subtitle2" gutterBottom>
                 Territory Coverage
             </Typography>
-            
+
             {states.length > 0 && (
                 <Box mb={1}>
                     <Typography variant="body2" fontWeight="bold">
@@ -81,7 +85,7 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
                     </Typography>
                 </Box>
             )}
-            
+
             {cities.length > 0 && (
                 <Box mb={1}>
                     <Typography variant="body2" fontWeight="bold">
@@ -92,7 +96,7 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
                     </Typography>
                 </Box>
             )}
-            
+
             {zipCodes.length > 0 && (
                 <Box mb={1}>
                     <Typography variant="body2" fontWeight="bold">
@@ -103,7 +107,7 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
                     </Typography>
                 </Box>
             )}
-            
+
             {territory.length === 0 && (
                 <Typography variant="body2" color="text.secondary">
                     No territory assigned
@@ -147,10 +151,10 @@ function getTerritoryDisplayName(territory: string[]): string {
 /**
  * Compact territory badge for use in lists or cards
  */
-export const TerritoryBadge: React.FC<{ territory?: string[]; maxItems?: number }> = ({ 
-    territory = [], 
-    maxItems = 2 
-}) => {
+export const TerritoryBadge: React.FC<{
+    territory?: string[];
+    maxItems?: number;
+}> = ({ territory = [], maxItems = 2 }) => {
     if (territory.length === 0) return null;
 
     const displayItems = territory.slice(0, maxItems);
@@ -182,23 +186,24 @@ export const TerritoryBadge: React.FC<{ territory?: string[]; maxItems?: number 
 /**
  * Territory status indicator for user profile or settings
  */
-export const TerritoryStatus: React.FC<{ territory?: string[] }> = ({ territory = [] }) => {
+export const TerritoryStatus: React.FC<{ territory?: string[] }> = ({
+    territory = [],
+}) => {
     const isConfigured = territory.length > 0;
-    
+
     return (
         <Box display="flex" alignItems="center" gap={1}>
-            <LocationIcon 
+            <LocationIcon
                 color={isConfigured ? 'primary' : 'disabled'}
                 fontSize="small"
             />
-            <Typography 
-                variant="body2" 
+            <Typography
+                variant="body2"
                 color={isConfigured ? 'text.primary' : 'text.secondary'}
             >
-                {isConfigured 
+                {isConfigured
                     ? `${territory.length} area${territory.length === 1 ? '' : 's'} assigned`
-                    : 'No territory assigned'
-                }
+                    : 'No territory assigned'}
             </Typography>
         </Box>
     );

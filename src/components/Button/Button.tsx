@@ -19,15 +19,7 @@ const sizeClasses = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    (
-        {
-            className,
-            variant = 'primary',
-            size = 'medium',
-            ...props
-        },
-        ref
-    ) => {
+    ({ className, variant = 'primary', size = 'medium', ...props }, ref) => {
         return (
             <button
                 ref={ref}

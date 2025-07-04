@@ -1,21 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import {
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormHelperText,
+    InputAdornment,
+    Slider,
+} from '@mui/material';
+import {
     Box,
     Typography,
     Stack,
     Alert,
     Grid,
     Paper,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
     Chip,
-    InputAdornment,
-    Slider,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Business as BusinessIcon,
     TrendingUp as RevenueIcon,
@@ -69,26 +71,26 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
 
     // Priority options with enhanced display
     const priorityOptions = [
-        { 
-            value: 'high', 
-            label: 'High Priority', 
-            color: '#ef4444', 
+        {
+            value: 'high',
+            label: 'High Priority',
+            color: '#ef4444',
             icon: '🔴',
-            description: 'Key accounts requiring immediate attention'
+            description: 'Key accounts requiring immediate attention',
         },
-        { 
-            value: 'medium', 
-            label: 'Medium Priority', 
-            color: '#f59e0b', 
+        {
+            value: 'medium',
+            label: 'Medium Priority',
+            color: '#f59e0b',
             icon: '🟡',
-            description: 'Important accounts with regular follow-up'
+            description: 'Important accounts with regular follow-up',
         },
-        { 
-            value: 'low', 
-            label: 'Low Priority', 
-            color: '#10b981', 
+        {
+            value: 'low',
+            label: 'Low Priority',
+            color: '#10b981',
             icon: '🟢',
-            description: 'Standard accounts with periodic contact'
+            description: 'Standard accounts with periodic contact',
         },
     ];
 
@@ -102,29 +104,41 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
     ];
 
     // Handle form field changes
-    const handleFieldChange = useCallback((field: string, value: any) => {
-        const updatedData = { ...formData, [field]: value };
-        onDataChange(updatedData);
-    }, [formData, onDataChange]);
+    const handleFieldChange = useCallback(
+        (field: string, value: any) => {
+            const updatedData = { ...formData, [field]: value };
+            onDataChange(updatedData);
+        },
+        [formData, onDataChange]
+    );
 
     // Handle revenue slider change
-    const handleRevenueSliderChange = useCallback((_: Event, value: number | number[]) => {
-        const newValue = Array.isArray(value) ? value[0] : value;
-        setRevenueSliderValue(newValue);
-    }, []);
+    const handleRevenueSliderChange = useCallback(
+        (_: Event, value: number | number[]) => {
+            const newValue = Array.isArray(value) ? value[0] : value;
+            setRevenueSliderValue(newValue);
+        },
+        []
+    );
 
     // Handle revenue slider commit (when user stops dragging)
-    const handleRevenueSliderCommit = useCallback((_: Event, value: number | number[]) => {
-        const newValue = Array.isArray(value) ? value[0] : value;
-        handleFieldChange('revenue', newValue);
-    }, [handleFieldChange]);
+    const handleRevenueSliderCommit = useCallback(
+        (_: Event, value: number | number[]) => {
+            const newValue = Array.isArray(value) ? value[0] : value;
+            handleFieldChange('revenue', newValue);
+        },
+        [handleFieldChange]
+    );
 
     // Handle revenue range quick selection
-    const handleRevenueRangeSelect = useCallback((range: typeof revenueRanges[0]) => {
-        const averageValue = (range.min + range.max) / 2;
-        setRevenueSliderValue(averageValue);
-        handleFieldChange('revenue', averageValue);
-    }, [handleFieldChange]);
+    const handleRevenueRangeSelect = useCallback(
+        (range: (typeof revenueRanges)[0]) => {
+            const averageValue = (range.min + range.max) / 2;
+            setRevenueSliderValue(averageValue);
+            handleFieldChange('revenue', averageValue);
+        },
+        [handleFieldChange]
+    );
 
     // Format currency
     const formatCurrency = useCallback((value: number) => {
@@ -137,73 +151,124 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
     }, []);
 
     return (
-        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <Box className="p-4 md:p-6">
             {/* Header */}
-            <Box sx={{ mb: 3, textAlign: 'center' }}>
-                <BusinessIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-                <Typography variant="h6" gutterBottom>
+            <Box className="mb-6 text-center">
+                <BusinessIcon
+                    sx={{ fontSize: 48, color: 'primary.main', mb: 1 }}
+                />
+                <Typography variant="h6" className="mb-2">
                     Business Context
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Add business details to help with organization management and reporting
+                <Typography variant="body2" className="text-gray-600">
+                    Add business details to help with organization management
+                    and reporting
                 </Typography>
             </Box>
 
-            <Stack spacing={4}>
+            <Stack gap={8}>
                 {/* Priority and Segment */}
-                <Paper elevation={1} sx={{ p: 3 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Paper elevation={1} className="p-6">
+                    <Typography
+                        variant="subtitle1"
+                        className="mb-2 flex items-center gap-2"
+                    >
                         <PriorityIcon fontSize="small" />
                         Business Classification
                     </Typography>
-                    
+
                     <Grid container spacing={3}>
                         {/* Priority */}
                         <Grid item xs={12} md={6}>
-                            <FormControl fullWidth error={!!validationErrors.priorityId}>
+                            <FormControl
+                                fullWidth
+                                error={!!validationErrors.priorityId}
+                            >
                                 <InputLabel>Priority Level</InputLabel>
                                 <Select
                                     value={formData.priorityId || ''}
                                     label="Priority Level"
-                                    onChange={(e) => handleFieldChange('priorityId', e.target.value)}
+                                    onChange={e =>
+                                        handleFieldChange(
+                                            'priorityId',
+                                            e.target.value
+                                        )
+                                    }
                                     sx={{ minHeight: '56px' }}
                                 >
                                     <MenuItem value="">
                                         <em>Select priority level</em>
                                     </MenuItem>
-                                    {(prioritySettings || priorityOptions).map((option) => {
-                                        // Use prioritySettings if available, otherwise use default options
-                                        const setting = prioritySettings?.find(s => s.id === option.id);
-                                        const displayOption = setting ? {
-                                            value: setting.id,
-                                            label: setting.label,
-                                            color: setting.color,
-                                            icon: setting.label.toLowerCase().includes('high') ? '🔴' : 
-                                                  setting.label.toLowerCase().includes('medium') ? '🟡' : '🟢',
-                                            description: setting.description || ''
-                                        } : option;
+                                    {(prioritySettings || priorityOptions).map(
+                                        option => {
+                                            // Use prioritySettings if available, otherwise use default options
+                                            const setting =
+                                                prioritySettings?.find(
+                                                    s => s.id === option.id
+                                                );
+                                            const displayOption = setting
+                                                ? {
+                                                      value: setting.id,
+                                                      label: setting.label,
+                                                      color: setting.color,
+                                                      icon: setting.label
+                                                          .toLowerCase()
+                                                          .includes('high')
+                                                          ? '🔴'
+                                                          : setting.label
+                                                                  .toLowerCase()
+                                                                  .includes(
+                                                                      'medium'
+                                                                  )
+                                                            ? '🟡'
+                                                            : '🟢',
+                                                      description:
+                                                          setting.description ||
+                                                          '',
+                                                  }
+                                                : option;
 
-                                        return (
-                                            <MenuItem key={displayOption.value} value={displayOption.value}>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                    <Box sx={{ fontSize: '16px' }}>{displayOption.icon}</Box>
-                                                    <Box>
-                                                        <Typography variant="subtitle2" sx={{ color: displayOption.color }}>
-                                                            {displayOption.label}
-                                                        </Typography>
-                                                        {!isMobile && displayOption.description && (
-                                                            <Typography variant="caption" color="text.secondary">
-                                                                {displayOption.description}
+                                            return (
+                                                <MenuItem
+                                                    key={displayOption.value}
+                                                    value={displayOption.value}
+                                                >
+                                                    <Box className="flex items-center gap-4">
+                                                        <Box className="text-base">
+                                                            {displayOption.icon}
+                                                        </Box>
+                                                        <Box className="">
+                                                            <Typography
+                                                                variant="subtitle2"
+                                                                style={{
+                                                                    color: displayOption.color,
+                                                                }}
+                                                            >
+                                                                {
+                                                                    displayOption.label
+                                                                }
                                                             </Typography>
-                                                        )}
+                                                            {!isMobile &&
+                                                                displayOption.description && (
+                                                                    <Typography
+                                                                        variant="caption"
+                                                                        className="text-gray-600"
+                                                                    >
+                                                                        {
+                                                                            displayOption.description
+                                                                        }
+                                                                    </Typography>
+                                                                )}
+                                                        </Box>
                                                     </Box>
-                                                </Box>
-                                            </MenuItem>
-                                        );
-                                    })}
+                                                </MenuItem>
+                                            );
+                                        }
+                                    )}
                                 </Select>
                                 <FormHelperText>
-                                    {validationErrors.priorityId || 'Helps prioritize follow-up and attention'}
+                                    {validationErrors.priorityId ||
+                                        'Helps prioritize follow-up and attention'}
                                 </FormHelperText>
                             </FormControl>
                         </Grid>
@@ -222,12 +287,24 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                                 color: setting.color,
                                             })) || []
                                         }
-                                        helperText={validationErrors.segmentId || "Market segment classification"}
+                                        helperText={
+                                            validationErrors.segmentId ||
+                                            'Market segment classification'
+                                        }
                                         error={!!validationErrors.segmentId}
                                         optionText={(choice: any) => (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <SegmentIcon fontSize="small" sx={{ color: choice.color }} />
-                                                <span style={{ color: choice.color || 'inherit' }}>
+                                            <Box className="flex items-center gap-2">
+                                                <SegmentIcon
+                                                    fontSize="small"
+                                                    sx={{ color: choice.color }}
+                                                />
+                                                <span
+                                                    style={{
+                                                        color:
+                                                            choice.color ||
+                                                            'inherit',
+                                                    }}
+                                                >
                                                     {choice.name}
                                                 </span>
                                             </Box>
@@ -246,18 +323,32 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                         source="distributorId"
                                         label="Primary Distributor"
                                         choices={
-                                            distributorSettings?.map(setting => ({
-                                                id: setting.id,
-                                                name: setting.label,
-                                                color: setting.color,
-                                            })) || []
+                                            distributorSettings?.map(
+                                                setting => ({
+                                                    id: setting.id,
+                                                    name: setting.label,
+                                                    color: setting.color,
+                                                })
+                                            ) || []
                                         }
-                                        helperText={validationErrors.distributorId || "Main distribution partner"}
+                                        helperText={
+                                            validationErrors.distributorId ||
+                                            'Main distribution partner'
+                                        }
                                         error={!!validationErrors.distributorId}
                                         optionText={(choice: any) => (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <DistributorIcon fontSize="small" sx={{ color: choice.color }} />
-                                                <span style={{ color: choice.color || 'inherit' }}>
+                                            <Box className="flex items-center gap-2">
+                                                <DistributorIcon
+                                                    fontSize="small"
+                                                    sx={{ color: choice.color }}
+                                                />
+                                                <span
+                                                    style={{
+                                                        color:
+                                                            choice.color ||
+                                                            'inherit',
+                                                    }}
+                                                >
                                                     {choice.name}
                                                 </span>
                                             </Box>
@@ -271,23 +362,31 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                 </Paper>
 
                 {/* Revenue Information */}
-                <Paper elevation={1} sx={{ p: 3 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Paper elevation={1} className="p-6">
+                    <Typography
+                        variant="subtitle1"
+                        className="mb-2 flex items-center gap-2"
+                    >
                         <RevenueIcon fontSize="small" />
                         Revenue Information
                     </Typography>
 
                     {/* Quick Revenue Range Selection */}
-                    <Box sx={{ mb: 3 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                    <Box className="mb-6">
+                        <Typography
+                            variant="body2"
+                            className="text-gray-600 mb-2"
+                        >
                             Quick Selection:
                         </Typography>
-                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Stack direction="row" gap={2} className="flex-wrap">
                             {revenueRanges.map((range, index) => (
                                 <Chip
                                     key={index}
                                     label={range.label}
-                                    onClick={() => handleRevenueRangeSelect(range)}
+                                    onClick={() =>
+                                        handleRevenueRangeSelect(range)
+                                    }
                                     variant="outlined"
                                     sx={{
                                         borderColor: range.color,
@@ -304,7 +403,11 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
 
                     {/* Revenue Slider */}
                     <Box sx={{ px: 2 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            gutterBottom
+                        >
                             Annual Revenue: {formatCurrency(revenueSliderValue)}
                         </Typography>
                         <Slider
@@ -338,7 +441,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                     </Box>
 
                     {/* Manual Revenue Input */}
-                    <Grid container spacing={2} sx={{ mt: 1 }}>
+                    <Grid container spacing={2} className="mt-2">
                         <Grid item xs={12} md={6}>
                             <FormDataConsumer>
                                 {({ formData: currentData }) => (
@@ -348,12 +451,20 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                         type="number"
                                         fullWidth
                                         InputProps={{
-                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    $
+                                                </InputAdornment>
+                                            ),
                                         }}
-                                        helperText={validationErrors.revenue || "Approximate annual revenue"}
+                                        helperText={
+                                            validationErrors.revenue ||
+                                            'Approximate annual revenue'
+                                        }
                                         error={!!validationErrors.revenue}
-                                        onChange={(e) => {
-                                            const value = parseFloat(e.target.value) || 0;
+                                        onChange={e => {
+                                            const value =
+                                                parseFloat(e.target.value) || 0;
                                             setRevenueSliderValue(value);
                                             handleFieldChange('revenue', value);
                                         }}
@@ -365,12 +476,15 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                 </Paper>
 
                 {/* Account Management */}
-                <Paper elevation={1} sx={{ p: 3 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Paper elevation={1} className="p-6">
+                    <Typography
+                        variant="subtitle1"
+                        className="mb-2 flex items-center gap-2"
+                    >
                         <ManagerIcon fontSize="small" />
                         Account Management
                     </Typography>
-                    
+
                     <FormDataConsumer>
                         {({ formData: currentData }) => (
                             <TextInput
@@ -378,10 +492,20 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                 label="Account Manager Email"
                                 fullWidth
                                 placeholder="john.smith@forkflow.com"
-                                helperText={validationErrors.accountManager || "Email of the assigned account manager"}
+                                helperText={
+                                    validationErrors.accountManager ||
+                                    'Email of the assigned account manager'
+                                }
                                 error={!!validationErrors.accountManager}
                                 InputProps={{
-                                    startAdornment: <ManagerIcon sx={{ mr: 1, color: 'action.active' }} />,
+                                    startAdornment: (
+                                        <ManagerIcon
+                                            sx={{
+                                                mr: 1,
+                                                color: 'action.active',
+                                            }}
+                                        />
+                                    ),
                                 }}
                             />
                         )}
@@ -389,17 +513,21 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                 </Paper>
 
                 {/* Notes */}
-                <Paper elevation={1} sx={{ p: 3 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Paper elevation={1} className="p-6">
+                    <Typography
+                        variant="subtitle1"
+                        className="mb-2 flex items-center gap-2"
+                    >
                         <NotesIcon fontSize="small" />
                         Additional Notes
                     </Typography>
-                    
+
                     <FormDataConsumer>
                         {({ formData: currentData }) => {
-                            const noteLength = (currentData?.notes || '').length;
+                            const noteLength = (currentData?.notes || '')
+                                .length;
                             const maxLength = 500;
-                            
+
                             return (
                                 <TextInput
                                     source="notes"
@@ -408,7 +536,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                     rows={4}
                                     fullWidth
                                     helperText={
-                                        validationErrors.notes || 
+                                        validationErrors.notes ||
                                         `${noteLength}/${maxLength} characters - Add any important business context or notes`
                                     }
                                     error={!!validationErrors.notes}
@@ -420,33 +548,51 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                 </Paper>
 
                 {/* Business Summary */}
-                {(formData.priorityId || formData.segmentId || formData.revenue) && (
-                    <Paper elevation={1} sx={{ p: 3, backgroundColor: 'grey.50' }}>
-                        <Typography variant="subtitle2" gutterBottom>
+                {(formData.priorityId ||
+                    formData.segmentId ||
+                    formData.revenue) && (
+                    <Paper elevation={1} className="p-6 bg-gray-50">
+                        <Typography variant="subtitle2" className="mb-2">
                             Business Summary
                         </Typography>
-                        <Stack spacing={2}>
+                        <Stack gap={4}>
                             {formData.priorityId && (
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <PriorityIcon fontSize="small" color="primary" />
+                                <Box className="flex items-center gap-2">
+                                    <PriorityIcon
+                                        fontSize="small"
+                                        color="primary"
+                                    />
                                     <Typography variant="body2">
-                                        Priority: {prioritySettings?.find(p => p.id === formData.priorityId)?.label || formData.priorityId}
+                                        Priority:{' '}
+                                        {prioritySettings?.find(
+                                            p => p.id === formData.priorityId
+                                        )?.label || formData.priorityId}
                                     </Typography>
                                 </Box>
                             )}
                             {formData.segmentId && (
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <SegmentIcon fontSize="small" color="primary" />
+                                <Box className="flex items-center gap-2">
+                                    <SegmentIcon
+                                        fontSize="small"
+                                        color="primary"
+                                    />
                                     <Typography variant="body2">
-                                        Segment: {segmentSettings?.find(s => s.id === formData.segmentId)?.label || formData.segmentId}
+                                        Segment:{' '}
+                                        {segmentSettings?.find(
+                                            s => s.id === formData.segmentId
+                                        )?.label || formData.segmentId}
                                     </Typography>
                                 </Box>
                             )}
                             {formData.revenue && (
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <RevenueIcon fontSize="small" color="primary" />
+                                <Box className="flex items-center gap-2">
+                                    <RevenueIcon
+                                        fontSize="small"
+                                        color="primary"
+                                    />
                                     <Typography variant="body2">
-                                        Revenue: {formatCurrency(formData.revenue)}
+                                        Revenue:{' '}
+                                        {formatCurrency(formData.revenue)}
                                     </Typography>
                                 </Box>
                             )}
@@ -456,14 +602,26 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
 
                 {/* Quick Tips */}
                 <Alert severity="info">
-                    <Typography variant="body2" fontWeight="medium" gutterBottom>
+                    <Typography variant="body2" className="font-medium mb-2">
                         💡 Business Context Tips:
                     </Typography>
-                    <Box component="ul" sx={{ mt: 1, mb: 0, pl: 2 }}>
-                        <li>Priority level helps with account management and follow-up scheduling</li>
-                        <li>Business segment enables better categorization and reporting</li>
-                        <li>Revenue information assists with territory planning and resource allocation</li>
-                        <li>All business details can be updated as relationships develop</li>
+                    <Box as="ul" className="mt-2 mb-0 pl-4">
+                        <li>
+                            Priority level helps with account management and
+                            follow-up scheduling
+                        </li>
+                        <li>
+                            Business segment enables better categorization and
+                            reporting
+                        </li>
+                        <li>
+                            Revenue information assists with territory planning
+                            and resource allocation
+                        </li>
+                        <li>
+                            All business details can be updated as relationships
+                            develop
+                        </li>
                     </Box>
                 </Alert>
             </Stack>

@@ -5,17 +5,17 @@
 
 import { useState, useCallback } from 'react';
 import { useDataProvider, useNotify } from 'react-admin';
-import { 
-    DashboardSummary, 
-    InteractionMetrics, 
+import {
+    DashboardSummary,
+    InteractionMetrics,
     OrganizationNeedsVisit,
-    CSVExportData 
+    CSVExportData,
 } from '../providers/reporting/reportingProvider';
-import { 
-    createReportingApi, 
-    InteractionReportParams, 
+import {
+    createReportingApi,
+    InteractionReportParams,
     ExportParams,
-    downloadCSV 
+    downloadCSV,
 } from '../api/reports';
 
 /**
@@ -63,21 +63,25 @@ export function useInteractionReport() {
     const dataProvider = useDataProvider();
     const notify = useNotify();
 
-    const fetch = useCallback(async (params?: InteractionReportParams) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const reportingApi = createReportingApi(dataProvider);
-            const result = await reportingApi.interactions(params);
-            setData(result);
-        } catch (err: any) {
-            const errorMsg = err.message || 'Failed to fetch interaction report';
-            setError(errorMsg);
-            notify(errorMsg, { type: 'error' });
-        } finally {
-            setLoading(false);
-        }
-    }, [dataProvider, notify]);
+    const fetch = useCallback(
+        async (params?: InteractionReportParams) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const reportingApi = createReportingApi(dataProvider);
+                const result = await reportingApi.interactions(params);
+                setData(result);
+            } catch (err: any) {
+                const errorMsg =
+                    err.message || 'Failed to fetch interaction report';
+                setError(errorMsg);
+                notify(errorMsg, { type: 'error' });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [dataProvider, notify]
+    );
 
     return {
         data,
@@ -106,7 +110,8 @@ export function useOrganizationsNeedingVisit() {
             const result = await reportingApi.organizationsNeedsVisit();
             setData(result);
         } catch (err: any) {
-            const errorMsg = err.message || 'Failed to fetch organizations needing visits';
+            const errorMsg =
+                err.message || 'Failed to fetch organizations needing visits';
             setError(errorMsg);
             notify(errorMsg, { type: 'error' });
         } finally {
@@ -132,39 +137,50 @@ export function useCSVExport() {
     const dataProvider = useDataProvider();
     const notify = useNotify();
 
-    const exportOrganizations = useCallback(async (params?: ExportParams) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const reportingApi = createReportingApi(dataProvider);
-            const result = await reportingApi.exportOrganizations(params);
-            downloadCSV(result);
-            notify('Organizations exported successfully', { type: 'success' });
-        } catch (err: any) {
-            const errorMsg = err.message || 'Failed to export organizations';
-            setError(errorMsg);
-            notify(errorMsg, { type: 'error' });
-        } finally {
-            setLoading(false);
-        }
-    }, [dataProvider, notify]);
+    const exportOrganizations = useCallback(
+        async (params?: ExportParams) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const reportingApi = createReportingApi(dataProvider);
+                const result = await reportingApi.exportOrganizations(params);
+                downloadCSV(result);
+                notify('Organizations exported successfully', {
+                    type: 'success',
+                });
+            } catch (err: any) {
+                const errorMsg =
+                    err.message || 'Failed to export organizations';
+                setError(errorMsg);
+                notify(errorMsg, { type: 'error' });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [dataProvider, notify]
+    );
 
-    const exportInteractions = useCallback(async (params?: ExportParams) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const reportingApi = createReportingApi(dataProvider);
-            const result = await reportingApi.exportInteractions(params);
-            downloadCSV(result);
-            notify('Interactions exported successfully', { type: 'success' });
-        } catch (err: any) {
-            const errorMsg = err.message || 'Failed to export interactions';
-            setError(errorMsg);
-            notify(errorMsg, { type: 'error' });
-        } finally {
-            setLoading(false);
-        }
-    }, [dataProvider, notify]);
+    const exportInteractions = useCallback(
+        async (params?: ExportParams) => {
+            setLoading(true);
+            setError(null);
+            try {
+                const reportingApi = createReportingApi(dataProvider);
+                const result = await reportingApi.exportInteractions(params);
+                downloadCSV(result);
+                notify('Interactions exported successfully', {
+                    type: 'success',
+                });
+            } catch (err: any) {
+                const errorMsg = err.message || 'Failed to export interactions';
+                setError(errorMsg);
+                notify(errorMsg, { type: 'error' });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [dataProvider, notify]
+    );
 
     return {
         loading,
@@ -212,7 +228,7 @@ export function useDateRangeFilter() {
         const end = new Date();
         const start = new Date();
         start.setDate(end.getDate() - days);
-        
+
         setEndDate(end.toISOString().split('T')[0]);
         setStartDate(start.toISOString().split('T')[0]);
     }, []);
@@ -221,7 +237,7 @@ export function useDateRangeFilter() {
         const now = new Date();
         const start = new Date(now.getFullYear(), now.getMonth(), 1);
         const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        
+
         setStartDate(start.toISOString().split('T')[0]);
         setEndDate(end.toISOString().split('T')[0]);
     }, []);
@@ -230,15 +246,15 @@ export function useDateRangeFilter() {
         const now = new Date();
         const start = new Date(now);
         const end = new Date(now);
-        
+
         // Get start of week (Monday)
         const day = now.getDay();
         const diff = now.getDate() - day + (day === 0 ? -6 : 1);
         start.setDate(diff);
-        
+
         // Get end of week (Sunday)
         end.setDate(diff + 6);
-        
+
         setStartDate(start.toISOString().split('T')[0]);
         setEndDate(end.toISOString().split('T')[0]);
     }, []);
@@ -252,7 +268,10 @@ export function useDateRangeFilter() {
         setCurrentMonth,
         setCurrentWeek,
         hasDateRange: startDate && endDate,
-        dateRangeParams: startDate && endDate ? { start_date: startDate, end_date: endDate } : undefined,
+        dateRangeParams:
+            startDate && endDate
+                ? { start_date: startDate, end_date: endDate }
+                : undefined,
     };
 }
 
@@ -269,28 +288,31 @@ export function useReportCache<T>(
     const [error, setError] = useState<string | null>(null);
     const [lastFetch, setLastFetch] = useState<number>(0);
 
-    const fetch = useCallback(async (force: boolean = false) => {
-        const now = Date.now();
-        const cacheExpired = (now - lastFetch) > (ttlMinutes * 60 * 1000);
-        
-        if (!force && data && !cacheExpired) {
-            return data;
-        }
+    const fetch = useCallback(
+        async (force: boolean = false) => {
+            const now = Date.now();
+            const cacheExpired = now - lastFetch > ttlMinutes * 60 * 1000;
 
-        setLoading(true);
-        setError(null);
-        try {
-            const result = await fetchFn();
-            setData(result);
-            setLastFetch(now);
-            return result;
-        } catch (err: any) {
-            setError(err.message);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    }, [data, lastFetch, ttlMinutes, fetchFn]);
+            if (!force && data && !cacheExpired) {
+                return data;
+            }
+
+            setLoading(true);
+            setError(null);
+            try {
+                const result = await fetchFn();
+                setData(result);
+                setLastFetch(now);
+                return result;
+            } catch (err: any) {
+                setError(err.message);
+                throw err;
+            } finally {
+                setLoading(false);
+            }
+        },
+        [data, lastFetch, ttlMinutes, fetchFn]
+    );
 
     const invalidate = useCallback(() => {
         setData(null);
@@ -303,6 +325,7 @@ export function useReportCache<T>(
         error,
         fetch,
         invalidate,
-        isCached: data !== null && (Date.now() - lastFetch) < (ttlMinutes * 60 * 1000),
+        isCached:
+            data !== null && Date.now() - lastFetch < ttlMinutes * 60 * 1000,
     };
 }

@@ -10,9 +10,9 @@ import {
     IconButton,
     Box,
     Button,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
 import {
     Edit as EditIcon,
     Visibility as ViewIcon,
@@ -37,9 +37,9 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
     organizations,
     loading = false,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const isTablet = useMediaQuery('(max-width: 1024px)');
 
     const getGridColumns = () => {
         if (isMobile) return 1;
@@ -76,7 +76,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
 
     if (loading) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Box className="p-6 text-center">
                 <Typography>Loading organizations...</Typography>
             </Box>
         );
@@ -84,8 +84,8 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
 
     if (organizations.length === 0) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="h6" color="text.secondary">
+            <Box className="p-6 text-center">
+                <Typography variant="h6" className="text-gray-600">
                     No organizations found
                 </Typography>
             </Box>
@@ -96,7 +96,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
         <Grid 
             container 
             spacing={isMobile ? 2 : 3} 
-            sx={{ mt: 1, mb: 3 }}
+            className="mt-2 mb-6"
         >
             {organizations.map((org) => (
                 <Grid 
@@ -110,38 +110,22 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                 >
                     <Card
                         className={isMobile ? 'organization-card-mobile' : 'organization-card-desktop'}
-                        sx={{
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            transition: 'all 0.2s ease-in-out',
-                            '&:hover': {
-                                transform: 'translateY(-2px)',
-                                boxShadow: theme.shadows[4],
-                            },
-                            cursor: 'pointer',
-                            minHeight: '280px',
-                        }}
+                        className="h-full flex flex-col transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg cursor-pointer min-h-70"
                     >
-                        <CardContent sx={{ flexGrow: 1, pb: 1 }}>
+                        <CardContent className="flex-grow pb-2">
                             {/* Header with avatar and basic info */}
-                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
+                            <Box className="flex items-start gap-4 mb-4">
                                 <Avatar 
                                     src={org.logo}
-                                    sx={{ width: 48, height: 48 }}
+                                    className="w-12 h-12"
                                 >
                                     <BusinessIcon />
                                 </Avatar>
-                                <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                <Box className="flex-grow min-w-0">
                                     <Typography 
                                         variant="h6" 
                                         component="h3"
-                                        sx={{ 
-                                            fontWeight: 600,
-                                            fontSize: '1.1rem',
-                                            lineHeight: 1.2,
-                                            mb: 0.5,
-                                            overflow: 'hidden',
+                                        className="font-semibold text-lg leading-tight mb-1 overflow-hidden text-ellipsis"
                                             textOverflow: 'ellipsis',
                                             display: '-webkit-box',
                                             WebkitLineClamp: 2,
@@ -156,38 +140,34 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                             size="small"
                                             color={getBusinessTypeColor(org.business_type) as any}
                                             variant="outlined"
-                                            sx={{ fontSize: '0.75rem' }}
+                                            className="text-xs"
                                         />
                                     )}
                                 </Box>
                             </Box>
 
                             {/* Contact information */}
-                            <Box sx={{ mb: 2 }}>
+                            <Box className="mb-4">
                                 {org.contact_person && (
-                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                    <Typography variant="body2" className="text-gray-600 mb-1">
                                         👤 {org.contact_person}
                                     </Typography>
                                 )}
                                 {org.email && (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                                        <EmailIcon sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+                                    <Box className="flex items-center gap-1 mb-1">
+                                        <EmailIcon className="text-base text-gray-600" />
                                         <Typography 
                                             variant="body2" 
                                             color="text.secondary"
-                                            sx={{ 
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                            }}
+                                            className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-600"
                                         >
                                             {org.email}
                                         </Typography>
                                     </Box>
                                 )}
                                 {org.phone_number && (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                                        <PhoneIcon sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+                                    <Box className="flex items-center gap-1 mb-1">
+                                        <PhoneIcon className="text-base text-gray-600" />
                                         <Typography variant="body2" color="text.secondary">
                                             {org.phone_number}
                                         </Typography>
@@ -195,7 +175,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                 )}
                                 {(org.city || org.stateAbbr) && (
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                        <LocationIcon sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+                                        <LocationIcon className="text-base text-gray-600" />
                                         <Typography variant="body2" color="text.secondary">
                                             {[org.city, org.stateAbbr].filter(Boolean).join(', ')}
                                         </Typography>
@@ -210,7 +190,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                         label={`${org.nb_contacts} contacts`}
                                         size="small"
                                         variant="outlined"
-                                        sx={{ fontSize: '0.7rem' }}
+                                        className="text-xs"
                                     />
                                 )}
                                 {org.nb_deals !== undefined && (
@@ -218,7 +198,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                         label={`${org.nb_deals} deals`}
                                         size="small"
                                         variant="outlined"
-                                        sx={{ fontSize: '0.7rem' }}
+                                        className="text-xs"
                                     />
                                 )}
                                 {formatRevenue(org.revenue) && (
@@ -227,52 +207,45 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                         size="small"
                                         variant="outlined"
                                         color="primary"
-                                        sx={{ fontSize: '0.7rem', fontWeight: 600 }}
+                                        className="text-xs font-semibold"
                                     />
                                 )}
                             </Box>
 
                             {/* Priority and status indicators */}
-                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                            <Box className="flex gap-2 flex-wrap">
                                 {org.priority && (
                                     <Chip
                                         label={`${org.priority} priority`}
                                         size="small"
                                         color={getPriorityColor(org.priority) as any}
                                         variant="filled"
-                                        sx={{ fontSize: '0.7rem' }}
+                                        className="text-xs"
                                     />
                                 )}
                                 {org.status && (
                                     <Chip
                                         label={org.status}
                                         size="small"
-                                        className={`status-${org.status}`}
+                                        className={`status-${org.status} text-xs`}
                                         variant="outlined"
-                                        sx={{ fontSize: '0.7rem' }}
                                     />
                                 )}
                             </Box>
                         </CardContent>
 
-                        <CardActions sx={{ px: 2, pb: 2, pt: 0, justifyContent: 'space-between' }}>
+                        <CardActions className="px-4 pb-4 pt-0 justify-between">
                             <Button
                                 size="small"
                                 startIcon={<ViewIcon />}
-                                sx={{ 
-                                    minHeight: '36px',
-                                    fontSize: '0.8rem',
-                                }}
+                                className="min-h-9 text-sm"
                             >
                                 View
                             </Button>
                             <IconButton 
                                 size="small"
                                 aria-label={`Edit ${org.name}`}
-                                sx={{ 
-                                    minHeight: '36px', 
-                                    minWidth: '36px',
-                                }}
+                                className="min-h-9 min-w-9"
                             >
                                 <EditIcon fontSize="small" />
                             </IconButton>

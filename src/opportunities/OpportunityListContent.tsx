@@ -18,17 +18,22 @@ const FOOD_SERVICE_STAGES = [
 ];
 
 export const OpportunityListContent = () => {
-    const { data: unorderedOpportunities, isPending, refetch } = useListContext<Deal>();
+    const {
+        data: unorderedOpportunities,
+        isPending,
+        refetch,
+    } = useListContext<Deal>();
     const dataProvider = useDataProvider();
 
-    const [opportunitiesByStage, setOpportunitiesByStage] = useState<OpportunitiesByStage>(
-        getOpportunitiesByStage([], FOOD_SERVICE_STAGES)
-    );
+    const [opportunitiesByStage, setOpportunitiesByStage] =
+        useState<OpportunitiesByStage>(
+            getOpportunitiesByStage([], FOOD_SERVICE_STAGES)
+        );
 
     useEffect(() => {
         if (unorderedOpportunities) {
             const newOpportunitiesByStage = getOpportunitiesByStage(
-                unorderedOpportunities, 
+                unorderedOpportunities,
                 FOOD_SERVICE_STAGES
             );
             if (!isEqual(newOpportunitiesByStage, opportunitiesByStage)) {
@@ -56,17 +61,23 @@ export const OpportunityListContent = () => {
 
         const sourceStage = source.droppableId;
         const destinationStage = destination.droppableId;
-        const sourceOpportunity = opportunitiesByStage[sourceStage][source.index]!;
-        const destinationOpportunity = opportunitiesByStage[destinationStage][destination.index];
+        const sourceOpportunity =
+            opportunitiesByStage[sourceStage][source.index]!;
+        const destinationOpportunity =
+            opportunitiesByStage[destinationStage][destination.index];
 
         const newOpportunitiesByStage = { ...opportunitiesByStage };
 
         // Remove from source
-        newOpportunitiesByStage[sourceStage] = [...opportunitiesByStage[sourceStage]];
+        newOpportunitiesByStage[sourceStage] = [
+            ...opportunitiesByStage[sourceStage],
+        ];
         newOpportunitiesByStage[sourceStage].splice(source.index, 1);
 
         // Insert in destination
-        newOpportunitiesByStage[destinationStage] = [...opportunitiesByStage[destinationStage]];
+        newOpportunitiesByStage[destinationStage] = [
+            ...opportunitiesByStage[destinationStage],
+        ];
         newOpportunitiesByStage[destinationStage].splice(
             destination.index,
             0,
@@ -119,7 +130,9 @@ const updateOpportunityStage = async (
             id: opportunity.id,
             data: {
                 stage: newStage,
-                index: destinationOpportunity ? destinationOpportunity.index : 0,
+                index: destinationOpportunity
+                    ? destinationOpportunity.index
+                    : 0,
                 updatedAt: new Date().toISOString(),
             },
             previousData: opportunity,

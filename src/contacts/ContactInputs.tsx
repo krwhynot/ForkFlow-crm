@@ -1,8 +1,4 @@
-import {
-    Divider,
-    Stack,
-    Typography,
-} from '../components/ui-kit';
+import { Divider, Stack, Typography } from '../components/ui-kit';
 import * as React from 'react';
 import {
     AutocompleteInput,
@@ -22,26 +18,27 @@ import { Contact, Setting } from '../types';
 
 const isEmail = (email: string) => {
     if (!email) return;
-    
+
     // More comprehensive email validation
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    
+    const emailRegex =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
     // Basic format check
     if (!emailRegex.test(email)) {
         return 'Must be a valid email address';
     }
-    
+
     // Length validation
     if (email.length > 254) {
         return 'Email address is too long';
     }
-    
+
     // Local part validation (before @)
     const localPart = email.split('@')[0];
     if (localPart.length > 64) {
         return 'Email local part is too long';
     }
-    
+
     // Check for consecutive dots
     if (email.includes('..')) {
         return 'Email cannot contain consecutive dots';
@@ -50,17 +47,17 @@ const isEmail = (email: string) => {
 
 const isPhoneNumber = (phone: string) => {
     if (!phone) return;
-    
+
     // Remove all spaces, dashes, dots, parentheses for validation
     const cleanPhone = phone.replace(/[\s\-\.\(\)]/g, '');
-    
+
     // Must contain only digits and optional + at start
     const phoneRegex = /^\+?[\d]{7,15}$/;
-    
+
     if (!phoneRegex.test(cleanPhone)) {
         return 'Must be a valid phone number (7-15 digits)';
     }
-    
+
     // US phone number format validation (optional)
     if (cleanPhone.length === 10 && !cleanPhone.startsWith('+')) {
         // US format: area code cannot start with 0 or 1

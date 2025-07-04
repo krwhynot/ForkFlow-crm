@@ -33,9 +33,7 @@ export const ContactCreate = () => {
             <Form>
                 <CardContent>
                     {organizationId && (
-                        <Box
-                            className="mb-6 p-4 bg-blue-50 rounded-lg"
-                        >
+                        <Box className="mb-6 p-4 bg-blue-50 rounded-lg">
                             <Box
                                 display="flex"
                                 alignItems="center"

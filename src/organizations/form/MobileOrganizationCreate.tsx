@@ -3,18 +3,18 @@ import {
     Stack,
     Typography,
     Button,
-} from '../../components/ui-kit';
-import {
     Box,
     IconButton,
     Chip,
     Alert,
     Divider,
-    useTheme,
-    useMediaQuery,
+} from '../../components/ui-kit';
+import {
     Zoom,
     Fab,
 } from '@mui/material';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
 import {
     ArrowBack as ArrowBackIcon,
     Save as SaveIcon,
@@ -57,8 +57,8 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
     initialData = {},
     mode = 'full',
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const notify = useNotify();
     const redirect = useRedirect();
 
@@ -291,9 +291,9 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
             >
                 <Create resource="organizations" redirect={false}>
                     <Form>
-                        <Box sx={{ p: 3 }}>
+                        <Box className="p-6">
                             {/* Step Header */}
-                            <Box sx={{ mb: 3, textAlign: 'center' }}>
+                            <Box className="mb-6 text-center">
                                 <Typography variant="h6" gutterBottom>
                                     {currentStepData.title}
                                 </Typography>
@@ -390,7 +390,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                 {/* Location Step */}
                                 {currentStepData.id === 'location' && (
                                     <>
-                                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                                        <Box className="flex gap-4 items-start">
                                             <SmartKeyboard
                                                 source="address"
                                                 label="Street Address"
@@ -398,31 +398,27 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                                 fullWidth
                                                 autoComplete="street-address"
                                                 onChange={(e) => handleFormDataChange('address', e.target.value)}
-                                                sx={{ flex: 1 }}
+                                                className="flex-1"
                                             />
                                             <IconButton
                                                 onClick={handleGPSCapture}
                                                 disabled={gpsCapturing}
                                                 color="primary"
-                                                sx={{
-                                                    mt: 1,
-                                                    minWidth: 48,
-                                                    minHeight: 48,
-                                                }}
+                                                className="mt-2 min-w-12 min-h-12"
                                                 aria-label="Capture GPS location"
                                             >
                                                 <LocationIcon />
                                             </IconButton>
                                         </Box>
 
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                        <Box className="flex gap-4">
                                             <SmartKeyboard
                                                 source="city"
                                                 label="City"
                                                 fieldType="text"
                                                 autoComplete="address-level2"
                                                 onChange={(e) => handleFormDataChange('city', e.target.value)}
-                                                sx={{ flex: 2 }}
+                                                className="flex-2"
                                             />
                                             <SmartKeyboard
                                                 source="stateAbbr"
@@ -431,7 +427,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                                 autoComplete="address-level1"
                                                 maxLength={2}
                                                 onChange={(e) => handleFormDataChange('stateAbbr', e.target.value)}
-                                                sx={{ flex: 1 }}
+                                                className="flex-1"
                                             />
                                         </Box>
 
@@ -468,7 +464,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                             <Typography variant="subtitle2" gutterBottom>
                                                 Notes & Description
                                             </Typography>
-                                            <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                                            <Box className="flex gap-2 mb-2">
                                                 <VoiceInput
                                                     onTextReceived={handleVoiceInput}
                                                     variant="chip"
@@ -492,19 +488,14 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                             </Stack>
 
                             {/* Step Navigation */}
-                            <Box sx={{ 
-                                display: 'flex', 
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                mt: 4,
-                                pt: 3,
+                            <Box className="flex justify-between items-center mt-8 pt-6"
                                 borderTop: `1px solid ${theme.palette.divider}`,
                             }}>
                                 <Button
                                     onClick={handleBack}
                                     disabled={currentStep === 0 || isSubmitting}
                                     startIcon={<ArrowBackIcon />}
-                                    sx={{ minHeight: 48 }}
+                                    className="min-h-12"
                                 >
                                     Back
                                 </Button>
@@ -521,7 +512,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                         disabled={!canProceed || isSubmitting}
                                         variant="contained"
                                         startIcon={<SaveIcon />}
-                                        sx={{ minHeight: 48 }}
+                                        className="min-h-12"
                                     >
                                         {isSubmitting ? 'Creating...' : 'Create'}
                                     </Button>
@@ -530,7 +521,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                         onClick={handleNext}
                                         disabled={!canProceed}
                                         variant="contained"
-                                        sx={{ minHeight: 48 }}
+                                        className="min-h-12"
                                     >
                                         Next
                                     </Button>
@@ -539,7 +530,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
 
                             {/* Loading indicator */}
                             {(isValidating || isSubmitting) && (
-                                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                                <Box className="flex justify-center mt-4">
                                     <Typography variant="body2" color="text.secondary">
                                         {isValidating && 'Validating...'}
                                         {isSubmitting && 'Creating organization...'}

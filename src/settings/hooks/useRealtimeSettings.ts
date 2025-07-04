@@ -15,58 +15,73 @@ interface RealtimeUpdate {
     timestamp: string;
 }
 
-export const useRealtimeSettings = (options: UseRealtimeSettingsOptions = {}) => {
+export const useRealtimeSettings = (
+    options: UseRealtimeSettingsOptions = {}
+) => {
     const { enabled = true, category } = options;
     const dataProvider = useDataProvider();
     const notify = useNotify();
     const [isConnected, setIsConnected] = useState(false);
     const [lastUpdate, setLastUpdate] = useState<RealtimeUpdate | null>(null);
-    
+
     // Get initial settings data
-    const { data: settings, refetch, isLoading } = useGetList<Setting>('settings', {
+    const {
+        data: settings,
+        refetch,
+        isLoading,
+    } = useGetList<Setting>('settings', {
         pagination: { page: 1, perPage: 1000 },
         sort: { field: 'category', order: 'ASC' },
         filter: category ? { category } : {},
     });
 
     // Handle real-time updates
-    const handleRealtimeUpdate = useCallback((payload: any) => {
-        const { eventType, new: newRecord, old: oldRecord } = payload;
-        
-        const update: RealtimeUpdate = {
-            eventType,
-            new: newRecord,
-            old: oldRecord,
-            timestamp: new Date().toISOString(),
-        };
-        
-        setLastUpdate(update);
+    const handleRealtimeUpdate = useCallback(
+        (payload: any) => {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
 
-        // Show notifications for updates
-        switch (eventType) {
-            case 'INSERT':
-                notify(`New ${newRecord.category} setting created: ${newRecord.label}`, {
-                    type: 'info',
-                    anchorOrigin: { vertical: 'top', horizontal: 'right' },
-                });
-                break;
-            case 'UPDATE':
-                notify(`Setting updated: ${newRecord.label}`, {
-                    type: 'info',
-                    anchorOrigin: { vertical: 'top', horizontal: 'right' },
-                });
-                break;
-            case 'DELETE':
-                notify(`Setting deleted: ${oldRecord.label}`, {
-                    type: 'warning',
-                    anchorOrigin: { vertical: 'top', horizontal: 'right' },
-                });
-                break;
-        }
+            const update: RealtimeUpdate = {
+                eventType,
+                new: newRecord,
+                old: oldRecord,
+                timestamp: new Date().toISOString(),
+            };
 
-        // Refetch data to ensure consistency
-        refetch();
-    }, [notify, refetch]);
+            setLastUpdate(update);
+
+            // Show notifications for updates
+            switch (eventType) {
+                case 'INSERT':
+                    notify(
+                        `New ${newRecord.category} setting created: ${newRecord.label}`,
+                        {
+                            type: 'info',
+                            anchorOrigin: {
+                                vertical: 'top',
+                                horizontal: 'right',
+                            },
+                        }
+                    );
+                    break;
+                case 'UPDATE':
+                    notify(`Setting updated: ${newRecord.label}`, {
+                        type: 'info',
+                        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                    });
+                    break;
+                case 'DELETE':
+                    notify(`Setting deleted: ${oldRecord.label}`, {
+                        type: 'warning',
+                        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+                    });
+                    break;
+            }
+
+            // Refetch data to ensure consistency
+            refetch();
+        },
+        [notify, refetch]
+    );
 
     // Set up real-time subscription
     useEffect(() => {
@@ -92,7 +107,9 @@ export const useRealtimeSettings = (options: UseRealtimeSettingsOptions = {}) =>
                     console.log('Real-time settings subscription active');
                 } else if (status === 'CHANNEL_ERROR') {
                     console.error('Real-time settings subscription error');
-                    notify('Real-time updates disconnected', { type: 'warning' });
+                    notify('Real-time updates disconnected', {
+                        type: 'warning',
+                    });
                 }
             });
 
@@ -104,12 +121,17 @@ export const useRealtimeSettings = (options: UseRealtimeSettingsOptions = {}) =>
 
     // Optimistic update helper
     const performOptimisticUpdate = useCallback(
-        async (operation: 'create' | 'update' | 'delete', settingData: Partial<Setting>) => {
+        async (
+            operation: 'create' | 'update' | 'delete',
+            settingData: Partial<Setting>
+        ) => {
             try {
                 let result;
                 switch (operation) {
                     case 'create':
-                        result = await dataProvider.create('settings', { data: settingData });
+                        result = await dataProvider.create('settings', {
+                            data: settingData,
+                        });
                         break;
                     case 'update':
                         result = await dataProvider.update('settings', {
@@ -128,7 +150,9 @@ export const useRealtimeSettings = (options: UseRealtimeSettingsOptions = {}) =>
                 return result;
             } catch (error) {
                 console.error('Optimistic update failed:', error);
-                notify('Operation failed. Please try again.', { type: 'error' });
+                notify('Operation failed. Please try again.', {
+                    type: 'error',
+                });
                 // Refetch to restore consistent state
                 refetch();
                 throw error;
@@ -163,24 +187,33 @@ export const useRealtimeSettingsStats = () => {
         total: 0,
         active: 0,
         inactive: 0,
-        byCategory: {} as Record<string, { total: number; active: number; inactive: number }>,
+        byCategory: {} as Record<
+            string,
+            { total: number; active: number; inactive: number }
+        >,
     });
 
     useEffect(() => {
         if (settings) {
-            const byCategory = settings.reduce((acc, setting) => {
-                const category = setting.category;
-                if (!acc[category]) {
-                    acc[category] = { total: 0, active: 0, inactive: 0 };
-                }
-                acc[category].total++;
-                if (setting.active) {
-                    acc[category].active++;
-                } else {
-                    acc[category].inactive++;
-                }
-                return acc;
-            }, {} as Record<string, { total: number; active: number; inactive: number }>);
+            const byCategory = settings.reduce(
+                (acc, setting) => {
+                    const category = setting.category;
+                    if (!acc[category]) {
+                        acc[category] = { total: 0, active: 0, inactive: 0 };
+                    }
+                    acc[category].total++;
+                    if (setting.active) {
+                        acc[category].active++;
+                    } else {
+                        acc[category].inactive++;
+                    }
+                    return acc;
+                },
+                {} as Record<
+                    string,
+                    { total: number; active: number; inactive: number }
+                >
+            );
 
             setStats({
                 total: settings.length,

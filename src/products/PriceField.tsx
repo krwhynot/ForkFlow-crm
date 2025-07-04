@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useRecordContext } from 'react-admin';
 import { Product } from '../types';
-import { Typography } from '../components/Typography/Typography';
-import { TypographyProps } from '@mui/material';
+import { Typography, TypographyProps } from '@/components/ui-kit';
 
 interface PriceFieldProps extends Omit<TypographyProps, 'children'> {
     source?: keyof Product;
@@ -23,7 +22,6 @@ export const PriceField: React.FC<PriceFieldProps> = ({
     variant = 'body1',
     color = 'success.main',
     record: passedRecord,
-    sx,
     ...props
 }) => {
     const contextRecord = useRecordContext<Product>();
@@ -31,11 +29,7 @@ export const PriceField: React.FC<PriceFieldProps> = ({
 
     if (!record || record[source] === undefined || record[source] === null) {
         return (
-            <Typography
-                variant={variant}
-                className="text-gray-500"
-                {...props}
-            >
+            <Typography variant={variant} className="text-gray-500" {...props}>
                 —
             </Typography>
         );
@@ -47,11 +41,7 @@ export const PriceField: React.FC<PriceFieldProps> = ({
 
     if (isNaN(price)) {
         return (
-            <Typography
-                variant={variant}
-                className="text-red-500"
-                {...props}
-            >
+            <Typography variant={variant} className="text-red-500" {...props}>
                 Invalid price
             </Typography>
         );
@@ -76,8 +66,8 @@ export const PriceField: React.FC<PriceFieldProps> = ({
                 color === 'success.main'
                     ? 'text-green-600'
                     : color === 'primary.main'
-                    ? 'text-blue-600'
-                    : ''
+                      ? 'text-blue-600'
+                      : ''
             }`}
             {...props}
         >

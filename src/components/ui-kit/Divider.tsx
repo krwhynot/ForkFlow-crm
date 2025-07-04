@@ -26,9 +26,10 @@ export const Divider: React.FC<DividerProps> = ({
 }) => {
     const Component = component;
 
-    const baseClasses = orientation === 'horizontal'
-        ? 'border-t border-gray-200'
-        : 'border-l border-gray-200';
+    const baseClasses =
+        orientation === 'horizontal'
+            ? 'border-t border-gray-200'
+            : 'border-l border-gray-200';
 
     const variantClasses = {
         fullWidth: orientation === 'horizontal' ? 'w-full' : 'h-full',

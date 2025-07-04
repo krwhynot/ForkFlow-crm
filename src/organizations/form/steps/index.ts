@@ -4,11 +4,16 @@ export { ContactDetailsStep } from './ContactDetailsStep';
 export { BusinessDetailsStep } from './BusinessDetailsStep';
 
 // Enhanced validation components and hooks
-export { ValidationProvider, ValidationSummary, FieldValidationIndicator, ValidationModeToggle } from './ValidationProvider';
+export {
+    ValidationProvider,
+    ValidationSummary,
+    FieldValidationIndicator,
+    ValidationModeToggle,
+} from './ValidationProvider';
 export { useRealTimeValidation } from './useRealTimeValidation';
 
 // Validation functions
-export { 
+export {
     validateBasicInfo,
     validateContactDetails,
     validateBusinessDetails,

@@ -33,15 +33,7 @@ const justifyClasses: Record<string, string> = {
 
 export const Stack = React.forwardRef<HTMLDivElement, StackProps>(
     (
-        {
-            direction = 'col',
-            gap = 0,
-            align,
-            justify,
-            className,
-            as,
-            ...props
-        },
+        { direction = 'col', gap = 0, align, justify, className, as, ...props },
         ref
     ) => {
         const classes = twMerge(

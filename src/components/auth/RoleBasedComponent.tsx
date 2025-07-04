@@ -69,7 +69,7 @@ export const withRoleAccess = <P extends object>(
  */
 export const useUserRole = () => {
     const { data: identity, isPending } = useGetIdentity();
-    
+
     return {
         role: identity?.role,
         isAdmin: identity?.role === 'admin',
@@ -77,35 +77,36 @@ export const useUserRole = () => {
         isBroker: identity?.role === 'broker',
         isPending,
         hasRole: (role: UserRole) => identity?.role === role,
-        hasAnyRole: (roles: UserRole[]) => roles.includes(identity?.role || '' as UserRole),
+        hasAnyRole: (roles: UserRole[]) =>
+            roles.includes(identity?.role || ('' as UserRole)),
     };
 };
 
 /**
  * Convenience components for specific roles
  */
-export const AdminOnly: React.FC<{ children: React.ReactNode; fallback?: React.ReactNode }> = ({
-    children,
-    fallback,
-}) => (
+export const AdminOnly: React.FC<{
+    children: React.ReactNode;
+    fallback?: React.ReactNode;
+}> = ({ children, fallback }) => (
     <RoleBasedComponent allowedRoles={['admin']} fallback={fallback}>
         {children}
     </RoleBasedComponent>
 );
 
-export const ManagerOrAdmin: React.FC<{ children: React.ReactNode; fallback?: React.ReactNode }> = ({
-    children,
-    fallback,
-}) => (
+export const ManagerOrAdmin: React.FC<{
+    children: React.ReactNode;
+    fallback?: React.ReactNode;
+}> = ({ children, fallback }) => (
     <RoleBasedComponent allowedRoles={['admin', 'manager']} fallback={fallback}>
         {children}
     </RoleBasedComponent>
 );
 
-export const BrokerOnly: React.FC<{ children: React.ReactNode; fallback?: React.ReactNode }> = ({
-    children,
-    fallback,
-}) => (
+export const BrokerOnly: React.FC<{
+    children: React.ReactNode;
+    fallback?: React.ReactNode;
+}> = ({ children, fallback }) => (
     <RoleBasedComponent allowedRoles={['broker']} fallback={fallback}>
         {children}
     </RoleBasedComponent>

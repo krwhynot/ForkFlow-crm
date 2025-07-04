@@ -1,6 +1,16 @@
-import React, { useState, useCallback, useEffect, useRef, Fragment } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    useRef,
+    Fragment,
+} from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon, ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
+import {
+    XMarkIcon,
+    ArrowLeftIcon,
+    CheckIcon,
+} from '@heroicons/react/24/outline';
 import { cn } from '../../utils/cn';
 
 interface SlideUpModalProps {
@@ -64,7 +74,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
     // Detect keyboard visibility on mobile (optimized)
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
-        
+
         const handleResize = () => {
             // Debounce resize events to prevent excessive calculations
             clearTimeout(timeoutId);
@@ -81,33 +91,42 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
             window.visualViewport.addEventListener('resize', handleResize);
             return () => {
                 clearTimeout(timeoutId);
-                window.visualViewport?.removeEventListener('resize', handleResize);
+                window.visualViewport?.removeEventListener(
+                    'resize',
+                    handleResize
+                );
             };
         }
     }, []);
 
     // Optimized swipe handlers using CSS transforms instead of style manipulation
-    const handleTouchStart = useCallback((e: React.TouchEvent) => {
-        if (!swipeToClose || preventClose) return;
-        
-        const touch = e.touches[0];
-        startY.current = touch.clientY;
-        setIsDragging(true);
-        setSwipeOffset(0);
-    }, [swipeToClose, preventClose]);
+    const handleTouchStart = useCallback(
+        (e: React.TouchEvent) => {
+            if (!swipeToClose || preventClose) return;
 
-    const handleTouchMove = useCallback((e: React.TouchEvent) => {
-        if (!isDragging || !swipeToClose || preventClose) return;
+            const touch = e.touches[0];
+            startY.current = touch.clientY;
+            setIsDragging(true);
+            setSwipeOffset(0);
+        },
+        [swipeToClose, preventClose]
+    );
 
-        const touch = e.touches[0];
-        const deltaY = touch.clientY - startY.current;
-        
-        // Only allow downward swipes and limit the offset
-        if (deltaY > 0) {
-            const limitedOffset = Math.min(deltaY * 0.5, 100);
-            setSwipeOffset(limitedOffset);
-        }
-    }, [isDragging, swipeToClose, preventClose]);
+    const handleTouchMove = useCallback(
+        (e: React.TouchEvent) => {
+            if (!isDragging || !swipeToClose || preventClose) return;
+
+            const touch = e.touches[0];
+            const deltaY = touch.clientY - startY.current;
+
+            // Only allow downward swipes and limit the offset
+            if (deltaY > 0) {
+                const limitedOffset = Math.min(deltaY * 0.5, 100);
+                setSwipeOffset(limitedOffset);
+            }
+        },
+        [isDragging, swipeToClose, preventClose]
+    );
 
     const handleTouchEnd = useCallback(() => {
         if (!isDragging || !swipeToClose || preventClose) return;
@@ -116,7 +135,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
         if (swipeOffset > 60) {
             onClose();
         }
-        
+
         setIsDragging(false);
         setSwipeOffset(0);
     }, [isDragging, swipeToClose, preventClose, swipeOffset, onClose]);
@@ -168,18 +187,29 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                             <Dialog.Panel
                                 ref={panelRef}
                                 className={cn(
-                                    "relative w-full transform overflow-hidden bg-white text-left shadow-xl transition-all",
+                                    'relative w-full transform overflow-hidden bg-white text-left shadow-xl transition-all',
                                     // Mobile styles
-                                    "sm:hidden",
-                                    fullHeight ? "h-screen" : "min-h-[50vh] max-h-[90vh] rounded-t-2xl",
+                                    'sm:hidden',
+                                    fullHeight
+                                        ? 'h-screen'
+                                        : 'min-h-[50vh] max-h-[90vh] rounded-t-2xl',
                                     // Desktop styles
-                                    "sm:block sm:my-8 sm:rounded-lg",
+                                    'sm:block sm:my-8 sm:rounded-lg',
                                     getMaxWidthClass(),
-                                    "sm:max-h-[80vh]"
+                                    'sm:max-h-[80vh]'
                                 )}
                                 style={{
-                                    transform: swipeOffset > 0 ? `translateY(${swipeOffset}px)` : undefined,
-                                    opacity: swipeOffset > 0 ? Math.max(0.3, 1 - (swipeOffset / 200)) : undefined,
+                                    transform:
+                                        swipeOffset > 0
+                                            ? `translateY(${swipeOffset}px)`
+                                            : undefined,
+                                    opacity:
+                                        swipeOffset > 0
+                                            ? Math.max(
+                                                  0.3,
+                                                  1 - swipeOffset / 200
+                                              )
+                                            : undefined,
                                 }}
                                 onTouchStart={handleTouchStart}
                                 onTouchMove={handleTouchMove}
@@ -193,7 +223,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                             <div className="w-9 h-1 bg-gray-300 rounded-full" />
                                         </div>
                                     )}
-                                    
+
                                     <div className="flex items-center justify-between px-4 py-3">
                                         {/* Left Action */}
                                         <div className="flex items-center w-12">
@@ -219,11 +249,16 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
 
                                         {/* Title */}
                                         <div className="flex-1 text-center px-4">
-                                            <Dialog.Title as="h3" className="text-lg font-semibold text-gray-900 truncate">
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg font-semibold text-gray-900 truncate"
+                                            >
                                                 {title}
                                             </Dialog.Title>
                                             {subtitle && (
-                                                <p className="text-sm text-gray-500 truncate">{subtitle}</p>
+                                                <p className="text-sm text-gray-500 truncate">
+                                                    {subtitle}
+                                                </p>
                                             )}
                                         </div>
 
@@ -236,9 +271,11 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                     {/* Progress Bar */}
                                     {showProgress && (
                                         <div className="h-1 bg-gray-200">
-                                            <div 
+                                            <div
                                                 className="h-full bg-blue-500 transition-all duration-300"
-                                                style={{ width: `${progress}%` }}
+                                                style={{
+                                                    width: `${progress}%`,
+                                                }}
                                             />
                                         </div>
                                     )}
@@ -248,11 +285,16 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                 <div className="hidden sm:block px-6 py-4 border-b border-gray-200">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <Dialog.Title as="h3" className="text-lg font-semibold text-gray-900">
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg font-semibold text-gray-900"
+                                            >
                                                 {title}
                                             </Dialog.Title>
                                             {subtitle && (
-                                                <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+                                                <p className="text-sm text-gray-500 mt-1">
+                                                    {subtitle}
+                                                </p>
                                             )}
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -267,24 +309,28 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                             </button>
                                         </div>
                                     </div>
-                                    
+
                                     {/* Desktop Progress Bar */}
                                     {showProgress && (
                                         <div className="mt-4 h-2 bg-gray-200 rounded-full">
-                                            <div 
+                                            <div
                                                 className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                                                style={{ width: `${progress}%` }}
+                                                style={{
+                                                    width: `${progress}%`,
+                                                }}
                                             />
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Content */}
-                                <div 
+                                <div
                                     className={cn(
-                                        "flex-1 overflow-y-auto",
-                                        keyboardVisible ? "pb-0" : "pb-20 sm:pb-4", // Space for save button on mobile
-                                        "max-h-[calc(100vh-120px)] sm:max-h-[60vh]"
+                                        'flex-1 overflow-y-auto',
+                                        keyboardVisible
+                                            ? 'pb-0'
+                                            : 'pb-20 sm:pb-4', // Space for save button on mobile
+                                        'max-h-[calc(100vh-120px)] sm:max-h-[60vh]'
                                     )}
                                 >
                                     {children}
@@ -297,12 +343,12 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                             onClick={onSave}
                                             disabled={saveDisabled}
                                             className={cn(
-                                                "min-h-[52px] min-w-[52px] w-14 h-14 rounded-full shadow-lg flex items-center justify-center",
-                                                "bg-blue-600 text-white",
-                                                "hover:bg-blue-700 focus:ring-4 focus:ring-primary-200",
-                                                "disabled:opacity-50 disabled:cursor-not-allowed",
-                                                "transition-all duration-200",
-                                                "active:scale-95"
+                                                'min-h-[52px] min-w-[52px] w-14 h-14 rounded-full shadow-lg flex items-center justify-center',
+                                                'bg-blue-600 text-white',
+                                                'hover:bg-blue-700 focus:ring-4 focus:ring-primary-200',
+                                                'disabled:opacity-50 disabled:cursor-not-allowed',
+                                                'transition-all duration-200',
+                                                'active:scale-95'
                                             )}
                                             aria-label={saveLabel}
                                         >
@@ -318,11 +364,11 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                             onClick={onSave}
                                             disabled={saveDisabled}
                                             className={cn(
-                                                "min-h-[44px] min-w-[44px] flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg",
-                                                "bg-blue-600 text-white",
-                                                "hover:bg-blue-700 focus:ring-4 focus:ring-primary-200",
-                                                "disabled:opacity-50 disabled:cursor-not-allowed",
-                                                "transition-colors duration-200"
+                                                'min-h-[44px] min-w-[44px] flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg',
+                                                'bg-blue-600 text-white',
+                                                'hover:bg-blue-700 focus:ring-4 focus:ring-primary-200',
+                                                'disabled:opacity-50 disabled:cursor-not-allowed',
+                                                'transition-colors duration-200'
                                             )}
                                         >
                                             {saveLabel}

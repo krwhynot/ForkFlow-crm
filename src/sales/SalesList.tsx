@@ -1,4 +1,4 @@
-import { Chip, Stack } from '@mui/material';
+import { Chip, Stack } from '../components/ui-kit';
 import {
     CreateButton,
     DatagridConfigurable,
@@ -23,7 +23,7 @@ const OptionsField = (_props: { label?: string | boolean }) => {
     const record = useRecordContext();
     if (!record) return null;
     return (
-        <Stack direction="row" gap={1}>
+        <Stack className="flex-row gap-1">
             {record.administrator && (
                 <Chip
                     label="Admin"
@@ -46,7 +46,7 @@ const OptionsField = (_props: { label?: string | boolean }) => {
 
 export function SalesList() {
     return (
-        <Stack gap={4}>
+        <Stack className="gap-4">
             <List
                 filters={filters}
                 actions={<SalesListActions />}

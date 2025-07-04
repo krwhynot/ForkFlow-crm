@@ -24,15 +24,18 @@ export interface RefreshTokenResponse {
 /**
  * Login user with email and password
  */
-export const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
+export const login = async (
+    credentials: LoginCredentials
+): Promise<AuthResponse> => {
     try {
         const { email, password, rememberMe } = credentials;
-        
+
         // Authenticate with Supabase
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
+        const { data: authData, error: authError } =
+            await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
 
         if (authError || !authData.user) {
             throw new Error(authError?.message || 'Login failed');
@@ -41,7 +44,8 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
         // Get user profile from the database
         const { data: userProfile, error: profileError } = await supabase
             .from('users')
-            .select(`
+            .select(
+                `
                 id,
                 email,
                 first_name,
@@ -54,7 +58,8 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
                 last_login,
                 created_at,
                 updated_at
-            `)
+            `
+            )
             .eq('auth_user_id', authData.user.id)
             .single();
 
@@ -157,17 +162,22 @@ export const logout = async (): Promise<void> => {
  */
 export const getCurrentUser = async (): Promise<User | null> => {
     try {
-        const { data: authData, error: authError } = await supabase.auth.getUser();
-        
+        const { data: authData, error: authError } =
+            await supabase.auth.getUser();
+
         if (authError || !authData.user) {
-            console.debug('No authenticated user found:', authError?.message || 'No user session');
+            console.debug(
+                'No authenticated user found:',
+                authError?.message || 'No user session'
+            );
             return null;
         }
 
         // Get user profile from database
         const { data: userProfile, error: profileError } = await supabase
             .from('users')
-            .select(`
+            .select(
+                `
                 id,
                 email,
                 first_name,
@@ -180,12 +190,16 @@ export const getCurrentUser = async (): Promise<User | null> => {
                 last_login,
                 created_at,
                 updated_at
-            `)
+            `
+            )
             .eq('auth_user_id', authData.user.id)
             .single();
 
         if (profileError || !userProfile) {
-            console.debug('User profile not found for auth user:', authData.user.id);
+            console.debug(
+                'User profile not found for auth user:',
+                authData.user.id
+            );
             return null;
         }
 
@@ -215,25 +229,27 @@ export const getCurrentUser = async (): Promise<User | null> => {
 export const getUserPermissions = async (): Promise<string[]> => {
     try {
         const user = await getCurrentUser();
-        
+
         // If no user is authenticated, return empty permissions
         if (!user) {
-            console.debug('No authenticated user - returning empty permissions');
+            console.debug(
+                'No authenticated user - returning empty permissions'
+            );
             return [];
         }
-        
+
         // Return permissions based on role
         switch (user.role) {
             case 'admin':
                 return [
                     'organizations.*',
-                    'contacts.*', 
+                    'contacts.*',
                     'products.*',
                     'opportunities.*',
                     'interactions.*',
                     'users.*',
                     'settings.*',
-                    'reports.*'
+                    'reports.*',
                 ];
             case 'manager':
                 return [
@@ -243,7 +259,7 @@ export const getUserPermissions = async (): Promise<string[]> => {
                     'opportunities.*',
                     'interactions.*',
                     'reports.view',
-                    'settings.view'
+                    'settings.view',
                 ];
             case 'broker':
                 return [
@@ -252,7 +268,7 @@ export const getUserPermissions = async (): Promise<string[]> => {
                     'contacts.*',
                     'products.view',
                     'opportunities.*',
-                    'interactions.*'
+                    'interactions.*',
                 ];
             default:
                 return [];
@@ -269,7 +285,7 @@ export const getUserPermissions = async (): Promise<string[]> => {
 export const refreshToken = async (): Promise<RefreshTokenResponse> => {
     try {
         const { data, error } = await supabase.auth.refreshSession();
-        
+
         if (error || !data.session) {
             throw new Error(error?.message || 'Token refresh failed');
         }
@@ -304,7 +320,7 @@ export const isAuthenticated = async (): Promise<boolean> => {
 export const initializeAuth = async (): Promise<User | null> => {
     try {
         const { data, error } = await supabase.auth.getSession();
-        
+
         if (error || !data.session) {
             console.debug('No valid session found during initialization');
             return null;
@@ -312,19 +328,23 @@ export const initializeAuth = async (): Promise<User | null> => {
 
         // Get current user profile
         const user = await getCurrentUser();
-        
+
         // Only log session restoration if we have a valid user
         if (user) {
-            await logAuditEvent('auth.session_restored', {
-                userId: user.id,
-                userEmail: user.email,
-                userRole: user.role,
-            }, {
-                userId: user.id,
-                userEmail: user.email,
-                outcome: 'success',
-                message: 'Authentication session restored',
-            });
+            await logAuditEvent(
+                'auth.session_restored',
+                {
+                    userId: user.id,
+                    userEmail: user.email,
+                    userRole: user.role,
+                },
+                {
+                    userId: user.id,
+                    userEmail: user.email,
+                    outcome: 'success',
+                    message: 'Authentication session restored',
+                }
+            );
         }
 
         return user;
@@ -354,19 +374,27 @@ export const signUp = async (userData: {
     role?: string;
 }): Promise<AuthResponse> => {
     try {
-        const { email, password, firstName, lastName, role = 'broker' } = userData;
-        
-        // Sign up with Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        const {
             email,
             password,
-            options: {
-                data: {
-                    first_name: firstName,
-                    last_name: lastName,
-                }
+            firstName,
+            lastName,
+            role = 'broker',
+        } = userData;
+
+        // Sign up with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp(
+            {
+                email,
+                password,
+                options: {
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName,
+                    },
+                },
             }
-        });
+        );
 
         if (authError || !authData.user) {
             throw new Error(authError?.message || 'Sign up failed');
@@ -441,7 +469,7 @@ export const requestPasswordReset = async (email: string): Promise<void> => {
 export const updatePassword = async (newPassword: string): Promise<void> => {
     try {
         const { error } = await supabase.auth.updateUser({
-            password: newPassword
+            password: newPassword,
         });
 
         if (error) {

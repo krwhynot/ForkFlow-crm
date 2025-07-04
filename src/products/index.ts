@@ -18,7 +18,7 @@ export { ProductEdit } from './ProductEdit';
 export { ProductShow } from './ProductShow';
 
 // Enhanced component exports
-export { 
+export {
     ProductListFilter,
     ProductNameFilter,
     ProductSKUFilter,

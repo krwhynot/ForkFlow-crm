@@ -35,7 +35,9 @@ export const CompanyInputs = () => {
                     <CompanyContactInputs />
                     <CompanyContextInputs />
                 </Box>
-                <div className={`${isMobile ? 'border-t' : 'border-l'} border-gray-200`} />
+                <div
+                    className={`${isMobile ? 'border-t' : 'border-l'} border-gray-200`}
+                />
                 <Box className="flex flex-col gap-4 flex-1">
                     <CompanyAddressInputs />
                     <CompanyAdditionalInformationInputs />
@@ -119,7 +121,9 @@ const CompanyAddressInputs = () => {
 const CompanyAdditionalInformationInputs = () => {
     return (
         <Box className="flex flex-col">
-            <h3 className="text-lg font-semibold mb-2">Additional information</h3>
+            <h3 className="text-lg font-semibold mb-2">
+                Additional information
+            </h3>
             <TextInput source="description" multiline helperText={false} />
             <ArrayInput source="contextLinks" helperText={false}>
                 <SimpleFormIterator

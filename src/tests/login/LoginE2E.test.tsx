@@ -25,7 +25,9 @@ vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {
         ...actual,
-        Navigate: ({ to }: { to: string }) => <div data-testid="navigate-to">{to}</div>,
+        Navigate: ({ to }: { to: string }) => (
+            <div data-testid="navigate-to">{to}</div>
+        ),
     };
 });
 
@@ -41,9 +43,7 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
     return (
         <QueryClientProvider client={queryClient}>
             <MemoryRouter>
-                <ErrorBoundary>
-                    {children}
-                </ErrorBoundary>
+                <ErrorBoundary>{children}</ErrorBoundary>
             </MemoryRouter>
         </QueryClientProvider>
     );
@@ -52,24 +52,24 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
 describe('ForkFlow CRM Login E2E Tests', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        
+
         // Reset localStorage and environment
         localStorage.clear();
         delete (window as any).location;
         (window as any).location = { search: '' };
-        
+
         // Reset import.meta.env mock
         vi.stubGlobal('import.meta', {
             env: {
-                VITE_IS_DEMO: 'false'
-            }
+                VITE_IS_DEMO: 'false',
+            },
         });
     });
 
     describe('Authentication Mode Detection', () => {
         it('should detect demo mode from environment variable', async () => {
             vi.stubGlobal('import.meta', {
-                env: { VITE_IS_DEMO: 'true' }
+                env: { VITE_IS_DEMO: 'true' },
             });
 
             render(
@@ -80,7 +80,9 @@ describe('ForkFlow CRM Login E2E Tests', () => {
 
             await waitFor(() => {
                 expect(screen.getByText('Demo Mode')).toBeInTheDocument();
-                expect(screen.getByText(/Demo Mode Active/)).toBeInTheDocument();
+                expect(
+                    screen.getByText(/Demo Mode Active/)
+                ).toBeInTheDocument();
             });
         });
 
@@ -108,7 +110,9 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('JWT Authentication')).toBeInTheDocument();
+                expect(
+                    screen.getByText('JWT Authentication')
+                ).toBeInTheDocument();
             });
         });
 
@@ -120,7 +124,9 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('JWT Authentication')).toBeInTheDocument();
+                expect(
+                    screen.getByText('JWT Authentication')
+                ).toBeInTheDocument();
             });
         });
     });
@@ -128,7 +134,7 @@ describe('ForkFlow CRM Login E2E Tests', () => {
     describe('Demo Mode Login', () => {
         beforeEach(() => {
             vi.stubGlobal('import.meta', {
-                env: { VITE_IS_DEMO: 'true' }
+                env: { VITE_IS_DEMO: 'true' },
             });
         });
 
@@ -141,8 +147,12 @@ describe('ForkFlow CRM Login E2E Tests', () => {
 
             await waitFor(() => {
                 expect(screen.getByText('Demo Mode')).toBeInTheDocument();
-                expect(screen.getByText(/Demo Mode Active/)).toBeInTheDocument();
-                expect(screen.getByText('Quick Demo Login:')).toBeInTheDocument();
+                expect(
+                    screen.getByText(/Demo Mode Active/)
+                ).toBeInTheDocument();
+                expect(
+                    screen.getByText('Quick Demo Login:')
+                ).toBeInTheDocument();
                 expect(screen.getByText('Admin')).toBeInTheDocument();
                 expect(screen.getByText('Manager')).toBeInTheDocument();
                 expect(screen.getByText('Broker')).toBeInTheDocument();
@@ -166,9 +176,13 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             // Fill in credentials
             const emailInput = screen.getByLabelText('Email');
             const passwordInput = screen.getByLabelText('Password');
-            const submitButton = screen.getByRole('button', { name: /sign in/i });
+            const submitButton = screen.getByRole('button', {
+                name: /sign in/i,
+            });
 
-            fireEvent.change(emailInput, { target: { value: 'test@demo.com' } });
+            fireEvent.change(emailInput, {
+                target: { value: 'test@demo.com' },
+            });
             fireEvent.change(passwordInput, { target: { value: 'demo123' } });
             fireEvent.click(submitButton);
 
@@ -224,10 +238,16 @@ describe('ForkFlow CRM Login E2E Tests', () => {
 
             const emailInput = screen.getByLabelText('Email');
             const passwordInput = screen.getByLabelText('Password');
-            const submitButton = screen.getByRole('button', { name: /sign in/i });
+            const submitButton = screen.getByRole('button', {
+                name: /sign in/i,
+            });
 
-            fireEvent.change(emailInput, { target: { value: 'test@demo.com' } });
-            fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+            fireEvent.change(emailInput, {
+                target: { value: 'test@demo.com' },
+            });
+            fireEvent.change(passwordInput, {
+                target: { value: 'wrongpassword' },
+            });
             fireEvent.click(submitButton);
 
             await waitFor(() => {
@@ -259,8 +279,12 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('JWT Authentication')).toBeInTheDocument();
-                expect(screen.queryByText('Quick Demo Login:')).not.toBeInTheDocument();
+                expect(
+                    screen.getByText('JWT Authentication')
+                ).toBeInTheDocument();
+                expect(
+                    screen.queryByText('Quick Demo Login:')
+                ).not.toBeInTheDocument();
             });
         });
 
@@ -274,15 +298,23 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('JWT Authentication')).toBeInTheDocument();
+                expect(
+                    screen.getByText('JWT Authentication')
+                ).toBeInTheDocument();
             });
 
             const emailInput = screen.getByLabelText('Email');
             const passwordInput = screen.getByLabelText('Password');
-            const submitButton = screen.getByRole('button', { name: /sign in/i });
+            const submitButton = screen.getByRole('button', {
+                name: /sign in/i,
+            });
 
-            fireEvent.change(emailInput, { target: { value: 'user@company.com' } });
-            fireEvent.change(passwordInput, { target: { value: 'securepassword' } });
+            fireEvent.change(emailInput, {
+                target: { value: 'user@company.com' },
+            });
+            fireEvent.change(passwordInput, {
+                target: { value: 'securepassword' },
+            });
             fireEvent.click(submitButton);
 
             await waitFor(() => {
@@ -305,19 +337,29 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('JWT Authentication')).toBeInTheDocument();
+                expect(
+                    screen.getByText('JWT Authentication')
+                ).toBeInTheDocument();
             });
 
             const emailInput = screen.getByLabelText('Email');
             const passwordInput = screen.getByLabelText('Password');
-            const submitButton = screen.getByRole('button', { name: /sign in/i });
+            const submitButton = screen.getByRole('button', {
+                name: /sign in/i,
+            });
 
-            fireEvent.change(emailInput, { target: { value: 'user@company.com' } });
-            fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+            fireEvent.change(emailInput, {
+                target: { value: 'user@company.com' },
+            });
+            fireEvent.change(passwordInput, {
+                target: { value: 'wrongpassword' },
+            });
             fireEvent.click(submitButton);
 
             await waitFor(() => {
-                expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Invalid credentials')
+                ).toBeInTheDocument();
             });
         });
     });
@@ -331,14 +373,20 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('JWT Authentication')).toBeInTheDocument();
+                expect(
+                    screen.getByText('JWT Authentication')
+                ).toBeInTheDocument();
             });
 
-            const submitButton = screen.getByRole('button', { name: /sign in/i });
+            const submitButton = screen.getByRole('button', {
+                name: /sign in/i,
+            });
             fireEvent.click(submitButton);
 
             await waitFor(() => {
-                expect(screen.getByText('Please enter both email and password')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Please enter both email and password')
+                ).toBeInTheDocument();
             });
 
             expect(mockLogin).not.toHaveBeenCalled();
@@ -363,7 +411,7 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             });
 
             vi.stubGlobal('import.meta', {
-                env: { VITE_IS_DEMO: 'true' }
+                env: { VITE_IS_DEMO: 'true' },
             });
 
             render(
@@ -373,7 +421,9 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             await waitFor(() => {
-                expect(screen.getByText('Recommended for field use')).toBeInTheDocument();
+                expect(
+                    screen.getByText('Recommended for field use')
+                ).toBeInTheDocument();
             });
         });
     });
@@ -385,7 +435,9 @@ describe('ForkFlow CRM Login E2E Tests', () => {
                 throw new Error('Test component error');
             });
 
-            const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const consoleSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
 
             render(
                 <TestWrapper>
@@ -394,7 +446,9 @@ describe('ForkFlow CRM Login E2E Tests', () => {
             );
 
             expect(screen.getByText(/ForkFlow CRM Error/)).toBeInTheDocument();
-            expect(screen.getByText(/Something went wrong/)).toBeInTheDocument();
+            expect(
+                screen.getByText(/Something went wrong/)
+            ).toBeInTheDocument();
 
             consoleSpy.mockRestore();
         });

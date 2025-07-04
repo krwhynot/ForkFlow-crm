@@ -40,11 +40,7 @@ function TabPanel(props: TabPanelProps) {
             aria-labelledby={`profile-tab-${index}`}
             {...other}
         >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    {children}
-                </Box>
-            )}
+            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
         </div>
     );
 }
@@ -65,7 +61,12 @@ export const UserProfilePage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     // Get current user information
-    const { data: currentUser, isPending, error, refetch } = useQuery({
+    const {
+        data: currentUser,
+        isPending,
+        error,
+        refetch,
+    } = useQuery({
         queryKey: ['current-user'],
         queryFn: async (): Promise<User> => {
             try {
@@ -111,7 +112,8 @@ export const UserProfilePage = () => {
             <Container maxWidth="md" sx={{ py: 4 }}>
                 <Paper sx={{ p: 3 }}>
                     <Typography color="error">
-                        Failed to load profile information. Please try refreshing the page.
+                        Failed to load profile information. Please try
+                        refreshing the page.
                     </Typography>
                 </Paper>
             </Container>
@@ -122,9 +124,9 @@ export const UserProfilePage = () => {
         <Container maxWidth="md" sx={{ py: 4 }}>
             <Stack spacing={3}>
                 <Box>
-                    <Typography 
-                        variant={isMobile ? "h5" : "h4"} 
-                        component="h1" 
+                    <Typography
+                        variant={isMobile ? 'h5' : 'h4'}
+                        component="h1"
                         gutterBottom
                         sx={{ fontWeight: 600 }}
                     >
@@ -137,49 +139,56 @@ export const UserProfilePage = () => {
 
                 <Paper sx={{ width: '100%' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs 
-                            value={tabValue} 
-                            onChange={handleTabChange} 
+                        <Tabs
+                            value={tabValue}
+                            onChange={handleTabChange}
                             aria-label="profile tabs"
-                            variant={isMobile ? "scrollable" : "standard"}
-                            scrollButtons={isMobile ? "auto" : false}
+                            variant={isMobile ? 'scrollable' : 'standard'}
+                            scrollButtons={isMobile ? 'auto' : false}
                         >
-                            <Tab 
-                                label="Profile" 
-                                {...a11yProps(0)} 
-                                sx={{ minHeight: 48, fontSize: isMobile ? '0.875rem' : '1rem' }}
+                            <Tab
+                                label="Profile"
+                                {...a11yProps(0)}
+                                sx={{
+                                    minHeight: 48,
+                                    fontSize: isMobile ? '0.875rem' : '1rem',
+                                }}
                             />
-                            <Tab 
-                                label="Password" 
-                                {...a11yProps(1)} 
-                                sx={{ minHeight: 48, fontSize: isMobile ? '0.875rem' : '1rem' }}
+                            <Tab
+                                label="Password"
+                                {...a11yProps(1)}
+                                sx={{
+                                    minHeight: 48,
+                                    fontSize: isMobile ? '0.875rem' : '1rem',
+                                }}
                             />
-                            <Tab 
-                                label="Security" 
-                                {...a11yProps(2)} 
-                                sx={{ minHeight: 48, fontSize: isMobile ? '0.875rem' : '1rem' }}
+                            <Tab
+                                label="Security"
+                                {...a11yProps(2)}
+                                sx={{
+                                    minHeight: 48,
+                                    fontSize: isMobile ? '0.875rem' : '1rem',
+                                }}
                             />
                         </Tabs>
                     </Box>
 
                     <TabPanel value={tabValue} index={0}>
-                        <ProfileForm 
-                            user={currentUser} 
+                        <ProfileForm
+                            user={currentUser}
                             onSuccess={handleProfileUpdate}
                         />
                     </TabPanel>
 
                     <TabPanel value={tabValue} index={1}>
-                        <PasswordChangeForm 
+                        <PasswordChangeForm
                             user={currentUser}
                             onSuccess={handlePasswordChange}
                         />
                     </TabPanel>
 
                     <TabPanel value={tabValue} index={2}>
-                        <SecuritySettings 
-                            user={currentUser}
-                        />
+                        <SecuritySettings user={currentUser} />
                     </TabPanel>
                 </Paper>
             </Stack>

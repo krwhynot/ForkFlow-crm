@@ -10,87 +10,91 @@ export const useKeyboardShortcuts = (options?: {
     onCreateNew?: () => void;
     onSearch?: () => void;
 }) => {
-    const { 
-        enableGlobalShortcuts = true, 
-        onCreateNew, 
-        onSearch 
+    const {
+        enableGlobalShortcuts = true,
+        onCreateNew,
+        onSearch,
     } = options || {};
-    
+
     const { viewMode, setViewMode, toggleViewMode } = useViewMode();
 
-    const handleKeyDown = useCallback((event: KeyboardEvent) => {
-        // Only handle shortcuts when not in form inputs
-        const target = event.target as HTMLElement;
-        const isInInput = target.tagName === 'INPUT' || 
-                         target.tagName === 'TEXTAREA' || 
-                         target.contentEditable === 'true';
-        
-        if (isInInput) return;
+    const handleKeyDown = useCallback(
+        (event: KeyboardEvent) => {
+            // Only handle shortcuts when not in form inputs
+            const target = event.target as HTMLElement;
+            const isInInput =
+                target.tagName === 'INPUT' ||
+                target.tagName === 'TEXTAREA' ||
+                target.contentEditable === 'true';
 
-        // Check for modifier keys
-        const hasModifier = event.ctrlKey || event.metaKey;
-        const hasShift = event.shiftKey;
+            if (isInInput) return;
 
-        // Handle shortcuts
-        switch (event.key) {
-            case '1':
-                if (hasModifier) {
-                    event.preventDefault();
-                    setViewMode({ mode: 'table' });
-                }
-                break;
-            
-            case '2':
-                if (hasModifier) {
-                    event.preventDefault();
-                    setViewMode({ mode: 'cards' });
-                }
-                break;
-            
-            case '3':
-                if (hasModifier) {
-                    event.preventDefault();
-                    setViewMode({ mode: 'kanban' });
-                }
-                break;
-            
-            case '4':
-                if (hasModifier) {
-                    event.preventDefault();
-                    setViewMode({ mode: 'map' });
-                }
-                break;
-            
-            case 'v':
-                if (hasModifier && hasShift) {
-                    event.preventDefault();
-                    toggleViewMode();
-                }
-                break;
-            
-            case 'n':
-                if (hasModifier && onCreateNew) {
-                    event.preventDefault();
-                    onCreateNew();
-                }
-                break;
-            
-            case 'f':
-            case '/':
-                if ((hasModifier || event.key === '/') && onSearch) {
-                    event.preventDefault();
-                    onSearch();
-                }
-                break;
-            
-            case 'Escape':
-                // Clear focus from current element
-                if (document.activeElement instanceof HTMLElement) {
-                    document.activeElement.blur();
-                }
-                break;
-        }
-    }, [setViewMode, toggleViewMode, onCreateNew, onSearch]);
+            // Check for modifier keys
+            const hasModifier = event.ctrlKey || event.metaKey;
+            const hasShift = event.shiftKey;
+
+            // Handle shortcuts
+            switch (event.key) {
+                case '1':
+                    if (hasModifier) {
+                        event.preventDefault();
+                        setViewMode({ mode: 'table' });
+                    }
+                    break;
+
+                case '2':
+                    if (hasModifier) {
+                        event.preventDefault();
+                        setViewMode({ mode: 'cards' });
+                    }
+                    break;
+
+                case '3':
+                    if (hasModifier) {
+                        event.preventDefault();
+                        setViewMode({ mode: 'kanban' });
+                    }
+                    break;
+
+                case '4':
+                    if (hasModifier) {
+                        event.preventDefault();
+                        setViewMode({ mode: 'map' });
+                    }
+                    break;
+
+                case 'v':
+                    if (hasModifier && hasShift) {
+                        event.preventDefault();
+                        toggleViewMode();
+                    }
+                    break;
+
+                case 'n':
+                    if (hasModifier && onCreateNew) {
+                        event.preventDefault();
+                        onCreateNew();
+                    }
+                    break;
+
+                case 'f':
+                case '/':
+                    if ((hasModifier || event.key === '/') && onSearch) {
+                        event.preventDefault();
+                        onSearch();
+                    }
+                    break;
+
+                case 'Escape':
+                    // Clear focus from current element
+                    if (document.activeElement instanceof HTMLElement) {
+                        document.activeElement.blur();
+                    }
+                    break;
+            }
+        },
+        [setViewMode, toggleViewMode, onCreateNew, onSearch]
+    );
 
     useEffect(() => {
         if (!enableGlobalShortcuts) return;

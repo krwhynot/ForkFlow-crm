@@ -23,9 +23,11 @@ import {
     Stack,
     Chip,
     Avatar,
+    Button,
+} from '@/components/ui-kit';
+import {
     Divider,
     Alert,
-    Button,
 } from '@mui/material';
 import {
     Email as EmailIcon,
@@ -72,38 +74,53 @@ const ShowActions = () => (
 
 const InteractionHeader = () => {
     const record = useRecordContext<Interaction>();
-    
+
     if (!record) return null;
 
-    const TypeIcon = interactionTypeIcons[record.type?.key as keyof typeof interactionTypeIcons] || FollowUpIcon;
-    const typeColor = interactionTypeColors[record.type?.key as keyof typeof interactionTypeColors] || '#455a64';
+    const TypeIcon =
+        interactionTypeIcons[
+            record.type?.key as keyof typeof interactionTypeIcons
+        ] || FollowUpIcon;
+    const typeColor =
+        interactionTypeColors[
+            record.type?.key as keyof typeof interactionTypeColors
+        ] || '#455a64';
 
     return (
-        <Card sx={{ mb: 3 }}>
+        <Card className="mb-3">
             <CardContent>
-                <Stack direction="row" spacing={2} alignItems="flex-start">
+                <Stack className="flex-row space-x-2 items-start">
                     <Avatar
-                        sx={{
-                            bgcolor: typeColor,
-                            width: 48,
-                            height: 48,
+                        className="w-12 h-12"
+                        style={{
+                            backgroundColor: typeColor,
                         }}
                     >
                         <TypeIcon />
                     </Avatar>
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Box className="flex-grow">
                         <Typography variant="h5" gutterBottom>
                             {record.subject || 'Untitled Interaction'}
                         </Typography>
-                        <Stack direction="row" spacing={2} alignItems="center">
+                        <Stack className="flex-row space-x-2 items-center">
                             <Chip
                                 label={record.type?.label || 'Unknown Type'}
-                                sx={{ bgcolor: typeColor, color: 'white' }}
+                                style={{ backgroundColor: typeColor, color: 'white' }}
                             />
                             <Chip
-                                icon={record.isCompleted ? <CompletedIcon /> : <PendingIcon />}
-                                label={record.isCompleted ? 'Completed' : 'Pending'}
-                                color={record.isCompleted ? 'success' : 'warning'}
+                                icon={
+                                    record.isCompleted ? (
+                                        <CompletedIcon />
+                                    ) : (
+                                        <PendingIcon />
+                                    )
+                                }
+                                label={
+                                    record.isCompleted ? 'Completed' : 'Pending'
+                                }
+                                color={
+                                    record.isCompleted ? 'success' : 'warning'
+                                }
                                 variant="outlined"
                             />
                         </Stack>
@@ -116,7 +133,7 @@ const InteractionHeader = () => {
 
 const InteractionDetails = () => {
     const record = useRecordContext<Interaction>();
-    
+
     if (!record) return null;
 
     const formatDuration = (minutes?: number) => {
@@ -124,7 +141,9 @@ const InteractionDetails = () => {
         if (minutes < 60) return `${minutes} minutes`;
         const hours = Math.floor(minutes / 60);
         const mins = minutes % 60;
-        return mins > 0 ? `${hours}h ${mins}m` : `${hours} hour${hours > 1 ? 's' : ''}`;
+        return mins > 0
+            ? `${hours}h ${mins}m`
+            : `${hours} hour${hours > 1 ? 's' : ''}`;
     };
 
     const openGoogleMaps = () => {
@@ -135,18 +154,21 @@ const InteractionDetails = () => {
     };
 
     return (
-        <Stack spacing={3}>
+        <Stack className="space-y-3">
             {/* Basic Information */}
             <Card>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Basic Information
                     </Typography>
-                    <Stack spacing={2}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Stack className="space-y-2">
+                        <Box className="flex items-center gap-1">
                             <BusinessIcon color="action" />
                             <Box>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Organization
                                 </Typography>
                                 <ReferenceField
@@ -161,10 +183,13 @@ const InteractionDetails = () => {
                         </Box>
 
                         {record.contactId && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box className="flex items-center gap-1">
                                 <PersonIcon color="action" />
                                 <Box>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
                                         Contact
                                     </Typography>
                                     <ReferenceField
@@ -173,19 +198,26 @@ const InteractionDetails = () => {
                                         link="show"
                                         record={record}
                                     >
-                                        <FunctionField render={(contact: any) => 
-                                            contact ? `${contact.firstName} ${contact.lastName}` : 'Unknown'
-                                        } />
+                                        <FunctionField
+                                            render={(contact: any) =>
+                                                contact
+                                                    ? `${contact.firstName} ${contact.lastName}`
+                                                    : 'Unknown'
+                                            }
+                                        />
                                     </ReferenceField>
                                 </Box>
                             </Box>
                         )}
 
                         {record.opportunityId && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box className="flex items-center gap-1">
                                 <OpportunityIcon color="action" />
                                 <Box>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
                                         Related Opportunity
                                     </Typography>
                                     <ReferenceField
@@ -194,7 +226,10 @@ const InteractionDetails = () => {
                                         link="show"
                                         record={record}
                                     >
-                                        <TextField source="name" variant="body1" />
+                                        <TextField
+                                            source="name"
+                                            variant="body1"
+                                        />
                                     </ReferenceField>
                                 </Box>
                             </Box>
@@ -210,7 +245,10 @@ const InteractionDetails = () => {
                         <Typography variant="h6" gutterBottom>
                             Description
                         </Typography>
-                        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                        <Typography
+                            variant="body1"
+                            className="whitespace-pre-wrap"
+                        >
                             {record.description}
                         </Typography>
                     </CardContent>
@@ -223,16 +261,19 @@ const InteractionDetails = () => {
                     <Typography variant="h6" gutterBottom>
                         Scheduling & Duration
                     </Typography>
-                    <Stack spacing={2}>
+                    <Stack className="space-y-2">
                         {record.scheduledDate && (
                             <Box>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Scheduled Date
                                 </Typography>
-                                <DateField 
-                                    source="scheduledDate" 
-                                    record={record} 
-                                    showTime 
+                                <DateField
+                                    source="scheduledDate"
+                                    record={record}
+                                    showTime
                                     variant="body1"
                                 />
                             </Box>
@@ -240,20 +281,26 @@ const InteractionDetails = () => {
 
                         {record.completedDate && (
                             <Box>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Completed Date
                                 </Typography>
-                                <DateField 
-                                    source="completedDate" 
-                                    record={record} 
-                                    showTime 
+                                <DateField
+                                    source="completedDate"
+                                    record={record}
+                                    showTime
                                     variant="body1"
                                 />
                             </Box>
                         )}
 
                         <Box>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                            >
                                 Duration
                             </Typography>
                             <Typography variant="body1">
@@ -265,25 +312,32 @@ const InteractionDetails = () => {
             </Card>
 
             {/* Location (for in-person interactions) */}
-            {(record.latitude && record.longitude) && (
+            {record.latitude && record.longitude && (
                 <Card>
                     <CardContent>
                         <Typography variant="h6" gutterBottom>
                             Location
                         </Typography>
-                        <Stack spacing={2}>
+                        <Stack className="space-y-2">
                             <Box>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     GPS Coordinates
                                 </Typography>
                                 <Typography variant="body1">
-                                    {record.latitude.toFixed(6)}, {record.longitude.toFixed(6)}
+                                    {record.latitude.toFixed(6)},{' '}
+                                    {record.longitude.toFixed(6)}
                                 </Typography>
                             </Box>
 
                             {record.locationNotes && (
                                 <Box>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
                                         Location Notes
                                     </Typography>
                                     <Typography variant="body1">
@@ -296,7 +350,7 @@ const InteractionDetails = () => {
                                 variant="outlined"
                                 startIcon={<LocationIcon />}
                                 onClick={openGoogleMaps}
-                                sx={{ alignSelf: 'flex-start' }}
+                                className="self-start"
                             >
                                 View on Google Maps
                             </Button>
@@ -312,13 +366,19 @@ const InteractionDetails = () => {
                         <Typography variant="h6" gutterBottom>
                             Outcome & Follow-up
                         </Typography>
-                        <Stack spacing={2}>
+                        <Stack className="space-y-2">
                             {record.outcome && (
                                 <Box>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
                                         Outcome
                                     </Typography>
-                                    <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                                    <Typography
+                                        variant="body1"
+                                        className="whitespace-pre-wrap"
+                                    >
                                         {record.outcome}
                                     </Typography>
                                 </Box>
@@ -332,13 +392,16 @@ const InteractionDetails = () => {
 
                                     {record.followUpDate && (
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary">
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
                                                 Follow-up Date
                                             </Typography>
-                                            <DateField 
-                                                source="followUpDate" 
-                                                record={record} 
-                                                showTime 
+                                            <DateField
+                                                source="followUpDate"
+                                                record={record}
+                                                showTime
                                                 variant="body1"
                                             />
                                         </Box>
@@ -346,10 +409,16 @@ const InteractionDetails = () => {
 
                                     {record.followUpNotes && (
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary">
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
                                                 Follow-up Notes
                                             </Typography>
-                                            <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                                            <Typography
+                                                variant="body1"
+                                                className="whitespace-pre-wrap"
+                                            >
                                                 {record.followUpNotes}
                                             </Typography>
                                         </Box>
@@ -368,9 +437,9 @@ const InteractionDetails = () => {
                         <Typography variant="h6" gutterBottom>
                             Attachments
                         </Typography>
-                        <Stack spacing={1}>
+                        <Stack className="space-y-1">
                             {record.attachments.map((attachment, index) => (
-                                <FileField 
+                                <FileField
                                     key={index}
                                     source={`attachments.${index}` as any}
                                     record={record}
@@ -388,26 +457,32 @@ const InteractionDetails = () => {
                     <Typography variant="h6" gutterBottom>
                         Metadata
                     </Typography>
-                    <Stack spacing={1}>
+                    <Stack className="space-y-1">
                         <Box>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                            >
                                 Created
                             </Typography>
-                            <DateField 
-                                source="createdAt" 
-                                record={record} 
-                                showTime 
+                            <DateField
+                                source="createdAt"
+                                record={record}
+                                showTime
                                 variant="body2"
                             />
                         </Box>
                         <Box>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                            >
                                 Last Updated
                             </Typography>
-                            <DateField 
-                                source="updatedAt" 
-                                record={record} 
-                                showTime 
+                            <DateField
+                                source="updatedAt"
+                                record={record}
+                                showTime
                                 variant="body2"
                             />
                         </Box>

@@ -8,7 +8,7 @@ import {
     Chip,
     Stack,
     Avatar,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Email as EmailIcon,
     Phone as PhoneIcon,
@@ -46,15 +46,15 @@ interface InteractionTimelineProps {
     compact?: boolean;
 }
 
-export const InteractionTimeline = ({ 
-    interactions = [], 
+export const InteractionTimeline = ({
+    interactions = [],
     maxItems = 20,
-    compact = false 
+    compact = false,
 }: InteractionTimelineProps) => {
     if (!interactions || interactions.length === 0) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary">
+            <Box className="p-3 text-center">
+                <Typography variant="body2" className="text-gray-500">
                     No interactions found
                 </Typography>
             </Box>
@@ -64,101 +64,103 @@ export const InteractionTimeline = ({
     // Sort interactions by most recent first
     const sortedInteractions = [...interactions]
         .sort((a, b) => {
-            const dateA = new Date(a.completedDate || a.scheduledDate || a.createdAt);
-            const dateB = new Date(b.completedDate || b.scheduledDate || b.createdAt);
+            const dateA = new Date(
+                a.completedDate || a.scheduledDate || a.createdAt
+            );
+            const dateB = new Date(
+                b.completedDate || b.scheduledDate || b.createdAt
+            );
             return dateB.getTime() - dateA.getTime();
         })
         .slice(0, maxItems);
 
     return (
-        <Stack spacing={2} sx={{ p: 2 }}>
+        <Stack className="space-y-2 p-2">
             {sortedInteractions.map((interaction, index) => {
-                const TypeIcon = interactionTypeIcons[interaction.type?.key as keyof typeof interactionTypeIcons] || FollowUpIcon;
-                const typeColor = interactionTypeColors[interaction.type?.key as keyof typeof interactionTypeColors] || '#455a64';
+                const TypeIcon =
+                    interactionTypeIcons[
+                        interaction.type
+                            ?.key as keyof typeof interactionTypeIcons
+                    ] || FollowUpIcon;
+                const typeColor =
+                    interactionTypeColors[
+                        interaction.type
+                            ?.key as keyof typeof interactionTypeColors
+                    ] || '#455a64';
 
                 return (
-                    <Box key={interaction.id} sx={{ display: 'flex', gap: 2 }}>
+                    <Box key={interaction.id} className="flex gap-2">
                         {/* Timeline connector */}
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Box className="flex flex-col items-center">
                             <Avatar
-                                sx={{
-                                    bgcolor: typeColor,
-                                    width: compact ? 32 : 40,
-                                    height: compact ? 32 : 40,
+                                className={compact ? 'w-8 h-8' : 'w-10 h-10'}
+                                style={{
+                                    backgroundColor: typeColor,
                                 }}
                             >
-                                <TypeIcon fontSize={compact ? "small" : "medium"} />
+                                <TypeIcon
+                                    fontSize={compact ? 'small' : 'medium'}
+                                />
                             </Avatar>
                             {index < sortedInteractions.length - 1 && (
                                 <Box
-                                    sx={{
-                                        width: 2,
-                                        height: compact ? 20 : 40,
-                                        bgcolor: 'divider',
-                                        mt: 1,
-                                    }}
+                                    className={`w-0.5 ${compact ? 'h-5' : 'h-10'} bg-gray-300 mt-1`}
                                 />
                             )}
                         </Box>
 
                         {/* Content */}
-                        <Card 
-                            variant="outlined" 
-                            sx={{ 
-                                flex: 1,
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    boxShadow: 2,
-                                },
-                            }}
+                        <Card
+                            variant="outlined"
+                            className="flex-1 cursor-pointer hover:shadow-md transition-shadow"
                         >
-                            <CardContent sx={{ 
-                                p: compact ? 1.5 : 2, 
-                                '&:last-child': { pb: compact ? 1.5 : 2 } 
-                            }}>
+                            <CardContent
+                                className={compact ? 'p-1.5 [&:last-child]:pb-1.5' : 'p-2 [&:last-child]:pb-2'}
+                            >
                                 {/* Header */}
-                                <Stack 
-                                    direction="row" 
-                                    justifyContent="space-between" 
-                                    alignItems="flex-start"
-                                    sx={{ mb: 1 }}
-                                >
-                                    <Typography 
-                                        variant={compact ? "body2" : "subtitle1"} 
-                                        sx={{ 
-                                            fontWeight: 600,
-                                            flexGrow: 1,
-                                            mr: 1,
-                                        }}
+                                <Stack className="flex-row justify-between items-start mb-1">
+                                    <Typography
+                                        variant={
+                                            compact ? 'body2' : 'subtitle1'
+                                        }
+                                        className="font-semibold flex-grow mr-1"
                                     >
-                                        {interaction.subject || 'Untitled Interaction'}
+                                        {interaction.subject ||
+                                            'Untitled Interaction'}
                                     </Typography>
-                                    
+
                                     <Chip
-                                        label={interaction.isCompleted ? 'Completed' : 'Pending'}
+                                        label={
+                                            interaction.isCompleted
+                                                ? 'Completed'
+                                                : 'Pending'
+                                        }
                                         size="small"
-                                        color={interaction.isCompleted ? 'success' : 'warning'}
+                                        color={
+                                            interaction.isCompleted
+                                                ? 'success'
+                                                : 'warning'
+                                        }
                                         variant="outlined"
                                     />
                                 </Stack>
 
                                 {/* Organization and Contact */}
-                                <Stack spacing={0.5} sx={{ mb: 1 }}>
+                                <Stack className="space-y-0.5 mb-1">
                                     <ReferenceField
                                         source="organizationId"
                                         reference="organizations"
                                         link={false}
                                         record={interaction}
                                     >
-                                        <Typography 
-                                            variant="caption" 
-                                            color="text.secondary"
-                                            sx={{ display: 'block' }}
+                                        <Typography
+                                            variant="caption"
+                                            className="text-gray-500 block"
                                         >
                                             📍 <TextField source="name" />
                                         </Typography>
                                     </ReferenceField>
-                                    
+
                                     {interaction.contactId && (
                                         <ReferenceField
                                             source="contactId"
@@ -166,12 +168,13 @@ export const InteractionTimeline = ({
                                             link={false}
                                             record={interaction}
                                         >
-                                            <Typography 
-                                                variant="caption" 
-                                                color="text.secondary"
-                                                sx={{ display: 'block' }}
+                                            <Typography
+                                                variant="caption"
+                                                className="text-gray-500 block"
                                             >
-                                                👤 <TextField source="firstName" /> <TextField source="lastName" />
+                                                👤{' '}
+                                                <TextField source="firstName" />{' '}
+                                                <TextField source="lastName" />
                                             </Typography>
                                         </ReferenceField>
                                     )}
@@ -179,16 +182,13 @@ export const InteractionTimeline = ({
 
                                 {/* Description Preview */}
                                 {interaction.description && !compact && (
-                                    <Typography 
-                                        variant="body2" 
-                                        color="text.secondary"
-                                        sx={{ 
-                                            mb: 1,
+                                    <Typography
+                                        variant="body2"
+                                        className="mb-1 text-gray-500 line-clamp-2 overflow-hidden text-ellipsis"
+                                        style={{
                                             display: '-webkit-box',
                                             WebkitLineClamp: 2,
                                             WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
                                         }}
                                     >
                                         {interaction.description}
@@ -196,33 +196,38 @@ export const InteractionTimeline = ({
                                 )}
 
                                 {/* Date and Type */}
-                                <Stack 
-                                    direction="row" 
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                >
-                                    <Typography variant="caption" color="text.secondary">
-                                        <DateField 
-                                            source={interaction.isCompleted ? "completedDate" : "scheduledDate"}
+                                <Stack className="flex-row justify-between items-center">
+                                    <Typography
+                                        variant="caption"
+                                        className="text-gray-500"
+                                    >
+                                        <DateField
+                                            source={
+                                                interaction.isCompleted
+                                                    ? 'completedDate'
+                                                    : 'scheduledDate'
+                                            }
                                             record={interaction}
                                             showTime
                                         />
                                     </Typography>
-                                    
+
                                     <Chip
-                                        label={interaction.type?.label || 'Unknown'}
+                                        label={
+                                            interaction.type?.label || 'Unknown'
+                                        }
                                         size="small"
-                                        sx={{ 
-                                            bgcolor: typeColor,
+                                        className="text-xs"
+                                        style={{
+                                            backgroundColor: typeColor,
                                             color: 'white',
-                                            fontSize: '0.7rem',
                                         }}
                                     />
                                 </Stack>
 
                                 {/* Follow-up indicator */}
                                 {interaction.followUpRequired && (
-                                    <Box sx={{ mt: 1 }}>
+                                    <Box className="mt-1">
                                         <Chip
                                             label="Follow-up Required"
                                             size="small"

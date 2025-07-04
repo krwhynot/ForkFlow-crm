@@ -102,11 +102,7 @@ const AvatarGroupIterator = () => {
     const { data, total, error, isPending } = useListContext();
     if (isPending || error) return null;
     return (
-        <AvatarGroup
-            max={4}
-            total={total}
-            spacing="medium"
-        >
+        <AvatarGroup max={4} total={total} spacing="medium">
             {data.map((record: any) => (
                 <Avatar
                     key={record.id}

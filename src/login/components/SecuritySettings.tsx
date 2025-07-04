@@ -16,9 +16,8 @@ import {
     ListItemIcon,
     ListItemText,
     Chip,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
     Security,
     AccessTime,
@@ -34,8 +33,7 @@ interface SecuritySettingsProps {
 }
 
 export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     const formatLastLogin = (lastLogin?: string) => {
         if (!lastLogin) return 'Never';
@@ -45,8 +43,10 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
     const getAccountAge = (createdAt: string) => {
         const created = new Date(createdAt);
         const now = new Date();
-        const diffInDays = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
-        
+        const diffInDays = Math.floor(
+            (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
         if (diffInDays < 1) return 'Less than a day';
         if (diffInDays === 1) return '1 day';
         if (diffInDays < 30) return `${diffInDays} days`;
@@ -57,26 +57,27 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
     const getSecurityScore = () => {
         let score = 0;
         let maxScore = 5;
-        
+
         // Account status
         if (user.isActive) score += 1;
-        
+
         // Has avatar (indicates engaged user)
         if (user.avatar) score += 1;
-        
+
         // Has territories assigned
         if (user.territory && user.territory.length > 0) score += 1;
-        
+
         // Has principals assigned
         if (user.principals && user.principals.length > 0) score += 1;
-        
+
         // Recent login activity
         if (user.lastLoginAt) {
             const lastLogin = new Date(user.lastLoginAt);
-            const daysSinceLogin = (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
+            const daysSinceLogin =
+                (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
             if (daysSinceLogin < 30) score += 1;
         }
-        
+
         return { score, maxScore };
     };
 
@@ -84,15 +85,17 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
     const securityPercentage = Math.round((score / maxScore) * 100);
 
     const getSecurityLevel = () => {
-        if (securityPercentage >= 80) return { level: 'High', color: 'success' as const };
-        if (securityPercentage >= 60) return { level: 'Medium', color: 'warning' as const };
+        if (securityPercentage >= 80)
+            return { level: 'High', color: 'success' as const };
+        if (securityPercentage >= 60)
+            return { level: 'Medium', color: 'warning' as const };
         return { level: 'Low', color: 'error' as const };
     };
 
     const { level, color } = getSecurityLevel();
 
     return (
-        <Stack spacing={3}>
+        <Stack className="gap-3">
             <Typography variant="h6" gutterBottom>
                 Security & Account Information
             </Typography>
@@ -100,23 +103,31 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
             {/* Security Score Card */}
             <Card variant="outlined">
                 <CardContent>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                    <Box className="flex items-center gap-2 mb-2">
                         <Security color={color} />
                         <Box>
                             <Typography variant="h6">
-                                Security Level: <Chip label={level} color={color} size="small" />
+                                Security Level:{' '}
+                                <Chip
+                                    label={level}
+                                    color={color}
+                                    size="small"
+                                />
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                {securityPercentage}% secure ({score}/{maxScore} criteria met)
+                                {securityPercentage}% secure ({score}/{maxScore}{' '}
+                                criteria met)
                             </Typography>
                         </Box>
                     </Box>
-                    
+
                     {securityPercentage < 80 && (
-                        <Alert severity="info" sx={{ mt: 2 }}>
+                        <Alert severity="info" className="mt-2">
                             <Typography variant="body2">
-                                <strong>Improve your security:</strong> Complete your profile with avatar, 
-                                territory, and principal assignments for better account security.
+                                <strong>Improve your security:</strong> Complete
+                                your profile with avatar, territory, and
+                                principal assignments for better account
+                                security.
                             </Typography>
                         </Alert>
                     )}
@@ -132,14 +143,22 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                     <List>
                         <ListItem>
                             <ListItemIcon>
-                                <Verified color={user.isActive ? 'success' : 'error'} />
+                                <Verified
+                                    color={user.isActive ? 'success' : 'error'}
+                                />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Account Status"
                                 secondary={
-                                    <Chip 
-                                        label={user.isActive ? 'Active' : 'Inactive'} 
-                                        color={user.isActive ? 'success' : 'error'}
+                                    <Chip
+                                        label={
+                                            user.isActive
+                                                ? 'Active'
+                                                : 'Inactive'
+                                        }
+                                        color={
+                                            user.isActive ? 'success' : 'error'
+                                        }
                                         size="small"
                                     />
                                 }
@@ -187,10 +206,11 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                             <ListItemText
                                 primary="Sales Territory"
                                 secondary={
-                                    user.territory && user.territory.length > 0 ? (
-                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                                            {user.territory.map((territory) => (
-                                                <Chip 
+                                    user.territory &&
+                                    user.territory.length > 0 ? (
+                                        <Box className="flex gap-0.5 flex-wrap mt-0.5">
+                                            {user.territory.map(territory => (
+                                                <Chip
                                                     key={territory}
                                                     label={territory}
                                                     size="small"
@@ -209,10 +229,11 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                             <ListItemText
                                 primary="Principals/Brands"
                                 secondary={
-                                    user.principals && user.principals.length > 0 ? (
-                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                                            {user.principals.map((principal) => (
-                                                <Chip 
+                                    user.principals &&
+                                    user.principals.length > 0 ? (
+                                        <Box className="flex gap-0.5 flex-wrap mt-0.5">
+                                            {user.principals.map(principal => (
+                                                <Chip
                                                     key={principal}
                                                     label={principal}
                                                     size="small"
@@ -234,11 +255,14 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
             {/* Security Recommendations */}
             <Alert severity="info">
                 <Typography variant="body2">
-                    <strong>Security Best Practices:</strong><br />
-                    • Log out when using shared devices<br />
-                    • Use strong, unique passwords<br />
-                    • Keep your profile information up to date<br />
-                    • Report any suspicious activity to your administrator
+                    <strong>Security Best Practices:</strong>
+                    <br />
+                    • Log out when using shared devices
+                    <br />
+                    • Use strong, unique passwords
+                    <br />
+                    • Keep your profile information up to date
+                    <br />• Report any suspicious activity to your administrator
                 </Typography>
             </Alert>
         </Stack>

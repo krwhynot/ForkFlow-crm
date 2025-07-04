@@ -4,11 +4,18 @@
  */
 
 import { DataProvider } from 'react-admin';
-import { DashboardSummary, InteractionMetrics, OrganizationNeedsVisit, CSVExportData } from '../../providers/reporting/reportingProvider';
+import {
+    DashboardSummary,
+    InteractionMetrics,
+    OrganizationNeedsVisit,
+    CSVExportData,
+} from '../../providers/reporting/reportingProvider';
 
 export interface ReportingApiEndpoints {
     dashboard: () => Promise<DashboardSummary>;
-    interactions: (params?: InteractionReportParams) => Promise<InteractionMetrics>;
+    interactions: (
+        params?: InteractionReportParams
+    ) => Promise<InteractionMetrics>;
     organizationsNeedsVisit: () => Promise<OrganizationNeedsVisit[]>;
     exportOrganizations: (params?: ExportParams) => Promise<CSVExportData>;
     exportInteractions: (params?: ExportParams) => Promise<CSVExportData>;
@@ -40,7 +47,9 @@ export interface ExportParams {
  * - GET /api/exports/organizations
  * - GET /api/exports/interactions
  */
-export function createReportingApi(dataProvider: DataProvider): ReportingApiEndpoints {
+export function createReportingApi(
+    dataProvider: DataProvider
+): ReportingApiEndpoints {
     return {
         /**
          * GET /api/reports/dashboard
@@ -49,11 +58,13 @@ export function createReportingApi(dataProvider: DataProvider): ReportingApiEndp
         async dashboard(): Promise<DashboardSummary> {
             // Type assertion for the extended data provider
             const reportingProvider = dataProvider as any;
-            
+
             if (!reportingProvider.getDashboardReport) {
-                throw new Error('Dashboard reporting not available in data provider');
+                throw new Error(
+                    'Dashboard reporting not available in data provider'
+                );
             }
-            
+
             return reportingProvider.getDashboardReport();
         },
 
@@ -61,13 +72,17 @@ export function createReportingApi(dataProvider: DataProvider): ReportingApiEndp
          * GET /api/reports/interactions?start_date&end_date
          * Returns detailed interaction analytics with filtering
          */
-        async interactions(params?: InteractionReportParams): Promise<InteractionMetrics> {
+        async interactions(
+            params?: InteractionReportParams
+        ): Promise<InteractionMetrics> {
             const reportingProvider = dataProvider as any;
-            
+
             if (!reportingProvider.getInteractionReport) {
-                throw new Error('Interaction reporting not available in data provider');
+                throw new Error(
+                    'Interaction reporting not available in data provider'
+                );
             }
-            
+
             return reportingProvider.getInteractionReport(
                 params?.start_date,
                 params?.end_date,
@@ -85,11 +100,13 @@ export function createReportingApi(dataProvider: DataProvider): ReportingApiEndp
          */
         async organizationsNeedsVisit(): Promise<OrganizationNeedsVisit[]> {
             const reportingProvider = dataProvider as any;
-            
+
             if (!reportingProvider.getOrganizationsNeedingVisit) {
-                throw new Error('Organizations needs visit reporting not available in data provider');
+                throw new Error(
+                    'Organizations needs visit reporting not available in data provider'
+                );
             }
-            
+
             return reportingProvider.getOrganizationsNeedingVisit();
         },
 
@@ -97,13 +114,17 @@ export function createReportingApi(dataProvider: DataProvider): ReportingApiEndp
          * GET /api/exports/organizations
          * Exports organizations data as CSV
          */
-        async exportOrganizations(params?: ExportParams): Promise<CSVExportData> {
+        async exportOrganizations(
+            params?: ExportParams
+        ): Promise<CSVExportData> {
             const reportingProvider = dataProvider as any;
-            
+
             if (!reportingProvider.exportOrganizations) {
-                throw new Error('Organizations export not available in data provider');
+                throw new Error(
+                    'Organizations export not available in data provider'
+                );
             }
-            
+
             return reportingProvider.exportOrganizations(params?.filters);
         },
 
@@ -111,13 +132,17 @@ export function createReportingApi(dataProvider: DataProvider): ReportingApiEndp
          * GET /api/exports/interactions
          * Exports interactions data as CSV
          */
-        async exportInteractions(params?: ExportParams): Promise<CSVExportData> {
+        async exportInteractions(
+            params?: ExportParams
+        ): Promise<CSVExportData> {
             const reportingProvider = dataProvider as any;
-            
+
             if (!reportingProvider.exportInteractions) {
-                throw new Error('Interactions export not available in data provider');
+                throw new Error(
+                    'Interactions export not available in data provider'
+                );
             }
-            
+
             return reportingProvider.exportInteractions(params?.filters);
         },
     };
@@ -126,7 +151,9 @@ export function createReportingApi(dataProvider: DataProvider): ReportingApiEndp
 /**
  * React hook for accessing reporting API endpoints
  */
-export function useReportingApi(dataProvider: DataProvider): ReportingApiEndpoints {
+export function useReportingApi(
+    dataProvider: DataProvider
+): ReportingApiEndpoints {
     return createReportingApi(dataProvider);
 }
 
@@ -137,20 +164,20 @@ export function downloadCSV(csvData: CSVExportData): void {
     try {
         // Create blob with CSV data
         const blob = new Blob([csvData.data], { type: csvData.mimeType });
-        
+
         // Create download URL
         const url = window.URL.createObjectURL(blob);
-        
+
         // Create temporary download link
         const link = document.createElement('a');
         link.href = url;
         link.download = csvData.filename;
         link.style.display = 'none';
-        
+
         // Trigger download
         document.body.appendChild(link);
         link.click();
-        
+
         // Cleanup
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
@@ -163,7 +190,10 @@ export function downloadCSV(csvData: CSVExportData): void {
 /**
  * Helper function to format API responses for frontend consumption
  */
-export function formatApiResponse<T>(data: T, message?: string): ApiResponse<T> {
+export function formatApiResponse<T>(
+    data: T,
+    message?: string
+): ApiResponse<T> {
     return {
         success: true,
         data,
@@ -185,7 +215,7 @@ export interface ApiResponse<T> {
  */
 export function handleApiError(error: any): ApiResponse<null> {
     console.error('API Error:', error);
-    
+
     return {
         success: false,
         data: null,

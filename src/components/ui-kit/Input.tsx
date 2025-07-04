@@ -1,13 +1,13 @@
 import React from 'react';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
+    label?: string;
+    error?: string;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, className, id, ...props }, ref) => {
-    const inputClasses = `
+    ({ label, error, className, id, ...props }, ref) => {
+        const inputClasses = `
       block w-full
       px-4 py-4
       text-base
@@ -20,23 +20,19 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ${className || ''}
     `.trim();
 
-    return (
-      <div className="space-y-2">
-        {label && (
-          <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-            {label}
-          </label>
-        )}
-        <input
-          id={id}
-          className={inputClasses}
-          ref={ref}
-          {...props}
-        />
-        {error && (
-          <p className="text-sm text-error-500">{error}</p>
-        )}
-      </div>
-    );
-  }
+        return (
+            <div className="space-y-2">
+                {label && (
+                    <label
+                        htmlFor={id}
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        {label}
+                    </label>
+                )}
+                <input id={id} className={inputClasses} ref={ref} {...props} />
+                {error && <p className="text-sm text-error-500">{error}</p>}
+            </div>
+        );
+    }
 );

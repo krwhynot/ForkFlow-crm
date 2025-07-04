@@ -119,8 +119,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                 name: 'Session Management',
                 category: 'authentication',
                 severity: 'critical',
-                description:
-                    'Test session timeout and security configurations',
+                description: 'Test session timeout and security configurations',
                 test: testSessionManagement,
             },
             {
@@ -128,8 +127,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                 name: 'Multi-Factor Authentication',
                 category: 'authentication',
                 severity: 'high',
-                description:
-                    'Verify MFA is properly configured and enforced',
+                description: 'Verify MFA is properly configured and enforced',
                 test: testMFAConfiguration,
             },
 
@@ -226,8 +224,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                 name: 'Data Retention Policy',
                 category: 'privacy_compliance',
                 severity: 'medium',
-                description:
-                    'Verify data retention policies are implemented',
+                description: 'Verify data retention policies are implemented',
                 test: testDataRetention,
             },
             {
@@ -297,7 +294,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
             { name: 'Concurrent session limits', check: () => true },
         ];
 
-        const passed = sessionTests.filter((test) => test.check()).length;
+        const passed = sessionTests.filter(test => test.check()).length;
         const score = Math.floor((passed / sessionTests.length) * 100);
 
         return {
@@ -367,7 +364,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
             },
         ];
 
-        const passed = testCases.filter((test) => {
+        const passed = testCases.filter(test => {
             // Mock permission check
             return test.role === 'admin'
                 ? test.expected
@@ -399,7 +396,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
         ];
 
         // Mock API authorization tests
-        const results = protectedEndpoints.map((endpoint) => ({
+        const results = protectedEndpoints.map(endpoint => ({
             endpoint,
             requiresAuth: true,
             hasRateLimit: true,
@@ -443,8 +440,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
 
             details.push({
                 input:
-                    input.substring(0, 50) +
-                    (input.length > 50 ? '...' : ''),
+                    input.substring(0, 50) + (input.length > 50 ? '...' : ''),
                 blocked: isBlocked,
                 riskLevel: validation.riskLevel,
                 errors: validation.errors,
@@ -475,7 +471,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
             { name: 'TLS in transit', status: true },
         ];
 
-        const passed = encryptionTests.filter((test) => test.status).length;
+        const passed = encryptionTests.filter(test => test.status).length;
         const score = Math.floor((passed / encryptionTests.length) * 100);
 
         return {
@@ -717,7 +713,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
             setCurrentTest(test.id);
             try {
                 const result = await test.test();
-                setResults((prev) => new Map(prev.set(test.id, result)));
+                setResults(prev => new Map(prev.set(test.id, result)));
                 totalScore += result.score;
                 testCount++;
             } catch (error) {
@@ -725,18 +721,16 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                     passed: false,
                     score: 0,
                     message: `Test failed: ${
-                        error instanceof Error
-                            ? error.message
-                            : 'Unknown error'
+                        error instanceof Error ? error.message : 'Unknown error'
                     }`,
                     recommendations: ['Fix test implementation'],
                 };
-                setResults((prev) => new Map(prev.set(test.id, errorResult)));
+                setResults(prev => new Map(prev.set(test.id, errorResult)));
                 testCount++;
             }
 
             // Small delay between tests
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
 
         setOverallScore(Math.floor(totalScore / testCount));
@@ -748,7 +742,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
         setCurrentTest(test.id);
         try {
             const result = await test.test();
-            setResults((prev) => new Map(prev.set(test.id, result)));
+            setResults(prev => new Map(prev.set(test.id, result)));
         } catch (error) {
             const errorResult: SecurityTestResult = {
                 passed: false,
@@ -758,7 +752,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                 }`,
                 recommendations: ['Fix test implementation'],
             };
-            setResults((prev) => new Map(prev.set(test.id, errorResult)));
+            setResults(prev => new Map(prev.set(test.id, errorResult)));
         }
         setCurrentTest(null);
     };
@@ -808,9 +802,9 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
         }
     };
 
-    const testCategories = [...new Set(tests.map((test) => test.category))];
+    const testCategories = [...new Set(tests.map(test => test.category))];
     const passedTests = Array.from(results.values()).filter(
-        (result) => result.passed
+        result => result.passed
     ).length;
     const totalTests = results.size;
 
@@ -844,10 +838,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                             <Typography variant="h4" component="h1">
                                 Security Test Suite
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Automated security testing and vulnerability
                                 assessment
                             </Typography>
@@ -873,12 +864,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                         <Typography variant="h6" gutterBottom>
                             Overall Security Score
                         </Typography>
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            gap={2}
-                            mb={2}
-                        >
+                        <Box display="flex" alignItems="center" gap={2} mb={2}>
                             <LinearProgress
                                 variant="determinate"
                                 value={overallScore}
@@ -887,8 +873,8 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                     overallScore >= 80
                                         ? 'success'
                                         : overallScore >= 60
-                                        ? 'warning'
-                                        : 'error'
+                                          ? 'warning'
+                                          : 'error'
                                 }
                             />
                             <Typography
@@ -897,8 +883,8 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                     overallScore >= 80
                                         ? 'success.main'
                                         : overallScore >= 60
-                                        ? 'warning.main'
-                                        : 'error.main'
+                                          ? 'warning.main'
+                                          : 'error.main'
                                 }
                             >
                                 {overallScore}%
@@ -916,12 +902,12 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
             )}
 
             {/* Test Results by Category */}
-            {testCategories.map((category) => {
+            {testCategories.map(category => {
                 const categoryTests = tests.filter(
-                    (test) => test.category === category
+                    test => test.category === category
                 );
                 const categoryResults = categoryTests
-                    .map((test) => results.get(test.id))
+                    .map(test => results.get(test.id))
                     .filter(Boolean);
                 const categoryScore =
                     categoryResults.length > 0
@@ -947,7 +933,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                     {category
                                         .split('_')
                                         .map(
-                                            (word) =>
+                                            word =>
                                                 word.charAt(0).toUpperCase() +
                                                 word.slice(1)
                                         )
@@ -960,8 +946,8 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                             categoryScore >= 80
                                                 ? 'success'
                                                 : categoryScore >= 60
-                                                ? 'warning'
-                                                : 'error'
+                                                  ? 'warning'
+                                                  : 'error'
                                         }
                                         size="small"
                                     />
@@ -970,7 +956,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                         </AccordionSummary>
                         <AccordionDetails>
                             <List>
-                                {categoryTests.map((test) => {
+                                {categoryTests.map(test => {
                                     const result = results.get(test.id);
                                     const isCurrentlyRunning =
                                         currentTest === test.id;

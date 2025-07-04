@@ -122,16 +122,14 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
             ref={setNodeRef}
             style={style}
             sx={{
-                cursor:
-                    isDragging || isSortableDragging ? 'grabbing' : 'grab',
+                cursor: isDragging || isSortableDragging ? 'grabbing' : 'grab',
                 transition: 'all 0.2s ease-in-out',
                 '&:hover': {
                     transform:
                         isDragging || isSortableDragging
                             ? 'none'
                             : 'translateY(-1px)',
-                    boxShadow:
-                        isDragging || isSortableDragging ? 'none' : 4,
+                    boxShadow: isDragging || isSortableDragging ? 'none' : 4,
                 },
                 minHeight: { xs: 140, sm: 160 }, // Mobile-optimized heights
                 touchAction: 'none', // Prevent scrolling while dragging on mobile
@@ -241,7 +239,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                             <Tooltip title="Call">
                                 <IconButton
                                     size="small"
-                                    onClick={(e) =>
+                                    onClick={e =>
                                         handleContactClick(e, 'phone')
                                     }
                                     sx={{
@@ -258,7 +256,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                             <Tooltip title="Email">
                                 <IconButton
                                     size="small"
-                                    onClick={(e) =>
+                                    onClick={e =>
                                         handleContactClick(e, 'email')
                                     }
                                     sx={{
@@ -289,8 +287,8 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                     organization.priority === 'high'
                                         ? 'error'
                                         : organization.priority === 'medium'
-                                        ? 'warning'
-                                        : 'success'
+                                          ? 'warning'
+                                          : 'success'
                                 }
                                 variant="filled"
                                 sx={{
@@ -303,7 +301,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                         <Tooltip title="Edit">
                             <IconButton
                                 size="small"
-                                onClick={(e) => {
+                                onClick={e => {
                                     e.stopPropagation();
                                     onEdit?.(organization.id);
                                 }}
@@ -418,7 +416,7 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({
 
             {/* Droppable Sortable Container */}
             <SortableContext
-                items={organizations.map((org) => org.id)}
+                items={organizations.map(org => org.id)}
                 strategy={verticalListSortingStrategy}
             >
                 <Box
@@ -438,7 +436,7 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({
                         transition: 'all 0.2s ease-in-out',
                     }}
                 >
-                    {organizations.map((org) => (
+                    {organizations.map(org => (
                         <DraggableCard
                             key={org.id}
                             organization={org}
@@ -457,18 +455,14 @@ const DroppableColumn: React.FC<DroppableColumnProps> = ({
                                     ? `${column.color}15`
                                     : 'grey.50',
                                 border: '2px dashed',
-                                borderColor: isOver
-                                    ? column.color
-                                    : 'grey.300',
+                                borderColor: isOver ? column.color : 'grey.300',
                                 borderRadius: 2,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 gap: 1,
                                 transition: 'all 0.2s ease-in-out',
-                                transform: isOver
-                                    ? 'scale(1.02)'
-                                    : 'scale(1)',
+                                transform: isOver ? 'scale(1.02)' : 'scale(1)',
                             }}
                         >
                             <Typography
@@ -602,10 +596,10 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
 
     // Group organizations by status
     const groupedOrganizations = useMemo(() => {
-        return statusColumns.map((column) => ({
+        return statusColumns.map(column => ({
             ...column,
             organizations: organizations.filter(
-                (org) =>
+                org =>
                     org.status === column.id ||
                     (!org.status && column.id === 'prospect')
             ),
@@ -615,9 +609,7 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
     // Find active organization for drag overlay
     const activeOrganization = useMemo(() => {
         if (!activeId) return null;
-        return (
-            organizations.find((org) => org.id === activeId) || null
-        );
+        return organizations.find(org => org.id === activeId) || null;
     }, [activeId, organizations]);
 
     // Handle drag start
@@ -637,9 +629,7 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
             const newStatus = over.id as string;
 
             // Find the organization being dragged
-            const activeOrg = organizations.find(
-                (org) => org.id === activeOrgId
-            );
+            const activeOrg = organizations.find(org => org.id === activeOrgId);
             if (!activeOrg) return;
 
             // Don't update if dropping in the same column
@@ -656,20 +646,15 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
                     await onStatusChange(activeOrgId, newStatus);
                     setSnackbar({
                         open: true,
-                        message: `${
-                            activeOrg.name
-                        } moved to ${
-                            statusColumns.find((col) => col.id === newStatus)
+                        message: `${activeOrg.name} moved to ${
+                            statusColumns.find(col => col.id === newStatus)
                                 ?.title
                         }`,
                         severity: 'success',
                     });
                 }
             } catch (error) {
-                console.error(
-                    'Failed to update organization status:',
-                    error
-                );
+                console.error('Failed to update organization status:', error);
                 setSnackbar({
                     open: true,
                     message: 'Failed to update organization status',
@@ -681,7 +666,7 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
     );
 
     const handleSnackbarClose = useCallback(() => {
-        setSnackbar((prev) => ({ ...prev, open: false }));
+        setSnackbar(prev => ({ ...prev, open: false }));
     }, []);
 
     // Loading state
@@ -738,7 +723,7 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
                         px: { xs: 1, sm: 0 },
                     }}
                 >
-                    {groupedOrganizations.map((column) => (
+                    {groupedOrganizations.map(column => (
                         <DroppableColumn
                             key={column.id}
                             column={column}

@@ -1,112 +1,93 @@
 import React from 'react';
-import {
-  Box,
-  CircularProgress,
-  Skeleton,
-  Stack,
-  Typography,
-  useTheme,
-} from '@mui/material';
-import { useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Stack, Typography } from '@/components/ui-kit';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface LoadingComponentProps {
-  variant?: 'spinner' | 'skeleton' | 'minimal';
-  message?: string;
-  height?: number | string;
-  fullScreen?: boolean;
+    variant?: 'spinner' | 'skeleton' | 'minimal';
+    message?: string;
+    height?: number | string;
+    fullScreen?: boolean;
 }
 
 export const LoadingComponent: React.FC<LoadingComponentProps> = ({
-  variant = 'spinner',
-  message = 'Loading...',
-  height = '200px',
-  fullScreen = false,
+    variant = 'spinner',
+    message = 'Loading...',
+    height = '200px',
+    fullScreen = false,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
-  const containerStyles = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: fullScreen ? '100vh' : height,
-    width: '100%',
-    padding: theme.spacing(2),
-  };
+    const containerClass = `flex justify-center items-center w-full p-4 ${
+        fullScreen ? 'min-h-screen' : ''
+    }`;
+    const containerStyle = fullScreen ? {} : { minHeight: height };
 
-  if (variant === 'minimal') {
-    return (
-      <Box sx={containerStyles}>
-        <CircularProgress size={24} thickness={4} />
-      </Box>
-    );
-  }
+    if (variant === 'minimal') {
+        return (
+            <Box className={containerClass} style={containerStyle}>
+                <CircularProgress className="w-6 h-6" />
+            </Box>
+        );
+    }
 
-  if (variant === 'skeleton') {
-    return (
-      <Box sx={{ padding: theme.spacing(2), width: '100%' }}>
-        <Stack spacing={1}>
-          <Skeleton variant="text" sx={{ fontSize: '1.5rem' }} />
-          <Skeleton variant="rectangular" width="100%" height={60} />
-          <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-          <Skeleton variant="text" sx={{ fontSize: '1rem' }} width="80%" />
-          {!isMobile && (
-            <>
-              <Skeleton variant="rectangular" width="100%" height={120} />
-              <Stack direction="row" spacing={1}>
-                <Skeleton variant="circular" width={40} height={40} />
-                <Stack sx={{ flex: 1 }}>
-                  <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-                  <Skeleton variant="text" sx={{ fontSize: '0.875rem' }} width="60%" />
+    if (variant === 'skeleton') {
+        return (
+            <Box className="p-4 w-full">
+                <Stack spacing={1}>
+                    <div className="animate-pulse bg-gray-300 h-6 w-full rounded" />
+                    <div className="animate-pulse bg-gray-300 h-15 w-full rounded" />
+                    <div className="animate-pulse bg-gray-300 h-4 w-full rounded" />
+                    <div className="animate-pulse bg-gray-300 h-4 w-4/5 rounded" />
+                    {!isMobile && (
+                        <>
+                            <div className="animate-pulse bg-gray-300 h-30 w-full rounded" />
+                            <Stack direction="row" spacing={1}>
+                                <div className="animate-pulse bg-gray-300 w-10 h-10 rounded-full" />
+                                <Stack className="flex-1">
+                                    <div className="animate-pulse bg-gray-300 h-4 w-full rounded" />
+                                    <div className="animate-pulse bg-gray-300 h-3 w-3/5 rounded" />
+                                </Stack>
+                            </Stack>
+                        </>
+                    )}
                 </Stack>
-              </Stack>
-            </>
-          )}
-        </Stack>
-      </Box>
-    );
-  }
+            </Box>
+        );
+    }
 
-  return (
-    <Box sx={containerStyles}>
-      <Stack spacing={2} alignItems="center">
-        <CircularProgress
-          size={isMobile ? 32 : 48}
-          thickness={4}
-          sx={{
-            color: theme.palette.primary.main,
-          }}
-        />
-        <Typography
-          variant={isMobile ? 'body2' : 'body1'}
-          color="text.secondary"
-          textAlign="center"
-        >
-          {message}
-        </Typography>
-      </Stack>
-    </Box>
-  );
+    return (
+        <Box className={containerClass} style={containerStyle}>
+            <Stack spacing={2} className="items-center">
+                <CircularProgress
+                    className={`text-blue-600 ${
+                        isMobile ? 'w-8 h-8' : 'w-12 h-12'
+                    }`}
+                />
+                <Typography
+                    variant={isMobile ? 'body2' : 'body1'}
+                    className="text-gray-500 text-center"
+                >
+                    {message}
+                </Typography>
+            </Stack>
+        </Box>
+    );
 };
 
-export const LoadingFallback: React.FC<{ message?: string }> = ({ 
-  message = 'Loading module...' 
-}) => (
-  <LoadingComponent variant="spinner" message={message} height="300px" />
-);
+export const LoadingFallback: React.FC<{ message?: string }> = ({
+    message = 'Loading module...',
+}) => <LoadingComponent variant="spinner" message={message} height="300px" />;
 
 export const SkeletonFallback: React.FC = () => (
-  <LoadingComponent variant="skeleton" />
+    <LoadingComponent variant="skeleton" />
 );
 
 export const MinimalLoader: React.FC = () => (
-  <LoadingComponent variant="minimal" height="80px" />
+    <LoadingComponent variant="minimal" height="80px" />
 );
 
-export const FullScreenLoader: React.FC<{ message?: string }> = ({ 
-  message = 'Loading application...' 
-}) => (
-  <LoadingComponent variant="spinner" message={message} fullScreen />
-);
+export const FullScreenLoader: React.FC<{ message?: string }> = ({
+    message = 'Loading application...',
+}) => <LoadingComponent variant="spinner" message={message} fullScreen />;
 
 export default LoadingComponent;

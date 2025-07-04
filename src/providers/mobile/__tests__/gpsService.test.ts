@@ -19,7 +19,7 @@ describe('GPSService', () => {
     beforeEach(() => {
         gpsService = GPSService.getInstance();
         vi.clearAllMocks();
-        
+
         // Clear localStorage
         localStorage.clear();
     });
@@ -38,7 +38,7 @@ describe('GPSService', () => {
                 value: undefined,
                 writable: true,
             });
-            
+
             const service = GPSService.getInstance();
             expect(service.isAvailable()).toBe(false);
         });
@@ -59,7 +59,7 @@ describe('GPSService', () => {
                 timestamp: Date.now(),
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+            mockGeolocation.getCurrentPosition.mockImplementation(success => {
                 success(mockPosition);
             });
 
@@ -79,9 +79,11 @@ describe('GPSService', () => {
                 message: 'User denied the request for Geolocation.',
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success, error) => {
-                error(mockError);
-            });
+            mockGeolocation.getCurrentPosition.mockImplementation(
+                (success, error) => {
+                    error(mockError);
+                }
+            );
 
             const result = await gpsService.getCurrentLocation();
 
@@ -95,9 +97,11 @@ describe('GPSService', () => {
                 message: 'Location information is unavailable.',
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success, error) => {
-                error(mockError);
-            });
+            mockGeolocation.getCurrentPosition.mockImplementation(
+                (success, error) => {
+                    error(mockError);
+                }
+            );
 
             const result = await gpsService.getCurrentLocation();
 
@@ -111,9 +115,11 @@ describe('GPSService', () => {
                 message: 'The request to get user location timed out.',
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success, error) => {
-                error(mockError);
-            });
+            mockGeolocation.getCurrentPosition.mockImplementation(
+                (success, error) => {
+                    error(mockError);
+                }
+            );
 
             const result = await gpsService.getCurrentLocation();
 
@@ -127,14 +133,18 @@ describe('GPSService', () => {
                 message: 'Unknown error occurred.',
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success, error) => {
-                error(mockError);
-            });
+            mockGeolocation.getCurrentPosition.mockImplementation(
+                (success, error) => {
+                    error(mockError);
+                }
+            );
 
             const result = await gpsService.getCurrentLocation();
 
             expect(result.coordinates).toBeNull();
-            expect(result.error).toBe('Unknown location error: Unknown error occurred.');
+            expect(result.error).toBe(
+                'Unknown location error: Unknown error occurred.'
+            );
         });
 
         it('should use custom options', async () => {
@@ -144,7 +154,7 @@ describe('GPSService', () => {
                 maximumAge: 30000,
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+            mockGeolocation.getCurrentPosition.mockImplementation(success => {
                 success({
                     coords: {
                         latitude: 37.7749,
@@ -171,7 +181,7 @@ describe('GPSService', () => {
             });
 
             const service = GPSService.getInstance();
-            
+
             await expect(service.getCurrentLocation()).rejects.toThrow(
                 'Geolocation is not supported by this browser'
             );
@@ -189,7 +199,7 @@ describe('GPSService', () => {
                 timestamp: Date.now(),
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+            mockGeolocation.getCurrentPosition.mockImplementation(success => {
                 success(mockPosition);
             });
 
@@ -209,7 +219,7 @@ describe('GPSService', () => {
                 latitude: 37.7749,
                 longitude: -122.4194,
                 accuracy: 10,
-                timestamp: Date.now() - (10 * 60 * 1000), // 10 minutes ago
+                timestamp: Date.now() - 10 * 60 * 1000, // 10 minutes ago
             };
 
             localStorage.setItem('gps_cache', JSON.stringify(oldLocation));
@@ -224,7 +234,7 @@ describe('GPSService', () => {
                 latitude: 37.7749,
                 longitude: -122.4194,
                 accuracy: 10,
-                timestamp: Date.now() - (30 * 1000), // 30 seconds ago
+                timestamp: Date.now() - 30 * 1000, // 30 seconds ago
             };
 
             localStorage.setItem('gps_cache', JSON.stringify(recentLocation));
@@ -298,7 +308,7 @@ describe('GPSService', () => {
             });
 
             const options = { timeout: 100 }; // Very short timeout
-            
+
             const result = await gpsService.getCurrentLocation(options);
 
             expect(result.coordinates).toBeNull();
@@ -345,11 +355,11 @@ describe('GPSService', () => {
 
             const options = { maximumAge: 60000 }; // 1 minute cache
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+            mockGeolocation.getCurrentPosition.mockImplementation(success => {
                 success({
                     coords: {
                         latitude: 40.7128,
-                        longitude: -74.0060,
+                        longitude: -74.006,
                         accuracy: 15,
                     },
                     timestamp: Date.now(),
@@ -362,7 +372,7 @@ describe('GPSService', () => {
             expect(mockGeolocation.getCurrentPosition).toHaveBeenCalled();
             expect(result.coordinates).toEqual({
                 latitude: 40.7128,
-                longitude: -74.0060,
+                longitude: -74.006,
                 accuracy: 15,
             });
         });
@@ -379,7 +389,7 @@ describe('GPSService', () => {
                 timestamp: Date.now(),
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+            mockGeolocation.getCurrentPosition.mockImplementation(success => {
                 success(mockPosition);
             });
 
@@ -400,7 +410,7 @@ describe('GPSService', () => {
                 maximumAge: 0,
             };
 
-            mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+            mockGeolocation.getCurrentPosition.mockImplementation(success => {
                 success({
                     coords: {
                         latitude: 37.7749,

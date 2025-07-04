@@ -35,7 +35,7 @@ export class OfflineService {
     private pendingActions: OfflineAction[] = [];
     private lastSyncTime: string | null = null;
     private syncCallbacks: Set<(status: OfflineStatus) => void> = new Set();
-    
+
     // Storage keys
     private readonly PENDING_ACTIONS_KEY = 'forkflow_pending_actions';
     private readonly LAST_SYNC_KEY = 'forkflow_last_sync';
@@ -76,7 +76,7 @@ export class OfflineService {
      */
     onStatusChange(callback: (status: OfflineStatus) => void): () => void {
         this.syncCallbacks.add(callback);
-        
+
         // Return unsubscribe function
         return () => {
             this.syncCallbacks.delete(callback);
@@ -91,8 +91,10 @@ export class OfflineService {
         data: Partial<Interaction>,
         localId?: string
     ): Promise<string> {
-        const actionId = localId || `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
+        const actionId =
+            localId ||
+            `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
         const action: OfflineAction = {
             id: actionId,
             type,
@@ -105,10 +107,10 @@ export class OfflineService {
 
         // Add to pending actions
         this.pendingActions.push(action);
-        
+
         // Store locally
         await this.savePendingActions();
-        
+
         // Store interaction data for offline access
         if (type === 'create' || type === 'update') {
             await this.storeOfflineInteraction(actionId, data);
@@ -132,7 +134,7 @@ export class OfflineService {
         try {
             const stored = localStorage.getItem(this.OFFLINE_INTERACTIONS_KEY);
             if (!stored) return [];
-            
+
             const interactions = JSON.parse(stored);
             return Object.values(interactions);
         } catch (error) {
@@ -167,31 +169,36 @@ export class OfflineService {
         try {
             // Process actions in order
             const actionsToProcess = [...this.pendingActions];
-            
+
             for (const action of actionsToProcess) {
                 try {
                     if (dataProvider) {
                         await this.processAction(action, dataProvider);
                     }
-                    
+
                     // Remove successful action
-                    this.pendingActions = this.pendingActions.filter(a => a.id !== action.id);
+                    this.pendingActions = this.pendingActions.filter(
+                        a => a.id !== action.id
+                    );
                     result.processed++;
-                    
+
                     // Remove from offline storage
                     await this.removeOfflineInteraction(action.id);
-                    
                 } catch (error: any) {
                     console.error(`Failed to sync action ${action.id}:`, error);
-                    
+
                     // Increment retry count
                     action.retryCount++;
-                    
+
                     if (action.retryCount >= action.maxRetries) {
                         // Remove failed action after max retries
-                        this.pendingActions = this.pendingActions.filter(a => a.id !== action.id);
+                        this.pendingActions = this.pendingActions.filter(
+                            a => a.id !== action.id
+                        );
                         result.failed++;
-                        result.errors.push(`Action ${action.id} failed after ${action.maxRetries} retries: ${error.message}`);
+                        result.errors.push(
+                            `Action ${action.id} failed after ${action.maxRetries} retries: ${error.message}`
+                        );
                     }
                 }
             }
@@ -199,10 +206,9 @@ export class OfflineService {
             // Update last sync time
             this.lastSyncTime = new Date().toISOString();
             localStorage.setItem(this.LAST_SYNC_KEY, this.lastSyncTime);
-            
+
             // Save updated pending actions
             await this.savePendingActions();
-            
         } catch (error: any) {
             result.success = false;
             result.errors.push(`Sync failed: ${error.message}`);
@@ -220,11 +226,11 @@ export class OfflineService {
     async clearOfflineData(): Promise<void> {
         this.pendingActions = [];
         this.lastSyncTime = null;
-        
+
         localStorage.removeItem(this.PENDING_ACTIONS_KEY);
         localStorage.removeItem(this.LAST_SYNC_KEY);
         localStorage.removeItem(this.OFFLINE_INTERACTIONS_KEY);
-        
+
         this.notifyStatusChange();
     }
 
@@ -239,8 +245,8 @@ export class OfflineService {
      * Check if there are conflicts for a specific interaction
      */
     hasConflicts(interactionId: string): boolean {
-        return this.pendingActions.some(action => 
-            action.data.id === interactionId && action.retryCount > 0
+        return this.pendingActions.some(
+            action => action.data.id === interactionId && action.retryCount > 0
         );
     }
 
@@ -265,7 +271,7 @@ export class OfflineService {
         window.addEventListener('online', () => {
             this.isOnline = true;
             this.notifyStatusChange();
-            
+
             // Try to sync when coming back online
             if (this.pendingActions.length > 0) {
                 setTimeout(() => this.syncPendingActions(), 1000);
@@ -279,7 +285,11 @@ export class OfflineService {
 
         // Listen for page visibility changes to sync when app becomes visible
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && this.isOnline && this.pendingActions.length > 0) {
+            if (
+                !document.hidden &&
+                this.isOnline &&
+                this.pendingActions.length > 0
+            ) {
                 setTimeout(() => this.syncPendingActions(), 1000);
             }
         });
@@ -287,19 +297,30 @@ export class OfflineService {
 
     private startPeriodicSync(): void {
         setInterval(() => {
-            if (this.isOnline && this.pendingActions.length > 0 && !this.syncInProgress) {
+            if (
+                this.isOnline &&
+                this.pendingActions.length > 0 &&
+                !this.syncInProgress
+            ) {
                 this.syncPendingActions();
             }
         }, this.SYNC_INTERVAL);
     }
 
-    private async processAction(action: OfflineAction, dataProvider: any): Promise<void> {
+    private async processAction(
+        action: OfflineAction,
+        dataProvider: any
+    ): Promise<void> {
         switch (action.type) {
             case 'create':
-                await dataProvider.create('interactions', { data: action.data });
+                await dataProvider.create('interactions', {
+                    data: action.data,
+                });
                 break;
             case 'update':
-                const previousData = await this.getOfflineInteraction(action.id);
+                const previousData = await this.getOfflineInteraction(
+                    action.id
+                );
                 await dataProvider.update('interactions', {
                     id: action.data.id,
                     data: action.data,
@@ -307,7 +328,9 @@ export class OfflineService {
                 });
                 break;
             case 'delete':
-                await dataProvider.delete('interactions', { id: action.data.id });
+                await dataProvider.delete('interactions', {
+                    id: action.data.id,
+                });
                 break;
             default:
                 throw new Error(`Unknown action type: ${action.type}`);
@@ -316,35 +339,46 @@ export class OfflineService {
 
     private async savePendingActions(): Promise<void> {
         try {
-            localStorage.setItem(this.PENDING_ACTIONS_KEY, JSON.stringify(this.pendingActions));
+            localStorage.setItem(
+                this.PENDING_ACTIONS_KEY,
+                JSON.stringify(this.pendingActions)
+            );
         } catch (error) {
             console.error('Error saving pending actions:', error);
         }
     }
 
-    private async storeOfflineInteraction(id: string, data: Partial<Interaction>): Promise<void> {
+    private async storeOfflineInteraction(
+        id: string,
+        data: Partial<Interaction>
+    ): Promise<void> {
         try {
             const stored = localStorage.getItem(this.OFFLINE_INTERACTIONS_KEY);
             const interactions = stored ? JSON.parse(stored) : {};
-            
+
             interactions[id] = {
                 ...data,
                 id: id,
                 _offline: true,
                 _timestamp: new Date().toISOString(),
             };
-            
-            localStorage.setItem(this.OFFLINE_INTERACTIONS_KEY, JSON.stringify(interactions));
+
+            localStorage.setItem(
+                this.OFFLINE_INTERACTIONS_KEY,
+                JSON.stringify(interactions)
+            );
         } catch (error) {
             console.error('Error storing offline interaction:', error);
         }
     }
 
-    private async getOfflineInteraction(id: string): Promise<Partial<Interaction> | null> {
+    private async getOfflineInteraction(
+        id: string
+    ): Promise<Partial<Interaction> | null> {
         try {
             const stored = localStorage.getItem(this.OFFLINE_INTERACTIONS_KEY);
             if (!stored) return null;
-            
+
             const interactions = JSON.parse(stored);
             return interactions[id] || null;
         } catch (error) {
@@ -357,11 +391,14 @@ export class OfflineService {
         try {
             const stored = localStorage.getItem(this.OFFLINE_INTERACTIONS_KEY);
             if (!stored) return;
-            
+
             const interactions = JSON.parse(stored);
             delete interactions[id];
-            
-            localStorage.setItem(this.OFFLINE_INTERACTIONS_KEY, JSON.stringify(interactions));
+
+            localStorage.setItem(
+                this.OFFLINE_INTERACTIONS_KEY,
+                JSON.stringify(interactions)
+            );
         } catch (error) {
             console.error('Error removing offline interaction:', error);
         }

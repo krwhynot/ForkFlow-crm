@@ -42,13 +42,13 @@ export const BusinessTypeChip = ({ source }: BusinessTypeChipProps) => {
     }
 
     const businessType = record[source as keyof Customer] as string;
-    const config =
-        businessTypeConfig[businessType as keyof typeof businessTypeConfig] ||
-        {
-            label: 'Unknown',
-            icon: QuestionMarkCircleIcon,
-            color: 'text-gray-500 bg-gray-100',
-        };
+    const config = businessTypeConfig[
+        businessType as keyof typeof businessTypeConfig
+    ] || {
+        label: 'Unknown',
+        icon: QuestionMarkCircleIcon,
+        color: 'text-gray-500 bg-gray-100',
+    };
 
     const Icon = config.icon;
 

@@ -20,7 +20,7 @@ import {
     Tabs,
     Tab,
     Badge,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     Security as SecurityIcon,
     Shield as ShieldIcon,
@@ -120,9 +120,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                 activeUsers: 24,
                 activeSessions: 31,
                 vulnerabilities: 1,
-                lastScan: new Date(
-                    Date.now() - 1000 * 60 * 30
-                ).toISOString(), // 30 minutes ago
+                lastScan: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
             };
 
             const mockAlerts: SecurityAlert[] = [
@@ -206,11 +204,9 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
     const handleResolveAlert = async (alertId: string) => {
         try {
-            setAlerts((prev) =>
-                prev.map((alert) =>
-                    alert.id === alertId
-                        ? { ...alert, resolved: true }
-                        : alert
+            setAlerts(prev =>
+                prev.map(alert =>
+                    alert.id === alertId ? { ...alert, resolved: true } : alert
                 )
             );
             notify('Alert marked as resolved', { type: 'success' });
@@ -255,20 +251,18 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
         return 'error';
     };
 
-    const unResolvedAlerts = alerts.filter((alert) => !alert.resolved);
+    const unResolvedAlerts = alerts.filter(alert => !alert.resolved);
     const criticalAlerts = unResolvedAlerts.filter(
-        (alert) => alert.type === 'critical'
+        alert => alert.type === 'critical'
     );
-    const highAlerts = unResolvedAlerts.filter(
-        (alert) => alert.type === 'high'
-    );
+    const highAlerts = unResolvedAlerts.filter(alert => alert.type === 'high');
 
     // Check if user has admin permissions
     const isAdmin = identity?.role === 'admin';
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" sx={{ m: 3 }}>
+            <Alert severity="error" className="m-8">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access the security
@@ -279,37 +273,29 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     }
 
     return (
-        <Box sx={{ p: compactView ? 1 : 3 }}>
+        <Box className={`${compactView ? 'p-1' : 'p-8'}`}>
             {!compactView && (
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={3}
-                >
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
+                <Box className="flex justify-between items-center mb-8">
+                    <Box className="flex items-center gap-2">
+                        <SecurityIcon color="primary" className="text-[32px]" />
                         <Box>
                             <Typography variant="h4" component="h1">
                                 Security Dashboard
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Real-time security monitoring and threat
                                 detection
                             </Typography>
                         </Box>
                     </Box>
 
-                    <Box display="flex" gap={1}>
+                    <Box className="flex gap-1">
                         <Button
                             variant="outlined"
                             startIcon={<RefreshIcon />}
                             onClick={loadSecurityData}
                             disabled={loading}
-                            sx={{ minHeight: 44 }}
+                            className="min-h-[44px]"
                         >
                             Refresh
                         </Button>
@@ -317,7 +303,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             variant={autoRefresh ? 'contained' : 'outlined'}
                             startIcon={<TimeIcon />}
                             onClick={() => setAutoRefresh(!autoRefresh)}
-                            sx={{ minHeight: 44 }}
+                            className="min-h-[44px]"
                         >
                             Auto Refresh
                         </Button>
@@ -329,7 +315,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
             {criticalAlerts.length > 0 && (
                 <Alert
                     severity="error"
-                    sx={{ mb: 3 }}
+                    className="mb-8"
                     action={
                         <Button color="inherit" size="small">
                             View Details
@@ -347,17 +333,17 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
             )}
 
             {/* Security Metrics Overview */}
-            <Grid container spacing={3} sx={{ mb: 3 }}>
+            <Grid container spacing={3} className="mb-8">
                 {/* Security Score */}
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Box display="flex" justifyContent="center" mb={1}>
+                        <CardContent className="text-center">
+                            <Box className="flex justify-center mb-1">
                                 <ShieldIcon
                                     color={getSecurityScoreColor(
                                         metrics?.securityScore || 0
                                     )}
-                                    sx={{ fontSize: 40 }}
+                                    className="text-[40px]"
                                 />
                             </Box>
                             <Typography
@@ -368,10 +354,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             >
                                 {metrics?.securityScore || 0}%
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Security Score
                             </Typography>
                             <LinearProgress
@@ -380,7 +363,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 color={getSecurityScoreColor(
                                     metrics?.securityScore || 0
                                 )}
-                                sx={{ mt: 1 }}
+                                className="mt-1"
                             />
                         </CardContent>
                     </Card>
@@ -389,8 +372,8 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                 {/* Active Threats */}
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Box display="flex" justifyContent="center" mb={1}>
+                        <CardContent className="text-center">
+                            <Box className="flex justify-center mb-1">
                                 <Badge
                                     badgeContent={metrics?.activeThreats || 0}
                                     color="error"
@@ -400,17 +383,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 >
                                     <WarningIcon
                                         color="error"
-                                        sx={{ fontSize: 40 }}
+                                        className="text-[40px]"
                                     />
                                 </Badge>
                             </Box>
                             <Typography variant="h4" color="error.main">
                                 {metrics?.activeThreats || 0}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Active Threats
                             </Typography>
                         </CardContent>
@@ -420,20 +400,17 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                 {/* Failed Logins */}
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Box display="flex" justifyContent="center" mb={1}>
+                        <CardContent className="text-center">
+                            <Box className="flex justify-center mb-1">
                                 <AuthIcon
                                     color="warning"
-                                    sx={{ fontSize: 40 }}
+                                    className="text-[40px]"
                                 />
                             </Box>
                             <Typography variant="h4" color="warning.main">
                                 {metrics?.failedLogins || 0}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Failed Logins (24h)
                             </Typography>
                         </CardContent>
@@ -443,20 +420,17 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                 {/* Active Sessions */}
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Box display="flex" justifyContent="center" mb={1}>
+                        <CardContent className="text-center">
+                            <Box className="flex justify-center mb-1">
                                 <DeviceIcon
                                     color="info"
-                                    sx={{ fontSize: 40 }}
+                                    className="text-[40px]"
                                 />
                             </Box>
                             <Typography variant="h4" color="info.main">
                                 {metrics?.activeSessions || 0}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                            >
+                            <Typography variant="body2" color="text.secondary">
                                 Active Sessions
                             </Typography>
                         </CardContent>
@@ -466,7 +440,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
             {/* Tabs for Different Views */}
             <Card>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Box className="border-b border-gray-300">
                     <Tabs
                         value={currentTab}
                         onChange={(_, newValue) => setCurrentTab(newValue)}
@@ -506,27 +480,22 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             </Alert>
                         ) : (
                             <List>
-                                {alerts.map((alert) => (
+                                {alerts.map(alert => (
                                     <ListItem
                                         key={alert.id}
                                         divider
-                                        sx={{
-                                            opacity: alert.resolved ? 0.6 : 1,
-                                            bgcolor: alert.resolved
-                                                ? 'transparent'
-                                                : 'background.paper',
-                                        }}
+                                        className={`${
+                                            alert.resolved 
+                                                ? 'opacity-60 bg-transparent' 
+                                                : 'opacity-100 bg-white'
+                                        }`}
                                     >
                                         <ListItemIcon>
                                             {getAlertIcon(alert.type)}
                                         </ListItemIcon>
                                         <ListItemText
                                             primary={
-                                                <Box
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    gap={1}
-                                                >
+                                                <Box className="flex items-center gap-1">
                                                     <Typography variant="body1">
                                                         {alert.title}
                                                     </Typography>
@@ -591,7 +560,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                                 </Box>
                                             }
                                         />
-                                        <Box display="flex" gap={1}>
+                                        <Box className="flex gap-1">
                                             <Tooltip title="View Details">
                                                 <IconButton size="small">
                                                     <ViewIcon />
@@ -621,17 +590,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
                 {/* Audit Log Tab */}
                 {currentTab === 1 && (
-                    <CardContent sx={{ p: 0 }}>
-                        <SecurityAuditLog
-                            viewType="both"
-                            compactView={true}
-                        />
+                    <CardContent className="p-0">
+                        <SecurityAuditLog viewType="both" compactView={true} />
                     </CardContent>
                 )}
 
                 {/* Session Monitor Tab */}
                 {currentTab === 2 && (
-                    <CardContent sx={{ p: 0 }}>
+                    <CardContent className="p-0">
                         <SessionManager showAllSessions={true} />
                     </CardContent>
                 )}
@@ -645,18 +611,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
                                     >
                                         Authentication System
                                     </Typography>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
+                                    <Box className="flex items-center gap-1">
                                         <SuccessIcon color="success" />
                                         <Typography variant="body2">
                                             Operational
@@ -673,18 +635,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
                                     >
                                         Database Security
                                     </Typography>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
+                                    <Box className="flex items-center gap-1">
                                         <SuccessIcon color="success" />
                                         <Typography variant="body2">
                                             Secure
@@ -700,18 +658,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
                                     >
                                         API Security
                                     </Typography>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
+                                    <Box className="flex items-center gap-1">
                                         <WarningIcon color="warning" />
                                         <Typography variant="body2">
                                             Rate limiting active
@@ -727,18 +681,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             </Grid>
 
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
                                     >
                                         Security Monitoring
                                     </Typography>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={1}
-                                    >
+                                    <Box className="flex items-center gap-1">
                                         <SuccessIcon color="success" />
                                         <Typography variant="body2">
                                             Active

@@ -104,7 +104,8 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
 
     // Check browser support
     useEffect(() => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognition =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
         setIsSupported(!!SpeechRecognition);
 
         if (SpeechRecognition) {
@@ -132,7 +133,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
             setError(null);
             setDuration(0);
             triggerHaptic('light');
-            
+
             // Start duration timer
             durationTimerRef.current = setInterval(() => {
                 setDuration(prev => {
@@ -170,25 +171,29 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         recognition.onerror = (event: SpeechRecognitionError) => {
             console.error('Speech recognition error:', event.error);
             let errorMessage = 'Speech recognition error occurred.';
-            
+
             switch (event.error) {
                 case 'network':
-                    errorMessage = 'Network error. Please check your internet connection.';
+                    errorMessage =
+                        'Network error. Please check your internet connection.';
                     break;
                 case 'not-allowed':
-                    errorMessage = 'Microphone access denied. Please allow microphone permissions.';
+                    errorMessage =
+                        'Microphone access denied. Please allow microphone permissions.';
                     break;
                 case 'no-speech':
-                    errorMessage = 'No speech detected. Please try speaking again.';
+                    errorMessage =
+                        'No speech detected. Please try speaking again.';
                     break;
                 case 'audio-capture':
-                    errorMessage = 'No microphone found. Please check your audio setup.';
+                    errorMessage =
+                        'No microphone found. Please check your audio setup.';
                     break;
                 case 'service-not-allowed':
                     errorMessage = 'Speech recognition service not available.';
                     break;
             }
-            
+
             setError(errorMessage);
             setIsListening(false);
             triggerHaptic('heavy');
@@ -204,36 +209,42 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     }, [continuous, interimResults, language, maxDuration]);
 
     // Haptic feedback
-    const triggerHaptic = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
-        if ('vibrate' in navigator) {
-            const patterns = { light: [10], medium: [20], heavy: [50] };
-            navigator.vibrate(patterns[type]);
-        }
-    }, []);
+    const triggerHaptic = useCallback(
+        (type: 'light' | 'medium' | 'heavy' = 'light') => {
+            if ('vibrate' in navigator) {
+                const patterns = { light: [10], medium: [20], heavy: [50] };
+                navigator.vibrate(patterns[type]);
+            }
+        },
+        []
+    );
 
     // Audio level monitoring
     const startAudioMonitoring = useCallback(async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
             const audioContext = new AudioContext();
             const microphone = audioContext.createMediaStreamSource(stream);
             const analyser = audioContext.createAnalyser();
-            
+
             analyser.fftSize = 256;
             microphone.connect(analyser);
-            
+
             const dataArray = new Uint8Array(analyser.frequencyBinCount);
-            
+
             const updateLevel = () => {
                 analyser.getByteFrequencyData(dataArray);
-                const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+                const average =
+                    dataArray.reduce((a, b) => a + b) / dataArray.length;
                 setSoundLevel(Math.min(100, (average / 128) * 100));
-                
+
                 if (isListening) {
                     requestAnimationFrame(updateLevel);
                 }
             };
-            
+
             updateLevel();
             soundAnalyzerRef.current = { stream, audioContext };
         } catch (error) {
@@ -252,7 +263,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         setInterimTranscript('');
         setError(null);
         setIsDialogOpen(showTranscript);
-        
+
         try {
             recognitionRef.current.start();
             if (isMobile) {
@@ -262,23 +273,32 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
             console.error('Error starting speech recognition:', error);
             setError('Failed to start voice recognition');
         }
-    }, [isSupported, disabled, notify, showTranscript, isMobile, startAudioMonitoring]);
+    }, [
+        isSupported,
+        disabled,
+        notify,
+        showTranscript,
+        isMobile,
+        startAudioMonitoring,
+    ]);
 
     // Stop listening
     const stopListening = useCallback(() => {
         if (recognitionRef.current && isListening) {
             recognitionRef.current.stop();
         }
-        
+
         if (soundAnalyzerRef.current) {
-            soundAnalyzerRef.current.stream.getTracks().forEach((track: any) => track.stop());
+            soundAnalyzerRef.current.stream
+                .getTracks()
+                .forEach((track: any) => track.stop());
             soundAnalyzerRef.current.audioContext.close();
             soundAnalyzerRef.current = null;
         }
-        
+
         setSoundLevel(0);
         setIsListening(false);
-        
+
         if (durationTimerRef.current) {
             clearInterval(durationTimerRef.current);
         }
@@ -298,18 +318,18 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     // Format transcript with basic punctuation and capitalization
     const formatTranscript = useCallback((text: string) => {
         if (!text) return '';
-        
+
         // Basic formatting
         let formatted = text.trim();
-        
+
         // Capitalize first letter
         formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-        
+
         // Add period if no ending punctuation
         if (!/[.!?]$/.test(formatted)) {
             formatted += '.';
         }
-        
+
         return formatted;
     }, []);
 
@@ -357,7 +377,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                         sx={{ minHeight: 44 }}
                     />
                 );
-            
+
             case 'button':
                 return (
                     <Button
@@ -369,14 +389,18 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                         {isListening ? 'Stop' : 'Voice'}
                     </Button>
                 );
-            
+
             case 'icon':
             default:
                 return (
                     <IconButton
                         {...buttonProps}
                         color={isListening ? 'secondary' : 'primary'}
-                        aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+                        aria-label={
+                            isListening
+                                ? 'Stop voice input'
+                                : 'Start voice input'
+                        }
                     >
                         {icon}
                         {isListening && (
@@ -389,8 +413,14 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                                     borderColor: 'secondary.main',
                                     animation: 'pulse 1.5s infinite',
                                     '@keyframes pulse': {
-                                        '0%': { transform: 'scale(1)', opacity: 1 },
-                                        '100%': { transform: 'scale(1.2)', opacity: 0 },
+                                        '0%': {
+                                            transform: 'scale(1)',
+                                            opacity: 1,
+                                        },
+                                        '100%': {
+                                            transform: 'scale(1.2)',
+                                            opacity: 0,
+                                        },
                                     },
                                 }}
                             />
@@ -398,11 +428,23 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                     </IconButton>
                 );
         }
-    }, [variant, isListening, disabled, isSupported, buttonSize, startListening, stopListening]);
+    }, [
+        variant,
+        isListening,
+        disabled,
+        isSupported,
+        buttonSize,
+        startListening,
+        stopListening,
+    ]);
 
     if (!isSupported) {
         return (
-            <IconButton disabled size={buttonSize} sx={{ minWidth: 44, minHeight: 44 }}>
+            <IconButton
+                disabled
+                size={buttonSize}
+                sx={{ minWidth: 44, minHeight: 44 }}
+            >
                 <MicOffIcon />
             </IconButton>
         );
@@ -411,7 +453,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     return (
         <>
             {renderMicButton()}
-            
+
             {/* Voice Input Dialog */}
             <Dialog
                 open={isDialogOpen}
@@ -428,23 +470,39 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                 <DialogContent sx={{ p: 3 }}>
                     {/* Header */}
                     <Box sx={{ textAlign: 'center', mb: 3 }}>
-                        <Box sx={{ position: 'relative', display: 'inline-block', mb: 2 }}>
+                        <Box
+                            sx={{
+                                position: 'relative',
+                                display: 'inline-block',
+                                mb: 2,
+                            }}
+                        >
                             <IconButton
                                 size="large"
                                 color={isListening ? 'secondary' : 'primary'}
-                                onClick={isListening ? stopListening : startListening}
+                                onClick={
+                                    isListening ? stopListening : startListening
+                                }
                                 sx={{
                                     width: 80,
                                     height: 80,
-                                    backgroundColor: isListening ? 'secondary.light' : 'primary.light',
+                                    backgroundColor: isListening
+                                        ? 'secondary.light'
+                                        : 'primary.light',
                                     '&:hover': {
-                                        backgroundColor: isListening ? 'secondary.main' : 'primary.main',
+                                        backgroundColor: isListening
+                                            ? 'secondary.main'
+                                            : 'primary.main',
                                     },
                                 }}
                             >
-                                {isListening ? <StopIcon sx={{ fontSize: 32 }} /> : <MicIcon sx={{ fontSize: 32 }} />}
+                                {isListening ? (
+                                    <StopIcon sx={{ fontSize: 32 }} />
+                                ) : (
+                                    <MicIcon sx={{ fontSize: 32 }} />
+                                )}
                             </IconButton>
-                            
+
                             {/* Sound level indicator */}
                             {isListening && (
                                 <Box
@@ -454,18 +512,21 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                                         borderRadius: '50%',
                                         border: '3px solid',
                                         borderColor: 'secondary.main',
-                                        opacity: Math.max(0.3, soundLevel / 100),
-                                        transform: `scale(${1 + (soundLevel / 200)})`,
+                                        opacity: Math.max(
+                                            0.3,
+                                            soundLevel / 100
+                                        ),
+                                        transform: `scale(${1 + soundLevel / 200})`,
                                         transition: 'all 0.1s ease-out',
                                     }}
                                 />
                             )}
                         </Box>
-                        
+
                         <Typography variant="h6" gutterBottom>
                             {isListening ? 'Listening...' : 'Voice Input'}
                         </Typography>
-                        
+
                         {isListening && (
                             <Typography variant="body2" color="text.secondary">
                                 {duration}s / {maxDuration}s
@@ -505,12 +566,20 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                         {transcript || interimTranscript ? (
                             <Typography variant="body1">
                                 {transcript}
-                                <span style={{ color: theme.palette.text.secondary }}>
+                                <span
+                                    style={{
+                                        color: theme.palette.text.secondary,
+                                    }}
+                                >
                                     {interimTranscript}
                                 </span>
                             </Typography>
                         ) : (
-                            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ fontStyle: 'italic' }}
+                            >
                                 {placeholder}
                             </Typography>
                         )}
@@ -519,7 +588,10 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                     {/* Confidence indicator */}
                     {confidence > 0 && (
                         <Box sx={{ mb: 2 }}>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                            >
                                 Confidence: {Math.round(confidence * 100)}%
                             </Typography>
                             <LinearProgress
@@ -531,7 +603,13 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                     )}
 
                     {/* Action buttons */}
-                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: 2,
+                            justifyContent: 'center',
+                        }}
+                    >
                         <Button
                             startIcon={<CloseIcon />}
                             onClick={handleDialogClose}
@@ -539,7 +617,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                         >
                             Cancel
                         </Button>
-                        
+
                         {transcript && (
                             <Button
                                 startIcon={<ReplayIcon />}
@@ -553,7 +631,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                                 Retry
                             </Button>
                         )}
-                        
+
                         <Button
                             startIcon={<CheckIcon />}
                             onClick={handleAcceptTranscript}

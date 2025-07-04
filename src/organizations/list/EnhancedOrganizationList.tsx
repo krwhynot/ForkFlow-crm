@@ -13,14 +13,7 @@ import {
     useRedirect,
     useNotify,
 } from 'react-admin';
-import {
-    Stack,
-    Button,
-    Dialog,
-    DialogContent,
-    Box,
-    Chip,
-} from '@mui/material';
+import { Stack, Button, Dialog, DialogContent, Box, Chip } from '@mui/material';
 import {
     Map as MapIcon,
     LocationOn as LocationIcon,
@@ -97,10 +90,9 @@ export const EnhancedOrganizationList = () => {
     // Handle photo capture
     const handlePhotoCapture = useCallback(() => {
         // TODO: Implement photo capture logic
-        notify(
-            'Photo capture will extract text from business documents',
-            { type: 'info' }
-        );
+        notify('Photo capture will extract text from business documents', {
+            type: 'info',
+        });
         handleMobileCreate('full');
     }, [notify, handleMobileCreate]);
 
@@ -203,9 +195,11 @@ const OrganizationListLayout = () => {
                         },
                     }}
                 >
-                <DialogContent sx={{ p: 0, height: '100%' }}>
-                    <OrganizationMapView onClose={() => setShowMap(false)} />
-                </DialogContent>
+                    <DialogContent sx={{ p: 0, height: '100%' }}>
+                        <OrganizationMapView
+                            onClose={() => setShowMap(false)}
+                        />
+                    </DialogContent>
                 </Dialog>
             </Stack>
         </Stack>
