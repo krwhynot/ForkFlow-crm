@@ -1,5 +1,6 @@
+import { PhoneIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { Divider, Stack, Tooltip, Typography } from '@/components/ui-kit';
-import { GlobeAltIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 import {
     DateField,
     EditButton,
@@ -10,7 +11,6 @@ import {
     UrlField,
     useRecordContext,
 } from 'react-admin';
-import { Link } from 'react-router-dom';
 
 import { Company } from '../types';
 import { sizes } from './sizes';
