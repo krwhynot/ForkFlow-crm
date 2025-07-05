@@ -20,9 +20,9 @@ import { Box } from '../components/Layout/Box';
 import { Chip } from '../components/DataDisplay/Chip';
 import { Stack } from '../components/Layout/Stack';
 import {
-    Business as BusinessIcon,
-    AttachMoney as MoneyIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon as BusinessIcon,
+    CurrencyDollarIcon as MoneyIcon,
+} from '@heroicons/react/24/outline';
 
 import { Setting, Product } from '../types';
 import { PriceField, formatPrice } from './PriceField';

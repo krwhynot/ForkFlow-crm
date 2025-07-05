@@ -22,11 +22,11 @@ import { Divider } from '@/components/ui-kit';
 import { Stack } from '../components/Layout/Stack';
 import { PriceField } from './PriceField';
 import {
-    TrendingUp as TrendingUpIcon,
-    Inventory as InventoryIcon,
-    PhotoCamera as PhotoIcon,
-    Business as BusinessIcon,
-} from '@mui/icons-material';
+    ChartBarIcon as TrendingUpIcon,
+    ArchiveBoxIcon as InventoryIcon,
+    CameraIcon as PhotoIcon,
+    BuildingOfficeIcon as BusinessIcon,
+} from '@heroicons/react/24/outline';
 import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
 import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
 
@@ -227,7 +227,7 @@ const PriceHistory = () => (
     <Card className="mb-2">
         <CardContent>
             <Box className="flex items-center mb-2">
-                <TrendingUpIcon className="mr-1 text-blue-500" />
+                <TrendingUpIcon className="w-6 h-6 mr-1 text-blue-500" />
                 <Typography variant="h6" className="font-semibold">
                     Price History
                 </Typography>
@@ -285,7 +285,7 @@ const ProductImages = () => {
         <Card className="mb-2">
             <CardContent>
                 <Box className="flex items-center mb-2">
-                    <PhotoIcon className="mr-1 text-blue-500" />
+                    <PhotoIcon className="w-6 h-6 mr-1 text-blue-500" />
                     <Typography variant="h6" className="font-semibold">
                         Product Images
                     </Typography>
@@ -308,7 +308,7 @@ const ProductImages = () => {
                             }
                         }}
                     />
-                    <PhotoIcon className="text-5xl text-blue-500 mb-1" />
+                    <PhotoIcon className="w-12 h-12 text-blue-500 mb-1 mx-auto" />
                     <Typography variant="body1" className="text-blue-500">
                         {uploading ? 'Uploading...' : 'Click to upload images'}
                     </Typography>
@@ -366,7 +366,7 @@ const EnhancedPrincipalDisplay = () => {
         <Card className="mb-2">
             <CardContent>
                 <Box className="flex items-center mb-2">
-                    <BusinessIcon className="mr-1 text-blue-500" />
+                    <BusinessIcon className="w-6 h-6 mr-1 text-blue-500" />
                     <Typography variant="h6" className="font-semibold">
                         Principal/Brand Information
                     </Typography>
@@ -375,7 +375,7 @@ const EnhancedPrincipalDisplay = () => {
 
                 <Box className="flex items-center mb-2">
                     <Box className="w-15 h-15 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center mr-2 bg-gray-50">
-                        <BusinessIcon className="text-gray-400" />
+                        <BusinessIcon className="w-8 h-8 text-gray-400" />
                     </Box>
                     <Box>
                         <ReferenceField
