@@ -1,5 +1,5 @@
 // src/hooks/useSecurity.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGetIdentity, useNotify } from 'react-admin';
 import { User } from '../types';
 
@@ -18,12 +18,12 @@ export interface SecurityContext {
 
 export interface SecurityEvent {
     type:
-        | 'login'
-        | 'logout'
-        | 'session_timeout'
-        | 'suspicious_activity'
-        | 'mfa_required'
-        | 'permission_denied';
+    | 'login'
+    | 'logout'
+    | 'session_timeout'
+    | 'suspicious_activity'
+    | 'mfa_required'
+    | 'permission_denied';
     details?: any;
     riskScore?: number;
 }
@@ -78,7 +78,6 @@ export const useSecurity = () => {
                 firstName: identity.firstName || '',
                 lastName: identity.lastName || '',
                 role: identity.role || 'broker',
-                territory: identity.territory || [],
                 principals: identity.principals || [],
                 avatar: identity.avatar,
                 isActive: identity.isActive ?? true,
@@ -444,21 +443,20 @@ export const useSecurity = () => {
                 sessionTimeoutMinutes: defaultSettings.sessionTimeoutMinutes,
                 requiresMFA: identity
                     ? checkMFARequirement({
-                          id: String(identity.id),
-                          email: identity.email || '',
-                          firstName: identity.firstName || '',
-                          lastName: identity.lastName || '',
-                          role: identity.role || 'broker',
-                          territory: identity.territory || [],
-                          principals: identity.principals || [],
-                          avatar: identity.avatar,
-                          isActive: identity.isActive ?? true,
-                          lastLoginAt: identity.lastLoginAt,
-                          createdAt:
-                              identity.createdAt || new Date().toISOString(),
-                          updatedAt:
-                              identity.updatedAt || new Date().toISOString(),
-                      })
+                        id: String(identity.id),
+                        email: identity.email || '',
+                        firstName: identity.firstName || '',
+                        lastName: identity.lastName || '',
+                        role: identity.role || 'broker',
+                        principals: identity.principals || [],
+                        avatar: identity.avatar,
+                        isActive: identity.isActive ?? true,
+                        lastLoginAt: identity.lastLoginAt,
+                        createdAt:
+                            identity.createdAt || new Date().toISOString(),
+                        updatedAt:
+                            identity.updatedAt || new Date().toISOString(),
+                    })
                     : false,
             }));
         } catch (error) {

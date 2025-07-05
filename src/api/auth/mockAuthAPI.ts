@@ -4,14 +4,13 @@
  */
 
 import {
-    LoginCredentials,
-    LoginResponse,
-    User,
     AuthTokens,
     JWTPayload,
-    UserRole,
-    PasswordResetRequest,
+    LoginCredentials,
+    LoginResponse,
     PasswordResetConfirm,
+    PasswordResetRequest,
+    User
 } from '../../types';
 import { validatePassword } from '../../utils/jwtUtils';
 
@@ -23,7 +22,7 @@ const mockUsers: User[] = [
         firstName: 'Jane',
         lastName: 'Admin',
         role: 'admin',
-        territory: ['northeast', 'southeast'],
+
         principals: ['sysco', 'us-foods', 'pfg'],
         avatar: 'https://i.pravatar.cc/150?img=1',
         isActive: true,
@@ -36,7 +35,6 @@ const mockUsers: User[] = [
         firstName: 'John',
         lastName: 'Manager',
         role: 'manager',
-        territory: ['northeast'],
         principals: ['sysco', 'us-foods'],
         avatar: 'https://i.pravatar.cc/150?img=2',
         isActive: true,
@@ -49,7 +47,6 @@ const mockUsers: User[] = [
         firstName: 'Sarah',
         lastName: 'Broker',
         role: 'broker',
-        territory: ['northeast'],
         principals: ['sysco'],
         avatar: 'https://i.pravatar.cc/150?img=3',
         isActive: true,

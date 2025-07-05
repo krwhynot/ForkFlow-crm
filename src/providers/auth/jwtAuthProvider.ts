@@ -352,7 +352,6 @@ export const jwtAuthProvider: AuthProvider = {
                         avatar: user.avatar,
                         email: user.email,
                         role: user.role,
-                        territory: user.territory,
                         principals: user.principals,
                     });
                 }
@@ -407,13 +406,13 @@ export const jwtAuthProvider: AuthProvider = {
         try {
             const permissions = await jwtAuthProvider.getPermissions!({});
 
-            // Additional territory-based access control for brokers
+            // Additional customer-based access control for brokers
             const token = getAccessToken();
             if (token) {
                 const user = getUserFromToken(token);
-                if (user?.role === 'broker' && user.territory && record) {
-                    // Check if record belongs to broker's territory
-                    // This would be implemented based on your territory logic
+                if (user?.role === 'broker' && record) {
+                    // Check if record belongs to broker's customer assignments
+                    // This would be implemented based on your customer assignment logic
                     // For now, allowing access to all records for brokers
                 }
             }
