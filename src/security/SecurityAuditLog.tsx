@@ -37,24 +37,24 @@ import {
     AccordionDetails,
 } from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    Visibility as ViewIcon,
-    Download as DownloadIcon,
-    FilterList as FilterIcon,
-    ExpandMore as ExpandMoreIcon,
-    Login as LoginIcon,
-    Logout as LogoutIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    Info as InfoIcon,
-    CheckCircle as SuccessIcon,
-    Person as PersonIcon,
-    AdminPanelSettings as AdminIcon,
-    Shield as ShieldIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    EyeIcon as ViewIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+    FunnelIcon as FilterIcon,
+    ChevronDownIcon as ExpandMoreIcon,
+    ArrowRightOnRectangleIcon as LoginIcon,
+    ArrowLeftOnRectangleIcon as LogoutIcon,
+    PencilIcon as EditIcon,
+    TrashIcon as DeleteIcon,
+    PlusIcon as AddIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    ExclamationCircleIcon as ErrorIcon,
+    InformationCircleIcon as InfoIcon,
+    CheckCircleIcon as SuccessIcon,
+    UserIcon as PersonIcon,
+    Cog6ToothIcon as AdminIcon,
+    ShieldCheckIcon as ShieldIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity } from 'react-admin';
 
 import { User } from '../types';
@@ -325,34 +325,34 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
         switch (eventType) {
             case 'login_success':
             case 'login':
-                return <LoginIcon color="success" />;
+                return <LoginIcon className="w-5 h-5 text-green-600" />;
             case 'logout':
-                return <LogoutIcon color="action" />;
+                return <LogoutIcon className="w-5 h-5 text-gray-500" />;
             case 'failed_login':
-                return <ErrorIcon color="error" />;
+                return <ErrorIcon className="w-5 h-5 text-red-600" />;
             case 'data_access':
-                return <ViewIcon color="info" />;
+                return <ViewIcon className="w-5 h-5 text-blue-600" />;
             case 'permission_denied':
-                return <ShieldIcon color="warning" />;
+                return <ShieldIcon className="w-5 h-5 text-yellow-600" />;
             case 'suspicious_activity':
-                return <WarningIcon color="error" />;
+                return <WarningIcon className="w-5 h-5 text-red-600" />;
             default:
                 if (category === 'admin_action')
-                    return <AdminIcon color="primary" />;
-                return <InfoIcon color="action" />;
+                    return <AdminIcon className="w-5 h-5 text-blue-600" />;
+                return <InfoIcon className="w-5 h-5 text-gray-500" />;
         }
     };
 
     const getOperationIcon = (operation: string) => {
         switch (operation) {
             case 'INSERT':
-                return <AddIcon color="success" />;
+                return <AddIcon className="w-5 h-5 text-green-600" />;
             case 'UPDATE':
-                return <EditIcon color="info" />;
+                return <EditIcon className="w-5 h-5 text-blue-600" />;
             case 'DELETE':
-                return <DeleteIcon color="error" />;
+                return <DeleteIcon className="w-5 h-5 text-red-600" />;
             default:
-                return <InfoIcon color="action" />;
+                return <InfoIcon className="w-5 h-5 text-gray-500" />;
         }
     };
 
@@ -366,11 +366,11 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
         if (!details || typeof details !== 'object') return 'N/A';
 
         return Object.entries(details).map(([key, value]) => (
-            <Box key={key} sx={{ mb: 0.5 }}>
-                <Typography variant="caption" color="text.secondary">
+            <Box key={key} className="mb-2">
+                <Typography variant="caption" className="text-gray-500">
                     {key}:
                 </Typography>
-                <Typography variant="body2" component="span" sx={{ ml: 1 }}>
+                <Typography variant="body2" component="span" className="ml-2">
                     {typeof value === 'object'
                         ? JSON.stringify(value)
                         : String(value)}

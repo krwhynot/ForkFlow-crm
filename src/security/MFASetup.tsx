@@ -28,19 +28,19 @@ import {
     Divider,
 } from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    Smartphone as PhoneIcon,
-    QrCode as QrCodeIcon,
-    Key as KeyIcon,
-    Check as CheckIcon,
-    Close as CloseIcon,
-    Refresh as RefreshIcon,
-    Download as DownloadIcon,
-    Warning as WarningIcon,
-    Shield as ShieldIcon,
-    Visibility as ViewIcon,
-    VisibilityOff as HideIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    DevicePhoneMobileIcon as PhoneIcon,
+    Squares2X2Icon as QrCodeIcon,
+    KeyIcon,
+    CheckIcon,
+    XMarkIcon as CloseIcon,
+    ArrowPathIcon as RefreshIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    ShieldCheckIcon as ShieldIcon,
+    EyeIcon as ViewIcon,
+    EyeSlashIcon as HideIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity, useNotify } from 'react-admin';
 
 import { User } from '../types';
@@ -301,13 +301,8 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                 Scan this QR code with your authenticator app:
                             </Typography>
                             <Box display="flex" justifyContent="center" mb={2}>
-                                <Paper sx={{ p: 2, textAlign: 'center' }}>
-                                    <QrCodeIcon
-                                        sx={{
-                                            fontSize: 120,
-                                            color: 'text.secondary',
-                                        }}
-                                    />
+                                <Paper className="p-4 text-center">
+                                    <QrCodeIcon className="w-[120px] h-[120px] text-gray-500 mx-auto" />
                                     <Typography
                                         variant="caption"
                                         display="block"
@@ -329,23 +324,18 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 label: 'Save Backup Codes',
                 content: (
                     <Box>
-                        <Typography paragraph color="error">
-                            <WarningIcon
-                                sx={{ mr: 1, verticalAlign: 'middle' }}
-                            />
+                        <Typography paragraph className="text-red-600">
+                            <WarningIcon className="w-5 h-5 inline mr-2 align-middle" />
                             Save these backup codes in a secure location. Each
                             code can only be used once.
                         </Typography>
-                        <Paper sx={{ p: 2, bgcolor: 'background.default' }}>
+                        <Paper className="p-4 bg-gray-50">
                             <Grid container spacing={1}>
                                 {backupCodes.map((code, index) => (
                                     <Grid item xs={6} key={index}>
                                         <Typography
                                             variant="body2"
-                                            sx={{
-                                                fontFamily: 'monospace',
-                                                textAlign: 'center',
-                                            }}
+                                            className="font-mono text-center"
                                         >
                                             {code}
                                         </Typography>
@@ -437,7 +427,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
         <Box className={`${compactView ? 'p-1' : 'p-8'}`}>
             {!compactView && (
                 <Box className="flex items-center gap-2 mb-8">
-                    <ShieldIcon color="primary" className="text-[32px]" />
+                    <ShieldIcon className="w-8 h-8 text-blue-600" />
                     <Box>
                         <Typography variant="h4" component="h1">
                             Multi-Factor Authentication
@@ -450,7 +440,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
             )}
 
             {mfaRequired && enabledMethods.length === 0 && (
-                <Alert severity="error" sx={{ mb: 3 }}>
+                <Alert severity="error" className="mb-8">
                     <Typography variant="h6" gutterBottom>
                         MFA Required
                     </Typography>
@@ -463,16 +453,14 @@ export const MFASetup: React.FC<MFASetupProps> = ({
 
             {/* Enabled Methods */}
             {enabledMethods.length > 0 && (
-                <Card sx={{ mb: 3 }}>
+                <Card className="mb-8">
                     <CardContent>
                         <Typography
                             variant="h6"
                             gutterBottom
-                            color="success.main"
+                            className="text-green-600"
                         >
-                            <CheckIcon
-                                sx={{ mr: 1, verticalAlign: 'middle' }}
-                            />
+                            <CheckIcon className="w-5 h-5 inline mr-2 align-middle" />
                             Enabled MFA Methods ({enabledMethods.length})
                         </Typography>
 
@@ -580,15 +568,15 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                         primary={method.name}
                                         secondary={method.description}
                                     />
-                                    <Button
-                                        variant="contained"
-                                        onClick={() =>
-                                            handleSetupMethod(method)
-                                        }
-                                        sx={{ minHeight: 44 }}
-                                    >
-                                        Enable
-                                    </Button>
+                                                                            <Button
+                                            variant="contained"
+                                            onClick={() =>
+                                                handleSetupMethod(method)
+                                            }
+                                            className="min-h-[44px]"
+                                        >
+                                            Enable
+                                        </Button>
                                 </ListItem>
                             ))}
                         </List>
@@ -618,7 +606,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                     <StepLabel>{step.label}</StepLabel>
                                     <StepContent>
                                         {step.content}
-                                        <Box sx={{ mb: 2, mt: 2 }}>
+                                        <Box className="mb-4 mt-4">
                                             <Button
                                                 variant="contained"
                                                 onClick={() => {
@@ -652,7 +640,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                         'backup_codes' &&
                                                     verificationCode.length < 6
                                                 }
-                                                sx={{ mr: 1, minHeight: 44 }}
+                                                className="mr-2 min-h-[44px]"
                                             >
                                                 {index ===
                                                 (renderSetupSteps()?.length ??
@@ -668,7 +656,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                             activeStep - 1
                                                         )
                                                     }
-                                                    sx={{ minHeight: 44 }}
+                                                    className="min-h-[44px]"
                                                 >
                                                     Back
                                                 </Button>

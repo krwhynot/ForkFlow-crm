@@ -20,23 +20,23 @@ import {
     AccordionDetails,
     Tooltip,
     IconButton,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    CheckCircle as PassIcon,
-    Error as FailIcon,
-    Warning as WarningIcon,
-    PlayArrow as RunIcon,
-    Refresh as RefreshIcon,
-    Info as InfoIcon,
-    ExpandMore as ExpandIcon,
-    BugReport as BugIcon,
-    Shield as ShieldIcon,
-    VpnKey as AuthIcon,
-    Storage as DataIcon,
-    Api as ApiIcon,
-    Policy as PolicyIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    CheckCircleIcon as PassIcon,
+    ExclamationCircleIcon as FailIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    PlayIcon as RunIcon,
+    ArrowPathIcon as RefreshIcon,
+    InformationCircleIcon as InfoIcon,
+    ChevronDownIcon as ExpandIcon,
+    BugAntIcon as BugIcon,
+    ShieldCheckIcon as ShieldIcon,
+    KeyIcon as AuthIcon,
+    CircleStackIcon as DataIcon,
+    CommandLineIcon as ApiIcon,
+    DocumentTextIcon as PolicyIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity, useNotify } from 'react-admin';
 
 import { User } from '../types';

@@ -22,24 +22,24 @@ import {
     Badge,
 } from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    Shield as ShieldIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    CheckCircle as SuccessIcon,
-    Visibility as ViewIcon,
-    Refresh as RefreshIcon,
-    Notifications as AlertIcon,
-    TrendingUp as TrendingUpIcon,
-    TrendingDown as TrendingDownIcon,
-    Schedule as TimeIcon,
-    Person as UserIcon,
-    Computer as DeviceIcon,
-    Public as NetworkIcon,
-    VpnKey as AuthIcon,
-    Lock as LockIcon,
-    AdminPanelSettings as AdminIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    ShieldCheckIcon as ShieldIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    ExclamationCircleIcon as ErrorIcon,
+    CheckCircleIcon as SuccessIcon,
+    EyeIcon as ViewIcon,
+    ArrowPathIcon as RefreshIcon,
+    BellIcon as AlertIcon,
+    TrendingUpIcon,
+    TrendingDownIcon,
+    ClockIcon as TimeIcon,
+    UserIcon,
+    ComputerDesktopIcon as DeviceIcon,
+    GlobeAltIcon as NetworkIcon,
+    KeyIcon as AuthIcon,
+    LockClosedIcon as LockIcon,
+    Cog6ToothIcon as AdminIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity, useNotify } from 'react-admin';
 
 import { User } from '../types';

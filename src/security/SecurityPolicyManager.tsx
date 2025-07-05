@@ -23,22 +23,20 @@ import {
     FormControlLabel,
     Select,
     MenuItem,
-    FormControl,
-    InputLabel,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    AdminPanelSettings as AdminIcon,
-    Key as KeyIcon,
-    Schedule as TimeIcon,
-    Block as BlockIcon,
-    Shield as ShieldIcon,
-    Warning as WarningIcon,
-    CheckCircle as CheckIcon,
-    Settings as SettingsIcon,
-    Save as SaveIcon,
-    Refresh as RefreshIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    Cog6ToothIcon as AdminIcon,
+    KeyIcon,
+    ClockIcon as TimeIcon,
+    NoSymbolIcon as BlockIcon,
+    ShieldCheckIcon as ShieldIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    CheckCircleIcon as CheckIcon,
+    Cog6ToothIcon as SettingsIcon,
+    ArrowDownTrayIcon as SaveIcon,
+    ArrowPathIcon as RefreshIcon,
+} from '@heroicons/react/24/outline';
 import { useNotify, useGetIdentity } from 'react-admin';
 
 import { User } from '../types';
@@ -342,7 +340,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                         control={
                             <Switch
                                 checked={currentValue === 'true'}
-                                onChange={e =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                     handleSettingChange(
                                         setting.id,
                                         e.target.checked.toString()
@@ -360,7 +358,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     <TextField
                         type="number"
                         value={currentValue}
-                        onChange={e =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleSettingChange(setting.id, e.target.value)
                         }
                         size="small"
@@ -369,37 +367,37 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                             max: setting.max,
                             style: { textAlign: 'center' },
                         }}
-                        sx={{ width: 100 }}
+                        className="w-[100px]"
                     />
                 );
 
             case 'select':
                 return (
-                    <FormControl size="small" sx={{ minWidth: 120 }}>
-                        <Select
-                            value={currentValue}
-                            onChange={e =>
-                                handleSettingChange(setting.id, e.target.value)
-                            }
-                        >
-                            {setting.options?.map(option => (
-                                <MenuItem key={option} value={option}>
-                                    {option}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Select
+                        value={currentValue}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                            handleSettingChange(setting.id, e.target.value)
+                        }
+                        size="small"
+                        className="min-w-[120px]"
+                    >
+                        {setting.options?.map(option => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
                 );
 
             default:
                 return (
                     <TextField
                         value={currentValue}
-                        onChange={e =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleSettingChange(setting.id, e.target.value)
                         }
                         size="small"
-                        sx={{ width: 200 }}
+                        className="w-[200px]"
                     />
                 );
         }
@@ -436,7 +434,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     };
 
     const groupedSettings = settings.reduce(
-        (acc, setting) => {
+        (acc: { [key: string]: SecuritySetting[] }, setting: SecuritySetting) => {
             if (!acc[setting.category]) {
                 acc[setting.category] = [];
             }
@@ -451,7 +449,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" sx={{ m: 3 }}>
+            <Alert severity="error" className="m-8">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access security policy
@@ -471,7 +469,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                 mb={3}
             >
                 <Box display="flex" alignItems="center" gap={2}>
-                    <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
+                    <SecurityIcon className="w-8 h-8 text-blue-600" />
                     <Box>
                         <Typography variant="h4" component="h1">
                             Security Policy Manager
@@ -523,7 +521,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
 
             {/* Security Settings by Category */}
             <Grid container spacing={3}>
-                {Object.entries(groupedSettings).map(
+                {(Object.entries(groupedSettings) as [string, SecuritySetting[]][]).map(
                     ([category, categorySettings]) => (
                         <Grid item xs={12} lg={6} key={category}>
                             <Card>
