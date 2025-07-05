@@ -12,10 +12,12 @@
     justify-content: center;
     outline: none;
 }
+
 .touch-target-interactive:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
+
 .touch-target-interactive:active {
     transform: scale(0.98);
 }
@@ -68,6 +70,7 @@
     transition-property: box-shadow;
     transition-duration: 200ms;
 }
+
 .organization-card:hover {
     box-shadow:
         0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -87,7 +90,8 @@
 .form-step {
     padding: 1rem;
 }
-.form-step > * + * {
+
+.form-step>*+* {
     margin-top: 1rem;
 }
 
@@ -115,6 +119,7 @@
     min-height: 44px;
     outline: none;
 }
+
 .search-input:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
@@ -137,6 +142,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .touch-feedback,
     .organization-card {
         transition-property: none;

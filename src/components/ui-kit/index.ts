@@ -72,7 +72,9 @@ export type { default as CircularProgressProps } from './CircularProgress';
 
 // New exports
 export { Accordion, AccordionDetails, AccordionSummary } from './Accordion';
+export { AlertTitle } from './AlertTitle';
 export { Fade } from './Fade';
 export { FormControlLabel } from './FormControlLabel';
+export { FormHelperText } from './FormHelperText';
 export { Switch } from './Switch';
 

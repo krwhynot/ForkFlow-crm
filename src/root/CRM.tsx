@@ -21,8 +21,12 @@ import opportunities from '../opportunities';
 import organizations from '../organizations';
 import products from '../products';
 import {
-    authProvider as defaultAuthProvider,
-    dataProvider as defaultDataProvider,
+    authProvider as fakerestAuthProvider,
+    dataProvider as fakerestDataProvider,
+} from '../providers/fakerest';
+import {
+    authProvider as supabaseAuthProvider,
+    dataProvider as supabaseDataProvider,
 } from '../providers/supabase';
 import sales from '../sales';
 import { SettingsPage } from '../settings/SettingsPage';
@@ -55,6 +59,11 @@ const devAuthProvider: AuthProvider = {
         avatar: null,
     }),
 };
+
+// Determine which providers to use based on environment
+const isDemoMode = import.meta.env.VITE_IS_DEMO === 'true';
+const defaultDataProvider = isDemoMode ? fakerestDataProvider : supabaseDataProvider;
+const defaultAuthProvider = isDemoMode ? fakerestAuthProvider : supabaseAuthProvider;
 
 // Define the interface for the CRM component props
 export type CRMProps = {
