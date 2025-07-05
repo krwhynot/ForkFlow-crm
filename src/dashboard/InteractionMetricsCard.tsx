@@ -9,16 +9,16 @@ import {
 } from '@/components/ui-kit';
 import { BarChart } from '@/components/ui-kit/Chart';
 import {
-    TrendingUp as TrendingUpIcon,
-    TrendingDown as TrendingDownIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Person as PersonIcon,
-    Assessment as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Reply as FollowUpIcon,
-    Assignment as InteractionIcon,
-} from '@mui/icons-material';
+    ArrowTrendingUpIcon,
+    ArrowTrendingDownIcon,
+    PhoneIcon,
+    EnvelopeIcon,
+    UserIcon,
+    PresentationChartBarIcon,
+    CurrencyDollarIcon,
+    ArrowUturnLeftIcon,
+    ClipboardDocumentIcon,
+} from '@heroicons/react/24/outline';
 import { useGetList } from 'react-admin';
 import {
     format,
@@ -34,12 +34,12 @@ import { Interaction, Setting } from '../types';
 import { safeTrend, validateChartData, safeAmount } from '../utils/chartSafety';
 
 const interactionTypeIcons: Record<string, React.ReactElement> = {
-    call: <PhoneIcon />,
-    email: <EmailIcon />,
-    'in-person': <PersonIcon />,
-    demo: <DemoIcon />,
-    quote: <QuoteIcon />,
-    'follow-up': <FollowUpIcon />,
+    call: <PhoneIcon className="w-4 h-4" />,
+    email: <EnvelopeIcon className="w-4 h-4" />,
+    'in-person': <UserIcon className="w-4 h-4" />,
+    demo: <PresentationChartBarIcon className="w-4 h-4" />,
+    quote: <CurrencyDollarIcon className="w-4 h-4" />,
+    'follow-up': <ArrowUturnLeftIcon className="w-4 h-4" />,
 };
 
 interface InteractionMetric {
@@ -252,9 +252,9 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     metrics.weeklyTrend >= 0 ? (
-                                        <TrendingUpIcon />
+                                        <ArrowTrendingUpIcon className="w-4 h-4" />
                                     ) : (
-                                        <TrendingDownIcon />
+                                        <ArrowTrendingDownIcon className="w-4 h-4" />
                                     )
                                 }
                                 label={`${safeAmount(metrics.weeklyTrend).toFixed(0)}%`}
@@ -281,9 +281,9 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     metrics.monthlyTrend >= 0 ? (
-                                        <TrendingUpIcon />
+                                        <ArrowTrendingUpIcon className="w-4 h-4" />
                                     ) : (
-                                        <TrendingDownIcon />
+                                        <ArrowTrendingDownIcon className="w-4 h-4" />
                                     )
                                 }
                                 label={`${safeAmount(metrics.monthlyTrend).toFixed(0)}%`}
@@ -313,7 +313,7 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     interactionTypeIcons[type] || (
-                                        <InteractionIcon />
+                                        <ClipboardDocumentIcon className="w-4 h-4" />
                                     )
                                 }
                                 label={`${type}: ${count}`}

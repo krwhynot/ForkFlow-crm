@@ -9,7 +9,6 @@ import {
     Alert,
     LinearProgress,
     Chip,
-    Tab,
     Tabs,
     Table,
     TableBody,
@@ -18,15 +17,16 @@ import {
     TableHead,
     TableRow,
     Paper,
-} from '@mui/material';
+} from '@/components/ui-kit';
+
 import {
-    Speed as PerformanceIcon,
-    Refresh as RefreshIcon,
-    Download as DownloadIcon,
-    Warning as WarningIcon,
-    CheckCircle as SuccessIcon,
-    Error as ErrorIcon,
-} from '@mui/icons-material';
+    BoltIcon,
+    ArrowPathIcon,
+    ArrowDownTrayIcon,
+    ExclamationTriangleIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+} from '@heroicons/react/24/outline';
 
 import { usePerformanceMonitor } from '../../providers/monitoring/performanceMonitor';
 
@@ -133,7 +133,7 @@ export const PerformanceDashboard = () => {
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <PerformanceIcon color="primary" />
+                    <BoltIcon className="w-6 h-6 text-blue-600" />
                     <Typography variant="h5">Performance Monitor</Typography>
                     <Chip label={summary.timeRange} color="info" size="small" />
                 </Box>
@@ -142,7 +142,7 @@ export const PerformanceDashboard = () => {
                     <Button
                         variant="outlined"
                         startIcon={
-                            refreshing ? <LinearProgress /> : <RefreshIcon />
+                            refreshing ? <LinearProgress /> : <ArrowPathIcon className="w-4 h-4" />
                         }
                         onClick={loadData}
                         disabled={refreshing}
@@ -152,7 +152,7 @@ export const PerformanceDashboard = () => {
                     </Button>
                     <Button
                         variant="outlined"
-                        startIcon={<DownloadIcon />}
+                        startIcon={<ArrowDownTrayIcon className="w-4 h-4" />}
                         onClick={exportMetrics}
                         size="small"
                     >
@@ -171,7 +171,7 @@ export const PerformanceDashboard = () => {
 
             {/* Warnings Alert */}
             {hasWarnings && (
-                <Alert severity="warning" icon={<WarningIcon />} sx={{ mb: 3 }}>
+                <Alert severity="warning" icon={<ExclamationTriangleIcon className="w-5 h-5" />} sx={{ mb: 3 }}>
                     <Typography variant="subtitle2" gutterBottom>
                         Performance Issues Detected
                     </Typography>
@@ -444,13 +444,13 @@ export const PerformanceDashboard = () => {
             <Card>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tabValue} onChange={handleTabChange}>
-                        <Tab
+                        <Tabs.Tab
                             label={`API Calls (${allMetrics?.api?.length || 0})`}
                         />
-                        <Tab
+                        <Tabs.Tab
                             label={`GPS Events (${allMetrics?.gps?.length || 0})`}
                         />
-                        <Tab
+                        <Tabs.Tab
                             label={`Uploads (${allMetrics?.uploads?.length || 0})`}
                         />
                     </Tabs>

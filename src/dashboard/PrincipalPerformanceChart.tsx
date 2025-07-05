@@ -10,13 +10,13 @@ import {
 } from '@/components/ui-kit';
 import { BarChart } from '@/components/ui-kit/Chart';
 import {
-    Business as PrincipalIcon,
-    TrendingUp as TrendingUpIcon,
-    TrendingDown as TrendingDownIcon,
-    AttachMoney as RevenueIcon,
-    Assessment as MetricsIcon,
-    Refresh as RefreshIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon,
+    ArrowTrendingUpIcon,
+    ArrowTrendingDownIcon,
+    CurrencyDollarIcon,
+    ChartBarIcon,
+    ArrowPathIcon,
+} from '@heroicons/react/24/outline';
 import { format, startOfMonth, subMonths } from 'date-fns';
 import { useGetList } from 'react-admin';
 import { useBreakpoint } from '../hooks/useBreakpoint';
@@ -243,11 +243,11 @@ export const PrincipalPerformanceChart = () => {
                             Principal Performance
                         </Typography>
                         <Button variant="ghost" size="sm" className="p-2">
-                            <RefreshIcon />
+                            <ArrowPathIcon className="w-4 h-4" />
                         </Button>
                     </Box>
                     <Box className="text-center py-3">
-                        <PrincipalIcon className="text-gray-400 text-5xl mb-1" />
+                        <BuildingOfficeIcon className="w-12 h-12 text-gray-400 mb-1 mx-auto" />
                         <Typography variant="body2" className="text-gray-500">
                             No principal data available
                         </Typography>
@@ -273,7 +273,7 @@ export const PrincipalPerformanceChart = () => {
                 <Box className="flex justify-between items-center mb-2">
                     <Typography variant="h6">Principal Performance</Typography>
                     <Button variant="ghost" size="sm" className="p-2">
-                        <RefreshIcon />
+                        <ArrowPathIcon className="w-4 h-4" />
                     </Button>
                 </Box>
 
@@ -281,14 +281,14 @@ export const PrincipalPerformanceChart = () => {
                 <Stack className="flex flex-row space-x-1 flex-wrap mb-2">
                     <Chip
                         size="small"
-                        icon={<RevenueIcon />}
+                        icon={<CurrencyDollarIcon className="w-4 h-4" />}
                         label={`Total: ${formatCurrency(totalRevenue)}`}
                         className="text-blue-600 border-blue-600 bg-transparent"
                         variant="outlined"
                     />
                     <Chip
                         size="small"
-                        icon={<MetricsIcon />}
+                        icon={<ChartBarIcon className="w-4 h-4" />}
                         label={`${totalOpportunities} Opportunities`}
                         className="text-purple-600 border-purple-600 bg-transparent"
                         variant="outlined"
@@ -296,7 +296,7 @@ export const PrincipalPerformanceChart = () => {
                     {topPrincipal && (
                         <Chip
                             size="small"
-                            icon={<TrendingUpIcon />}
+                            icon={<ArrowTrendingUpIcon className="w-4 h-4" />}
                             label={`Top: ${topPrincipal.principalName}`}
                             className="text-green-600 border-green-600 bg-transparent"
                             variant="outlined"
@@ -397,9 +397,9 @@ export const PrincipalPerformanceChart = () => {
                                         size="small"
                                         icon={
                                             metric.monthlyTrend >= 0 ? (
-                                                <TrendingUpIcon />
+                                                <ArrowTrendingUpIcon className="w-3 h-3" />
                                             ) : (
-                                                <TrendingDownIcon />
+                                                <ArrowTrendingDownIcon className="w-3 h-3" />
                                             )
                                         }
                                         label={`${metric.monthlyTrend.toFixed(0)}%`}

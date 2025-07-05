@@ -13,13 +13,8 @@ import {
 } from '@/components/ui-kit';
 import {
     Switch,
-    FormControlLabel,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
     TextField,
-    InputAdornment,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     ChevronDownIcon,
     CogIcon,
