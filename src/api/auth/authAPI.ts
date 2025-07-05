@@ -3,28 +3,28 @@
  * RESTful API layer that integrates with Supabase backend via authService
  */
 
-import { DataProvider, Identifier } from 'react-admin';
+import { Identifier } from 'react-admin';
+import { supabase } from '../../providers/supabase/supabase';
 import {
-    login,
-    logout,
-    getCurrentUser,
-    getUserPermissions,
-    refreshToken,
-    isAuthenticated,
-    signUp,
-    requestPasswordReset,
-    updatePassword,
-} from './authService';
-import {
-    User,
-    LoginCredentials,
     BrokerFormData,
-    PasswordResetRequest,
+    LoginCredentials,
     PasswordResetConfirm,
+    PasswordResetRequest,
+    User,
     UserProfileUpdate,
 } from '../../types';
-import { supabase } from '../../providers/supabase/supabase';
 import { logAuditEvent } from '../../utils/auditLogging';
+import {
+    getCurrentUser,
+    getUserPermissions,
+    isAuthenticated,
+    login,
+    logout,
+    refreshToken,
+    requestPasswordReset,
+    signUp,
+    updatePassword,
+} from './authService';
 
 export interface AuthAPI {
     // Authentication endpoints
@@ -235,7 +235,6 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_name,
                 role,
                 avatar,
-                territory,
                 principals,
                 disabled,
                 last_login,
@@ -263,14 +262,14 @@ export class SupabaseAuthAPI implements AuthAPI {
             sort.field === 'firstName'
                 ? 'first_name'
                 : sort.field === 'lastName'
-                  ? 'last_name'
-                  : sort.field === 'createdAt'
-                    ? 'created_at'
-                    : sort.field === 'updatedAt'
-                      ? 'updated_at'
-                      : sort.field === 'lastLoginAt'
-                        ? 'last_login'
-                        : sort.field,
+                    ? 'last_name'
+                    : sort.field === 'createdAt'
+                        ? 'created_at'
+                        : sort.field === 'updatedAt'
+                            ? 'updated_at'
+                            : sort.field === 'lastLoginAt'
+                                ? 'last_login'
+                                : sort.field,
             { ascending: sort.order === 'ASC' }
         );
 
@@ -293,7 +292,6 @@ export class SupabaseAuthAPI implements AuthAPI {
             lastName: user.last_name,
             role: user.role,
             avatar: user.avatar,
-            territory: user.territory,
             principals: user.principals || [],
             isActive: !user.disabled,
             lastLoginAt: user.last_login,
@@ -346,7 +344,6 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_name,
                 role,
                 avatar,
-                territory,
                 principals,
                 disabled,
                 last_login,
@@ -368,7 +365,6 @@ export class SupabaseAuthAPI implements AuthAPI {
             lastName: data.last_name,
             role: data.role,
             avatar: data.avatar,
-            territory: data.territory,
             principals: data.principals || [],
             isActive: !data.disabled,
             lastLoginAt: data.last_login,
@@ -483,7 +479,6 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_name,
                 role,
                 avatar,
-                territory,
                 principals,
                 disabled,
                 last_login,
@@ -506,7 +501,6 @@ export class SupabaseAuthAPI implements AuthAPI {
             lastName: data.last_name,
             role: data.role,
             avatar: data.avatar,
-            territory: data.territory,
             principals: data.principals || [],
             isActive: !data.disabled,
             lastLoginAt: data.last_login,
@@ -553,7 +547,6 @@ export class SupabaseAuthAPI implements AuthAPI {
 
         if (userData.firstName) updateData.first_name = userData.firstName;
         if (userData.lastName) updateData.last_name = userData.lastName;
-        if (userData.territory) updateData.territory = userData.territory;
         if (userData.principals) updateData.principals = userData.principals;
 
         // Handle avatar upload if it's a File
@@ -579,7 +572,6 @@ export class SupabaseAuthAPI implements AuthAPI {
                 last_name,
                 role,
                 avatar,
-                territory,
                 principals,
                 disabled,
                 last_login,
@@ -602,7 +594,6 @@ export class SupabaseAuthAPI implements AuthAPI {
             lastName: data.last_name,
             role: data.role,
             avatar: data.avatar,
-            territory: data.territory,
             principals: data.principals || [],
             isActive: !data.disabled,
             lastLoginAt: data.last_login,

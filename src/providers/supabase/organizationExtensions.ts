@@ -16,19 +16,7 @@ export interface OrganizationSearchResult extends Organization {
     matchReasons?: string[]; // What fields matched the search
 }
 
-// Territory boundary interface
-export interface TerritoryBoundary {
-    id: string;
-    name: string;
-    userId: string;
-    boundaries: {
-        type: 'polygon' | 'circle';
-        coordinates: number[][];
-        center?: { lat: number; lng: number };
-        radius?: number; // in kilometers for circle type
-    };
-    organizationCount?: number;
-}
+// Removed territory boundary interface - no longer needed
 
 // Organization analytics interface
 export interface OrganizationAnalytics {
@@ -280,70 +268,7 @@ export const findNearbyOrganizations = async (
     });
 };
 
-/**
- * Get organizations within a user's territory
- */
-export const getTerritoryOrganizations = async (
-    dataProvider: DataProvider,
-    userId: string,
-    territory?: TerritoryBoundary,
-    options: {
-        limit?: number;
-        includeInactive?: boolean;
-        filters?: Record<string, any>;
-    } = {}
-): Promise<{ data: Organization[]; total: number }> => {
-    // For now, implement basic territory logic
-    // In production, this would use PostGIS geometric queries
-
-    if (!territory) {
-        // Get all organizations assigned to user
-        const result = await dataProvider.getList('organizations', {
-            pagination: { page: 1, perPage: 1000 },
-            sort: { field: 'name', order: 'ASC' },
-            filter: { accountManager: userId },
-        });
-
-        return {
-            data: result.data,
-            total: result.total ?? 0,
-        };
-    }
-
-    // Get organizations within territory boundaries
-    let query = supabase
-        .from('organizations')
-        .select('*')
-        .not('latitude', 'is', null)
-        .not('longitude', 'is', null);
-
-    if (territory.boundaries.type === 'circle' && territory.boundaries.center) {
-        // Simple circle-based territory (would use PostGIS in production)
-        const { lat, lng } = territory.boundaries.center;
-        const radiusKm = territory.boundaries.radius || 50;
-
-        // This is a simplified implementation
-        // Production would use: ST_DWithin(ST_Point(longitude, latitude), ST_Point(lng, lat), radius)
-        query = query
-            .gte('latitude', lat - radiusKm * 0.009)
-            .lte('latitude', lat + radiusKm * 0.009)
-            .gte('longitude', lng - radiusKm * 0.009)
-            .lte('longitude', lng + radiusKm * 0.009);
-    }
-
-    const { data, error } = await query.order('name');
-
-    if (error) {
-        throw new Error(
-            `Territory organizations query failed: ${error.message}`
-        );
-    }
-
-    return {
-        data: data || [],
-        total: data?.length || 0,
-    };
-};
+// Removed getTerritoryOrganizations function - territory management no longer needed
 
 /**
  * Import organizations from CSV data

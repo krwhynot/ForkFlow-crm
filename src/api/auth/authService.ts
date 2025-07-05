@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '../../providers/supabase/supabase';
-import { User, LoginCredentials } from '../../types';
+import { LoginCredentials, User } from '../../types';
 import { logAuditEvent } from '../../utils/auditLogging';
 
 // Types for auth responses
@@ -52,7 +52,6 @@ export const login = async (
                 last_name,
                 role,
                 avatar,
-                territory,
                 principals,
                 disabled,
                 last_login,
@@ -97,7 +96,6 @@ export const login = async (
                     lastName: newProfile.last_name,
                     role: newProfile.role,
                     avatar: newProfile.avatar,
-                    territory: newProfile.territory,
                     principals: newProfile.principals || [],
                     isActive: !newProfile.disabled,
                     lastLoginAt: newProfile.last_login,
@@ -124,7 +122,6 @@ export const login = async (
                 lastName: userProfile.last_name,
                 role: userProfile.role,
                 avatar: userProfile.avatar,
-                territory: userProfile.territory,
                 principals: userProfile.principals || [],
                 isActive: !userProfile.disabled,
                 lastLoginAt: new Date().toISOString(),
@@ -184,7 +181,6 @@ export const getCurrentUser = async (): Promise<User | null> => {
                 last_name,
                 role,
                 avatar,
-                territory,
                 principals,
                 disabled,
                 last_login,
@@ -210,7 +206,6 @@ export const getCurrentUser = async (): Promise<User | null> => {
             lastName: userProfile.last_name,
             role: userProfile.role,
             avatar: userProfile.avatar,
-            territory: userProfile.territory,
             principals: userProfile.principals || [],
             isActive: !userProfile.disabled,
             lastLoginAt: userProfile.last_login,
@@ -428,7 +423,6 @@ export const signUp = async (userData: {
                 lastName: userProfile.last_name,
                 role: userProfile.role,
                 avatar: userProfile.avatar,
-                territory: userProfile.territory,
                 principals: userProfile.principals || [],
                 isActive: !userProfile.disabled,
                 lastLoginAt: userProfile.last_login,
