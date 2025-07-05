@@ -2,9 +2,9 @@
 import React from 'react';
 import { Chip, Tooltip, Box, Typography } from '@/components/ui-kit';
 import {
-    LocationOn as LocationIcon,
-    Info as InfoIcon,
-} from '@mui/icons-material';
+    MapPinIcon,
+    InformationCircleIcon,
+} from '@heroicons/react/24/outline';
 import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
 import { parseTerritory } from '../utils/territoryFilter';
 
@@ -58,7 +58,7 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
     if (!showTooltip) {
         return (
             <Chip
-                icon={<LocationIcon />}
+                icon={<MapPinIcon className="w-4 h-4" />}
                 label={`Territory: ${displayName}`}
                 variant={variant}
                 size={size}
@@ -119,13 +119,13 @@ export const TerritoryDisplay: React.FC<TerritoryDisplayProps> = ({
     return (
         <Tooltip title={tooltipContent} arrow placement="bottom">
             <Chip
-                icon={<LocationIcon />}
+                icon={<MapPinIcon className="w-4 h-4" />}
                 label={`Territory: ${displayName}`}
                 variant={variant}
                 size={size}
                 color={color}
                 onDelete={showTooltip ? () => {} : undefined}
-                deleteIcon={<InfoIcon />}
+                deleteIcon={<InformationCircleIcon className="w-4 h-4" />}
             />
         </Tooltip>
     );
@@ -193,9 +193,8 @@ export const TerritoryStatus: React.FC<{ territory?: string[] }> = ({
 
     return (
         <Box display="flex" alignItems="center" gap={1}>
-            <LocationIcon
-                color={isConfigured ? 'primary' : 'disabled'}
-                fontSize="small"
+            <MapPinIcon
+                className={`w-4 h-4 ${isConfigured ? 'text-blue-600' : 'text-gray-400'}`}
             />
             <Typography
                 variant="body2"

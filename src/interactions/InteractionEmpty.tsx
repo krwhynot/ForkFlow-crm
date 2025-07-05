@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Typography, Button, Stack } from '@/components/ui-kit';
 import {
-    Schedule as InteractionIcon,
-    Add as AddIcon,
-} from '@mui/icons-material';
+    ClockIcon,
+    PlusIcon,
+} from '@heroicons/react/24/outline';
 import { useCreatePath } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ export const InteractionEmpty = () => {
 
     return (
         <Box className="flex flex-col items-center justify-center min-h-96 p-4 text-center">
-            <InteractionIcon className="text-7xl text-gray-500 mb-2" />
+            <ClockIcon className="w-16 h-16 text-gray-500 mb-2" />
 
             <Typography variant="h5" className="text-gray-500" gutterBottom>
                 No Interactions Yet
@@ -35,7 +35,7 @@ export const InteractionEmpty = () => {
             <Stack className="flex-row space-x-2">
                 <Button
                     variant="contained"
-                    startIcon={<AddIcon />}
+                    startIcon={<PlusIcon className="w-4 h-4" />}
                     onClick={handleCreateInteraction}
                     size="large"
                     className="min-h-11 px-3"

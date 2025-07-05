@@ -1,12 +1,12 @@
 import { CreateButton } from 'react-admin';
-import BusinessIcon from '@mui/icons-material/Business';
+import { BuildingOfficeIcon } from '@heroicons/react/24/outline';
 import { Box } from '../../components/Layout/Box';
 import { Typography } from '../../components/Typography/Typography';
 
 export const OrganizationEmpty = () => (
     <Box className="text-center m-1">
         <Box className="mb-4 mt-8">
-            <BusinessIcon className="text-8xl text-gray-400 mb-2" />
+            <BuildingOfficeIcon className="w-20 h-20 text-gray-400 mb-2 mx-auto" />
             <Typography variant="h4" className="text-gray-500 mb-4">
                 No organizations yet
             </Typography>

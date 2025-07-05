@@ -1,4 +1,4 @@
-import ContentSave from '@mui/icons-material/Save';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import {
     Button,
     Dialog,
@@ -95,7 +95,7 @@ export function TagDialog({
                         color="primary"
                         disabled={disabled}
                         variant="contained"
-                        startIcon={<ContentSave />}
+                        startIcon={<ArrowDownTrayIcon className="w-4 h-4" />}
                     >
                         Save
                     </Button>

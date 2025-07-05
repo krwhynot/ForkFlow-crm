@@ -17,8 +17,7 @@ import {
     useGetOne,
 } from 'react-admin';
 
-import ArchiveIcon from '@mui/icons-material/Archive';
-import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import { ArchiveBoxIcon, ArchiveBoxArrowDownIcon } from '@heroicons/react/24/outline';
 import { CompanyAvatar } from '../companies/CompanyAvatar';
 import { DialogCloseButton } from '../misc/DialogCloseButton';
 import { NotesIterator } from '../notes';
@@ -325,7 +324,7 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
     };
 
     return (
-        <Button onClick={handleClick} startIcon={<ArchiveIcon />} size="small">
+        <Button onClick={handleClick} startIcon={<ArchiveBoxIcon className="w-4 h-4" />} size="small">
             Archive
         </Button>
     );
@@ -359,7 +358,7 @@ const UnarchiveButton = ({ record }: { record: Deal }) => {
     return (
         <Button
             onClick={handleClick}
-            startIcon={<UnarchiveIcon />}
+            startIcon={<ArchiveBoxArrowDownIcon className="w-4 h-4" />}
             size="small"
         >
             Send back to the board

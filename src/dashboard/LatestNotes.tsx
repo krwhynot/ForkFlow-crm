@@ -1,5 +1,5 @@
-import NoteIcon from '@mui/icons-material/Note';
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import { Box, Card, CardContent, Typography } from '@/components/ui-kit';
 import { formatDistance } from 'date-fns';
 import {
     FunctionField,
@@ -53,11 +53,11 @@ export const LatestNotes = () => {
 
     return (
         <div>
-            <Box display="flex" alignItems="center" marginBottom="1em">
-                <Box ml={2} mr={2} display="flex">
-                    <NoteIcon color="disabled" fontSize="large" />
+            <Box className="flex items-center mb-4">
+                <Box className="ml-2 mr-2 flex">
+                    <DocumentTextIcon className="w-8 h-8 text-gray-500" />
                 </Box>
-                <Typography variant="h5" color="textSecondary">
+                <Typography variant="h5" className="text-gray-600">
                     My Latest Notes
                 </Typography>
             </Box>

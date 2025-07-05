@@ -1,6 +1,4 @@
-import TrashIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ContentSave from '@mui/icons-material/Save';
+import { TrashIcon, PencilIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import {
     Box,
     Button,
@@ -10,7 +8,7 @@ import {
 import {
     IconButton,
     Tooltip,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import { useState } from 'react';
 import {
     Form,
@@ -127,12 +125,12 @@ export const Note = ({
                                 size="small"
                                 onClick={handleEnterEditMode}
                             >
-                                <EditIcon />
+                                <PencilIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete note">
                             <IconButton size="small" onClick={handleDelete}>
-                                <TrashIcon />
+                                <TrashIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -155,7 +153,7 @@ export const Note = ({
                             color="primary"
                             variant="contained"
                             disabled={isPending}
-                            startIcon={<ContentSave />}
+                            startIcon={<ArrowDownTrayIcon className="w-4 h-4" />}
                         >
                             Update Note
                         </Button>

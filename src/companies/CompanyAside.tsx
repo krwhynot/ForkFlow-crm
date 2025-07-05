@@ -1,6 +1,4 @@
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import PhoneIcon from '@mui/icons-material/Phone';
-import PublicIcon from '@mui/icons-material/Public';
+import { PhoneIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { Divider, Link, Stack, Tooltip, Typography } from '@mui/material';
 import {
     DateField,
@@ -61,7 +59,7 @@ const CompanyInfo = ({ record }: { record: Company }) => {
                     gap={1}
                     minHeight={24}
                 >
-                    <PublicIcon color="disabled" fontSize="small" />
+                    <GlobeAltIcon className="w-4 h-4 text-gray-500" />
                     <UrlField
                         source="website"
                         target="_blank"
@@ -79,7 +77,7 @@ const CompanyInfo = ({ record }: { record: Company }) => {
                     gap={1}
                     minHeight={24}
                 >
-                    <LinkedInIcon color="disabled" fontSize="small" />
+                    <span className="w-4 h-4 text-gray-500 text-sm font-medium flex items-center">in</span>
                     <Tooltip title={record.linkedin_url}>
                         <Typography
                             variant="body2"
