@@ -1,14 +1,13 @@
 import React from 'react';
-import { Typography, Box, Chip } from '@/components/ui-kit';
-import { Breadcrumbs, Link } from '@mui/material';
+import { Typography, Box, Chip, Breadcrumbs, Link } from '@/components/ui-kit';
 import {
-    Business as OrganizationIcon,
-    Person as ContactIcon,
-    Inventory as ProductIcon,
-    TrendingUp as OpportunityIcon,
-    EventNote as InteractionIcon,
-    NavigateNext as NavigateNextIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon,
+    UserIcon,
+    CubeIcon,
+    TrendingUpIcon,
+    DocumentTextIcon,
+    ChevronRightIcon,
+} from '@heroicons/react/24/outline';
 import { Link as RouterLink, useRecordContext } from 'react-admin';
 import { Organization, Contact, Product, Deal, Interaction } from '../../types';
 
@@ -48,15 +47,15 @@ export const RelationshipBreadcrumbs: React.FC<
     const getEntityIcon = (entityType: string) => {
         switch (entityType) {
             case 'organization':
-                return <OrganizationIcon className="text-base mr-1" />;
+                return <BuildingOfficeIcon className="w-4 h-4 mr-1" />;
             case 'contact':
-                return <ContactIcon className="text-base mr-1" />;
+                return <UserIcon className="w-4 h-4 mr-1" />;
             case 'product':
-                return <ProductIcon className="text-base mr-1" />;
+                return <CubeIcon className="w-4 h-4 mr-1" />;
             case 'opportunity':
-                return <OpportunityIcon className="text-base mr-1" />;
+                return <TrendingUpIcon className="w-4 h-4 mr-1" />;
             case 'interaction':
-                return <InteractionIcon className="text-base mr-1" />;
+                return <DocumentTextIcon className="w-4 h-4 mr-1" />;
             default:
                 return null;
         }
@@ -223,10 +222,10 @@ export const RelationshipBreadcrumbs: React.FC<
         <Box className="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
             <Breadcrumbs
                 separator={
-                    <NavigateNextIcon className="text-sm text-gray-400" />
+                    <ChevronRightIcon className="w-4 h-4 text-gray-400" />
                 }
                 aria-label="relationship breadcrumbs"
-                className="[&_.MuiBreadcrumbs-separator]:text-gray-400"
+                className="[&_.breadcrumb-separator]:text-gray-400"
             >
                 {breadcrumbPath.map((crumb, index) => {
                     const isLast = index === breadcrumbPath.length - 1;

@@ -25,15 +25,11 @@ import {
     Paper,
     IconButton,
     Tooltip,
-} from '@/components/ui-kit';
-import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
     TableContainer,
-    useTheme,
-    useMediaQuery,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     ShieldCheckIcon,
     ShieldExclamationIcon,
@@ -58,6 +54,7 @@ import { getSecurityStatistics } from '../../utils/securityMiddleware';
 import { getSecurityStatus } from '../../utils/httpsEnforcement';
 import { getOfflineAuthStatus } from '../../utils/offlineAuth';
 import { getSessionSummary } from '../../utils/sessionPersistence';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface SecurityMetrics {
     auditStats: ReturnType<typeof getAuditStatistics>;
@@ -74,8 +71,7 @@ export const SecurityDashboard: React.FC = () => {
     const [expandedSection, setExpandedSection] = useState<string | false>(
         'overview'
     );
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md');
 
     useEffect(() => {
         loadSecurityMetrics();
@@ -130,15 +126,15 @@ export const SecurityDashboard: React.FC = () => {
     const getSeverityColor = (severity: string) => {
         switch (severity) {
             case 'critical':
-                return theme.palette.error.main;
+                return '#dc2626'; // red-600
             case 'high':
-                return theme.palette.warning.main;
+                return '#d97706'; // amber-600
             case 'medium':
-                return theme.palette.info.main;
+                return '#2563eb'; // blue-600
             case 'low':
-                return theme.palette.success.main;
+                return '#16a34a'; // green-600
             default:
-                return theme.palette.grey[500];
+                return '#6b7280'; // gray-500
         }
     };
 
@@ -172,7 +168,7 @@ export const SecurityDashboard: React.FC = () => {
 
     if (loading || !metrics) {
         return (
-            <Box sx={{ p: 2 }}>
+            <Box className="p-2">
                 <Typography variant="h5" gutterBottom>
                     Security Dashboard
                 </Typography>
@@ -184,13 +180,13 @@ export const SecurityDashboard: React.FC = () => {
     const securityScore = getOverallSecurityScore();
 
     return (
-        <Box sx={{ p: isMobile ? 1 : 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+        <Box className={`p-${isMobile ? '1' : '2'}`}>
+            <Box className="flex items-center mb-3">
                 <ShieldCheckIcon className="w-6 h-6 mr-2" />
                 <Typography variant="h4" component="h1">
                     Security Dashboard
                 </Typography>
-                <Box sx={{ flexGrow: 1 }} />
+                <Box className="flex-grow" />
                 <Tooltip title="Refresh">
                     <IconButton onClick={loadSecurityMetrics}>
                         <ArrowPathIcon className="w-5 h-5" />
@@ -199,29 +195,29 @@ export const SecurityDashboard: React.FC = () => {
             </Box>
 
             {/* Security Score Overview */}
-            <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid container spacing={2} className="mb-3">
                 <Grid item xs={12} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
+                        <CardContent className="text-center">
                             <Typography
                                 variant="h3"
-                                color={
+                                className={
                                     securityScore >= 80
-                                        ? 'success.main'
+                                        ? 'text-green-600'
                                         : securityScore >= 60
-                                          ? 'warning.main'
-                                          : 'error.main'
+                                          ? 'text-yellow-600'
+                                          : 'text-red-600'
                                 }
                             >
                                 {securityScore}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Security Score
                             </Typography>
                             <LinearProgress
                                 variant="determinate"
                                 value={securityScore}
-                                sx={{ mt: 1 }}
+                                className="mt-1"
                                 color={
                                     securityScore >= 80
                                         ? 'success'
@@ -235,11 +231,11 @@ export const SecurityDashboard: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
+                        <CardContent className="text-center">
                             <Typography variant="h4">
                                 {metrics.auditStats.recentCriticalEvents}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Critical Events (24h)
                             </Typography>
                         </CardContent>
@@ -247,11 +243,11 @@ export const SecurityDashboard: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
+                        <CardContent className="text-center">
                             <Typography variant="h4">
                                 {metrics.securityStats.activeRateLimits}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Active Rate Limits
                             </Typography>
                         </CardContent>
@@ -259,11 +255,11 @@ export const SecurityDashboard: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
+                        <CardContent className="text-center">
                             <Typography variant="h4">
                                 {metrics.auditStats.totalEvents}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Total Audit Events
                             </Typography>
                         </CardContent>
@@ -273,13 +269,13 @@ export const SecurityDashboard: React.FC = () => {
 
             {/* Security Status Alerts */}
             {!metrics.httpsStatus.isSecure && (
-                <Alert severity="error" sx={{ mb: 2 }}>
+                <Alert severity="error" className="mb-2">
                     <strong>HTTPS Not Enabled:</strong> Your connection is not
                     secure. Enable HTTPS for production use.
                 </Alert>
             )}
             {metrics.auditStats.recentCriticalEvents > 0 && (
-                <Alert severity="warning" sx={{ mb: 2 }}>
+                <Alert severity="warning" className="mb-2">
                     <strong>Critical Security Events:</strong>{' '}
                     {metrics.auditStats.recentCriticalEvents} critical security
                     events detected in the last 24 hours.
@@ -412,13 +408,13 @@ export const SecurityDashboard: React.FC = () => {
                 <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                     <ChartBarIcon className="w-5 h-5 mr-2" />
                     <Typography variant="h6">Audit Events</Typography>
-                    <Box sx={{ flexGrow: 1 }} />
+                    <Box className="flex-grow" />
                     <IconButton size="small" onClick={exportAuditLog}>
                         <ArrowDownTrayIcon className="w-4 h-4" />
                     </IconButton>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Box sx={{ mb: 2 }}>
+                    <Box className="mb-2">
                         <Typography variant="subtitle2" gutterBottom>
                             Events by Category
                         </Typography>
@@ -435,7 +431,7 @@ export const SecurityDashboard: React.FC = () => {
                             ))}
                         </Grid>
                     </Box>
-                    <Box sx={{ mb: 2 }}>
+                    <Box className="mb-2">
                         <Typography variant="subtitle2" gutterBottom>
                             Events by Severity
                         </Typography>
@@ -447,7 +443,7 @@ export const SecurityDashboard: React.FC = () => {
                                     <Chip
                                         label={`${severity}: ${count}`}
                                         size="small"
-                                        sx={{
+                                        style={{
                                             backgroundColor:
                                                 getSeverityColor(severity) +
                                                 '20',
@@ -458,7 +454,7 @@ export const SecurityDashboard: React.FC = () => {
                             ))}
                         </Grid>
                     </Box>
-                    <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+                    <TableContainer component={Paper} style={{ maxHeight: 400 }}>
                         <Table stickyHeader size="small">
                             <TableHead>
                                 <TableRow>
@@ -489,7 +485,7 @@ export const SecurityDashboard: React.FC = () => {
                                             <Chip
                                                 label={event.severity}
                                                 size="small"
-                                                sx={{
+                                                style={{
                                                     backgroundColor:
                                                         getSeverityColor(
                                                             event.severity
@@ -508,7 +504,7 @@ export const SecurityDashboard: React.FC = () => {
                                         <TableCell>
                                             <Typography
                                                 variant="body2"
-                                                sx={{ maxWidth: 200 }}
+                                                style={{ maxWidth: 200 }}
                                             >
                                                 {event.message}
                                             </Typography>
@@ -541,19 +537,19 @@ export const SecurityDashboard: React.FC = () => {
                     setExpandedSection(isExpanded ? 'recommendations' : false)
                 }
             >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <BugIcon sx={{ mr: 1 }} />
+                <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
+                    <BugAntIcon className="w-5 h-5 mr-2" />
                     <Typography variant="h6">
                         Security Recommendations
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <List>
-                        {metrics.httpsStatus.recommendations.map(
+                        {metrics.httpsStatus.recommendations?.map(
                             (rec, index) => (
                                 <ListItem key={index}>
                                     <ListItemIcon>
-                                        <WarningIcon color="warning" />
+                                        <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600" />
                                     </ListItemIcon>
                                     <ListItemText primary={rec} />
                                 </ListItem>

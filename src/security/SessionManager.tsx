@@ -27,21 +27,21 @@ import {
     ListItemText,
     ListItemIcon,
     ListItemSecondaryAction,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Computer as DesktopIcon,
-    Smartphone as MobileIcon,
-    Tablet as TabletIcon,
-    Block as BlockIcon,
-    Delete as DeleteIcon,
-    Refresh as RefreshIcon,
-    Schedule as TimeIcon,
-    LocationOn as LocationIcon,
-    Security as SecurityIcon,
-    Warning as WarningIcon,
-    CheckCircle as ActiveIcon,
-    Error as InactiveIcon,
-} from '@mui/icons-material';
+    ComputerDesktopIcon,
+    DevicePhoneMobileIcon,
+    DeviceTabletIcon,
+    NoSymbolIcon,
+    TrashIcon,
+    ArrowPathIcon,
+    ClockIcon,
+    MapPinIcon,
+    ShieldCheckIcon,
+    ExclamationTriangleIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity, useNotify } from 'react-admin';
 
 import { User } from '../types';
@@ -262,13 +262,13 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     const getDeviceIcon = (deviceType: string) => {
         switch (deviceType) {
             case 'mobile':
-                return <MobileIcon />;
+                return <DevicePhoneMobileIcon className="w-5 h-5" />;
             case 'tablet':
-                return <TabletIcon />;
+                return <DeviceTabletIcon className="w-5 h-5" />;
             case 'desktop':
-                return <DesktopIcon />;
+                return <ComputerDesktopIcon className="w-5 h-5" />;
             default:
-                return <DesktopIcon />;
+                return <ComputerDesktopIcon className="w-5 h-5" />;
         }
     };
 
@@ -277,7 +277,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
             return {
                 label: 'Revoked',
                 color: 'error' as const,
-                icon: <InactiveIcon />,
+                icon: <XCircleIcon className="w-5 h-5" />,
             };
         }
 
@@ -285,7 +285,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
             return {
                 label: 'Expired',
                 color: 'error' as const,
-                icon: <InactiveIcon />,
+                icon: <XCircleIcon className="w-5 h-5" />,
             };
         }
 
@@ -293,14 +293,14 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
             return {
                 label: 'Active',
                 color: 'success' as const,
-                icon: <ActiveIcon />,
+                icon: <CheckCircleIcon className="w-5 h-5" />,
             };
         }
 
         return {
             label: 'Inactive',
             color: 'warning' as const,
-            icon: <WarningIcon />,
+            icon: <ExclamationTriangleIcon className="w-5 h-5" />,
         };
     };
 
@@ -328,17 +328,12 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     return (
         <Box>
             {/* Header */}
-            <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={3}
-            >
-                <Box display="flex" alignItems="center" gap={2}>
-                    <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
+            <Box className="flex justify-between items-center mb-3">
+                <Box className="flex items-center gap-2">
+                    <ShieldCheckIcon className="w-8 h-8 text-blue-600" />
                     <Box>
                         <Typography variant="h5">Session Management</Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-600">
                             {canViewAllSessions
                                 ? 'Manage all user sessions'
                                 : 'Manage your active sessions'}
@@ -346,13 +341,13 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                     </Box>
                 </Box>
 
-                <Box display="flex" gap={1}>
+                <Box className="flex gap-1">
                     <Button
                         variant="outlined"
-                        startIcon={<RefreshIcon />}
+                        startIcon={<ArrowPathIcon className="w-4 h-4" />}
                         onClick={loadSessions}
                         disabled={loading}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-[44px]"
                     >
                         Refresh
                     </Button>
@@ -360,9 +355,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                         <Button
                             variant="contained"
                             color="error"
-                            startIcon={<BlockIcon />}
+                            startIcon={<NoSymbolIcon className="w-4 h-4" />}
                             onClick={() => setRevokeAllDialogOpen(true)}
-                            sx={{ minHeight: 44 }}
+                            className="min-h-[44px]"
                         >
                             Revoke All Others
                         </Button>
@@ -371,14 +366,14 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
             </Box>
 
             {/* Session Summary */}
-            <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid container spacing={2} className="mb-3">
                 <Grid item xs={12} sm={4}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Typography variant="h4" color="success.main">
+                        <CardContent className="text-center">
+                            <Typography variant="h4" className="text-green-600">
                                 {activeSessions.length}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Active Sessions
                             </Typography>
                         </CardContent>
@@ -386,11 +381,11 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Typography variant="h4" color="warning.main">
+                        <CardContent className="text-center">
+                            <Typography variant="h4" className="text-yellow-600">
                                 {inactiveSessions.length}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Inactive Sessions
                             </Typography>
                         </CardContent>
@@ -398,11 +393,11 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <Typography variant="h4" color="primary.main">
+                        <CardContent className="text-center">
+                            <Typography variant="h4" className="text-blue-600">
                                 {sessions.length}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Total Sessions
                             </Typography>
                         </CardContent>
@@ -412,16 +407,14 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
             {/* Active Sessions */}
             {activeSessions.length > 0 && (
-                <Card sx={{ mb: 3 }}>
+                <Card className="mb-3">
                     <CardContent>
                         <Typography
                             variant="h6"
                             gutterBottom
-                            color="success.main"
+                            className="text-green-600 flex items-center"
                         >
-                            <ActiveIcon
-                                sx={{ mr: 1, verticalAlign: 'middle' }}
-                            />
+                            <CheckCircleIcon className="w-5 h-5 mr-2" />
                             Active Sessions ({activeSessions.length})
                         </Typography>
 
@@ -438,11 +431,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary={
-                                                    <Box
-                                                        display="flex"
-                                                        alignItems="center"
-                                                        gap={1}
-                                                    >
+                                                    <Box className="flex items-center gap-1">
                                                         <Typography variant="body1">
                                                             {session.browser} on{' '}
                                                             {session.os}
@@ -466,7 +455,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                         </Typography>
                                                         <Typography
                                                             variant="caption"
-                                                            color="text.secondary"
+                                                            className="text-gray-600"
                                                         >
                                                             Last active:{' '}
                                                             {formatLastActivity(
@@ -489,12 +478,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                                 true
                                                             );
                                                         }}
-                                                        sx={{
-                                                            minHeight: 44,
-                                                            minWidth: 44,
-                                                        }}
+                                                        className="min-h-[44px] min-w-[44px]"
                                                     >
-                                                        <BlockIcon />
+                                                        <NoSymbolIcon className="w-5 h-5" />
                                                     </IconButton>
                                                 )}
                                             </ListItemSecondaryAction>
@@ -522,11 +508,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                             return (
                                                 <TableRow key={session.id}>
                                                     <TableCell>
-                                                        <Box
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            gap={1}
-                                                        >
+                                                        <Box className="flex items-center gap-1">
                                                             {getDeviceIcon(
                                                                 session.deviceType
                                                             )}
@@ -549,15 +531,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                         </Box>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Box
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            gap={0.5}
-                                                        >
-                                                            <LocationIcon
-                                                                fontSize="small"
-                                                                color="action"
-                                                            />
+                                                        <Box className="flex items-center gap-1">
+                                                            <MapPinIcon className="w-4 h-4 text-gray-500" />
                                                             <Typography variant="body2">
                                                                 {session.location ||
                                                                     'Unknown'}
@@ -567,10 +542,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                     <TableCell>
                                                         <Typography
                                                             variant="body2"
-                                                            sx={{
-                                                                fontFamily:
-                                                                    'monospace',
-                                                            }}
+                                                            className="font-mono"
                                                         >
                                                             {session.ipAddress}
                                                         </Typography>
@@ -604,7 +576,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                                         );
                                                                     }}
                                                                 >
-                                                                    <BlockIcon />
+                                                                    <NoSymbolIcon className="w-5 h-5" />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         )}
@@ -627,11 +599,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                         <Typography
                             variant="h6"
                             gutterBottom
-                            color="text.secondary"
+                            className="text-gray-600 flex items-center"
                         >
-                            <InactiveIcon
-                                sx={{ mr: 1, verticalAlign: 'middle' }}
-                            />
+                            <XCircleIcon className="w-5 h-5 mr-2" />
                             Inactive Sessions ({inactiveSessions.length})
                         </Typography>
 
@@ -653,11 +623,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                         return (
                                             <TableRow key={session.id}>
                                                 <TableCell>
-                                                    <Box
-                                                        display="flex"
-                                                        alignItems="center"
-                                                        gap={1}
-                                                    >
+                                                    <Box className="flex items-center gap-1">
                                                         {getDeviceIcon(
                                                             session.deviceType
                                                         )}
@@ -670,10 +636,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                 <TableCell>
                                                     <Typography
                                                         variant="body2"
-                                                        sx={{
-                                                            fontFamily:
-                                                                'monospace',
-                                                        }}
+                                                        className="font-mono"
                                                     >
                                                         {session.ipAddress}
                                                     </Typography>
@@ -696,7 +659,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                                 <TableCell>
                                                     <Typography
                                                         variant="caption"
-                                                        color="text.secondary"
+                                                        className="text-gray-600"
                                                     >
                                                         {session.revokedReason?.replace(
                                                             /_/g,
@@ -726,8 +689,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 fullWidth
             >
                 <DialogTitle>
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <WarningIcon color="warning" />
+                    <Box className="flex items-center gap-2">
+                        <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600" />
                         Revoke Session
                     </Box>
                 </DialogTitle>
@@ -737,15 +700,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             <Typography paragraph>
                                 Are you sure you want to revoke this session?
                             </Typography>
-                            <Box
-                                sx={{
-                                    bgcolor: 'background.paper',
-                                    p: 2,
-                                    borderRadius: 1,
-                                    border: 1,
-                                    borderColor: 'divider',
-                                }}
-                            >
+                            <Box className="bg-gray-50 p-2 rounded border border-gray-200">
                                 <Typography variant="body2" gutterBottom>
                                     <strong>Device:</strong>{' '}
                                     {selectedSession.browser} on{' '}
@@ -766,7 +721,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                     )}
                                 </Typography>
                             </Box>
-                            <Alert severity="warning" sx={{ mt: 2 }}>
+                            <Alert severity="warning" className="mt-2">
                                 This action will immediately log out the user
                                 from this device. This cannot be undone.
                             </Alert>
@@ -798,8 +753,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                 fullWidth
             >
                 <DialogTitle>
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <WarningIcon color="error" />
+                    <Box className="flex items-center gap-2">
+                        <ExclamationTriangleIcon className="w-5 h-5 text-red-600" />
                         Revoke All Other Sessions
                     </Box>
                 </DialogTitle>

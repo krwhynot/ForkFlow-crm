@@ -57,6 +57,7 @@ export {
     TableHeader,
     TableRow,
 } from './Table';
+export { TableContainer } from './TableContainer';
 export { Tooltip } from './Tooltip';
 export { Typography } from './Typography';
 
@@ -69,6 +70,9 @@ export { Switch, FormControlLabel } from './Switch';
 export { Tabs, TabPanel, TabItem, TabContext, useTabContext } from './Tabs';
 export { Autocomplete, AutocompleteInput } from './Autocomplete';
 export { Snackbar, Toast, useSnackbar } from './Snackbar';
+export { Accordion, AccordionSummary, AccordionDetails, AccordionActions } from './Accordion';
+export { Breadcrumbs, Breadcrumb } from './Breadcrumbs';
+export { Link } from './Link';
 
 // Utility exports
 export type { default as CircularProgressProps } from './CircularProgress';
