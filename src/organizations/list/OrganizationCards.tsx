@@ -3,7 +3,7 @@ import {
     Grid,
     Card,
     CardContent,
-    CardActions,
+    CardFooter,
     Avatar,
     Typography,
     Chip,
@@ -14,13 +14,13 @@ import {
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    Edit as EditIcon,
-    Visibility as ViewIcon,
-    Business as BusinessIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    PencilIcon as EditIcon,
+    EyeIcon as ViewIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    PhoneIcon,
+    EnvelopeIcon as EmailIcon,
+    MapPinIcon as LocationIcon,
+} from '@heroicons/react/24/outline';
 import { Organization, OrganizationListViewMode } from '../../types';
 
 interface OrganizationCardsProps {
@@ -109,8 +109,9 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                     key={org.id}
                 >
                     <Card
-                        className={isMobile ? 'organization-card-mobile' : 'organization-card-desktop'}
-                        className="h-full flex flex-col transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg cursor-pointer min-h-70"
+                        className={`h-full flex flex-col transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg cursor-pointer min-h-[280px] ${
+                            isMobile ? 'organization-card-mobile' : 'organization-card-desktop'
+                        }`}
                     >
                         <CardContent className="flex-grow pb-2">
                             {/* Header with avatar and basic info */}
@@ -125,12 +126,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                     <Typography 
                                         variant="h6" 
                                         component="h3"
-                                        className="font-semibold text-lg leading-tight mb-1 overflow-hidden text-ellipsis"
-                                            textOverflow: 'ellipsis',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical',
-                                        }}
+                                        className="font-semibold text-lg leading-tight mb-1 overflow-hidden text-ellipsis line-clamp-2"
                                     >
                                         {org.name}
                                     </Typography>
@@ -155,11 +151,10 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                 )}
                                 {org.email && (
                                     <Box className="flex items-center gap-1 mb-1">
-                                        <EmailIcon className="text-base text-gray-600" />
+                                        <EmailIcon className="w-4 h-4 text-gray-600" />
                                         <Typography 
                                             variant="body2" 
-                                            color="text.secondary"
-                                            className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-600"
+                                            className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-500"
                                         >
                                             {org.email}
                                         </Typography>
@@ -167,16 +162,16 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                 )}
                                 {org.phone_number && (
                                     <Box className="flex items-center gap-1 mb-1">
-                                        <PhoneIcon className="text-base text-gray-600" />
-                                        <Typography variant="body2" color="text.secondary">
+                                        <PhoneIcon className="w-4 h-4 text-gray-600" />
+                                        <Typography variant="body2" className="text-gray-500">
                                             {org.phone_number}
                                         </Typography>
                                     </Box>
                                 )}
                                 {(org.city || org.stateAbbr) && (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                        <LocationIcon className="text-base text-gray-600" />
-                                        <Typography variant="body2" color="text.secondary">
+                                    <Box className="flex items-center gap-1">
+                                        <LocationIcon className="w-4 h-4 text-gray-600" />
+                                        <Typography variant="body2" className="text-gray-500">
                                             {[org.city, org.stateAbbr].filter(Boolean).join(', ')}
                                         </Typography>
                                     </Box>
@@ -184,7 +179,7 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                             </Box>
 
                             {/* Metrics and status */}
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                            <Box className="flex flex-wrap gap-2 mb-4">
                                 {org.nb_contacts !== undefined && (
                                     <Chip
                                         label={`${org.nb_contacts} contacts`}
@@ -234,10 +229,10 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                             </Box>
                         </CardContent>
 
-                        <CardActions className="px-4 pb-4 pt-0 justify-between">
+                        <CardFooter className="px-4 pb-4 pt-0 justify-between">
                             <Button
                                 size="small"
-                                startIcon={<ViewIcon />}
+                                startIcon={<ViewIcon className="w-4 h-4" />}
                                 className="min-h-9 text-sm"
                             >
                                 View
@@ -247,9 +242,9 @@ export const OrganizationCards: React.FC<OrganizationCardsProps> = ({
                                 aria-label={`Edit ${org.name}`}
                                 className="min-h-9 min-w-9"
                             >
-                                <EditIcon fontSize="small" />
+                                <EditIcon className="w-4 h-4" />
                             </IconButton>
-                        </CardActions>
+                        </CardFooter>
                     </Card>
                 </Grid>
             ))}

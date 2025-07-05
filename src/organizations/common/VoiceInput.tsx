@@ -10,20 +10,16 @@ import {
     Chip,
     Alert,
     Paper,
-    useTheme,
-    useMediaQuery,
-    Zoom,
-    Fade,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Mic as MicIcon,
-    MicOff as MicOffIcon,
-    Stop as StopIcon,
-    Replay as ReplayIcon,
-    Check as CheckIcon,
-    Close as CloseIcon,
-    VolumeUp as VolumeIcon,
-} from '@mui/icons-material';
+    MicrophoneIcon as MicIcon,
+    MicrophoneIcon as MicOffIcon,
+    StopIcon,
+    ArrowPathIcon as ReplayIcon,
+    CheckIcon,
+    XMarkIcon as CloseIcon,
+    SpeakerWaveIcon as VolumeIcon,
+} from '@heroicons/react/24/outline';
 import { useNotify } from 'react-admin';
 
 interface VoiceInputProps {
@@ -82,9 +78,18 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     variant = 'icon',
     showTranscript = true,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const notify = useNotify();
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check if mobile screen
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // State management
     const [isListening, setIsListening] = useState(false);
@@ -352,14 +357,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
             onClick: isListening ? stopListening : startListening,
             disabled: disabled || !isSupported,
             size: buttonSize,
-            sx: {
-                minWidth: 44,
-                minHeight: 44,
-                position: 'relative',
-                '&:active': {
-                    transform: 'scale(0.95)',
-                },
-            },
+            className: "min-w-11 min-h-11 relative active:scale-95",
         };
 
         const icon = isListening ? <MicOffIcon /> : <MicIcon />;
@@ -374,7 +372,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                         disabled={buttonProps.disabled}
                         color={isListening ? 'secondary' : 'primary'}
                         variant={isListening ? 'filled' : 'outlined'}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-11"
                     />
                 );
 
@@ -404,26 +402,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                     >
                         {icon}
                         {isListening && (
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    inset: -4,
-                                    borderRadius: '50%',
-                                    border: '2px solid',
-                                    borderColor: 'secondary.main',
-                                    animation: 'pulse 1.5s infinite',
-                                    '@keyframes pulse': {
-                                        '0%': {
-                                            transform: 'scale(1)',
-                                            opacity: 1,
-                                        },
-                                        '100%': {
-                                            transform: 'scale(1.2)',
-                                            opacity: 0,
-                                        },
-                                    },
-                                }}
-                            />
+                            <Box className="absolute -inset-1 rounded-full border-2 border-blue-500 animate-ping" />
                         )}
                     </IconButton>
                 );
@@ -443,7 +422,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
             <IconButton
                 disabled
                 size={buttonSize}
-                sx={{ minWidth: 44, minHeight: 44 }}
+                className="min-w-11 min-h-11"
             >
                 <MicOffIcon />
             </IconButton>
@@ -461,63 +440,41 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                 maxWidth="sm"
                 fullWidth
                 PaperProps={{
-                    sx: {
-                        borderRadius: 3,
-                        minHeight: 300,
-                    },
+                    className: "rounded-3xl min-h-[300px]",
                 }}
             >
-                <DialogContent sx={{ p: 3 }}>
+                <DialogContent className="p-6">
                     {/* Header */}
-                    <Box sx={{ textAlign: 'center', mb: 3 }}>
-                        <Box
-                            sx={{
-                                position: 'relative',
-                                display: 'inline-block',
-                                mb: 2,
-                            }}
-                        >
+                    <Box className="text-center mb-6">
+                        <Box className="relative inline-block mb-4">
                             <IconButton
                                 size="large"
                                 color={isListening ? 'secondary' : 'primary'}
                                 onClick={
                                     isListening ? stopListening : startListening
                                 }
-                                sx={{
-                                    width: 80,
-                                    height: 80,
-                                    backgroundColor: isListening
-                                        ? 'secondary.light'
-                                        : 'primary.light',
-                                    '&:hover': {
-                                        backgroundColor: isListening
-                                            ? 'secondary.main'
-                                            : 'primary.main',
-                                    },
-                                }}
+                                className={`
+                                    w-20 h-20 
+                                    ${isListening 
+                                        ? 'bg-blue-200 hover:bg-blue-400' 
+                                        : 'bg-blue-100 hover:bg-blue-300'
+                                    }
+                                `}
                             >
                                 {isListening ? (
-                                    <StopIcon sx={{ fontSize: 32 }} />
+                                    <StopIcon className="w-8 h-8" />
                                 ) : (
-                                    <MicIcon sx={{ fontSize: 32 }} />
+                                    <MicIcon className="w-8 h-8" />
                                 )}
                             </IconButton>
 
                             {/* Sound level indicator */}
                             {isListening && (
                                 <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        inset: -8,
-                                        borderRadius: '50%',
-                                        border: '3px solid',
-                                        borderColor: 'secondary.main',
-                                        opacity: Math.max(
-                                            0.3,
-                                            soundLevel / 100
-                                        ),
+                                    className="absolute -inset-2 rounded-full border-3 border-blue-500 transition-all duration-100 ease-out"
+                                    style={{
+                                        opacity: Math.max(0.3, soundLevel / 100),
                                         transform: `scale(${1 + soundLevel / 200})`,
-                                        transition: 'all 0.1s ease-out',
                                     }}
                                 />
                             )}
@@ -539,13 +496,13 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                         <LinearProgress
                             variant="determinate"
                             value={(duration / maxDuration) * 100}
-                            sx={{ mb: 3, borderRadius: 1, height: 6 }}
+                            className="mb-6 rounded h-1.5"
                         />
                     )}
 
                     {/* Error display */}
                     {error && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
+                        <Alert severity="error" className="mb-4">
                             {error}
                         </Alert>
                     )}
@@ -553,32 +510,19 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
                     {/* Transcript display */}
                     <Paper
                         elevation={0}
-                        sx={{
-                            p: 2,
-                            minHeight: 120,
-                            backgroundColor: 'grey.50',
-                            border: '1px solid',
-                            borderColor: 'divider',
-                            borderRadius: 2,
-                            mb: 3,
-                        }}
+                        className="p-4 min-h-[120px] bg-gray-50 border border-gray-200 rounded-lg mb-6"
                     >
                         {transcript || interimTranscript ? (
                             <Typography variant="body1">
                                 {transcript}
-                                <span
-                                    style={{
-                                        color: theme.palette.text.secondary,
-                                    }}
-                                >
+                                <span className="text-gray-500">
                                     {interimTranscript}
                                 </span>
                             </Typography>
                         ) : (
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
-                                sx={{ fontStyle: 'italic' }}
+                                className="text-gray-500 italic"
                             >
                                 {placeholder}
                             </Typography>
@@ -587,29 +531,23 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
 
                     {/* Confidence indicator */}
                     {confidence > 0 && (
-                        <Box sx={{ mb: 2 }}>
+                        <Box className="mb-4">
                             <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 Confidence: {Math.round(confidence * 100)}%
                             </Typography>
                             <LinearProgress
                                 variant="determinate"
                                 value={confidence * 100}
-                                sx={{ mt: 0.5, height: 4, borderRadius: 2 }}
+                                className="mt-2 h-1 rounded"
                             />
                         </Box>
                     )}
 
                     {/* Action buttons */}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 2,
-                            justifyContent: 'center',
-                        }}
-                    >
+                    <Box className="flex gap-4 justify-center">
                         <Button
                             startIcon={<CloseIcon />}
                             onClick={handleDialogClose}

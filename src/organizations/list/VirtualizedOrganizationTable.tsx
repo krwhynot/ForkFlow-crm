@@ -9,18 +9,19 @@ import {
     TableHead,
     TableRow,
     TableCell,
-    TableSortLabel,
     Typography,
     LinearProgress,
     Chip,
     Avatar,
     IconButton,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Edit as EditIcon,
-    Visibility as ViewIcon,
-    Business as BusinessIcon,
-} from '@mui/icons-material';
+    PencilIcon as EditIcon,
+    EyeIcon as ViewIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    ChevronUpIcon,
+    ChevronDownIcon,
+} from '@heroicons/react/24/outline';
 import { Organization, OrganizationListViewMode } from '../../types';
 import { useInfiniteOrganizations } from '../hooks/useInfiniteOrganizations';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
@@ -108,79 +109,86 @@ export const VirtualizedOrganizationTable: React.FC<
         }
     }, []);
 
+    // Custom sort label component
+    const SortLabel = ({ field, children, active, direction, onClick }: { 
+        field: string; 
+        children: React.ReactNode; 
+        active: boolean; 
+        direction: 'asc' | 'desc'; 
+        onClick: () => void 
+    }) => (
+        <button
+            onClick={onClick}
+            className="flex items-center gap-1 text-left hover:text-blue-600 transition-colors"
+        >
+            {children}
+            {active && (
+                direction === 'asc' ? (
+                    <ChevronUpIcon className="w-4 h-4" />
+                ) : (
+                    <ChevronDownIcon className="w-4 h-4" />
+                )
+            )}
+        </button>
+    );
+
     // Table header component
     const TableHeader = useMemo(
         () => (
             <TableHead>
                 <TableRow>
-                    <TableCell sx={{ minWidth: 200 }}>
-                        <TableSortLabel
+                    <TableCell className="min-w-[200px]">
+                        <SortLabel
+                            field="name"
                             active={viewMode.sortField === 'name'}
-                            direction={
-                                viewMode.sortOrder.toLowerCase() as
-                                    | 'asc'
-                                    | 'desc'
-                            }
+                            direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                             onClick={() => handleSort('name')}
                         >
                             Organization
-                        </TableSortLabel>
+                        </SortLabel>
                     </TableCell>
                     {!isMobile && (
                         <>
-                            <TableCell sx={{ minWidth: 120 }}>
-                                <TableSortLabel
-                                    active={
-                                        viewMode.sortField === 'business_type'
-                                    }
-                                    direction={
-                                        viewMode.sortOrder.toLowerCase() as
-                                            | 'asc'
-                                            | 'desc'
-                                    }
+                            <TableCell className="min-w-[120px]">
+                                <SortLabel
+                                    field="business_type"
+                                    active={viewMode.sortField === 'business_type'}
+                                    direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                     onClick={() => handleSort('business_type')}
                                 >
                                     Type
-                                </TableSortLabel>
+                                </SortLabel>
                             </TableCell>
-                            <TableCell sx={{ minWidth: 150 }}>
+                            <TableCell className="min-w-[150px]">
                                 Contact
                             </TableCell>
-                            <TableCell sx={{ minWidth: 100 }}>
-                                <TableSortLabel
+                            <TableCell className="min-w-[100px]">
+                                <SortLabel
+                                    field="revenue"
                                     active={viewMode.sortField === 'revenue'}
-                                    direction={
-                                        viewMode.sortOrder.toLowerCase() as
-                                            | 'asc'
-                                            | 'desc'
-                                    }
+                                    direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                     onClick={() => handleSort('revenue')}
                                 >
                                     Revenue
-                                </TableSortLabel>
+                                </SortLabel>
                             </TableCell>
-                            <TableCell sx={{ minWidth: 80 }}>
-                                <TableSortLabel
-                                    active={
-                                        viewMode.sortField === 'nb_contacts'
-                                    }
-                                    direction={
-                                        viewMode.sortOrder.toLowerCase() as
-                                            | 'asc'
-                                            | 'desc'
-                                    }
+                            <TableCell className="min-w-[80px]">
+                                <SortLabel
+                                    field="nb_contacts"
+                                    active={viewMode.sortField === 'nb_contacts'}
+                                    direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                     onClick={() => handleSort('nb_contacts')}
                                 >
                                     Contacts
-                                </TableSortLabel>
+                                </SortLabel>
                             </TableCell>
-                            <TableCell sx={{ minWidth: 80 }}>
+                            <TableCell className="min-w-[80px]">
                                 Priority
                             </TableCell>
-                            <TableCell sx={{ minWidth: 80 }}>Status</TableCell>
+                            <TableCell className="min-w-[80px]">Status</TableCell>
                         </>
                     )}
-                    <TableCell align="right" sx={{ minWidth: 100 }}>
+                    <TableCell align="right" className="min-w-[100px]">
                         Actions
                     </TableCell>
                 </TableRow>
@@ -199,16 +207,10 @@ export const VirtualizedOrganizationTable: React.FC<
                 return (
                     <div ref={ref} style={style}>
                         <Box
-                            sx={{
-                                height: itemHeight,
-                                display: 'flex',
-                                alignItems: 'center',
-                                px: 2,
-                                borderBottom: '1px solid',
-                                borderColor: 'divider',
-                            }}
+                            className="flex items-center px-4 border-b border-gray-200"
+                            style={{ height: itemHeight }}
                         >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-500">
                                 Loading...
                             </Typography>
                         </Box>
@@ -219,50 +221,31 @@ export const VirtualizedOrganizationTable: React.FC<
             return (
                 <div ref={ref} style={style}>
                     <Box
-                        sx={{
-                            height: itemHeight,
-                            display: 'flex',
-                            alignItems: 'center',
-                            px: 2,
-                            borderBottom: '1px solid',
-                            borderColor: 'divider',
-                            '&:hover': {
-                                backgroundColor: 'action.hover',
-                            },
-                            cursor: 'pointer',
-                        }}
+                        className="flex items-center px-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                        style={{ height: itemHeight }}
                     >
                         {/* Organization Info */}
                         <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                minWidth: 200,
-                                flex: isMobile ? 1 : 'none',
-                            }}
+                            className={`flex items-center gap-4 min-w-[200px] ${
+                                isMobile ? 'flex-1' : ''
+                            }`}
                         >
                             <Avatar
                                 src={org.logo}
-                                sx={{ width: 40, height: 40 }}
+                                className="w-10 h-10"
                             >
-                                <BusinessIcon />
+                                <BusinessIcon className="w-5 h-5" />
                             </Avatar>
-                            <Box sx={{ minWidth: 0 }}>
+                            <Box className="min-w-0">
                                 <Typography
                                     variant="subtitle2"
-                                    fontWeight="medium"
-                                    sx={{
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
-                                    }}
+                                    className="font-medium overflow-hidden text-ellipsis whitespace-nowrap"
                                 >
                                     {org.name}
                                 </Typography>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-500"
                                 >
                                     {org.city &&
                                         org.stateAbbr &&
@@ -275,7 +258,7 @@ export const VirtualizedOrganizationTable: React.FC<
                         {!isMobile && (
                             <>
                                 {/* Business Type */}
-                                <Box sx={{ minWidth: 120 }}>
+                                <Box className="min-w-[120px]">
                                     <Chip
                                         label={org.business_type || 'Other'}
                                         size="small"
@@ -289,40 +272,40 @@ export const VirtualizedOrganizationTable: React.FC<
                                 </Box>
 
                                 {/* Contact */}
-                                <Box sx={{ minWidth: 150 }}>
+                                <Box className="min-w-[150px]">
                                     <Typography
                                         variant="body2"
-                                        sx={{ mb: 0.5 }}
+                                        className="mb-1"
                                     >
                                         {org.contact_person || 'N/A'}
                                     </Typography>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         {org.email}
                                     </Typography>
                                 </Box>
 
                                 {/* Revenue */}
-                                <Box sx={{ minWidth: 100 }}>
+                                <Box className="min-w-[100px]">
                                     <Typography
                                         variant="body2"
-                                        fontWeight="medium"
+                                        className="font-medium"
                                     >
                                         {formatRevenue(org.revenue)}
                                     </Typography>
                                 </Box>
 
                                 {/* Contacts Count */}
-                                <Box sx={{ minWidth: 80 }}>
+                                <Box className="min-w-[80px]">
                                     <Typography variant="body2">
                                         {org.nb_contacts || 0}
                                     </Typography>
                                 </Box>
 
                                 {/* Priority */}
-                                <Box sx={{ minWidth: 80 }}>
+                                <Box className="min-w-[80px]">
                                     {org.priority && (
                                         <Chip
                                             label={org.priority}
@@ -338,7 +321,7 @@ export const VirtualizedOrganizationTable: React.FC<
                                 </Box>
 
                                 {/* Status */}
-                                <Box sx={{ minWidth: 80 }}>
+                                <Box className="min-w-[80px]">
                                     {org.status && (
                                         <Chip
                                             label={org.status}
@@ -352,28 +335,20 @@ export const VirtualizedOrganizationTable: React.FC<
                         )}
 
                         {/* Actions */}
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                gap: 0.5,
-                                ml: 'auto',
-                                minWidth: 100,
-                                justifyContent: 'flex-end',
-                            }}
-                        >
+                        <Box className="flex gap-1 ml-auto min-w-[100px] justify-end">
                             <IconButton
                                 size="small"
                                 aria-label={`View ${org.name}`}
-                                sx={{ minHeight: '32px', minWidth: '32px' }}
+                                className="min-h-8 min-w-8"
                             >
-                                <ViewIcon fontSize="small" />
+                                <ViewIcon className="w-4 h-4" />
                             </IconButton>
                             <IconButton
                                 size="small"
                                 aria-label={`Edit ${org.name}`}
-                                sx={{ minHeight: '32px', minWidth: '32px' }}
+                                className="min-h-8 min-w-8"
                             >
-                                <EditIcon fontSize="small" />
+                                <EditIcon className="w-4 h-4" />
                             </IconButton>
                         </Box>
                     </Box>
@@ -387,17 +362,17 @@ export const VirtualizedOrganizationTable: React.FC<
     // Loading and empty states
     if (isPending && organizations.length === 0) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Box className="p-6 text-center">
                 <Typography>Loading organizations...</Typography>
-                <LinearProgress sx={{ mt: 2 }} />
+                <LinearProgress className="mt-4" />
             </Box>
         );
     }
 
     if (organizations.length === 0) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="h6" color="text.secondary">
+            <Box className="p-6 text-center">
+                <Typography variant="h6" className="text-gray-500">
                     No organizations found
                 </Typography>
             </Box>
@@ -409,28 +384,21 @@ export const VirtualizedOrganizationTable: React.FC<
         : organizations.length;
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box className="w-full">
             {/* Progress indicator */}
-            <Box
-                sx={{
-                    mb: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                }}
-            >
-                <Typography variant="body2" color="text.secondary">
+            <Box className="mb-2 flex items-center gap-4">
+                <Typography variant="body2" className="text-gray-500">
                     {metrics.loadedItems} of {metrics.totalItems} organizations
                 </Typography>
-                <Box sx={{ flexGrow: 1, maxWidth: 200 }}>
+                <Box className="flex-grow max-w-[200px]">
                     <LinearProgress
                         variant="determinate"
                         value={metrics.loadingProgress}
-                        sx={{ height: 4, borderRadius: 2 }}
+                        className="h-1 rounded"
                     />
                 </Box>
                 {isFetchingNextPage && (
-                    <Typography variant="caption" color="primary">
+                    <Typography variant="caption" className="text-blue-600">
                         Loading more...
                     </Typography>
                 )}

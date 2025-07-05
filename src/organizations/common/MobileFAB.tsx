@@ -1,26 +1,19 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
     Fab,
-    SpeedDial,
-    SpeedDialAction,
-    SpeedDialIcon,
-    useTheme,
-    useMediaQuery,
-    Zoom,
     Box,
     Tooltip,
     IconButton,
-    Backdrop,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Add as AddIcon,
-    Business as BusinessIcon,
-    QrCodeScanner as QrIcon,
-    CameraAlt as CameraIcon,
-    Mic as MicIcon,
-    Close as CloseIcon,
-    Edit as EditIcon,
-} from '@mui/icons-material';
+    PlusIcon as AddIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    QrCodeIcon as QrIcon,
+    CameraIcon,
+    MicrophoneIcon as MicIcon,
+    XMarkIcon as CloseIcon,
+    PencilIcon as EditIcon,
+} from '@heroicons/react/24/outline';
 import { useNotify, useRedirect } from 'react-admin';
 
 interface MobileFABProps {
@@ -52,35 +45,36 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
     hidden = false,
     position = 'bottom-right',
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [open, setOpen] = useState(false);
     const [isPressed, setIsPressed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const longPressTimer = useRef<NodeJS.Timeout | null>(null);
     const notify = useNotify();
 
-    // Position styles based on prop
-    const getPositionStyles = useCallback(() => {
-        const baseStyles = {
-            position: 'fixed' as const,
-            zIndex: theme.zIndex.speedDial,
+    // Check if mobile screen
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
         };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
+    // Position styles based on prop
+    const getPositionClasses = useCallback(() => {
+        const baseClasses = 'fixed z-50';
+        
         switch (position) {
             case 'bottom-left':
-                return { ...baseStyles, bottom: 16, left: 16 };
+                return `${baseClasses} bottom-4 left-4`;
             case 'bottom-center':
-                return {
-                    ...baseStyles,
-                    bottom: 16,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                };
+                return `${baseClasses} bottom-4 left-1/2 -translate-x-1/2`;
             case 'bottom-right':
             default:
-                return { ...baseStyles, bottom: 16, right: 16 };
+                return `${baseClasses} bottom-4 right-4`;
         }
-    }, [position, theme.zIndex.speedDial]);
+    }, [position]);
 
     // Haptic feedback for supported devices
     const triggerHapticFeedback = useCallback(
@@ -216,7 +210,7 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
     // Simple FAB for single action
     if (actions.length <= 1) {
         return (
-            <Zoom in={!hidden} timeout={300}>
+            <div className={`${getPositionClasses()} ${hidden ? 'hidden' : ''}`}>
                 <Fab
                     color="primary"
                     aria-label="Create organization"
@@ -226,84 +220,78 @@ export const MobileFAB: React.FC<MobileFABProps> = ({
                     onMouseUp={handleMouseUp}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
-                    sx={{
-                        ...getPositionStyles(),
-                        transform: isPressed ? 'scale(0.95)' : 'scale(1)',
-                        transition: 'transform 0.1s ease-in-out',
-                        width: 64,
-                        height: 64,
-                        '&:active': {
-                            transform: 'scale(0.95)',
-                        },
-                    }}
+                    className={`
+                        w-16 h-16 transition-transform duration-100 ease-in-out
+                        ${isPressed ? 'scale-95' : 'scale-100'}
+                        active:scale-95
+                    `}
                 >
-                    <AddIcon sx={{ fontSize: 28 }} />
+                    <AddIcon className="w-7 h-7" />
                 </Fab>
-            </Zoom>
+            </div>
         );
     }
 
-    // Speed dial for multiple actions
+    // Custom speed dial implementation for multiple actions
     return (
         <>
-            <SpeedDial
-                ariaLabel="Create options"
-                sx={getPositionStyles()}
-                icon={<SpeedDialIcon />}
-                onClose={handleClose}
-                onOpen={handleOpen}
-                open={open}
-                direction="up"
-                hidden={hidden}
-                FabProps={{
-                    disabled,
-                    size: 'large',
-                    sx: {
-                        width: 64,
-                        height: 64,
-                        transform: isPressed ? 'scale(0.95)' : 'scale(1)',
-                        transition: 'transform 0.1s ease-in-out',
-                        '&:active': {
-                            transform: 'scale(0.95)',
-                        },
-                    },
-                    onMouseDown: handleMouseDown,
-                    onMouseUp: handleMouseUp,
-                    onTouchStart: handleTouchStart,
-                    onTouchEnd: handleTouchEnd,
-                }}
-            >
-                {actions.map(action => (
-                    <SpeedDialAction
-                        key={action.name}
-                        icon={action.icon}
-                        tooltipTitle={action.name}
-                        tooltipOpen
-                        onClick={action.onClick}
-                        FabProps={{
-                            color: action.color,
-                            size: 'medium',
-                            sx: {
-                                minWidth: 48,
-                                minHeight: 48,
-                                '&:active': {
-                                    transform: 'scale(0.95)',
-                                },
-                            },
-                        }}
-                    />
-                ))}
-            </SpeedDial>
-
-            {/* Backdrop for mobile accessibility */}
-            <Backdrop
-                open={open}
-                onClick={handleClose}
-                sx={{
-                    zIndex: theme.zIndex.speedDial - 1,
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                }}
-            />
+            {/* Backdrop */}
+            {open && (
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-30 z-40"
+                    onClick={handleClose}
+                />
+            )}
+            
+            <div className={`${getPositionClasses()} ${hidden ? 'hidden' : ''}`}>
+                {/* Action buttons */}
+                {open && (
+                    <div className="flex flex-col space-y-3 mb-3">
+                        {actions.map((action, index) => (
+                            <div
+                                key={action.name}
+                                className={`
+                                    transform transition-all duration-200 ease-out
+                                    ${open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+                                `}
+                                style={{ transitionDelay: `${index * 50}ms` }}
+                            >
+                                <Tooltip title={action.name} placement="left">
+                                    <Fab
+                                        size="medium"
+                                        color={action.color}
+                                        onClick={action.onClick}
+                                        className="w-12 h-12 active:scale-95"
+                                    >
+                                        {action.icon}
+                                    </Fab>
+                                </Tooltip>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                
+                {/* Main FAB */}
+                <Fab
+                    color="primary"
+                    aria-label="Create options"
+                    disabled={disabled}
+                    onClick={open ? handleClose : handleOpen}
+                    onMouseDown={handleMouseDown}
+                    onMouseUp={handleMouseUp}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    className={`
+                        w-16 h-16 transition-transform duration-100 ease-in-out
+                        ${isPressed ? 'scale-95' : 'scale-100'}
+                        active:scale-95
+                    `}
+                >
+                    <div className={`transform transition-transform duration-200 ${open ? 'rotate-45' : 'rotate-0'}`}>
+                        <AddIcon className="w-7 h-7" />
+                    </div>
+                </Fab>
+            </div>
         </>
     );
 };
@@ -322,8 +310,16 @@ export const QuickActionTooltip: React.FC<QuickActionTooltipProps> = ({
     children,
     disabled = false,
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     if (!isMobile || disabled) {
         return children;
@@ -333,25 +329,7 @@ export const QuickActionTooltip: React.FC<QuickActionTooltipProps> = ({
         <Tooltip
             title={title}
             placement="left"
-            arrow
-            enterTouchDelay={300}
-            leaveTouchDelay={1500}
-            PopperProps={{
-                sx: {
-                    '& .MuiTooltip-tooltip': {
-                        fontSize: '0.875rem',
-                        fontWeight: 500,
-                        backgroundColor: theme.palette.grey[900],
-                        color: 'white',
-                        borderRadius: 2,
-                        padding: theme.spacing(1, 1.5),
-                        boxShadow: theme.shadows[8],
-                    },
-                    '& .MuiTooltip-arrow': {
-                        color: theme.palette.grey[900],
-                    },
-                },
-            }}
+            className="text-sm font-medium bg-gray-900 text-white rounded px-3 py-2 shadow-lg"
         >
             {children}
         </Tooltip>
