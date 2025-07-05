@@ -1,22 +1,36 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { OverridableStringUnion } from '@mui/types';
-import { Variant } from '@mui/material/styles/createTypography';
-import { TypographyPropsVariantOverrides } from '@mui/material/Typography';
+type TypographyVariant = 
+    | 'h1' 
+    | 'h2' 
+    | 'h3' 
+    | 'h4' 
+    | 'h5' 
+    | 'h6'
+    | 'subtitle1'
+    | 'subtitle2'
+    | 'body1'
+    | 'body2'
+    | 'caption'
+    | 'button'
+    | 'overline'
+    | 'inherit';
 
 type TypographyProps = {
-    variant?: OverridableStringUnion<
-        Variant | 'inherit',
-        TypographyPropsVariantOverrides
-    >;
+    variant?: TypographyVariant;
     component?: React.ElementType;
     className?: string;
     children: React.ReactNode;
-    fontFamily?: any;
+    fontFamily?: string;
+    color?: 'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'text.primary' | 'text.secondary';
+    align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
+    gutterBottom?: boolean;
+    noWrap?: boolean;
+    [key: string]: any;
 };
 
-const variantMapping = {
+const variantMapping: Record<Exclude<TypographyVariant, 'inherit'>, string> = {
     h1: 'h1',
     h2: 'h2',
     h3: 'h3',
@@ -32,7 +46,7 @@ const variantMapping = {
     overline: 'span',
 };
 
-const variantClasses = {
+const variantClasses: Record<Exclude<TypographyVariant, 'inherit'>, string> = {
     h1: 'text-6xl font-bold',
     h2: 'text-5xl font-bold',
     h3: 'text-4xl font-bold',
@@ -56,6 +70,10 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
             className,
             children,
             fontFamily,
+            color,
+            align,
+            gutterBottom,
+            noWrap,
             ...props
         },
         ref
@@ -63,17 +81,37 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
         const Component =
             component ||
             (variant && variant !== 'inherit'
-                ? variantMapping[variant]
+                ? variantMapping[variant as Exclude<TypographyVariant, 'inherit'>]
                 : undefined) ||
             'span';
+
+        // Handle color classes
+        const colorClasses = color === 'error' ? 'text-red-600' :
+            color === 'warning' ? 'text-orange-600' :
+            color === 'info' ? 'text-blue-600' :
+            color === 'success' ? 'text-green-600' :
+            color === 'text.secondary' ? 'text-gray-600' :
+            color === 'primary' ? 'text-blue-600' :
+            color === 'secondary' ? 'text-purple-600' :
+            '';
+
+        // Handle alignment classes
+        const alignClasses = align === 'center' ? 'text-center' :
+            align === 'right' ? 'text-right' :
+            align === 'justify' ? 'text-justify' :
+            '';
 
         return (
             <Component
                 ref={ref}
                 className={twMerge(
                     variant && variant !== 'inherit'
-                        ? variantClasses[variant]
+                        ? variantClasses[variant as Exclude<TypographyVariant, 'inherit'>]
                         : undefined,
+                    colorClasses,
+                    alignClasses,
+                    gutterBottom && 'mb-2',
+                    noWrap && 'whitespace-nowrap overflow-hidden text-ellipsis',
                     className
                 )}
                 style={{ fontFamily }}

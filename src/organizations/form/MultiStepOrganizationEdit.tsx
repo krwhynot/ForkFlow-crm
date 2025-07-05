@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Stepper, Step, StepLabel, StepContent, Collapse } from '@mui/material';
+import { Stepper, Step, StepLabel, StepContent } from '../../components/ui-kit';
 import {
     Box,
     Button,
@@ -413,13 +413,13 @@ export const MultiStepOrganizationEdit: React.FC<
         (stepIndex: number) => {
             const state = stepStates[stepIndex];
             if (state.completed) {
-                return <CheckIcon color="success" />;
+                return <CheckIcon className="w-5 h-5 text-green-600" />;
             }
             if (state.hasErrors) {
-                return <ErrorIcon color="error" />;
+                return <ExclamationCircleIcon className="w-5 h-5 text-red-600" />;
             }
             if (state.warningCount > 0) {
-                return <WarningIcon color="warning" />;
+                return <ExclamationTriangleIcon className="w-5 h-5 text-orange-600" />;
             }
             return stepIndex + 1;
         },
@@ -480,7 +480,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                         onClick={handleResetForm}
                                         className="min-w-11 min-h-11"
                                     >
-                                        <RestoreIcon />
+                                        <ArrowPathIcon className="w-5 h-5" />
                                     </IconButton>
                                 </Tooltip>
                             )}
@@ -491,7 +491,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                         onClick={onClose}
                                         className="min-w-11 min-h-11"
                                     >
-                                        <CloseIcon />
+                                        <XMarkIcon className="w-5 h-5" />
                                     </IconButton>
                                 </Tooltip>
                             )}
@@ -607,7 +607,7 @@ export const MultiStepOrganizationEdit: React.FC<
                     )}
 
                     {/* Error Summary */}
-                    <Collapse in={Object.keys(validationErrors).length > 0}>
+                    {Object.keys(validationErrors).length > 0 && (
                         <Alert
                             severity="error"
                             className="mt-4"
@@ -617,7 +617,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                     size="small"
                                     onClick={() => setValidationErrors({})}
                                 >
-                                    <CloseIcon fontSize="inherit" />
+                                    <XMarkIcon className="w-4 h-4" />
                                 </IconButton>
                             }
                         >
@@ -636,14 +636,14 @@ export const MultiStepOrganizationEdit: React.FC<
                                 )}
                             </Box>
                         </Alert>
-                    </Collapse>
+                    )}
 
                     {/* Navigation */}
                     <Box className="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
                         <Button
                             onClick={handleBack}
                             disabled={activeStep === 0}
-                            startIcon={<ArrowBackIcon />}
+                            startIcon={<ArrowLeftIcon className="w-4 h-4" />}
                             className="min-h-11"
                         >
                             Back
@@ -655,7 +655,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                     {({ formData: currentFormData }) => (
                                         <SaveButton
                                             label="Save Changes"
-                                            icon={<SaveIcon />}
+                                            icon={<DocumentArrowDownIcon className="w-4 h-4" />}
                                             disabled={!canSubmit}
                                             variant="contained"
                                             className="min-h-11 px-6"
@@ -667,7 +667,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                 <Button
                                     onClick={handleNext}
                                     variant="contained"
-                                    endIcon={<ArrowForwardIcon />}
+                                    endIcon={<ArrowRightIcon className="w-4 h-4" />}
                                     className="min-h-11"
                                 >
                                     Next

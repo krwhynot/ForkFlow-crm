@@ -16,21 +16,20 @@ import {
     Avatar,
     Badge,
 } from '@/components/ui-kit';
-import { ListItemButton } from '@mui/material';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
-    Business as OrganizationIcon,
-    Person as ContactIcon,
-    Inventory as ProductIcon,
-    TrendingUp as OpportunityIcon,
-    EventNote as InteractionIcon,
-    Add as AddIcon,
-    ArrowForward as ArrowForwardIcon,
-    AttachMoney as MoneyIcon,
-    Schedule as ScheduleIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon,
+    UserIcon,
+    CubeIcon,
+    TrendingUpIcon,
+    DocumentTextIcon,
+    PlusIcon,
+    ArrowRightIcon,
+    CurrencyDollarIcon,
+    ClockIcon,
+    PhoneIcon,
+    EnvelopeIcon,
+} from '@heroicons/react/24/outline';
 import { Link, useGetList, useRecordContext } from 'react-admin';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import {
@@ -155,17 +154,17 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
     const getIcon = () => {
         switch (relatedType) {
             case 'contacts':
-                return <ContactIcon />;
+                return <UserIcon className="w-5 h-5" />;
             case 'opportunities':
-                return <OpportunityIcon />;
+                return <TrendingUpIcon className="w-5 h-5" />;
             case 'interactions':
-                return <InteractionIcon />;
+                return <DocumentTextIcon className="w-5 h-5" />;
             case 'products':
-                return <ProductIcon />;
+                return <CubeIcon className="w-5 h-5" />;
             case 'organizations':
-                return <OrganizationIcon />;
+                return <BuildingOfficeIcon className="w-5 h-5" />;
             default:
-                return <ArrowForwardIcon />;
+                return <ArrowRightIcon className="w-5 h-5" />;
         }
     };
 
@@ -205,24 +204,16 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
         }
     };
 
-    const renderContactItem = (contact: Contact, isLast: boolean) => (
+        const renderContactItem = (contact: Contact, isLast: boolean) => (
         <React.Fragment key={contact.id}>
             <ListItemButton
                 component={Link}
                 to={`/contacts/${contact.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
+                className="min-h-[64px] px-2 py-1"
             >
                 <ListItemIcon>
                     <Avatar
-                        sx={{
-                            width: 40,
-                            height: 40,
-                            bgcolor: 'secondary.main',
-                        }}
+                                             className="w-10 h-10 bg-purple-600"
                     >
                         {contact.firstName?.charAt(0)}
                         {contact.lastName?.charAt(0)}
@@ -235,38 +226,38 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             direction="row"
                             spacing={1}
                             alignItems="center"
-                            sx={{ mt: 0.5 }}
+                            className="mt-1"
                         >
                             {contact.isPrimary && (
                                 <Chip
                                     label="Primary"
                                     size="small"
                                     color="primary"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
+                                    className="h-5 text-xs"
                                 />
                             )}
                             {contact.phone && (
                                 <Chip
-                                    icon={<PhoneIcon sx={{ fontSize: 12 }} />}
+                                    icon={<PhoneIcon className="w-3 h-3" />}
                                     label="Phone"
                                     size="small"
                                     variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
+                                    className="h-5 text-xs"
                                 />
                             )}
                             {contact.email && (
                                 <Chip
-                                    icon={<EmailIcon sx={{ fontSize: 12 }} />}
+                                    icon={<EnvelopeIcon className="w-3 h-3" />}
                                     label="Email"
                                     size="small"
                                     variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
+                                    className="h-5 text-xs"
                                 />
                             )}
                         </Stack>
                     }
                 />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
+                <ArrowRightIcon className="text-gray-500" />
             </ListItemButton>
             {!isLast && <Divider variant="inset" component="li" />}
         </React.Fragment>
@@ -277,11 +268,7 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
             <ListItemButton
                 component={Link}
                 to={`/opportunities/${opportunity.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
+                className="min-h-[64px] px-2 py-1"
             >
                 <ListItemIcon>
                     <Badge
@@ -293,16 +280,10 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                                   ? 'warning'
                                   : 'default'
                         }
-                        sx={{
-                            '& .MuiBadge-badge': {
-                                fontSize: '0.6rem',
-                                height: 16,
-                                minWidth: 24,
-                            },
-                        }}
+                        className="[&_.badge]:text-xs [&_.badge]:h-4 [&_.badge]:min-w-[24px]"
                     >
-                        <OpportunityIcon
-                            sx={{ fontSize: 32, color: 'warning.main' }}
+                        <TrendingUpIcon
+                            className="w-8 h-8 text-orange-500"
                         />
                     </Badge>
                 </ListItemIcon>
@@ -315,25 +296,25 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             direction="row"
                             spacing={1}
                             alignItems="center"
-                            sx={{ mt: 0.5 }}
+                            className="mt-1"
                         >
                             <Chip
-                                icon={<MoneyIcon sx={{ fontSize: 12 }} />}
+                                icon={<CurrencyDollarIcon className="w-3 h-3" />}
                                 label={formatCurrency(opportunity.amount)}
                                 size="small"
                                 color="success"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
+                                className="h-5 text-xs"
                             />
                             <Chip
                                 label={opportunity.stage?.replace('_', ' ')}
                                 size="small"
                                 variant="outlined"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
+                                className="h-5 text-xs"
                             />
                         </Stack>
                     }
                 />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
+                <ArrowRightIcon className="text-gray-500" />
             </ListItemButton>
             {!isLast && <Divider variant="inset" component="li" />}
         </React.Fragment>
@@ -347,20 +328,14 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
             <ListItemButton
                 component={Link}
                 to={`/interactions/${interaction.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
+                className="min-h-[64px] px-2 py-1"
             >
                 <ListItemIcon>
-                    <InteractionIcon
-                        sx={{
-                            fontSize: 32,
-                            color: interaction.isCompleted
-                                ? 'success.main'
-                                : 'info.main',
-                        }}
+                    <DocumentTextIcon
+                        className={`w-8 h-8 ${interaction.isCompleted
+                            ? 'text-green-600'
+                            : 'text-blue-600'
+                        }`}
                     />
                 </ListItemIcon>
                 <ListItemText
@@ -370,17 +345,17 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             direction="row"
                             spacing={1}
                             alignItems="center"
-                            sx={{ mt: 0.5 }}
+                            className="mt-1"
                         >
                             <Chip
-                                icon={<ScheduleIcon sx={{ fontSize: 12 }} />}
+                                icon={<ClockIcon className="w-3 h-3" />}
                                 label={formatDate(
                                     interaction.scheduledDate ||
                                         interaction.createdAt
                                 )}
                                 size="small"
                                 variant="outlined"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
+                                className="h-5 text-xs"
                             />
                             <Chip
                                 label={
@@ -394,12 +369,12 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                                         ? 'success'
                                         : 'default'
                                 }
-                                sx={{ height: 20, fontSize: '0.7rem' }}
+                                className="h-5 text-xs"
                             />
                         </Stack>
                     }
                 />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
+                <ArrowRightIcon className="text-gray-500" />
             </ListItemButton>
             {!isLast && <Divider variant="inset" component="li" />}
         </React.Fragment>
@@ -410,14 +385,10 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
             <ListItemButton
                 component={Link}
                 to={`/products/${product.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
+                className="min-h-[64px] px-2 py-1"
             >
                 <ListItemIcon>
-                    <ProductIcon sx={{ fontSize: 32, color: 'success.main' }} />
+                    <CubeIcon className="w-8 h-8 text-green-600" />
                 </ListItemIcon>
                 <ListItemText
                     primary={product.name}
@@ -426,25 +397,25 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             direction="row"
                             spacing={1}
                             alignItems="center"
-                            sx={{ mt: 0.5 }}
+                            className="mt-1"
                         >
                             <Chip
                                 label={product.category}
                                 size="small"
                                 variant="outlined"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
+                                className="h-5 text-xs"
                             />
                             <Chip
-                                icon={<MoneyIcon sx={{ fontSize: 12 }} />}
+                                icon={<CurrencyDollarIcon className="w-3 h-3" />}
                                 label={formatCurrency(product.price)}
                                 size="small"
                                 color="success"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
+                                className="h-5 text-xs"
                             />
                         </Stack>
                     }
                 />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
+                <ArrowRightIcon className="text-gray-500" />
             </ListItemButton>
             {!isLast && <Divider variant="inset" component="li" />}
         </React.Fragment>
@@ -458,15 +429,11 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
             <ListItemButton
                 component={Link}
                 to={`/companies/${organization.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
+                className="min-h-[64px] px-2 py-1"
             >
                 <ListItemIcon>
-                    <OrganizationIcon
-                        sx={{ fontSize: 32, color: 'primary.main' }}
+                    <BuildingOfficeIcon
+                        className="w-8 h-8 text-blue-600"
                     />
                 </ListItemIcon>
                 <ListItemText
@@ -476,14 +443,14 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             direction="row"
                             spacing={1}
                             alignItems="center"
-                            sx={{ mt: 0.5 }}
+                            className="mt-1"
                         >
                             {organization.segment && (
                                 <Chip
                                     label={organization.segment.label}
                                     size="small"
                                     variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
+                                    className="h-5 text-xs"
                                 />
                             )}
                             {organization.contactCount && (
@@ -491,13 +458,13 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                                     label={`${organization.contactCount} contacts`}
                                     size="small"
                                     variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
+                                    className="h-5 text-xs"
                                 />
                             )}
                         </Stack>
                     }
                 />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
+                <ArrowRightIcon className="text-gray-500" />
             </ListItemButton>
             {!isLast && <Divider variant="inset" component="li" />}
         </React.Fragment>
@@ -511,21 +478,11 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
         <Card>
             <CardContent>
                 <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 2,
-                    }}
+                    className="flex justify-between items-center mb-2"
                 >
                     <Typography
                         variant="h6"
-                        sx={{
-                            fontWeight: 600,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                        }}
+                        className="font-semibold flex items-center gap-1"
                     >
                         {getIcon()}
                         {title} ({relatedEntities?.length || 0})
@@ -537,8 +494,8 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             to={createLink}
                             variant="outlined"
                             size="small"
-                            startIcon={<AddIcon />}
-                            sx={{ minHeight: 44, px: 2 }}
+                            startIcon={<PlusIcon className="w-4 h-4" />}
+                            className="min-h-[44px] px-2"
                         >
                             {getCreateButtonText()}
                         </Button>
@@ -547,33 +504,29 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
 
                 {isLoading ? (
                     <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            py: 3,
-                        }}
+                        className="flex justify-center py-3"
                     >
                         <CircularProgress size={24} />
                     </Box>
                 ) : error ? (
-                    <Typography color="error" variant="body2" sx={{ py: 2 }}>
+                    <Typography color="error" variant="body2" className="py-2">
                         Error loading {relatedType}
                     </Typography>
                 ) : relatedEntities && relatedEntities.length > 0 ? (
                     <>
-                        <List sx={{ py: 0 }}>
+                        <List className="py-0">
                             {relatedEntities.map((entity, index) =>
                                 renderEntityItem(entity, index)
                             )}
                         </List>
 
                         {viewAllLink && relatedEntities.length >= maxItems && (
-                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                            <Box className="mt-2 text-center">
                                 <Button
                                     component={Link}
                                     to={viewAllLink}
                                     variant="text"
-                                    endIcon={<ArrowForwardIcon />}
+                                    endIcon={<ArrowRightIcon className="w-4 h-4" />}
                                 >
                                     View All {title}
                                 </Button>
@@ -581,12 +534,12 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                         )}
                     </>
                 ) : (
-                    <Box sx={{ textAlign: 'center', py: 3 }}>
+                    <Box className="text-center py-3">
                         {getIcon()}
                         <Typography
                             variant="body2"
                             color="text.secondary"
-                            sx={{ mt: 1, mb: 2 }}
+                            className="mt-1 mb-2"
                         >
                             {emptyMessage || defaultEmptyMessage}
                         </Typography>
@@ -595,8 +548,8 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                                 component={Link}
                                 to={createLink}
                                 variant="contained"
-                                startIcon={<AddIcon />}
-                                sx={{ minHeight: 44 }}
+                                startIcon={<PlusIcon className="w-4 h-4" />}
+                                className="min-h-[44px]"
                             >
                                 {getCreateButtonText()}
                             </Button>
