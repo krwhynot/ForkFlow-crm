@@ -26,9 +26,9 @@ import {
     Box,
     Chip,
     Button,
+    Grid,
 } from '@/components/ui-kit';
-import { Grid } from '@mui/material';
-import { Edit as EditIcon, Visibility as ViewIcon } from '@mui/icons-material';
+import { PencilIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 
 import { Product, Setting } from '../types';
@@ -205,7 +205,7 @@ const EnhancedProductCard = () => {
                         className="min-w-11 min-h-11 text-blue-500"
                         aria-label={`View product: ${record.name}`}
                     >
-                        <ViewIcon />
+                        <EyeIcon className="w-5 h-5" />
                     </Button>
                     <Button
                         variant="secondary"
@@ -216,7 +216,7 @@ const EnhancedProductCard = () => {
                         className="min-w-11 min-h-11 text-gray-500"
                         aria-label={`Edit product: ${record.name}`}
                     >
-                        <EditIcon />
+                        <PencilIcon className="w-5 h-5" />
                     </Button>
                 </Box>
             </Box>

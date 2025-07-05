@@ -24,8 +24,8 @@ import {
     IconButton,
     Tooltip,
     Stack,
-} from '@mui/material';
-import { DragIndicator, Visibility, VisibilityOff } from '@mui/icons-material';
+} from '@/components/ui-kit';
+import { Bars3Icon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Setting } from '../types';
 
 const PrincipalListActions = () => (
@@ -44,18 +44,12 @@ const PrincipalColorChip = (props: { label?: string }) => {
     if (!record?.color) return null;
 
     return (
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box className="flex items-center gap-1">
             <Box
-                sx={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '50%',
-                    backgroundColor: record.color,
-                    border: '2px solid #ccc',
-                    boxShadow: 1,
-                }}
+                className="w-6 h-6 rounded-full border-2 border-gray-300 shadow-sm"
+                style={{ backgroundColor: record.color }}
             />
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="body2" className="text-gray-600">
                 {record.color}
             </Typography>
         </Box>
@@ -68,35 +62,16 @@ const PrincipalCard = (props: { label?: string }) => {
 
     return (
         <Card
-            sx={{
-                mb: 1,
-                border: `2px solid ${record.color}`,
-                '&:hover': { boxShadow: 3 },
-            }}
+            className="mb-1 border-2 hover:shadow-lg transition-shadow"
+            style={{ borderColor: record.color }}
         >
-            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <DragIndicator
-                            sx={{ color: 'text.secondary', cursor: 'grab' }}
-                        />
+            <CardContent className="p-2 pb-2">
+                <Stack className="flex-row justify-between items-center">
+                    <Box className="flex items-center gap-2">
+                        <Bars3Icon className="w-5 h-5 text-gray-600 cursor-grab" />
                         <Box
-                            sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '4px',
-                                backgroundColor: record.color,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'white',
-                                fontWeight: 'bold',
-                                fontSize: '0.75rem',
-                            }}
+                            className="w-8 h-8 rounded flex items-center justify-center text-white font-bold text-xs"
+                            style={{ backgroundColor: record.color }}
                         >
                             {record.sortOrder}
                         </Box>
@@ -104,22 +79,22 @@ const PrincipalCard = (props: { label?: string }) => {
                             <Typography variant="h6" component="div">
                                 {record.label}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Key: {record.key} | Market Rank: #
                                 {record.sortOrder}
                             </Typography>
                         </Box>
                     </Box>
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack className="flex-row gap-1 items-center">
                         <Chip
                             label={record.active ? 'Active' : 'Inactive'}
                             color={record.active ? 'success' : 'default'}
                             size="small"
                             icon={
                                 record.active ? (
-                                    <Visibility />
+                                    <EyeIcon className="w-4 h-4" />
                                 ) : (
-                                    <VisibilityOff />
+                                    <EyeSlashIcon className="w-4 h-4" />
                                 )
                             }
                         />
@@ -160,9 +135,9 @@ const PrincipalActiveToggle = () => {
         <Tooltip title={record?.active ? 'Deactivate' : 'Activate'}>
             <IconButton onClick={handleToggle} size="small">
                 {record?.active ? (
-                    <Visibility color="success" />
+                    <EyeIcon className="w-5 h-5 text-green-600" />
                 ) : (
-                    <VisibilityOff color="disabled" />
+                    <EyeSlashIcon className="w-5 h-5 text-gray-400" />
                 )}
             </IconButton>
         </Tooltip>
@@ -175,7 +150,7 @@ export const PrincipalManager = () => {
             <Typography variant="h4" gutterBottom>
                 Principal Management
             </Typography>
-            <Typography variant="body1" color="textSecondary" paragraph>
+            <Typography variant="body1" className="text-gray-600 mb-4">
                 Manage food service principals and brands. Drag to reorder by
                 market importance.
             </Typography>
@@ -206,7 +181,7 @@ const PrincipalDatagrid = () => {
         return (
             <Box>
                 {listContext.data?.map((record: Setting) => (
-                    <Box key={record.id} sx={{ mb: 2 }}>
+                    <Box key={record.id} className="mb-2">
                         <PrincipalCard />
                     </Box>
                 ))}

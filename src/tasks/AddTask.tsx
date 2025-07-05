@@ -1,4 +1,4 @@
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import {
     Box,
     Chip,
@@ -9,7 +9,7 @@ import {
     IconButton,
     Stack,
     Tooltip,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import { useState } from 'react';
 import {
     AutocompleteInput,
@@ -76,21 +76,18 @@ export const AddTask = ({
                 <Tooltip title="Create task">
                     <IconButton
                         size="small"
-                        sx={{
-                            color: 'text.secondary',
-                            ml: 'auto',
-                        }}
+                        className="text-gray-600 ml-auto"
                         component={Link}
                         to={'#'}
                         onClick={handleOpen}
                     >
-                        <ControlPointIcon fontSize="inherit" color="primary" />
+                        <PlusCircleIcon className="w-5 h-5 text-blue-600" />
                     </IconButton>
                 </Tooltip>
             ) : (
-                <Box mt={2} mb={2}>
+                <Box className="mt-2 mb-2">
                     <Chip
-                        icon={<ControlPointIcon />}
+                        icon={<PlusCircleIcon className="w-4 h-4" />}
                         size="small"
                         variant="outlined"
                         onClick={handleOpen}
@@ -148,7 +145,7 @@ export const AddTask = ({
                                     label="Description"
                                     validate={required()}
                                     multiline
-                                    sx={{ margin: 0 }}
+                                    className="m-0"
                                     helperText={false}
                                 />
                                 {selectContact && (
@@ -169,7 +166,7 @@ export const AddTask = ({
                                     </ReferenceInput>
                                 )}
 
-                                <Stack direction="row" spacing={1}>
+                                <Stack className="flex-row gap-1">
                                     <DateInput
                                         source="due_date"
                                         validate={required()}
@@ -187,8 +184,8 @@ export const AddTask = ({
                                 </Stack>
                             </Stack>
                         </DialogContent>
-                        <DialogActions sx={{ p: 0 }}>
-                            <Toolbar sx={{ width: '100%' }}>
+                        <DialogActions className="p-0">
+                            <Toolbar className="w-full">
                                 <SaveButton />
                             </Toolbar>
                         </DialogActions>

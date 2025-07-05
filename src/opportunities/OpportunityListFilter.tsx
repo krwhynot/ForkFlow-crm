@@ -7,13 +7,15 @@ import {
     useGetList,
 } from 'react-admin';
 import { Box, Chip } from '../components/ui-kit';
-import BusinessIcon from '@mui/icons-material/Business';
-import PersonIcon from '@mui/icons-material/Person';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import FlagIcon from '@mui/icons-material/Flag';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import PercentIcon from '@mui/icons-material/Percent';
-import DateRangeIcon from '@mui/icons-material/DateRange';
+import {
+    BuildingOfficeIcon,
+    UserIcon,
+    TrendingUpIcon,
+    FlagIcon,
+    UserCircleIcon,
+    CalculatorIcon,
+    CalendarDaysIcon,
+} from '@heroicons/react/24/outline';
 
 export const OpportunityListFilter = () => {
     const { identity } = useGetIdentity();
@@ -82,7 +84,7 @@ export const OpportunityListFilter = () => {
                 placeholder="Search opportunities..."
             />
 
-            <FilterList label="Organization" icon={<BusinessIcon />}>
+            <FilterList label="Organization" icon={<BuildingOfficeIcon className="w-5 h-5" />}>
                 {organizations
                     ?.slice(0, 12)
                     .map(org => (
@@ -94,7 +96,7 @@ export const OpportunityListFilter = () => {
                     ))}
             </FilterList>
 
-            <FilterList label="Contact" icon={<PersonIcon />}>
+            <FilterList label="Contact" icon={<UserIcon className="w-5 h-5" />}>
                 {contacts
                     ?.slice(0, 12)
                     .map(contact => (
@@ -106,7 +108,7 @@ export const OpportunityListFilter = () => {
                     ))}
             </FilterList>
 
-            <FilterList label="Pipeline Stage" icon={<TrendingUpIcon />}>
+            <FilterList label="Pipeline Stage" icon={<TrendingUpIcon className="w-5 h-5" />}>
                 {pipelineStages.map(stage => (
                     <FilterListItem
                         key={stage.id}
@@ -125,7 +127,7 @@ export const OpportunityListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Status" icon={<FlagIcon />}>
+            <FilterList label="Status" icon={<FlagIcon className="w-5 h-5" />}>
                 {statusOptions.map(status => (
                     <FilterListItem
                         key={status.id}
@@ -144,7 +146,7 @@ export const OpportunityListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Win Probability" icon={<PercentIcon />}>
+            <FilterList label="Win Probability" icon={<CalculatorIcon className="w-5 h-5" />}>
                 {probabilityRanges.map(range => (
                     <FilterListItem
                         key={range.id}
@@ -166,7 +168,7 @@ export const OpportunityListFilter = () => {
                 ))}
             </FilterList>
 
-            <FilterList label="Close Date" icon={<DateRangeIcon />}>
+            <FilterList label="Close Date" icon={<CalendarDaysIcon className="w-5 h-5" />}>
                 {timePeriods.map(period => (
                     <FilterListItem
                         key={period.id}
@@ -186,7 +188,7 @@ export const OpportunityListFilter = () => {
             </FilterList>
 
             {identity && (
-                <FilterList label="Ownership" icon={<AccountCircleIcon />}>
+                <FilterList label="Ownership" icon={<UserCircleIcon className="w-5 h-5" />}>
                     <FilterListItem
                         label="Only my opportunities"
                         value={{ createdBy: identity.id }}

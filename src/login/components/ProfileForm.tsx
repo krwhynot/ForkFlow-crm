@@ -14,16 +14,15 @@ import {
     IconButton,
     Chip,
     Alert,
-    useMediaQuery,
-    useTheme,
     CircularProgress,
-} from '@mui/material';
-import { PhotoCamera, Delete, Add } from '@mui/icons-material';
+} from '@/components/ui-kit';
+import { CameraIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useDataProvider } from 'react-admin';
 import { useMutation } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { CrmDataProvider } from '../../providers/types';
 import { User, UserProfileUpdate } from '../../types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface ProfileFormProps {
     user: User;
@@ -48,8 +47,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     const [newTerritory, setNewTerritory] = useState('');
     const [newPrincipal, setNewPrincipal] = useState('');
     const dataProvider = useDataProvider<CrmDataProvider>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     const {
         control,
@@ -184,14 +182,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                 )}
 
                 {/* Avatar Section */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box className="flex items-center gap-2">
                     <Avatar
                         src={avatarPreview || undefined}
-                        sx={{
-                            width: isMobile ? 80 : 100,
-                            height: isMobile ? 80 : 100,
-                            fontSize: isMobile ? '2rem' : '2.5rem',
-                        }}
+                        className={`${
+                            isMobile 
+                                ? 'w-20 h-20 text-3xl' 
+                                : 'w-24 h-24 text-4xl'
+                        }`}
                     >
                         {user.firstName[0]}
                         {user.lastName[0]}
@@ -209,18 +207,18 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                                 color="primary"
                                 aria-label="upload picture"
                                 component="span"
-                                sx={{ minHeight: 44, minWidth: 44 }}
+                                className="min-h-[44px] min-w-[44px]"
                             >
-                                <PhotoCamera />
+                                <CameraIcon className="w-5 h-5" />
                             </IconButton>
                         </label>
                         {avatarPreview && (
                             <IconButton
                                 color="error"
                                 onClick={handleRemoveAvatar}
-                                sx={{ minHeight: 44, minWidth: 44 }}
+                                className="min-h-[44px] min-w-[44px]"
                             >
-                                <Delete />
+                                <TrashIcon className="w-5 h-5" />
                             </IconButton>
                         )}
                     </Stack>
@@ -295,15 +293,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                     <Typography variant="h6" gutterBottom>
                         Sales Territory
                     </Typography>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 1,
-                            mb: 2,
-                            flexWrap: 'wrap',
-                            alignItems: 'center',
-                        }}
-                    >
+                    <Box className="flex gap-1 mb-2 flex-wrap items-center">
                         <TextField
                             label="Add Territory"
                             value={newTerritory}
@@ -321,12 +311,12 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                             onClick={handleAddTerritory}
                             color="primary"
                             disabled={!newTerritory.trim()}
-                            sx={{ minHeight: 44, minWidth: 44 }}
+                            className="min-h-[44px] min-w-[44px]"
                         >
-                            <Add />
+                            <PlusIcon className="w-5 h-5" />
                         </IconButton>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Box className="flex gap-1 flex-wrap">
                         {watchedTerritory.map(territory => (
                             <Chip
                                 key={territory}
@@ -339,7 +329,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                             />
                         ))}
                         {watchedTerritory.length === 0 && (
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 No territories assigned
                             </Typography>
                         )}
@@ -351,15 +341,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                     <Typography variant="h6" gutterBottom>
                         Principals/Brands
                     </Typography>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 1,
-                            mb: 2,
-                            flexWrap: 'wrap',
-                            alignItems: 'center',
-                        }}
-                    >
+                    <Box className="flex gap-1 mb-2 flex-wrap items-center">
                         <TextField
                             label="Add Principal"
                             value={newPrincipal}
@@ -377,12 +359,12 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                             onClick={handleAddPrincipal}
                             color="primary"
                             disabled={!newPrincipal.trim()}
-                            sx={{ minHeight: 44, minWidth: 44 }}
+                            className="min-h-[44px] min-w-[44px]"
                         >
-                            <Add />
+                            <PlusIcon className="w-5 h-5" />
                         </IconButton>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Box className="flex gap-1 flex-wrap">
                         {watchedPrincipals.map(principal => (
                             <Chip
                                 key={principal}
@@ -395,7 +377,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                             />
                         ))}
                         {watchedPrincipals.length === 0 && (
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 No principals assigned
                             </Typography>
                         )}
@@ -408,12 +390,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                     variant="contained"
                     size="large"
                     disabled={!isValid || isPending}
-                    sx={{
-                        mt: 3,
-                        minHeight: 48,
-                        fontSize: '1.1rem',
-                        fontWeight: 600,
-                    }}
+                    className="mt-3 min-h-[48px] text-lg font-semibold"
                 >
                     {isPending ? (
                         <CircularProgress size={24} color="inherit" />
