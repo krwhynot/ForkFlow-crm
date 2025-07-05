@@ -15,17 +15,17 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import {
-    Clear as ClearIcon,
-    Visibility as VisibilityIcon,
-    VisibilityOff as VisibilityOffIcon,
-    ContentCopy as CopyIcon,
-    QrCode as QrCodeIcon,
-    Smartphone as PhoneIcon,
-    Email as EmailIcon,
-    Language as WebsiteIcon,
-    LocationOn as LocationIcon,
-    Numbers as NumbersIcon,
-} from '@mui/icons-material';
+    XMarkIcon,
+    EyeIcon,
+    EyeSlashIcon,
+    ClipboardDocumentIcon,
+    QrCodeIcon,
+    DevicePhoneMobileIcon,
+    EnvelopeIcon,
+    GlobeAltIcon,
+    MapPinIcon,
+    HashtagIcon,
+} from '@heroicons/react/24/outline';
 import { TextInput, TextInputProps } from 'react-admin';
 
 interface SmartKeyboardProps extends Omit<TextInputProps, 'type'> {
@@ -319,21 +319,20 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
     // Get field icon
     const getFieldIcon = useCallback(() => {
         const iconProps = {
-            fontSize: 'small' as const,
-            color: 'action' as const,
+            className: 'w-4 h-4 text-gray-500',
         };
 
         switch (fieldType) {
             case 'email':
-                return <EmailIcon {...iconProps} />;
+                return <EnvelopeIcon {...iconProps} />;
             case 'phone':
-                return <PhoneIcon {...iconProps} />;
+                return <DevicePhoneMobileIcon {...iconProps} />;
             case 'url':
-                return <WebsiteIcon {...iconProps} />;
+                return <GlobeAltIcon {...iconProps} />;
             case 'address':
-                return <LocationIcon {...iconProps} />;
+                return <MapPinIcon {...iconProps} />;
             case 'number':
-                return <NumbersIcon {...iconProps} />;
+                return <HashtagIcon {...iconProps} />;
             default:
                 return null;
         }
@@ -398,7 +397,7 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                     sx={{ mr: 0.5 }}
                                     aria-label="Scan QR code"
                                 >
-                                    <QrCodeIcon fontSize="small" />
+                                    <QrCodeIcon className="w-4 h-4" />
                                 </IconButton>
                             )}
 
@@ -413,7 +412,7 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                         sx={{ mr: 0.5 }}
                                         aria-label="Copy to clipboard"
                                     >
-                                        <CopyIcon fontSize="small" />
+                                        <ClipboardDocumentIcon className="w-4 h-4" />
                                     </IconButton>
                                 )}
 
@@ -431,9 +430,9 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                     }
                                 >
                                     {showPassword ? (
-                                        <VisibilityOffIcon fontSize="small" />
+                                        <EyeSlashIcon className="w-4 h-4" />
                                     ) : (
-                                        <VisibilityIcon fontSize="small" />
+                                        <EyeIcon className="w-4 h-4" />
                                     )}
                                 </IconButton>
                             )}
@@ -446,7 +445,7 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
                                     edge="end"
                                     aria-label="Clear input"
                                 >
-                                    <ClearIcon fontSize="small" />
+                                    <XMarkIcon className="w-4 h-4" />
                                 </IconButton>
                             )}
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-    ViewList as TableIcon,
-    ViewModule as CardsIcon,
-    ViewKanban as KanbanIcon,
-    Map as MapIcon,
-} from '@mui/icons-material';
+    TableCellsIcon,
+    Squares2X2Icon,
+    RectangleGroupIcon,
+    MapIcon,
+} from '@heroicons/react/24/outline';
 import { useViewMode } from '../hooks/useViewMode';
 import { OrganizationListViewMode } from '../../types';
 import { Box } from '../../components/Layout/Box';
@@ -46,28 +46,28 @@ export const LayoutSelector: React.FC<LayoutSelectorProps> = ({
     const viewModeOptions = [
         {
             value: 'table' as const,
-            icon: <TableIcon />,
+            icon: <TableCellsIcon className="w-5 h-5" />,
             label: 'Table View',
             description: 'Detailed table with sortable columns',
             disabled: false,
         },
         {
             value: 'cards' as const,
-            icon: <CardsIcon />,
+            icon: <Squares2X2Icon className="w-5 h-5" />,
             label: 'Card View',
             description: 'Visual cards with key information',
             disabled: false,
         },
         {
             value: 'kanban' as const,
-            icon: <KanbanIcon />,
+            icon: <RectangleGroupIcon className="w-5 h-5" />,
             label: 'Kanban Board',
             description: 'Drag and drop by status',
             disabled: false,
         },
         {
             value: 'map' as const,
-            icon: <MapIcon />,
+            icon: <MapIcon className="w-5 h-5" />,
             label: 'Map View',
             description: 'Geographic visualization',
             disabled: false,

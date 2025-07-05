@@ -19,15 +19,15 @@ import {
 import { Popover } from '@headlessui/react';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
-    Wifi as OnlineIcon,
-    WifiOff as OfflineIcon,
-    CloudDone as SyncedIcon,
-    CloudOff as UnsyncedIcon,
-    Security as SecurityIcon,
-    Schedule as SessionIcon,
-    Phone as MobileIcon,
-    Info as InfoIcon,
-} from '@mui/icons-material';
+    WifiIcon,
+    SignalSlashIcon,
+    CloudIcon,
+    CloudSlashIcon,
+    ShieldCheckIcon,
+    ClockIcon,
+    DevicePhoneMobileIcon,
+    InformationCircleIcon,
+} from '@heroicons/react/24/outline';
 import { useAuthState } from 'react-admin';
 import { isOnline, getOfflineAuthStatus } from '../../utils/offlineAuth';
 import { getSessionSummary } from '../../utils/sessionPersistence';
@@ -85,12 +85,12 @@ export const AuthStatusIndicator: React.FC = () => {
     const getStatusIcon = () => {
         if (!isConnected) {
             return offlineStatus.hasCredentials ? (
-                <UnsyncedIcon />
+                <CloudSlashIcon className="w-5 h-5" />
             ) : (
-                <OfflineIcon />
+                <SignalSlashIcon className="w-5 h-5" />
             );
         }
-        return <SyncedIcon />;
+        return <CloudIcon className="w-5 h-5" />;
     };
 
     const getStatusText = () => {
@@ -136,7 +136,7 @@ export const AuthStatusIndicator: React.FC = () => {
                         variant={getStatusColor()}
                         className="mb-4 flex items-center gap-2"
                     >
-                        {isConnected ? <OnlineIcon /> : <OfflineIcon />}
+                        {isConnected ? <WifiIcon className="w-5 h-5" /> : <SignalSlashIcon className="w-5 h-5" />}
                         <Typography variant="body2">
                             {isConnected
                                 ? 'Connected to server - full functionality available'
@@ -153,7 +153,7 @@ export const AuthStatusIndicator: React.FC = () => {
                         <List dense>
                             <ListItem>
                                 <ListItemIcon>
-                                    <SecurityIcon className="text-sm" />
+                                    <ShieldCheckIcon className="w-4 h-4" />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Current User"
@@ -163,7 +163,7 @@ export const AuthStatusIndicator: React.FC = () => {
 
                             <ListItem>
                                 <ListItemIcon>
-                                    <SessionIcon className="text-sm" />
+                                    <ClockIcon className="w-4 h-4" />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Last Activity"
@@ -174,7 +174,7 @@ export const AuthStatusIndicator: React.FC = () => {
                             {sessionSummary.deviceInfo?.isMobile && (
                                 <ListItem>
                                     <ListItemIcon>
-                                        <MobileIcon className="text-sm" />
+                                        <DevicePhoneMobileIcon className="w-4 h-4" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Mobile Device"
@@ -201,7 +201,7 @@ export const AuthStatusIndicator: React.FC = () => {
                             <List dense>
                                 <ListItem>
                                     <ListItemIcon>
-                                        <InfoIcon className="text-sm" />
+                                        <InformationCircleIcon className="w-4 h-4" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Status"
@@ -217,7 +217,7 @@ export const AuthStatusIndicator: React.FC = () => {
                                     offlineStatus.lastSync && (
                                         <ListItem>
                                             <ListItemIcon>
-                                                <SyncedIcon className="text-sm" />
+                                                <CloudIcon className="w-4 h-4" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Last Sync"
