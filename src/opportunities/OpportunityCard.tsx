@@ -8,14 +8,14 @@ import {
     IconButton,
     Stack,
     LinearProgress,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    Visibility as ViewIcon,
-    Edit as EditIcon,
-    AttachMoney as MoneyIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon,
+    UserIcon,
+    EyeIcon,
+    PencilIcon,
+    CurrencyDollarIcon,
+} from '@heroicons/react/24/outline';
 import { Link, ReferenceField, TextField, useRedirect } from 'react-admin';
 import { Deal } from '../types';
 
@@ -129,7 +129,7 @@ export const OpportunityCardContent = ({
                                     padding: 1,
                                 }}
                             >
-                                <ViewIcon fontSize="small" />
+                                <EyeIcon className="w-5 h-5" />
                             </IconButton>
                             <IconButton
                                 size="small"
@@ -140,7 +140,7 @@ export const OpportunityCardContent = ({
                                     padding: 1,
                                 }}
                             >
-                                <EditIcon fontSize="small" />
+                                <PencilIcon className="w-5 h-5" />
                             </IconButton>
                         </Stack>
                     </Box>
@@ -148,12 +148,8 @@ export const OpportunityCardContent = ({
                     {/* Organization & Contact */}
                     <Stack spacing={1} sx={{ mb: 2 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <BusinessIcon
-                                sx={{
-                                    fontSize: 16,
-                                    mr: 1,
-                                    color: 'text.secondary',
-                                }}
+                            <BuildingOfficeIcon
+                                className="w-4 h-4 mr-1 text-gray-600"
                             />
                             <ReferenceField
                                 source="organizationId"
@@ -171,12 +167,8 @@ export const OpportunityCardContent = ({
 
                         {opportunity.contactId && (
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <PersonIcon
-                                    sx={{
-                                        fontSize: 16,
-                                        mr: 1,
-                                        color: 'text.secondary',
-                                    }}
+                                <UserIcon
+                                    className="w-4 h-4 mr-1 text-gray-600"
                                 />
                                 <ReferenceField
                                     source="contactId"
@@ -207,12 +199,8 @@ export const OpportunityCardContent = ({
                             }}
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <MoneyIcon
-                                    sx={{
-                                        fontSize: 18,
-                                        mr: 0.5,
-                                        color: 'success.main',
-                                    }}
+                                <CurrencyDollarIcon
+                                    className="w-5 h-5 mr-0.5 text-green-600"
                                 />
                                 <Typography
                                     variant="h6"
@@ -261,7 +249,7 @@ export const OpportunityCardContent = ({
                     </Box>
 
                     {/* Expected Close Date */}
-                    {opportunity.expectedClosingDate && (
+                    {opportunity.expected_close_date && (
                         <Typography
                             variant="caption"
                             color="text.secondary"
@@ -269,7 +257,7 @@ export const OpportunityCardContent = ({
                         >
                             Expected close:{' '}
                             {new Date(
-                                opportunity.expectedClosingDate
+                                opportunity.expected_close_date
                             ).toLocaleDateString()}
                         </Typography>
                     )}

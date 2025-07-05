@@ -29,11 +29,11 @@ import {
     Button,
 } from '@/components/ui-kit';
 import {
-    PhotoCamera as PhotoCameraIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Person as PersonIcon,
-} from '@mui/icons-material';
+    CameraIcon,
+    TrashIcon,
+    PlusIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 
 import { UserRole, User } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
@@ -192,7 +192,7 @@ const UserCreateForm = () => {
                                     : 'w-25 h-25 text-3xl'
                             }`}
                         >
-                            <PersonIcon fontSize="large" />
+                            <UserIcon className="w-8 h-8" />
                         </Avatar>
                         <Stack>
                             <input
@@ -207,7 +207,7 @@ const UserCreateForm = () => {
                                     className="text-blue-600 min-h-11 min-w-11"
                                     aria-label="upload picture"
                                 >
-                                    <PhotoCameraIcon />
+                                    <CameraIcon className="w-5 h-5" />
                                 </IconButton>
                             </label>
                             {avatarPreview && (
@@ -215,7 +215,7 @@ const UserCreateForm = () => {
                                     className="text-red-600 min-h-11 min-w-11"
                                     onClick={handleRemoveAvatar}
                                 >
-                                    <DeleteIcon />
+                                    <TrashIcon className="w-5 h-5" />
                                 </IconButton>
                             )}
                         </Stack>
@@ -386,7 +386,7 @@ const UserCreateForm = () => {
                                             className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newTerritory.trim()}
                                         >
-                                            <AddIcon />
+                                            <PlusIcon className="w-5 h-5" />
                                         </IconButton>
                                     </Box>
 
@@ -451,7 +451,7 @@ const UserCreateForm = () => {
                                             className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newPrincipal.trim()}
                                         >
-                                            <AddIcon />
+                                            <PlusIcon className="w-5 h-5" />
                                         </IconButton>
                                     </Box>
 

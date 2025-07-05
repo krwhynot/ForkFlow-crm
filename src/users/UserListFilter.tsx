@@ -14,15 +14,15 @@ import {
     useGetIdentity,
 } from 'react-admin';
 import {
-    Person as PersonIcon,
-    AdminPanelSettings as AdminIcon,
-    SupervisorAccount as ManagerIcon,
-    SupportAgent as BrokerIcon,
-    CheckCircle as ActiveIcon,
-    Block as InactiveIcon,
-    Schedule as RecentIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    UserIcon,
+    ShieldCheckIcon,
+    UserGroupIcon,
+    UserCircleIcon,
+    CheckCircleIcon,
+    NoSymbolIcon,
+    ClockIcon,
+    MapPinIcon,
+} from '@heroicons/react/24/outline';
 
 import { UserRole } from '../types';
 import { useBreakpoint } from '../hooks/useBreakpoint';
@@ -58,20 +58,20 @@ export const UserListFilter = () => {
                     >
                         Role
                     </Typography>
-                    <FilterList label="Role" icon={<PersonIcon />}>
+                    <FilterList label="Role" icon={<UserIcon className="w-5 h-5" />}>
                         <FilterListItem
                             label="Admin"
-                            icon={<AdminIcon />}
+                            icon={<ShieldCheckIcon className="w-5 h-5" />}
                             value={{ role: 'admin' }}
                         />
                         <FilterListItem
                             label="Manager"
-                            icon={<ManagerIcon />}
+                            icon={<UserGroupIcon className="w-5 h-5" />}
                             value={{ role: 'manager' }}
                         />
                         <FilterListItem
                             label="Broker"
-                            icon={<BrokerIcon />}
+                            icon={<UserCircleIcon className="w-5 h-5" />}
                             value={{ role: 'broker' }}
                         />
                     </FilterList>
@@ -88,15 +88,15 @@ export const UserListFilter = () => {
                     >
                         Status
                     </Typography>
-                    <FilterList label="Status" icon={<ActiveIcon />}>
+                    <FilterList label="Status" icon={<CheckCircleIcon className="w-5 h-5" />}>
                         <FilterListItem
                             label="Active Users"
-                            icon={<ActiveIcon />}
+                            icon={<CheckCircleIcon className="w-5 h-5" />}
                             value={{ isActive: true }}
                         />
                         <FilterListItem
                             label="Inactive Users"
-                            icon={<InactiveIcon />}
+                            icon={<NoSymbolIcon className="w-5 h-5" />}
                             value={{ isActive: false }}
                         />
                     </FilterList>
@@ -113,10 +113,10 @@ export const UserListFilter = () => {
                     >
                         Activity
                     </Typography>
-                    <FilterList label="Recent Activity" icon={<RecentIcon />}>
+                    <FilterList label="Recent Activity" icon={<ClockIcon className="w-5 h-5" />}>
                         <FilterListItem
                             label="Logged in this week"
-                            icon={<RecentIcon />}
+                            icon={<ClockIcon className="w-5 h-5" />}
                             value={{
                                 lastLoginAt_gte: new Date(
                                     Date.now() - 7 * 24 * 60 * 60 * 1000
@@ -125,7 +125,7 @@ export const UserListFilter = () => {
                         />
                         <FilterListItem
                             label="Logged in this month"
-                            icon={<RecentIcon />}
+                            icon={<ClockIcon className="w-5 h-5" />}
                             value={{
                                 lastLoginAt_gte: new Date(
                                     Date.now() - 30 * 24 * 60 * 60 * 1000
@@ -134,7 +134,7 @@ export const UserListFilter = () => {
                         />
                         <FilterListItem
                             label="Never logged in"
-                            icon={<RecentIcon />}
+                            icon={<ClockIcon className="w-5 h-5" />}
                             value={{ lastLoginAt: null }}
                         />
                     </FilterList>
@@ -153,16 +153,16 @@ export const UserListFilter = () => {
                     </Typography>
                     <FilterList
                         label="Territory Assignment"
-                        icon={<LocationIcon />}
+                        icon={<MapPinIcon className="w-5 h-5" />}
                     >
                         <FilterListItem
                             label="Has Territory"
-                            icon={<LocationIcon />}
+                            icon={<MapPinIcon className="w-5 h-5" />}
                             value={{ hasTerritory: true }}
                         />
                         <FilterListItem
                             label="No Territory"
-                            icon={<LocationIcon />}
+                            icon={<MapPinIcon className="w-5 h-5" />}
                             value={{ hasTerritory: false }}
                         />
                     </FilterList>

@@ -22,22 +22,22 @@ import {
     LinearProgress,
 } from '@/components/ui-kit';
 import {
-    Person as PersonIcon,
-    Security as SecurityIcon,
-    History as HistoryIcon,
-    Settings as SettingsIcon,
-    Dashboard as DashboardIcon,
-    Analytics as AnalyticsIcon,
-    Map as TerritoryIcon,
-    Business as BusinessIcon,
-    Notifications as NotificationsIcon,
-    Edit as EditIcon,
-    Refresh as RefreshIcon,
-    Download as DownloadIcon,
-    Mail as MailIcon,
-    Phone as PhoneIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    UserIcon,
+    ShieldCheckIcon,
+    ClockIcon,
+    CogIcon,
+    Squares2X2Icon,
+    ChartBarIcon,
+    MapIcon,
+    BuildingOfficeIcon,
+    BellIcon,
+    PencilIcon,
+    ArrowPathIcon,
+    ArrowDownTrayIcon,
+    EnvelopeIcon,
+    PhoneIcon,
+    MapPinIcon,
+} from '@heroicons/react/24/outline';
 
 import { User } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
@@ -154,7 +154,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             </Typography>
 
                             <Box className="flex items-center gap-1 mb-2 flex-wrap">
-                                <MailIcon color="action" fontSize="small" />
+                                <EnvelopeIcon className="w-5 h-5 text-gray-600" />
                                 <Typography
                                     variant="body1"
                                     color="text.secondary"
@@ -181,7 +181,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 {user.territory &&
                                     user.territory.length > 0 && (
                                         <Chip
-                                            icon={<LocationIcon />}
+                                            icon={<MapPinIcon className="w-4 h-4" />}
                                             label={`${user.territory.length} territories`}
                                             color="primary"
                                             variant="outlined"
@@ -194,7 +194,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             {onEdit && (
                                 <Button
                                     variant="contained"
-                                    startIcon={<EditIcon />}
+                                    startIcon={<PencilIcon className="w-4 h-4" />}
                                     onClick={onEdit}
                                     className="min-h-11"
                                 >
@@ -205,7 +205,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             {onRefresh && (
                                 <Button
                                     variant="outlined"
-                                    startIcon={<RefreshIcon />}
+                                    startIcon={<ArrowPathIcon className="w-4 h-4" />}
                                     onClick={onRefresh}
                                     className="min-h-11"
                                 >
@@ -288,25 +288,25 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                     >
                         <Tab
                             label="Overview"
-                            icon={<DashboardIcon />}
+                            icon={<Squares2X2Icon className="w-5 h-5" />}
                             iconPosition="start"
                             {...a11yProps(0)}
                         />
                         <Tab
                             label="Activity"
-                            icon={<HistoryIcon />}
+                            icon={<ClockIcon className="w-5 h-5" />}
                             iconPosition="start"
                             {...a11yProps(1)}
                         />
                         <Tab
                             label="Security"
-                            icon={<SecurityIcon />}
+                            icon={<ShieldCheckIcon className="w-5 h-5" />}
                             iconPosition="start"
                             {...a11yProps(2)}
                         />
                         <Tab
                             label="Analytics"
-                            icon={<AnalyticsIcon />}
+                            icon={<ChartBarIcon className="w-5 h-5" />}
                             iconPosition="start"
                             {...a11yProps(3)}
                         />
@@ -321,11 +321,8 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             <Card variant="outlined">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
-                                        <PersonIcon
-                                            sx={{
-                                                mr: 1,
-                                                verticalAlign: 'middle',
-                                            }}
+                                        <UserIcon
+                                            className="w-5 h-5 mr-1 inline align-middle"
                                         />
                                         Account Details
                                     </Typography>
@@ -403,11 +400,8 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                             <Card variant="outlined">
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
-                                        <SecurityIcon
-                                            sx={{
-                                                mr: 1,
-                                                verticalAlign: 'middle',
-                                            }}
+                                        <ShieldCheckIcon
+                                            className="w-5 h-5 mr-1 inline align-middle"
                                         />
                                         Security Overview
                                     </Typography>
@@ -486,11 +480,8 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 <Card variant="outlined">
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
-                                            <LocationIcon
-                                                sx={{
-                                                    mr: 1,
-                                                    verticalAlign: 'middle',
-                                                }}
+                                            <MapPinIcon
+                                                className="w-5 h-5 mr-1 inline align-middle"
                                             />
                                             Territory & Coverage
                                         </Typography>
@@ -537,11 +528,8 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                 <Card variant="outlined">
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
-                                            <BusinessIcon
-                                                sx={{
-                                                    mr: 1,
-                                                    verticalAlign: 'middle',
-                                                }}
+                                            <BuildingOfficeIcon
+                                                className="w-5 h-5 mr-1 inline align-middle"
                                             />
                                             Assigned Principals
                                         </Typography>
@@ -637,7 +625,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                                     <List dense>
                                         <ListItem>
                                             <ListItemIcon>
-                                                <SecurityIcon color="success" />
+                                                <ShieldCheckIcon className="w-5 h-5 text-green-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Strong password"
@@ -647,7 +635,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
 
                                         <ListItem>
                                             <ListItemIcon>
-                                                <SecurityIcon color="success" />
+                                                <ShieldCheckIcon className="w-5 h-5 text-green-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Secure connections"
@@ -657,7 +645,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
 
                                         <ListItem>
                                             <ListItemIcon>
-                                                <SecurityIcon color="success" />
+                                                <ShieldCheckIcon className="w-5 h-5 text-green-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Recent activity normal"

@@ -23,18 +23,17 @@ import {
     Divider,
     IconButton,
     Button,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    AttachMoney as MoneyIcon,
-    TrendingUp as TrendingUpIcon,
-    History as HistoryIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LinkedIn as LinkedInIcon,
-    Inventory as ProductIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon,
+    UserIcon,
+    CurrencyDollarIcon,
+    ArrowTrendingUpIcon,
+    ClockIcon,
+    PhoneIcon,
+    EnvelopeIcon,
+    CubeIcon,
+} from '@heroicons/react/24/outline';
 import { Deal } from '../types';
 import { getStageInfo, calculateStageProgress } from './stages';
 
@@ -142,12 +141,8 @@ const OpportunityHeader = () => {
                                     },
                                 }}
                             >
-                                <MoneyIcon
-                                    sx={{
-                                        mr: 1,
-                                        color: 'success.main',
-                                        fontSize: 32,
-                                    }}
+                                <CurrencyDollarIcon
+                                    className="w-8 h-8 mr-1 text-green-600"
                                 />
                                 <Typography
                                     variant="h3"
@@ -192,7 +187,7 @@ const OpportunityDetails = () => {
                     gutterBottom
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
-                    <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <BuildingOfficeIcon className="w-5 h-5 mr-1 text-blue-600" />
                     Opportunity Details
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -297,7 +292,7 @@ const StageProgress = () => {
                     gutterBottom
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
-                    <TrendingUpIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <ArrowTrendingUpIcon className="w-5 h-5 mr-1 text-blue-600" />
                     Pipeline Progress
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -368,7 +363,7 @@ const ContactInfo = () => {
                     gutterBottom
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
-                    <PersonIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <UserIcon className="w-5 h-5 mr-1 text-blue-600" />
                     Contact Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -393,7 +388,7 @@ const ContactInfo = () => {
                                 </Button>
 
                                 <Button
-                                    startIcon={<EmailIcon />}
+                                    startIcon={<EnvelopeIcon className="w-4 h-4" />}
                                     variant="outlined"
                                     size="small"
                                     fullWidth
@@ -404,7 +399,6 @@ const ContactInfo = () => {
 
                                 {record.contact?.linkedInUrl && (
                                     <Button
-                                        startIcon={<LinkedInIcon />}
                                         variant="outlined"
                                         size="small"
                                         fullWidth
@@ -437,7 +431,7 @@ const ProductInfo = () => {
                     gutterBottom
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
-                    <ProductIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <CubeIcon className="w-5 h-5 mr-1 text-blue-600" />
                     Product Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -478,7 +472,7 @@ const InteractionTimeline = () => {
                     gutterBottom
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
-                    <HistoryIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <ClockIcon className="w-5 h-5 mr-1 text-blue-600" />
                     Interaction Timeline
                 </Typography>
                 <Divider sx={{ mb: 2 }} />

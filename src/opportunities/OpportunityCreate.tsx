@@ -16,10 +16,7 @@ import {
     CardContent,
     Grid,
     Typography,
-    Slider,
-    FormControl,
-    FormLabel,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FOOD_SERVICE_PIPELINE_STAGES } from './stages';
@@ -182,7 +179,7 @@ const OpportunityForm = () => {
 
                             <Grid item xs={12} md={6}>
                                 <DateInput
-                                    source="expectedClosingDate"
+                                    source="expected_close_date"
                                     label="Expected Close Date"
                                     fullWidth
                                     helperText="When do you expect to close this deal?"
@@ -236,42 +233,31 @@ const ProbabilitySlider = () => {
     const { setValue, watch } = useFormContext();
     const probability = watch('probability') || 50;
 
-    const handleChange = (event: Event, newValue: number | number[]) => {
-        setValue('probability', newValue as number, { shouldDirty: true });
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue('probability', parseInt(event.target.value), { shouldDirty: true });
     };
 
     return (
-        <FormControl fullWidth>
-            <FormLabel component="legend" sx={{ mb: 2 }}>
+        <Box className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
                 Probability of Closing: {probability}%
-            </FormLabel>
-            <Slider
+            </label>
+            <input
+                type="range"
                 value={probability}
                 onChange={handleChange}
-                valueLabelDisplay="auto"
                 step={5}
-                marks={[
-                    { value: 0, label: '0%' },
-                    { value: 25, label: '25%' },
-                    { value: 50, label: '50%' },
-                    { value: 75, label: '75%' },
-                    { value: 100, label: '100%' },
-                ]}
                 min={0}
                 max={100}
-                sx={{
-                    '& .MuiSlider-thumb': {
-                        height: 24,
-                        width: 24,
-                    },
-                    '& .MuiSlider-track': {
-                        height: 6,
-                    },
-                    '& .MuiSlider-rail': {
-                        height: 6,
-                    },
-                }}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
             />
-        </FormControl>
+            <Box className="flex justify-between text-xs text-gray-600 mt-2">
+                <span>0%</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>100%</span>
+            </Box>
+        </Box>
     );
 };
