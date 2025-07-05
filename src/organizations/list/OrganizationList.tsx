@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
     TopToolbar,
     ExportButton,
@@ -24,7 +25,6 @@ import {
     MapIcon,
     MapPinIcon,
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
 import { OrganizationMapView } from './OrganizationMapView';
 import { useTerritoryFilter } from '../../hooks/useTerritoryFilter';
@@ -106,7 +106,7 @@ const OrganizationListActions = () => {
                 maxWidth={false}
                 fullScreen={isFullScreen}
                 PaperProps={{
-                    sx: {
+                    style: {
                         width: isFullScreen ? '100%' : '90vw',
                         height: isFullScreen ? '100%' : '90vh',
                         maxWidth: 'none',
@@ -114,7 +114,7 @@ const OrganizationListActions = () => {
                     },
                 }}
             >
-                <DialogContent sx={{ p: 0, height: '100%' }}>
+                <DialogContent className="p-0 h-full">
                     <OrganizationMapView onClose={() => setShowMap(false)} />
                 </DialogContent>
             </Dialog>

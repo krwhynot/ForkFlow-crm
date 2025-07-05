@@ -1,14 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import {
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
-    InputAdornment,
-    Slider,
-} from '@mui/material';
-import {
     Box,
     Typography,
     Stack,
@@ -17,6 +8,8 @@ import {
     Paper,
     Chip,
     Divider,
+    Select,
+    TextField,
 } from '@/components/ui-kit';
 import {
     BuildingOfficeIcon as BusinessIcon,
@@ -178,97 +171,60 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                     <Grid container spacing={3}>
                         {/* Priority */}
                         <Grid item xs={12} md={6}>
-                            <FormControl
-                                fullWidth
+                            <Select
+                                value={formData.priorityId || ''}
+                                onValueChange={(value: string) =>
+                                    handleFieldChange('priorityId', value)
+                                }
+                                label="Priority Level"
                                 error={!!validationErrors.priorityId}
+                                helperText={
+                                    validationErrors.priorityId ||
+                                    'Helps prioritize follow-up and attention'
+                                }
+                                className="min-h-14"
                             >
-                                <InputLabel>Priority Level</InputLabel>
-                                <Select
-                                    value={formData.priorityId || ''}
-                                    label="Priority Level"
-                                    onChange={e =>
-                                        handleFieldChange(
-                                            'priorityId',
-                                            e.target.value
-                                        )
-                                    }
-                                    sx={{ minHeight: '56px' }}
-                                >
-                                    <MenuItem value="">
-                                        <em>Select priority level</em>
-                                    </MenuItem>
-                                    {(prioritySettings || priorityOptions).map(
-                                        option => {
-                                            // Use prioritySettings if available, otherwise use default options
-                                            const setting =
-                                                prioritySettings?.find(
-                                                    s => s.id === option.id
-                                                );
-                                            const displayOption = setting
-                                                ? {
-                                                      value: setting.id,
-                                                      label: setting.label,
-                                                      color: setting.color,
-                                                      icon: setting.label
-                                                          .toLowerCase()
-                                                          .includes('high')
-                                                          ? '🔴'
-                                                          : setting.label
-                                                                  .toLowerCase()
-                                                                  .includes(
-                                                                      'medium'
-                                                                  )
-                                                            ? '🟡'
-                                                            : '🟢',
-                                                      description:
-                                                          setting.description ||
-                                                          '',
-                                                  }
-                                                : option;
+                                <option value="">Select priority level</option>
+                                {(prioritySettings || priorityOptions).map(
+                                    option => {
+                                        // Use prioritySettings if available, otherwise use default options
+                                        const setting = prioritySettings?.find(
+                                            s => s.id === option.id
+                                        );
+                                        const displayOption = setting
+                                            ? {
+                                                  value: setting.id,
+                                                  label: setting.label,
+                                                  color: setting.color,
+                                                  icon: setting.label
+                                                      .toLowerCase()
+                                                      .includes('high')
+                                                      ? '🔴'
+                                                      : setting.label
+                                                              .toLowerCase()
+                                                              .includes('medium')
+                                                        ? '🟡'
+                                                        : '🟢',
+                                                  description:
+                                                      setting.description || '',
+                                              }
+                                            : option;
 
-                                            return (
-                                                <MenuItem
-                                                    key={displayOption.value}
-                                                    value={displayOption.value}
-                                                >
-                                                    <Box className="flex items-center gap-4">
-                                                        <Box className="text-base">
-                                                            {displayOption.icon}
-                                                        </Box>
-                                                        <Box className="">
-                                                            <Typography
-                                                                variant="subtitle2"
-                                                                style={{
-                                                                    color: displayOption.color,
-                                                                }}
-                                                            >
-                                                                {
-                                                                    displayOption.label
-                                                                }
-                                                            </Typography>
-                                                            {!isMobile &&
-                                                                displayOption.description && (
-                                                                    <Typography
-                                                                        variant="caption"
-                                                                        className="text-gray-600"
-                                                                    >
-                                                                        {
-                                                                            displayOption.description
-                                                                        }
-                                                                    </Typography>
-                                                                )}
-                                                        </Box>
-                                                    </Box>
-                                                </MenuItem>
-                                            );
-                                        }
-                                    )}
-                                </Select>
-                                <FormHelperText>
-                                    {validationErrors.priorityId ||
-                                        'Helps prioritize follow-up and attention'}
-                                </FormHelperText>
-                            </FormControl>
+                                        return (
+                                            <option
+                                                key={displayOption.value}
+                                                value={displayOption.value}
+                                            >
+                                                {displayOption.icon}{' '}
+                                                {displayOption.label}
+                                                {!isMobile &&
+                                                    displayOption.description &&
+                                                    ` - ${displayOption.description}`}
+                                            </option>
+                                        );
+                                    }
+                                )}
+                            </Select>
                         </Grid>
 
                         {/* Business Segment */}

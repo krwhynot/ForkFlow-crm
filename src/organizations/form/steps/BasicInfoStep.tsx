@@ -1,19 +1,13 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import {
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
-    InputAdornment,
-} from '@mui/material';
-import {
     Box,
     Typography,
     Stack,
     Alert,
     Chip,
     CircularProgress,
+    Select,
+    TextField,
 } from '@/components/ui-kit';
 import {
     TextInput,
@@ -155,18 +149,19 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                 <FormDataConsumer>
                     {({ formData: currentData }) => (
                         <Box className="">
-                            <TextInput
-                                source="name"
+                            <TextField
+                                name="name"
                                 label="Organization Name"
-                                validate={required()}
+                                required
                                 fullWidth
+                                value={formData.name || ''}
                                 onChange={e =>
                                     handleFieldChange('name', e.target.value)
                                 }
                                 helperText={
                                     isValidating ? (
                                         <Box className="flex items-center gap-2">
-                                            <CircularProgress size={12} />
+                                            <CircularProgress size="small" />
                                             <span>Validating...</span>
                                         </Box>
                                     ) : hasNameErrors ? (
@@ -178,27 +173,19 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                                     )
                                 }
                                 error={hasNameErrors}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            {isValidating ? (
-                                                <CircularProgress size={16} />
-                                            ) : hasNameErrors ? (
-                                                <ErrorIcon className="w-4 h-4 text-red-600" />
-                                            ) : hasNameWarnings ? (
-                                                <WarningIcon className="w-4 h-4 text-yellow-600" />
-                                            ) : formData.name &&
-                                              formData.name.length > 2 ? (
-                                                <CheckIcon className="w-4 h-4 text-green-600" />
-                                            ) : null}
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        minHeight: '56px',
-                                    },
-                                }}
+                                endAdornment={
+                                    isValidating ? (
+                                        <CircularProgress size="small" />
+                                    ) : hasNameErrors ? (
+                                        <ErrorIcon className="w-4 h-4 text-red-600" />
+                                    ) : hasNameWarnings ? (
+                                        <WarningIcon className="w-4 h-4 text-yellow-600" />
+                                    ) : formData.name &&
+                                      formData.name.length > 2 ? (
+                                        <CheckIcon className="w-4 h-4 text-green-600" />
+                                    ) : null
+                                }
+                                className="min-h-14"
                             />
 
                             {/* Enhanced Validation Feedback */}
@@ -214,60 +201,32 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                 </FormDataConsumer>
 
                 {/* Business Type with Enhanced Validation */}
-                <FormControl fullWidth error={hasBusinessTypeErrors}>
-                    <InputLabel id="business-type-label">
-                        Business Type
-                    </InputLabel>
+                <div className="w-full">
                     <Select
-                        labelId="business-type-label"
                         value={formData.business_type || ''}
-                        label="Business Type"
-                        onChange={e =>
-                            handleFieldChange('business_type', e.target.value)
+                        onValueChange={(value: string) =>
+                            handleFieldChange('business_type', value)
                         }
-                        sx={{ minHeight: '56px' }}
+                        label="Business Type"
+                        error={hasBusinessTypeErrors}
+                        helperText={
+                            hasBusinessTypeErrors
+                                ? businessTypeErrors[0]?.message
+                                : 'Select the primary business type'
+                        }
+                        className="min-h-14"
                     >
                         {businessTypes.map(type => (
-                            <MenuItem
+                            <option
                                 key={type.value}
                                 value={type.value}
-                                sx={{ py: 1.5 }}
+                                className="py-3"
                             >
-                                <Box className="flex items-center gap-4 w-full">
-                                    <Box
-                                        className="w-8 h-8 flex items-center justify-center rounded text-base"
-                                        style={{
-                                            backgroundColor: `${type.color}15`,
-                                        }}
-                                    >
-                                        {type.icon}
-                                    </Box>
-                                    <Box className="flex-1">
-                                        <Typography
-                                            variant="subtitle2"
-                                            style={{ color: type.color }}
-                                        >
-                                            {type.label}
-                                        </Typography>
-                                        {!isMobile && (
-                                            <Typography
-                                                variant="caption"
-                                                className="text-gray-600"
-                                            >
-                                                {type.description}
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                </Box>
-                            </MenuItem>
+                                {type.icon} {type.label} - {type.description}
+                            </option>
                         ))}
                     </Select>
-                    <FormHelperText>
-                        {hasBusinessTypeErrors
-                            ? businessTypeErrors[0]?.message
-                            : 'Select the primary business type'}
-                    </FormHelperText>
-                </FormControl>
+                </div>
 
                 {/* Business Type Validation Indicator */}
                 <FieldValidationIndicator
@@ -330,17 +289,17 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
 
                 {/* Additional Business Type Input for 'Other' */}
                 {formData.business_type === 'other' && (
-                    <TextInput
-                        source="custom_business_type"
+                    <TextField
+                        name="custom_business_type"
                         label="Specify Business Type"
                         fullWidth
+                        value={formData.custom_business_type || ''}
+                        onChange={e =>
+                            handleFieldChange('custom_business_type', e.target.value)
+                        }
                         helperText="Please specify the type of business"
-                        validate={required()}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                minHeight: '56px',
-                            },
-                        }}
+                        required
+                        className="min-h-14"
                     />
                 )}
 
