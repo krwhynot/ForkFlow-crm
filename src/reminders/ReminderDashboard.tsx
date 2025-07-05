@@ -9,14 +9,14 @@ import {
     Button,
     Alert,
     CircularProgress,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    NotificationsActive as ReminderIcon,
-    Schedule as ScheduleIcon,
-    WarningAmber as OverdueIcon,
-    CheckCircle as CompleteIcon,
-    Add as AddIcon,
-} from '@mui/icons-material';
+    BellIcon as ReminderIcon,
+    ClockIcon as ScheduleIcon,
+    ExclamationTriangleIcon as OverdueIcon,
+    CheckCircleIcon as CompleteIcon,
+    PlusIcon as AddIcon,
+} from '@heroicons/react/24/outline';
 import { Reminder } from '../types';
 
 interface ReminderStatsProps {
@@ -71,46 +71,49 @@ const ReminderStats = ({ reminders }: ReminderStatsProps) => {
     ];
 
     return (
-        <Box
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: 2,
-                mb: 3,
-            }}
-        >
-            {stats.map(stat => (
-                <Card
-                    key={stat.label}
-                    sx={{
-                        bgcolor: `${stat.color}.light`,
-                        color: `${stat.color}.contrastText`,
-                    }}
-                >
-                    <CardContent
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            p: 2,
-                            '&:last-child': { pb: 2 },
-                        }}
+        <Box className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {stats.map(stat => {
+                const colorClasses = {
+                    error: 'bg-red-100 text-red-900 border-red-200',
+                    warning: 'bg-yellow-100 text-yellow-900 border-yellow-200',
+                    info: 'bg-blue-100 text-blue-900 border-blue-200',
+                    success: 'bg-green-100 text-green-900 border-green-200',
+                };
+                
+                const iconClasses = {
+                    error: 'text-red-600',
+                    warning: 'text-yellow-600',
+                    info: 'text-blue-600',
+                    success: 'text-green-600',
+                };
+
+                return (
+                    <Card
+                        key={stat.label}
+                        className={`${colorClasses[stat.color as keyof typeof colorClasses]} border`}
                     >
-                        <Box sx={{ mr: 2 }}>{stat.icon}</Box>
-                        <Box>
-                            <Typography
-                                variant="h4"
-                                component="div"
-                                sx={{ fontWeight: 'bold' }}
-                            >
-                                {stat.count}
-                            </Typography>
-                            <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                                {stat.label}
-                            </Typography>
-                        </Box>
-                    </CardContent>
-                </Card>
-            ))}
+                        <CardContent className="flex items-center p-4">
+                            <Box className="mr-4">
+                                {React.cloneElement(stat.icon, { 
+                                    className: `w-8 h-8 ${iconClasses[stat.color as keyof typeof iconClasses]}` 
+                                })}
+                            </Box>
+                            <Box>
+                                <Typography
+                                    variant="h4"
+                                    component="div"
+                                    className="font-bold text-2xl"
+                                >
+                                    {stat.count}
+                                </Typography>
+                                <Typography variant="body2" className="opacity-90">
+                                    {stat.label}
+                                </Typography>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                );
+            })}
         </Box>
     );
 };
@@ -161,27 +164,20 @@ const UpcomingReminders = ({ reminders }: UpcomingRemindersProps) => {
         new Date(dateString).toDateString() === today;
 
     return (
-        <Box
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                gap: 2,
-            }}
-        >
+        <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Urgent Reminders */}
             <Card>
                 <CardContent>
                     <Typography
                         variant="h6"
-                        gutterBottom
-                        sx={{ display: 'flex', alignItems: 'center' }}
+                        className="flex items-center mb-2"
                     >
-                        <OverdueIcon sx={{ mr: 1, color: 'error.main' }} />
+                        <OverdueIcon className="w-5 h-5 mr-2 text-red-600" />
                         Urgent Attention
                     </Typography>
 
                     {urgentReminders.length === 0 ? (
-                        <Typography color="text.secondary">
+                        <Typography className="text-gray-600">
                             No urgent reminders. Great job staying on top of
                             things!
                         </Typography>
@@ -190,23 +186,12 @@ const UpcomingReminders = ({ reminders }: UpcomingRemindersProps) => {
                             {urgentReminders.map(reminder => (
                                 <Box
                                     key={reminder.id}
-                                    sx={{
-                                        mb: 2,
-                                        pb: 2,
-                                        borderBottom: '1px solid #eee',
-                                    }}
+                                    className="mb-4 pb-4 border-b border-gray-200 last:border-b-0"
                                 >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'flex-start',
-                                            mb: 1,
-                                        }}
-                                    >
+                                    <Box className="flex justify-between items-start mb-2">
                                         <Typography
                                             variant="subtitle2"
-                                            sx={{ fontWeight: 600 }}
+                                            className="font-semibold"
                                         >
                                             {reminder.title}
                                         </Typography>
@@ -230,14 +215,13 @@ const UpcomingReminders = ({ reminders }: UpcomingRemindersProps) => {
                                     </Box>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
-                                        sx={{ mb: 1 }}
+                                        className="text-gray-600 mb-2"
                                     >
                                         {reminder.customer_name}
                                     </Typography>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         {isDueToday(reminder.reminder_date)
                                             ? `Today at ${formatTime(reminder.reminder_date)}`
@@ -247,14 +231,14 @@ const UpcomingReminders = ({ reminders }: UpcomingRemindersProps) => {
                                     </Typography>
                                 </Box>
                             ))}
-                            <Button
-                                component={Link}
-                                to="/reminders"
-                                size="small"
-                                sx={{ mt: 1 }}
-                            >
-                                View All Reminders
-                            </Button>
+                            <Link to="/reminders">
+                                <Button
+                                    size="small"
+                                    className="mt-2"
+                                >
+                                    View All Reminders
+                                </Button>
+                            </Link>
                         </Box>
                     )}
                 </CardContent>
@@ -265,55 +249,49 @@ const UpcomingReminders = ({ reminders }: UpcomingRemindersProps) => {
                 <CardContent>
                     <Typography
                         variant="h6"
-                        gutterBottom
-                        sx={{ display: 'flex', alignItems: 'center' }}
+                        className="flex items-center mb-2"
                     >
-                        <ScheduleIcon sx={{ mr: 1, color: 'info.main' }} />
+                        <ScheduleIcon className="w-5 h-5 mr-2 text-blue-600" />
                         Coming Up
                     </Typography>
 
                     {upcomingReminders.length === 0 ? (
                         <Box>
-                            <Typography color="text.secondary" sx={{ mb: 2 }}>
+                            <Typography className="text-gray-600 mb-4">
                                 No upcoming reminders scheduled.
                             </Typography>
-                            <Button
-                                component={Link}
-                                to="/reminders/create"
-                                variant="outlined"
-                                startIcon={<AddIcon />}
-                                size="small"
-                            >
-                                Add Reminder
-                            </Button>
+                            <Link to="/reminders/create">
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<AddIcon className="w-4 h-4" />}
+                                    size="small"
+                                >
+                                    Add Reminder
+                                </Button>
+                            </Link>
                         </Box>
                     ) : (
                         <Box>
                             {upcomingReminders.map(reminder => (
                                 <Box
                                     key={reminder.id}
-                                    sx={{
-                                        mb: 2,
-                                        pb: 2,
-                                        borderBottom: '1px solid #eee',
-                                    }}
+                                    className="mb-4 pb-4 border-b border-gray-200 last:border-b-0"
                                 >
                                     <Typography
                                         variant="subtitle2"
-                                        sx={{ fontWeight: 600, mb: 1 }}
+                                        className="font-semibold mb-2"
                                     >
                                         {reminder.title}
                                     </Typography>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
-                                        sx={{ mb: 1 }}
+                                        className="text-gray-600 mb-2"
                                     >
                                         {reminder.customer_name}
                                     </Typography>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         {new Date(
                                             reminder.reminder_date
@@ -322,15 +300,15 @@ const UpcomingReminders = ({ reminders }: UpcomingRemindersProps) => {
                                     </Typography>
                                 </Box>
                             ))}
-                            <Button
-                                component={Link}
-                                to="/reminders/create"
-                                size="small"
-                                startIcon={<AddIcon />}
-                                sx={{ mt: 1 }}
-                            >
-                                Add New Reminder
-                            </Button>
+                            <Link to="/reminders/create">
+                                <Button
+                                    size="small"
+                                    startIcon={<AddIcon className="w-4 h-4" />}
+                                    className="mt-2"
+                                >
+                                    Add New Reminder
+                                </Button>
+                            </Link>
                         </Box>
                     )}
                 </CardContent>
@@ -354,7 +332,7 @@ export const ReminderDashboard = () => {
 
     if (isLoading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+            <Box className="flex justify-center p-8">
                 <CircularProgress />
             </Box>
         );
@@ -362,7 +340,7 @@ export const ReminderDashboard = () => {
 
     if (error) {
         return (
-            <Alert severity="error" sx={{ m: 2 }}>
+            <Alert severity="error" className="m-4">
                 Error loading reminders. Please try again.
             </Alert>
         );
@@ -370,7 +348,7 @@ export const ReminderDashboard = () => {
 
     return (
         <Box>
-            <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
+            <Typography variant="h5" className="mb-6 font-semibold">
                 Follow-up Reminders
             </Typography>
 
