@@ -6,19 +6,20 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TableSortLabel,
     Paper,
     Avatar,
     Chip,
     IconButton,
     Box,
     Typography,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Edit as EditIcon,
-    Visibility as ViewIcon,
-    Business as BusinessIcon,
-} from '@mui/icons-material';
+    PencilIcon as EditIcon,
+    EyeIcon as ViewIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    ChevronUpIcon,
+    ChevronDownIcon,
+} from '@heroicons/react/24/outline';
 import { Organization, OrganizationListViewMode } from '../../types';
 
 interface OrganizationTableProps {
@@ -40,6 +41,29 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
         // TODO: Implement sorting logic
         console.log('Sort by:', field);
     };
+
+    // Custom sort label component
+    const SortLabel = ({ field, children, active, direction, onClick }: { 
+        field: string; 
+        children: React.ReactNode; 
+        active: boolean; 
+        direction: 'asc' | 'desc'; 
+        onClick: () => void 
+    }) => (
+        <button
+            onClick={onClick}
+            className="flex items-center gap-1 text-left hover:text-blue-600 transition-colors"
+        >
+            {children}
+            {active && (
+                direction === 'asc' ? (
+                    <ChevronUpIcon className="w-4 h-4" />
+                ) : (
+                    <ChevronDownIcon className="w-4 h-4" />
+                )
+            )}
+        </button>
+    );
 
     const formatRevenue = (revenue?: number) => {
         if (!revenue) return 'N/A';
@@ -78,7 +102,7 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
     if (loading) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Box className="p-6 text-center">
                 <Typography>Loading organizations...</Typography>
             </Box>
         );
@@ -86,8 +110,8 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
 
     if (organizations.length === 0) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="h6" color="text.secondary">
+            <Box className="p-6 text-center">
+                <Typography variant="h6" className="text-gray-500">
                     No organizations found
                 </Typography>
             </Box>
@@ -95,75 +119,60 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
     }
 
     return (
-        <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <TableContainer component={Paper} className="mt-4">
             <Table stickyHeader aria-label="organizations table">
                 <TableHead>
                     <TableRow>
                         <TableCell>
-                            <TableSortLabel
+                            <SortLabel
+                                field="name"
                                 active={viewMode.sortField === 'name'}
-                                direction={
-                                    viewMode.sortOrder.toLowerCase() as
-                                        | 'asc'
-                                        | 'desc'
-                                }
+                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                 onClick={() => handleSort('name')}
                             >
                                 Organization
-                            </TableSortLabel>
+                            </SortLabel>
                         </TableCell>
                         <TableCell>
-                            <TableSortLabel
+                            <SortLabel
+                                field="business_type"
                                 active={viewMode.sortField === 'business_type'}
-                                direction={
-                                    viewMode.sortOrder.toLowerCase() as
-                                        | 'asc'
-                                        | 'desc'
-                                }
+                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                 onClick={() => handleSort('business_type')}
                             >
                                 Type
-                            </TableSortLabel>
+                            </SortLabel>
                         </TableCell>
                         <TableCell>Contact</TableCell>
                         <TableCell>
-                            <TableSortLabel
+                            <SortLabel
+                                field="revenue"
                                 active={viewMode.sortField === 'revenue'}
-                                direction={
-                                    viewMode.sortOrder.toLowerCase() as
-                                        | 'asc'
-                                        | 'desc'
-                                }
+                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                 onClick={() => handleSort('revenue')}
                             >
                                 Revenue
-                            </TableSortLabel>
+                            </SortLabel>
                         </TableCell>
                         <TableCell>
-                            <TableSortLabel
+                            <SortLabel
+                                field="nb_contacts"
                                 active={viewMode.sortField === 'nb_contacts'}
-                                direction={
-                                    viewMode.sortOrder.toLowerCase() as
-                                        | 'asc'
-                                        | 'desc'
-                                }
+                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                 onClick={() => handleSort('nb_contacts')}
                             >
                                 Contacts
-                            </TableSortLabel>
+                            </SortLabel>
                         </TableCell>
                         <TableCell>
-                            <TableSortLabel
+                            <SortLabel
+                                field="nb_deals"
                                 active={viewMode.sortField === 'nb_deals'}
-                                direction={
-                                    viewMode.sortOrder.toLowerCase() as
-                                        | 'asc'
-                                        | 'desc'
-                                }
+                                direction={viewMode.sortOrder.toLowerCase() as 'asc' | 'desc'}
                                 onClick={() => handleSort('nb_deals')}
                             >
                                 Deals
-                            </TableSortLabel>
+                            </SortLabel>
                         </TableCell>
                         <TableCell>Priority</TableCell>
                         <TableCell>Status</TableCell>
@@ -175,37 +184,26 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                         <TableRow
                             key={org.id}
                             hover
-                            sx={{
-                                '&:last-child td, &:last-child th': {
-                                    border: 0,
-                                },
-                                cursor: 'pointer',
-                            }}
+                            className="cursor-pointer last:border-b-0"
                         >
                             <TableCell>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 2,
-                                    }}
-                                >
+                                <Box className="flex items-center gap-4">
                                     <Avatar
                                         src={org.logo}
-                                        sx={{ width: 40, height: 40 }}
+                                        className="w-10 h-10"
                                     >
-                                        <BusinessIcon />
+                                        <BusinessIcon className="w-5 h-5" />
                                     </Avatar>
                                     <Box>
                                         <Typography
                                             variant="subtitle2"
-                                            fontWeight="medium"
+                                            className="font-medium"
                                         >
                                             {org.name}
                                         </Typography>
                                         <Typography
                                             variant="caption"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             {org.city &&
                                                 org.stateAbbr &&
@@ -233,14 +231,14 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                     </Typography>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         {org.email}
                                     </Typography>
                                 </Box>
                             </TableCell>
                             <TableCell>
-                                <Typography variant="body2" fontWeight="medium">
+                                <Typography variant="body2" className="font-medium">
                                     {formatRevenue(org.revenue)}
                                 </Typography>
                             </TableCell>
@@ -279,26 +277,20 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                 )}
                             </TableCell>
                             <TableCell align="right">
-                                <Box sx={{ display: 'flex', gap: 0.5 }}>
+                                <Box className="flex gap-1">
                                     <IconButton
                                         size="small"
                                         aria-label={`View ${org.name}`}
-                                        sx={{
-                                            minHeight: '32px',
-                                            minWidth: '32px',
-                                        }}
+                                        className="min-h-8 min-w-8"
                                     >
-                                        <ViewIcon fontSize="small" />
+                                        <ViewIcon className="w-4 h-4" />
                                     </IconButton>
                                     <IconButton
                                         size="small"
                                         aria-label={`Edit ${org.name}`}
-                                        sx={{
-                                            minHeight: '32px',
-                                            minWidth: '32px',
-                                        }}
+                                        className="min-h-8 min-w-8"
                                     >
-                                        <EditIcon fontSize="small" />
+                                        <EditIcon className="w-4 h-4" />
                                     </IconButton>
                                 </Box>
                             </TableCell>

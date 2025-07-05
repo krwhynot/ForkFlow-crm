@@ -4,27 +4,21 @@ import {
     CardContent,
     Grid,
     TextField,
-    MenuItem,
-    FormControl,
-    InputLabel,
     Select,
     Chip,
     Box,
     IconButton,
-    Collapse,
     Typography,
-    Slider,
     Stack,
     Autocomplete,
-    InputAdornment,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Search as SearchIcon,
-    ExpandMore as ExpandMoreIcon,
-    ExpandLess as ExpandLessIcon,
-    Clear as ClearIcon,
-    TuneIcon,
-} from '@mui/icons-material';
+    MagnifyingGlassIcon as SearchIcon,
+    ChevronDownIcon as ExpandMoreIcon,
+    ChevronUpIcon as ExpandLessIcon,
+    XMarkIcon as ClearIcon,
+    AdjustmentsHorizontalIcon as TuneIcon,
+} from '@heroicons/react/24/outline';
 import { useListContext } from 'react-admin';
 import { useDebounce } from '../hooks/useDebounce';
 import { OrganizationFilter } from '../../types';
@@ -145,75 +139,47 @@ export const AdvancedOrganizationFilter: React.FC = () => {
     };
 
     return (
-        <Card className="filter-container" sx={{ mb: 2 }}>
-            <CardContent sx={{ pb: 2 }}>
+        <Card className="filter-container mb-4">
+            <CardContent className="pb-4">
                 {/* Search and Toggle Row */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        gap: 2,
-                        alignItems: 'center',
-                        mb: expanded ? 2 : 0,
-                    }}
-                >
+                <Box className={`flex gap-4 items-center ${expanded ? 'mb-4' : ''}`}>
                     <TextField
-                        className="search-input"
+                        className="search-input flex-grow max-w-md"
                         placeholder="Search organizations..."
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                         size="small"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon color="action" />
-                                </InputAdornment>
-                            ),
-                            endAdornment: searchQuery && (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        size="small"
-                                        onClick={() => setSearchQuery('')}
-                                        edge="end"
-                                    >
-                                        <ClearIcon fontSize="small" />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        sx={{ flexGrow: 1, maxWidth: 400 }}
+                        startAdornment={
+                            <SearchIcon className="w-4 h-4 text-gray-400" />
+                        }
+                        endAdornment={searchQuery && (
+                            <IconButton
+                                size="small"
+                                onClick={() => setSearchQuery('')}
+                                className="p-1"
+                            >
+                                <ClearIcon className="w-4 h-4" />
+                            </IconButton>
+                        )}
                     />
 
                     <IconButton
                         onClick={() => setExpanded(!expanded)}
                         aria-label="toggle advanced filters"
-                        sx={{
-                            minHeight: '40px',
-                            minWidth: '40px',
-                            position: 'relative',
-                        }}
+                        className="min-h-10 min-w-10 relative"
                     >
-                        <TuneIcon />
+                        <TuneIcon className="w-4 h-4" />
                         {expanded ? (
-                            <ExpandLessIcon sx={{ ml: 0.5 }} />
+                            <ExpandLessIcon className="w-4 h-4 ml-1" />
                         ) : (
-                            <ExpandMoreIcon sx={{ ml: 0.5 }} />
+                            <ExpandMoreIcon className="w-4 h-4 ml-1" />
                         )}
                         {activeFiltersCount > 0 && (
                             <Chip
                                 label={activeFiltersCount}
                                 size="small"
                                 color="primary"
-                                sx={{
-                                    position: 'absolute',
-                                    top: -4,
-                                    right: -4,
-                                    height: 18,
-                                    minWidth: 18,
-                                    '& .MuiChip-label': {
-                                        fontSize: '0.7rem',
-                                        px: 0.5,
-                                    },
-                                }}
+                                className="absolute -top-1 -right-1 h-4 min-w-4 text-xs px-1"
                             />
                         )}
                     </IconButton>
@@ -223,86 +189,55 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                             onClick={clearAllFilters}
                             aria-label="clear all filters"
                             size="small"
-                            sx={{ minHeight: '40px', minWidth: '40px' }}
+                            className="min-h-10 min-w-10"
                         >
-                            <ClearIcon />
+                            <ClearIcon className="w-4 h-4" />
                         </IconButton>
                     )}
                 </Box>
 
                 {/* Advanced Filters */}
-                <Collapse in={expanded}>
-                    <Grid container spacing={2}>
+                <div className={`
+                    transition-all duration-300 ease-in-out overflow-hidden
+                    ${expanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}
+                `}>
+                    <Grid container spacing={4}>
                         {/* Priority Filter */}
                         <Grid item xs={12} sm={6} md={3}>
-                            <FormControl fullWidth size="small">
-                                <InputLabel>Priority</InputLabel>
-                                <Select
-                                    value={filterValues?.priority || ''}
-                                    onChange={e =>
-                                        handleFilterChange(
-                                            'priority',
-                                            e.target.value
-                                        )
-                                    }
-                                    label="Priority"
-                                >
-                                    <MenuItem value="">All Priorities</MenuItem>
-                                    {priorityOptions.map(option => (
-                                        <MenuItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: 1,
-                                                }}
-                                            >
-                                                <span>{option.icon}</span>
-                                                <span>{option.label}</span>
-                                            </Box>
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                            <Select
+                                value={filterValues?.priority || ''}
+                                onValueChange={(value: string) =>
+                                    handleFilterChange('priority', value)
+                                }
+                                label="Priority"
+                                size="small"
+                            >
+                                <option value="">All Priorities</option>
+                                {priorityOptions.map(option => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.icon} {option.label}
+                                    </option>
+                                ))}
+                            </Select>
                         </Grid>
 
                         {/* Status Filter */}
                         <Grid item xs={12} sm={6} md={3}>
-                            <FormControl fullWidth size="small">
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                    value={filterValues?.status || ''}
-                                    onChange={e =>
-                                        handleFilterChange(
-                                            'status',
-                                            e.target.value
-                                        )
-                                    }
-                                    label="Status"
-                                >
-                                    <MenuItem value="">All Statuses</MenuItem>
-                                    {statusOptions.map(option => (
-                                        <MenuItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: 1,
-                                                }}
-                                            >
-                                                <span>{option.icon}</span>
-                                                <span>{option.label}</span>
-                                            </Box>
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                            <Select
+                                value={filterValues?.status || ''}
+                                onValueChange={(value: string) =>
+                                    handleFilterChange('status', value)
+                                }
+                                label="Status"
+                                size="small"
+                            >
+                                <option value="">All Statuses</option>
+                                {statusOptions.map(option => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.icon} {option.label}
+                                    </option>
+                                ))}
+                            </Select>
                         </Grid>
 
                         {/* Business Type Filter */}

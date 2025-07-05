@@ -12,15 +12,15 @@ import {
     Tooltip,
     Snackbar,
     Alert,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Edit as EditIcon,
-    Business as BusinessIcon,
-    DragIndicator as DragIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    PencilIcon as EditIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    Bars3Icon as DragIcon,
+    PhoneIcon,
+    EnvelopeIcon as EmailIcon,
+    MapPinIcon as LocationIcon,
+} from '@heroicons/react/24/outline';
 import {
     DndContext,
     DragEndEvent,
@@ -121,77 +121,38 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
         <Card
             ref={setNodeRef}
             style={style}
-            sx={{
-                cursor: isDragging || isSortableDragging ? 'grabbing' : 'grab',
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                    transform:
-                        isDragging || isSortableDragging
-                            ? 'none'
-                            : 'translateY(-1px)',
-                    boxShadow: isDragging || isSortableDragging ? 'none' : 4,
-                },
-                minHeight: { xs: 140, sm: 160 }, // Mobile-optimized heights
-                touchAction: 'none', // Prevent scrolling while dragging on mobile
-            }}
+            className={`
+                ${isDragging || isSortableDragging ? 'cursor-grabbing' : 'cursor-grab'}
+                transition-all duration-200 ease-in-out
+                ${!isDragging && !isSortableDragging ? 'hover:-translate-y-0.5 hover:shadow-lg' : ''}
+                min-h-[140px] sm:min-h-[160px]
+                touch-none
+            `}
             {...attributes}
             {...listeners}
             onClick={() => onView?.(organization.id)}
         >
-            <CardContent
-                sx={{
-                    p: { xs: 1.5, sm: 2 },
-                    '&:last-child': { pb: { xs: 1.5, sm: 2 } },
-                }}
-            >
+            <CardContent className="p-3 sm:p-4 last:pb-3 sm:last:pb-4">
                 {/* Drag Handle & Organization Header */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: 1,
-                        mb: 1,
-                    }}
-                >
-                    <DragIcon
-                        fontSize="small"
-                        color="action"
-                        sx={{
-                            mt: 0.5,
-                            cursor: 'grab',
-                            opacity: 0.7,
-                            '&:hover': { opacity: 1 },
-                            minWidth: '20px', // Ensure touch target
-                            minHeight: '20px',
-                        }}
-                    />
+                <Box className="flex items-start gap-2 mb-2">
+                    <DragIcon className="w-5 h-5 mt-1 cursor-grab opacity-70 hover:opacity-100 min-w-[20px] min-h-[20px] text-gray-400" />
                     <Avatar
                         src={organization.logo}
-                        sx={{
-                            width: { xs: 28, sm: 32 },
-                            height: { xs: 28, sm: 32 },
-                        }}
+                        className="w-7 h-7 sm:w-8 sm:h-8"
                     >
-                        <BusinessIcon fontSize="small" />
+                        <BusinessIcon className="w-4 h-4" />
                     </Avatar>
-                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Box className="flex-grow min-w-0">
                         <Typography
                             variant={isMobile ? 'body2' : 'subtitle2'}
-                            sx={{
-                                fontWeight: 600,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                lineHeight: 1.2,
-                                mb: 0.25,
-                            }}
+                            className="font-semibold overflow-hidden text-ellipsis whitespace-nowrap leading-tight mb-1"
                         >
                             {organization.name}
                         </Typography>
                         {organization.business_type && (
                             <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 {organization.business_type}
                             </Typography>
@@ -200,12 +161,11 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                 </Box>
 
                 {/* Contact & Location - Compact */}
-                <Box sx={{ mb: 1 }}>
+                <Box className="mb-2">
                     {organization.contact_person && (
                         <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ display: 'block', mb: 0.25 }}
+                            className="block mb-1 text-gray-500"
                         >
                             👤 {organization.contact_person}
                         </Typography>
@@ -213,8 +173,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                     {(organization.city || organization.stateAbbr) && (
                         <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ display: 'block' }}
+                            className="block text-gray-500"
                         >
                             📍{' '}
                             {[organization.city, organization.stateAbbr]
@@ -225,16 +184,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                 </Box>
 
                 {/* Quick Actions & Priority */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mt: 'auto',
-                    }}
-                >
+                <Box className="flex justify-between items-center mt-auto">
                     {/* Quick Contact Actions */}
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    <Box className="flex gap-1">
                         {organization.phone && (
                             <Tooltip title="Call">
                                 <IconButton
@@ -242,13 +194,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                     onClick={e =>
                                         handleContactClick(e, 'phone')
                                     }
-                                    sx={{
-                                        minWidth: { xs: 32, sm: 36 },
-                                        minHeight: { xs: 32, sm: 36 },
-                                        color: 'primary.main',
-                                    }}
+                                    className="min-w-8 min-h-8 sm:min-w-9 sm:min-h-9 text-blue-600"
                                 >
-                                    <PhoneIcon fontSize="small" />
+                                    <PhoneIcon className="w-4 h-4" />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -259,26 +207,16 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                     onClick={e =>
                                         handleContactClick(e, 'email')
                                     }
-                                    sx={{
-                                        minWidth: { xs: 32, sm: 36 },
-                                        minHeight: { xs: 32, sm: 36 },
-                                        color: 'primary.main',
-                                    }}
+                                    className="min-w-8 min-h-8 sm:min-w-9 sm:min-h-9 text-blue-600"
                                 >
-                                    <EmailIcon fontSize="small" />
+                                    <EmailIcon className="w-4 h-4" />
                                 </IconButton>
                             </Tooltip>
                         )}
                     </Box>
 
                     {/* Priority & Edit */}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 0.5,
-                        }}
-                    >
+                    <Box className="flex items-center gap-1">
                         {organization.priority && (
                             <Chip
                                 label={organization.priority}
@@ -291,11 +229,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                           : 'success'
                                 }
                                 variant="filled"
-                                sx={{
-                                    fontSize: '0.65rem',
-                                    height: { xs: 18, sm: 20 },
-                                    minWidth: { xs: 50, sm: 60 },
-                                }}
+                                className="text-xs h-4 sm:h-5 min-w-12 sm:min-w-15"
                             />
                         )}
                         <Tooltip title="Edit">
@@ -305,12 +239,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                     e.stopPropagation();
                                     onEdit?.(organization.id);
                                 }}
-                                sx={{
-                                    minWidth: { xs: 32, sm: 36 },
-                                    minHeight: { xs: 32, sm: 36 },
-                                }}
+                                className="min-w-8 min-h-8 sm:min-w-9 sm:min-h-9"
                             >
-                                <EditIcon fontSize="small" />
+                                <EditIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -318,7 +249,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 
                 {/* Revenue Badge */}
                 {organization.revenue && (
-                    <Box sx={{ mt: 1 }}>
+                    <Box className="mt-2">
                         <Chip
                             label={new Intl.NumberFormat('en-US', {
                                 style: 'currency',
@@ -328,11 +259,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                             size="small"
                             color="primary"
                             variant="outlined"
-                            sx={{
-                                fontSize: '0.65rem',
-                                height: { xs: 18, sm: 20 },
-                                fontWeight: 600,
-                            }}
+                            className="text-xs h-4 sm:h-5 font-semibold"
                         />
                     </Box>
                 )}

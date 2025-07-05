@@ -12,19 +12,14 @@ import {
 import {
     Chip,
     IconButton,
-    Drawer,
+    Dialog,
+    DialogContent,
     Fab,
-    FormControl,
-    InputLabel,
     Select,
-    MenuItem,
-    Slider,
-    Switch,
-    FormControlLabel,
     Badge,
     Paper,
     Avatar,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     GoogleMap,
     LoadScript,
@@ -33,16 +28,16 @@ import {
     MarkerClusterer,
 } from '@react-google-maps/api';
 import {
-    Close as CloseIcon,
-    FilterList as FilterIcon,
-    MyLocation as MyLocationIcon,
-    Directions as DirectionsIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Business as BusinessIcon,
-    LocationOn as LocationIcon,
-    Visibility as VisibilityIcon,
-} from '@mui/icons-material';
+    XMarkIcon as CloseIcon,
+    FunnelIcon as FilterIcon,
+    MapPinIcon as MyLocationIcon,
+    MapIcon as DirectionsIcon,
+    PhoneIcon,
+    EnvelopeIcon as EmailIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    MapPinIcon as LocationIcon,
+    EyeIcon as VisibilityIcon,
+} from '@heroicons/react/24/outline';
 
 import { Organization, Setting } from '../../types';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
@@ -198,64 +193,64 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
 
     // Filter controls
     const FilterControls = () => (
-        <Paper sx={{ p: 2, mb: 2 }}>
+        <Paper className="p-4 mb-4">
             <Typography variant="h6" gutterBottom>
                 Map Filters
             </Typography>
 
-            <Stack spacing={2}>
+            <Stack spacing={4}>
                 {/* Segment Filter */}
-                <FormControl fullWidth size="small">
-                    <InputLabel>Business Segment</InputLabel>
+                <div className="w-full">
                     <Select
                         value={filters.segmentId}
-                        onChange={e =>
+                        onValueChange={(value: string) =>
                             setFilters(prev => ({
                                 ...prev,
-                                segmentId: e.target.value,
+                                segmentId: value,
                             }))
                         }
                         label="Business Segment"
+                        size="small"
                     >
-                        <MenuItem value="">All Segments</MenuItem>
+                        <option value="">All Segments</option>
                         {segments?.map(segment => (
-                            <MenuItem
+                            <option
                                 key={segment.id}
                                 value={segment.id.toString()}
                             >
                                 {segment.label}
-                            </MenuItem>
+                            </option>
                         ))}
                     </Select>
-                </FormControl>
+                </div>
 
                 {/* Priority Filter */}
-                <FormControl fullWidth size="small">
-                    <InputLabel>Priority</InputLabel>
+                <div className="w-full">
                     <Select
                         value={filters.priorityId}
-                        onChange={e =>
+                        onValueChange={(value: string) =>
                             setFilters(prev => ({
                                 ...prev,
-                                priorityId: e.target.value,
+                                priorityId: value,
                             }))
                         }
                         label="Priority"
+                        size="small"
                     >
-                        <MenuItem value="">All Priorities</MenuItem>
+                        <option value="">All Priorities</option>
                         {priorities?.map(priority => (
-                            <MenuItem
+                            <option
                                 key={priority.id}
                                 value={priority.id.toString()}
                             >
                                 {priority.label}
-                            </MenuItem>
+                            </option>
                         ))}
                     </Select>
-                </FormControl>
+                </div>
 
                 {/* Results Count */}
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" className="text-gray-500">
                     Showing {filteredOrganizations.length} organizations
                 </Typography>
             </Stack>
@@ -263,7 +258,7 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
     );
 
     return (
-        <Box sx={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+        <Box className="relative h-screen overflow-hidden">
             <LoadScript
                 googleMapsApiKey={
                     process.env.VITE_GOOGLE_MAPS_API_KEY ||
@@ -271,14 +266,7 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
                 }
                 libraries={libraries}
                 loadingElement={
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '100vh',
-                        }}
-                    >
+                    <Box className="flex justify-center items-center h-screen">
                         <Typography>Loading map...</Typography>
                     </Box>
                 }
@@ -366,8 +354,8 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
             </LoadScript>
 
             {/* Floating Action Buttons */}
-            <Box sx={{ position: 'absolute', bottom: 16, right: 16 }}>
-                <Stack spacing={1}>
+            <Box className="absolute bottom-4 right-4">
+                <Stack spacing={2}>
                     {/* Filter FAB */}
                     <Badge
                         badgeContent={
@@ -379,10 +367,10 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
                             color="secondary"
                             size="medium"
                             onClick={() => setShowFilters(true)}
-                            sx={{ minWidth: 44, minHeight: 44 }}
+                            className="min-w-11 min-h-11"
                             title="Show filters"
                         >
-                            <FilterIcon />
+                            <FilterIcon className="w-5 h-5" />
                         </Fab>
                     </Badge>
                 </Stack>
@@ -392,45 +380,30 @@ export const OrganizationMapView: React.FC<OrganizationMapViewProps> = ({
             {onClose && (
                 <IconButton
                     onClick={onClose}
-                    sx={{
-                        position: 'absolute',
-                        top: 16,
-                        left: 16,
-                        bgcolor: 'background.paper',
-                        minWidth: 44,
-                        minHeight: 44,
-                        '&:hover': { bgcolor: 'background.default' },
-                    }}
+                    className="absolute top-4 left-4 bg-white min-w-11 min-h-11 hover:bg-gray-100"
                 >
-                    <CloseIcon />
+                    <CloseIcon className="w-5 h-5" />
                 </IconButton>
             )}
 
-            {/* Filter Drawer */}
-            <Drawer
-                anchor="left"
+            {/* Filter Dialog */}
+            <Dialog
                 open={showFilters}
                 onClose={() => setShowFilters(false)}
-                PaperProps={{
-                    sx: { width: isMobile ? '100%' : 320, p: 2 },
-                }}
+                maxWidth={isMobile ? "lg" : "sm"}
+                fullWidth
             >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 2,
-                    }}
-                >
-                    <Typography variant="h6">Map Filters</Typography>
-                    <IconButton onClick={() => setShowFilters(false)}>
-                        <CloseIcon />
-                    </IconButton>
-                </Box>
+                <DialogContent className={`${isMobile ? 'w-full' : 'w-80'} p-4`}>
+                    <Box className="flex justify-between items-center mb-4">
+                        <Typography variant="h6">Map Filters</Typography>
+                        <IconButton onClick={() => setShowFilters(false)}>
+                            <CloseIcon className="w-5 h-5" />
+                        </IconButton>
+                    </Box>
 
-                <FilterControls />
-            </Drawer>
+                    <FilterControls />
+                </DialogContent>
+            </Dialog>
         </Box>
     );
 };
@@ -454,23 +427,23 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
     priorities,
 }) => {
     const segment = segments?.find(s => s.key === organization.segment);
-    const priority = priorities?.find(p => p.key === organization.priority);
+    const priority = priorities?.find((p: any) => p.key === organization.priority);
 
     return (
-        <Box sx={{ maxWidth: 300, p: 1 }}>
+        <Box className="max-w-[300px] p-2">
             <Typography variant="h6" gutterBottom>
                 {organization.name}
             </Typography>
 
             {/* Chips */}
-            <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+            <Stack direction="row" spacing={2} className="mb-4">
                 {priority && (
                     <Chip
                         label={priority.label}
                         size="small"
-                        sx={{
-                            bgcolor: priority.color || 'grey.300',
-                            color: 'white',
+                        className="text-white"
+                        style={{ 
+                            backgroundColor: priority.color || '#9ca3af',
                         }}
                     />
                 )}
@@ -479,14 +452,16 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
                         label={segment.label}
                         size="small"
                         variant="outlined"
-                        sx={{ borderColor: segment.color }}
+                        style={{ 
+                            borderColor: segment.color || '#d1d5db',
+                        }}
                     />
                 )}
             </Stack>
 
             {/* Address */}
             {organization.address && (
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant="body2" className="text-gray-500 mb-2">
                     {organization.address}
                     {organization.city && `, ${organization.city}`}
                     {organization.stateAbbr && `, ${organization.stateAbbr}`}
@@ -494,13 +469,13 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
             )}
 
             {/* Action Buttons */}
-            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+            <Stack direction="row" spacing={2} className="mt-4">
                 <Button
                     variant="contained"
                     size="small"
-                    startIcon={<DirectionsIcon />}
+                    startIcon={<DirectionsIcon className="w-4 h-4" />}
                     onClick={() => onGetDirections(organization)}
-                    sx={{ minHeight: 44 }}
+                    className="min-h-11"
                 >
                     Directions
                 </Button>
@@ -509,9 +484,9 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
                     <IconButton
                         onClick={() => onPhoneCall(organization.phone!)}
                         color="primary"
-                        sx={{ minWidth: 44, minHeight: 44 }}
+                        className="min-w-11 min-h-11"
                     >
-                        <PhoneIcon />
+                        <PhoneIcon className="w-4 h-4" />
                     </IconButton>
                 )}
 
@@ -519,9 +494,9 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
                     <IconButton
                         onClick={() => onEmail(organization.accountManager!)}
                         color="primary"
-                        sx={{ minWidth: 44, minHeight: 44 }}
+                        className="min-w-11 min-h-11"
                     >
-                        <EmailIcon />
+                        <EmailIcon className="w-4 h-4" />
                     </IconButton>
                 )}
 
@@ -529,9 +504,9 @@ const OrganizationInfoCard: React.FC<OrganizationInfoCardProps> = ({
                     component={Link}
                     to={`/organizations/${organization.id}/show`}
                     color="primary"
-                    sx={{ minWidth: 44, minHeight: 44 }}
+                    className="min-w-11 min-h-11"
                 >
-                    <VisibilityIcon />
+                    <VisibilityIcon className="w-4 h-4" />
                 </IconButton>
             </Stack>
         </Box>
