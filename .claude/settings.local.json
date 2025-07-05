@@ -85,7 +85,10 @@
       "Bash(cat:*)",
       "Bash(claude config --help)",
       "Bash(claude mcp:*)",
-      "Bash(claude:*)"
+      "Bash(claude:*)",
+      "Bash(exa mcp:*)",
+      "Bash(memory MCP server:*)",
+      "Bash(npm info:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

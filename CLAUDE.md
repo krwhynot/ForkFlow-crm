@@ -129,38 +129,6 @@ Unit tests use Vitest and are located alongside source files with `.test.ts` or 
 ## Development Wisdom
 - MCP tools are your best friend and should be use as often as possible
 
-## Solo Development Risk Management
-
-### Key Concerns and Issues
-
-**1. Effort Overload and Context Switching**  
-- **High Workload Risk:** Managing both frontend and backend tasks alone can lead to fatigue and reduced focus. Rapidly switching between UI design, API development, testing, and documentation increases the chance of mistakes and slows overall progress.  
-- **Mitigation:** Block dedicated time for each focus area, use Claude to draft code stubs and documentation, and schedule regular mental breaks to maintain clarity.
-
-**2. Reliance on AI Assistance and Hallucination Risk**  
-- **Accuracy Dependency:** Claude AI can accelerate coding but may generate incorrect or incomplete logic, especially for complex API behaviors and edge cases. Over-reliance without careful review can introduce subtle bugs.  
-- **Mitigation:** Rigorously review and test all AI-suggested code. Write unit and integration tests before trusting generated implementations.
-
-**3. API Contract Definition and Alignment**  
-- **Specification Drift:** Without a team to cross-check, it's easy to build endpoints that drift from intended request/response schemas. Inconsistencies lead to integration failures between frontend and backend.  
-- **Mitigation:** Define and maintain a single OpenAPI/Swagger file. Use Claude AI to generate both endpoint implementations and matching TypeScript client types.
-
-**4. Integration and Testing Overhead**  
-- **Testing Blind Spots:** One developer juggling coding and QA may overlook edge cases—pagination bugs, error handling gaps, or mobile-specific UI quirks.  
-- **Mitigation:** Automate tests with clear coverage goals (>80%). Leverage Claude to draft test cases and testing scripts, then validate manually on real devices.
-
-**5. Time Estimation and Schedule Slippage**  
-- **Underestimation Tendency:** Solo developers often underestimate queues of small tasks—code reviews, refactoring, CI setup. This leads to slipping deadlines.  
-- **Mitigation:** Add at least 30% buffer to all task estimates. Use Claude AI to generate time-tracking logs and daily progress summaries to catch slippage early.
-
-**6. Knowledge Gaps and Skill Limitations**  
-- **Full-Stack Demands:** One person must master React-admin UI, TypeScript, Supabase, API security, and mobile optimizations. Gaps in any area can bottleneck the entire project.  
-- **Mitigation:** Use Claude to generate learning plans and code examples for unfamiliar technologies. Reserve time each week for skill reinforcement.
-
-**7. Single Point of Failure**  
-- **Continuity Risk:** If the sole developer becomes unavailable or overloaded, project momentum halts. Relying on one individual increases delivery risk.  
-- **Mitigation:** Document architecture decisions, setup scripts, environment configs, and create an easily shareable project handbook with Claude's help to enable quick onboarding of additional help if needed.
-
 ## Schema and Type Management
 
 ### Field Name and Type Guidelines
@@ -261,6 +229,35 @@ Unit tests use Vitest and are located alongside source files with `.test.ts` or 
   onKeyDown={(e) => handleView(e as any)}
   ```
 
+**7. React-Admin Component Props Compatibility (TS2322)**
+- **Prevention**: Custom components used in Datagrid must accept react-admin field props
+- **Issue**: `Property 'label' does not exist on type 'IntrinsicAttributes'`
+- **Root Cause**: Custom chip components didn't define proper TypeScript interfaces for props
+- **Solution**: Add proper interfaces with `label`, `source`, and `record` props
+- **Example**:
+  ```typescript
+  // ❌ WRONG - Component without props interface
+  const CategoryChip = () => {
+    const record = useRecordContext<Product>();
+    return <Chip label={record?.category} />;
+  };
+  
+  // ✅ CORRECT - Component with proper props interface
+  interface CategoryChipProps {
+    label?: string;
+    source?: string; 
+    record?: Product;
+  }
+  
+  const CategoryChip: React.FC<CategoryChipProps> = ({ label, source, record: propRecord }) => {
+    const contextRecord = useRecordContext<Product>();
+    const record = propRecord || contextRecord;
+    return <Chip label={record?.category} />;
+  };
+  ```
+- **When Applied**: Custom field components used in Datagrid (e.g., `<CategoryChip label="Category" />`)
+- **Files Affected**: src/products/ProductList.tsx (CategoryChip, PrincipalChip components)
+
 ### Type Safety Best Practices
 
 **Null Safety Patterns**
@@ -316,35 +313,6 @@ If build is completely broken:
 // @ts-expect-error  # Better - documents expected error
 ```
 
-**7. React-Admin Component Props Compatibility (TS2322)**
-- **Prevention**: Custom components used in Datagrid must accept react-admin field props
-- **Issue**: `Property 'label' does not exist on type 'IntrinsicAttributes'`
-- **Root Cause**: Custom chip components didn't define proper TypeScript interfaces for props
-- **Solution**: Add proper interfaces with `label`, `source`, and `record` props
-- **Example**:
-  ```typescript
-  // ❌ WRONG - Component without props interface
-  const CategoryChip = () => {
-    const record = useRecordContext<Product>();
-    return <Chip label={record?.category} />;
-  };
-  
-  // ✅ CORRECT - Component with proper props interface
-  interface CategoryChipProps {
-    label?: string;
-    source?: string; 
-    record?: Product;
-  }
-  
-  const CategoryChip: React.FC<CategoryChipProps> = ({ label, source, record: propRecord }) => {
-    const contextRecord = useRecordContext<Product>();
-    const record = propRecord || contextRecord;
-    return <Chip label={record?.category} />;
-  };
-  ```
-- **When Applied**: Custom field components used in Datagrid (e.g., `<CategoryChip label="Category" />`)
-- **Files Affected**: src/products/ProductList.tsx (CategoryChip, PrincipalChip components)
-
 **Remember**: These rules prevent the 49% error reduction we achieved (85→43 errors) from regressing!
 
 ## Development Principles
@@ -361,3 +329,5 @@ ALWAYS follow the TypeScript Error Prevention Rules above to maintain code quali
 
 ## Reminder Guidelines
 - **ALWAYS ASK THE ADMIN TO INSTALL ANY ADDITIONAL PACKAGES TO THE SYSTEM!!!**
+
+➡️ **Continued in Claude_Part_2.md**

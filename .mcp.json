@@ -11,13 +11,39 @@
                 "EXA_API_KEY": "a9b28749-adac-4675-ac21-b6d6afbb65f1"
             }
         },
+        "playwright": {
+            "command": "npx",
+            "args": [
+              "@playwright/mcp@latest"
+            ]
+          },
+        "supabase": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@supabase/mcp-server-supabase@latest",
+                "--project-ref=sbrlujvekkpthwztxfyo"
+            ],
+            "env": {
+                "SUPABASE_ACCESS_TOKEN": "sbp_0faf75548a427af4dc57c9b90ddbe3481a6894d3"
+            }
+        },
+        "perplexity-ask": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "server-perplexity-ask"
+            ],
+            "env": {
+                "PERPLEXITY_API_KEY": "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"
+            }
+        },
         "filesystem": {
             "command": "npx",
             "args": [
                 "-y",
                 "@modelcontextprotocol/server-filesystem@latest",
-                "/mnt/c/Projects/ForkFlow-crm",
-                "/mnt/c/Users/revadmin/Documents"
+                "/home/krwhynot/Projects/ForkFlow-crm"
             ],
             "env": {
                 "MCP_TRANSPORT": "stdio",
@@ -29,17 +55,31 @@
             "command": "npx",
             "args": [
                 "-y",
-                "@modelcontextprotocol/server-sequential-thinking@latest"
+                "@modelcontextprotocol/server-sequential-thinking@latest",
+                "--max-thoughts=15",
+                "--branch-limit=2",
+                "--detail-level=low",
+                "--revision-depth=3"
             ],
-            "env": {}
-        },
-        "knowledge": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-memory"],
             "env": {
-                "STORAGE_PATH": "/mnt/c/Projects/ForkFlow-crm/.knowledge",
-                "MCP_LOG_LEVEL": "info"
+                "DISABLE_THOUGHT_LOGGING": "false"
             }
+        },
+        "memory": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-knowledge-graph",
+                "--memory-path",
+                "/home/krwhynot/Projects/ForkFlow-crm/.knowledge"
+            ]
+        },
+        "Context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ]
         }
     }
 }
