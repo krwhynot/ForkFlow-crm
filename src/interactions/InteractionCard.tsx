@@ -10,30 +10,30 @@ import {
     Avatar,
 } from '@/components/ui-kit';
 import {
-    Visibility as ViewIcon,
-    Edit as EditIcon,
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    Schedule as ScheduleIcon,
-    LocationOn as LocationIcon,
-    CheckCircle as CompletedIcon,
-    RadioButtonUnchecked as PendingIcon,
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonPinIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-} from '@mui/icons-material';
+    EyeIcon,
+    PencilIcon,
+    BuildingOfficeIcon,
+    UserIcon,
+    ClockIcon,
+    MapPinIcon,
+    CheckCircleIcon,
+    ClockIcon as PendingIcon,
+    EnvelopeIcon,
+    PhoneIcon,
+    UserIcon as PersonPinIcon,
+    PresentationChartBarIcon,
+    CurrencyDollarIcon,
+    ClockIcon as FollowUpIcon,
+} from '@heroicons/react/24/outline';
 import { useRedirect, ReferenceField, TextField } from 'react-admin';
 import { Interaction } from '../types';
 
 const interactionTypeIcons = {
-    email: EmailIcon,
+    email: EnvelopeIcon,
     call: PhoneIcon,
     in_person: PersonPinIcon,
-    demo: DemoIcon,
-    quote: QuoteIcon,
+    demo: PresentationChartBarIcon,
+    quote: CurrencyDollarIcon,
     follow_up: FollowUpIcon,
 };
 
@@ -122,7 +122,7 @@ export const InteractionCard = ({
                                 backgroundColor: typeColor,
                             }}
                         >
-                            <TypeIcon className="text-sm" aria-hidden="true" />
+                            <TypeIcon className="w-4 h-4" aria-hidden="true" />
                         </Avatar>
                         <Box className="flex-grow">
                             <Typography
@@ -148,7 +148,7 @@ export const InteractionCard = ({
                             aria-label={`View interaction: ${interaction.subject || 'Untitled Interaction'}`}
                             className="min-w-11 min-h-11 p-1"
                         >
-                            <ViewIcon className="text-sm" />
+                            <EyeIcon className="w-4 h-4" />
                         </Button>
                         <Button
                             variant="ghost"
@@ -157,7 +157,7 @@ export const InteractionCard = ({
                             aria-label={`Edit interaction: ${interaction.subject || 'Untitled Interaction'}`}
                             className="min-w-11 min-h-11 p-1"
                         >
-                            <EditIcon className="text-sm" />
+                            <PencilIcon className="w-4 h-4" />
                         </Button>
                     </Stack>
                 </Box>
@@ -165,9 +165,9 @@ export const InteractionCard = ({
                 {/* Organization and Contact */}
                 <Stack className="space-y-1 mb-2">
                     <Box className="flex items-center">
-                        <BusinessIcon
+                        <BuildingOfficeIcon
                             aria-hidden="true"
-                            className="text-base mr-1 text-gray-500"
+                            className="w-4 h-4 mr-1 text-gray-500"
                         />
                         <ReferenceField
                             source="organizationId"
@@ -185,9 +185,9 @@ export const InteractionCard = ({
 
                     {interaction.contactId && (
                         <Box className="flex items-center">
-                            <PersonIcon
+                            <UserIcon
                                 aria-hidden="true"
-                                className="text-base mr-1 text-gray-500"
+                                className="w-4 h-4 mr-1 text-gray-500"
                             />
                             <ReferenceField
                                 source="contactId"
@@ -211,14 +211,14 @@ export const InteractionCard = ({
                 <Box className="flex justify-between items-center mb-1.5">
                     <Box className="flex items-center">
                         {interaction.isCompleted ? (
-                            <CompletedIcon
+                            <CheckCircleIcon
                                 aria-hidden="true"
-                                className="text-lg mr-0.5 text-green-600"
+                                className="w-5 h-5 mr-0.5 text-green-600"
                             />
                         ) : (
                             <PendingIcon
                                 aria-hidden="true"
-                                className="text-lg mr-0.5 text-yellow-600"
+                                className="w-5 h-5 mr-0.5 text-yellow-600"
                             />
                         )}
                         <Chip
@@ -250,9 +250,9 @@ export const InteractionCard = ({
                 <Stack className="space-y-0.5">
                     {interaction.scheduledDate && (
                         <Box className="flex items-center">
-                            <ScheduleIcon
+                            <ClockIcon
                                 aria-hidden="true"
-                                className="text-sm mr-1 text-gray-500"
+                                className="w-4 h-4 mr-1 text-gray-500"
                             />
                             <Typography
                                 variant="caption"
@@ -271,9 +271,9 @@ export const InteractionCard = ({
 
                     {interaction.latitude && interaction.longitude && (
                         <Box className="flex items-center">
-                            <LocationIcon
+                            <MapPinIcon
                                 aria-hidden="true"
-                                className="text-sm mr-1 text-gray-500"
+                                className="w-4 h-4 mr-1 text-gray-500"
                             />
                             <Typography
                                 variant="caption"

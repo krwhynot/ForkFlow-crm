@@ -425,7 +425,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Visit website"
                             >
-                                <WebsiteIcon fontSize="small" />
+                                <GlobeAltIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -438,7 +438,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Get directions"
                             >
-                                <LocationIcon fontSize="small" />
+                                <MapPinIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -451,13 +451,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 e.stopPropagation();
                                 onView?.(record.id);
                             }}
-                            sx={{ 
-                                minWidth: '44px', 
-                                minHeight: '44px',
-                                '&:hover': { bgcolor: 'action.hover' }
-                            }}
+                            className="min-w-11 min-h-11 hover:bg-gray-100"
                         >
-                            <ViewIcon fontSize="small" />
+                            <EyeIcon className="w-4 h-4" />
                         </IconButton>
                     </Tooltip>
                 </Box>
@@ -476,7 +472,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             className="min-w-11 min-h-11 text-gray-600 hover:bg-gray-100"
                             aria-label="Edit organization"
                         >
-                            <EditIcon fontSize="small" />
+                            <PencilIcon className="w-4 h-4" />
                         </IconButton>
                     </Tooltip>
 
@@ -487,7 +483,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             onClick={handleMenuOpen}
                             className="min-w-11 min-h-11 hover:bg-gray-100"
                         >
-                            <MoreVertIcon fontSize="small" />
+                            <EllipsisVerticalIcon className="w-4 h-4" />
                         </IconButton>
                     </Tooltip>
                     
@@ -500,17 +496,17 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                     >
                         <MenuItem onClick={() => handleAction(() => onShare?.(record))}>
                             <ListItemIcon>
-                                <ShareIcon fontSize="small" />
+                                <ShareIcon className="w-4 h-4" />
                             </ListItemIcon>
                             <ListItemText primary="Share" />
                         </MenuItem>
                         
                         <MenuItem 
                             onClick={() => handleAction(() => onDelete?.(record.id))}
-                            sx={{ color: 'error.main' }}
+                            className="text-red-600"
                         >
                             <ListItemIcon>
-                                <DeleteIcon fontSize="small" color="error" />
+                                <TrashIcon className="w-4 h-4 text-red-600" />
                             </ListItemIcon>
                             <ListItemText primary="Delete" />
                         </MenuItem>

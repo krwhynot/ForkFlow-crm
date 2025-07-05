@@ -43,16 +43,15 @@ import {
     Button,
 } from '@/components/ui-kit';
 import {
-    Person as PersonIcon,
-    MoreVert as MoreVertIcon,
-    Block as BlockIcon,
-    CheckCircle as CheckCircleIcon,
-    AdminPanelSettings as AdminIcon,
-    Security as SecurityIcon,
-    LocationOn as LocationIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-} from '@mui/icons-material';
+    UserIcon,
+    EllipsisVerticalIcon,
+    XCircleIcon,
+    CheckCircleIcon,
+    ShieldCheckIcon,
+    MapPinIcon,
+    PencilIcon,
+    TrashIcon,
+} from '@heroicons/react/24/outline';
 
 import { User, UserRole } from '../types';
 import { UserEmpty } from './UserEmpty';
@@ -224,7 +223,7 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                     onClick={handleMenuOpen}
                     className="min-h-11 min-w-11"
                 >
-                    <MoreVertIcon />
+                    <EllipsisVerticalIcon className="w-5 h-5" />
                 </IconButton>
             </Box>
 
@@ -236,24 +235,24 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
                 <MenuItem onClick={handleMenuClose}>
-                    <EditIcon className="mr-2" />
+                    <PencilIcon className="mr-2 w-4 h-4" />
                     Edit
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                     {user.administrator ? (
                         <>
-                            <BlockIcon className="mr-2" />
+                            <XCircleIcon className="mr-2 w-4 h-4" />
                             Deactivate
                         </>
                     ) : (
                         <>
-                            <CheckCircleIcon className="mr-2" />
+                            <CheckCircleIcon className="mr-2 w-4 h-4" />
                             Activate
                         </>
                     )}
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose} className="text-red-600">
-                    <DeleteIcon className="mr-2" />
+                    <TrashIcon className="mr-2 w-4 h-4" />
                     Delete
                 </MenuItem>
             </Menu>
@@ -297,7 +296,7 @@ const TerritoryField = ({ source }: { source: string }) => {
 
     return (
         <Box className="flex items-center gap-1">
-            <LocationIcon fontSize="small" color="primary" />
+            <MapPinIcon className="w-4 h-4 text-blue-600" />
             <Typography variant="body2">
                 {record.territory.length} area
                 {record.territory.length !== 1 ? 's' : ''}
@@ -347,7 +346,7 @@ const UserActionsField = () => {
                 size="small"
                 className="min-h-11 min-w-11"
             >
-                <MoreVertIcon />
+                <EllipsisVerticalIcon className="w-5 h-5" />
             </IconButton>
             <Menu
                 anchorEl={anchorEl}
@@ -357,18 +356,18 @@ const UserActionsField = () => {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
                 <MenuItem onClick={handleMenuClose}>
-                    <EditIcon className="mr-2" />
+                    <PencilIcon className="mr-2 w-4 h-4" />
                     Edit
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                     {record.administrator ? (
                         <>
-                            <BlockIcon className="mr-2" />
+                            <XCircleIcon className="mr-2 w-4 h-4" />
                             Deactivate
                         </>
                     ) : (
                         <>
-                            <CheckCircleIcon className="mr-2" />
+                            <CheckCircleIcon className="mr-2 w-4 h-4" />
                             Activate
                         </>
                     )}
@@ -411,7 +410,7 @@ const BulkActivateButton = () => {
             disabled={selectedIds.length === 0}
             className="flex items-center gap-2"
         >
-            <CheckCircleIcon />
+            <CheckCircleIcon className="w-4 h-4" />
             Activate
         </Button>
     );
@@ -449,7 +448,7 @@ const BulkDeactivateButton = () => {
             disabled={selectedIds.length === 0}
             className="flex items-center gap-2"
         >
-            <BlockIcon />
+            <XCircleIcon className="w-4 h-4" />
             Deactivate
         </Button>
     );
