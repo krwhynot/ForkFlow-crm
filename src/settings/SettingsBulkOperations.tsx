@@ -10,19 +10,16 @@ import {
     Chip,
     Grid,
     List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    CloudUpload as UploadIcon,
-    CloudDownload as DownloadIcon,
-    CheckCircle as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    Delete as DeleteIcon,
-} from '@mui/icons-material';
+    CloudArrowUpIcon as UploadIcon,
+    CloudArrowDownIcon as DownloadIcon,
+    CheckCircleIcon as CheckIcon,
+    ExclamationCircleIcon as ErrorIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    TrashIcon as DeleteIcon,
+} from '@heroicons/react/24/outline';
 import { useDataProvider, useNotify, useGetList } from 'react-admin';
 import Papa from 'papaparse';
 import { Setting } from '../types';
@@ -314,62 +311,57 @@ export const SettingsBulkOperations: React.FC = () => {
 
     return (
         <Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" className="mb-2">
                 Bulk Operations
             </Typography>
-            <Typography variant="body2" color="text.secondary" mb={3}>
+            <Typography variant="body2" className="text-gray-600 mb-6">
                 Import and export settings in bulk using CSV or JSON files
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={6}>
                 {/* Export Section */}
                 <Grid item xs={12} md={6}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" className="mb-2">
                                 Export Settings
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
-                                mb={2}
+                                className="text-gray-600 mb-4"
                             >
                                 Download all settings data as CSV or JSON
                             </Typography>
 
-                            <Box
-                                display="flex"
-                                gap={1}
-                                flexDirection={isMobile ? 'column' : 'row'}
-                            >
+                            <Box className={`flex gap-2 ${isMobile ? 'flex-col' : 'flex-row'}`}>
                                 <Button
                                     variant="outlined"
-                                    startIcon={<DownloadIcon />}
+                                    startIcon={<DownloadIcon className="w-4 h-4" />}
                                     onClick={() => handleExport('csv')}
                                     disabled={
                                         isProcessing || !allSettings?.length
                                     }
                                     fullWidth={isMobile}
-                                    sx={{ minHeight: 48 }}
+                                    className="min-h-12"
                                 >
                                     Export CSV
                                 </Button>
                                 <Button
                                     variant="outlined"
-                                    startIcon={<DownloadIcon />}
+                                    startIcon={<DownloadIcon className="w-4 h-4" />}
                                     onClick={() => handleExport('json')}
                                     disabled={
                                         isProcessing || !allSettings?.length
                                     }
                                     fullWidth={isMobile}
-                                    sx={{ minHeight: 48 }}
+                                    className="min-h-12"
                                 >
                                     Export JSON
                                 </Button>
                             </Box>
 
                             {allSettings && (
-                                <Box mt={2}>
+                                <Box className="mt-4">
                                     <Chip
                                         label={`${allSettings.length} settings available`}
                                         size="small"
@@ -386,13 +378,12 @@ export const SettingsBulkOperations: React.FC = () => {
                 <Grid item xs={12} md={6}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" className="mb-2">
                                 Import Settings
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
-                                mb={2}
+                                className="text-gray-600 mb-4"
                             >
                                 Upload CSV file to create or update settings
                             </Typography>
@@ -407,20 +398,20 @@ export const SettingsBulkOperations: React.FC = () => {
 
                             <Button
                                 variant="contained"
-                                startIcon={<UploadIcon />}
+                                startIcon={<UploadIcon className="w-4 h-4" />}
                                 onClick={triggerFileInput}
                                 disabled={isProcessing}
                                 fullWidth={isMobile}
-                                sx={{ minHeight: 48 }}
+                                className="min-h-12"
                             >
                                 Select CSV File
                             </Button>
 
-                            <Box mt={2}>
-                                <Typography variant="caption" display="block">
+                            <Box className="mt-4">
+                                <Typography variant="caption" className="block">
                                     Required columns: category, key, label
                                 </Typography>
-                                <Typography variant="caption" display="block">
+                                <Typography variant="caption" className="block">
                                     Optional columns: color, sortOrder, active
                                 </Typography>
                             </Box>
@@ -431,18 +422,18 @@ export const SettingsBulkOperations: React.FC = () => {
 
             {/* Progress Indicator */}
             {isProcessing && (
-                <Box mt={3}>
+                <Box className="mt-6">
                     <Card>
                         <CardContent>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" className="mb-2">
                                 Processing...
                             </Typography>
                             <LinearProgress
                                 variant="determinate"
                                 value={progress}
-                                sx={{ mb: 1 }}
+                                className="mb-2"
                             />
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 {Math.round(progress)}% complete
                             </Typography>
                         </CardContent>
@@ -452,23 +443,23 @@ export const SettingsBulkOperations: React.FC = () => {
 
             {/* Operation Results */}
             {operationResult && (
-                <Box mt={3}>
+                <Box className="mt-6">
                     <Card>
                         <CardContent>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" className="mb-2">
                                 Import Results
                             </Typography>
 
-                            <Box display="flex" gap={1} mb={2} flexWrap="wrap">
+                            <Box className="flex gap-2 mb-4 flex-wrap">
                                 <Chip
-                                    icon={<CheckIcon />}
+                                    icon={<CheckIcon className="w-4 h-4" />}
                                     label={`${operationResult.success} Success`}
                                     color="success"
                                     size="small"
                                 />
                                 {operationResult.warnings > 0 && (
                                     <Chip
-                                        icon={<WarningIcon />}
+                                        icon={<WarningIcon className="w-4 h-4" />}
                                         label={`${operationResult.warnings} Warnings`}
                                         color="warning"
                                         size="small"
@@ -476,7 +467,7 @@ export const SettingsBulkOperations: React.FC = () => {
                                 )}
                                 {operationResult.errors > 0 && (
                                     <Chip
-                                        icon={<ErrorIcon />}
+                                        icon={<ErrorIcon className="w-4 h-4" />}
                                         label={`${operationResult.errors} Errors`}
                                         color="error"
                                         size="small"
@@ -486,50 +477,39 @@ export const SettingsBulkOperations: React.FC = () => {
 
                             {operationResult.details.length > 0 && (
                                 <>
-                                    <Divider sx={{ my: 2 }} />
+                                    <Divider className="my-4" />
                                     <Typography
                                         variant="subtitle2"
-                                        gutterBottom
+                                        className="mb-2"
                                     >
                                         Details
                                     </Typography>
-                                    <List
-                                        dense
-                                        sx={{
-                                            maxHeight: 300,
-                                            overflow: 'auto',
-                                        }}
-                                    >
+                                    <List className="max-h-72 overflow-auto">
                                         {operationResult.details.map(
                                             (detail, index) => (
-                                                <ListItem key={index}>
-                                                    <ListItemIcon>
-                                                        {detail.type ===
-                                                            'success' && (
-                                                            <CheckIcon color="success" />
+                                                <div key={index} className="flex items-start gap-3 py-2 border-b border-gray-100 last:border-b-0">
+                                                    <div className="flex-shrink-0 mt-1">
+                                                        {detail.type === 'success' && (
+                                                            <CheckIcon className="w-5 h-5 text-green-600" />
                                                         )}
-                                                        {detail.type ===
-                                                            'warning' && (
-                                                            <WarningIcon color="warning" />
+                                                        {detail.type === 'warning' && (
+                                                            <WarningIcon className="w-5 h-5 text-yellow-600" />
                                                         )}
-                                                        {detail.type ===
-                                                            'error' && (
-                                                            <ErrorIcon color="error" />
+                                                        {detail.type === 'error' && (
+                                                            <ErrorIcon className="w-5 h-5 text-red-600" />
                                                         )}
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={`Row ${detail.row}: ${detail.message}`}
-                                                        secondary={
-                                                            detail.data
-                                                                ? JSON.stringify(
-                                                                      detail.data,
-                                                                      null,
-                                                                      2
-                                                                  )
-                                                                : undefined
-                                                        }
-                                                    />
-                                                </ListItem>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <Typography variant="body2" className="font-medium">
+                                                            Row {detail.row}: {detail.message}
+                                                        </Typography>
+                                                        {detail.data && (
+                                                            <Typography variant="caption" className="text-gray-500 block mt-1">
+                                                                {JSON.stringify(detail.data, null, 2)}
+                                                            </Typography>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             )
                                         )}
                                     </List>
