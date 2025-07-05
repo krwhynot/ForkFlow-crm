@@ -12,17 +12,15 @@ import {
     Typography,
     Alert,
     IconButton,
-    InputAdornment,
-    useMediaQuery,
-    useTheme,
     CircularProgress,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+} from '@/components/ui-kit';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useDataProvider } from 'react-admin';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { CrmDataProvider } from '../../providers/types';
 import { User, PasswordChangeRequest } from '../../types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface PasswordChangeFormProps {
     user: User;
@@ -43,8 +41,7 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const dataProvider = useDataProvider<CrmDataProvider>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     const {
         register,

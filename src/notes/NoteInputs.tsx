@@ -1,5 +1,4 @@
 import { Stack, Typography } from '@/components/ui-kit';
-import { Collapse, Link } from '@mui/material';
 import {
     DateTimeInput,
     FileField,
@@ -37,23 +36,22 @@ export const NoteInputs = ({
             />
             {!displayMore && (
                 <Stack className="gap-0.5 flex-row justify-end">
-                    <Link
-                        variant="caption"
-                        href="#"
-                        onClick={e => {
+                    <button
+                        type="button"
+                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                        onClick={() => {
                             setDisplayMore(!displayMore);
                             setValue('date', getCurrentDate());
-                            e.preventDefault();
                         }}
                     >
                         Show options
-                    </Link>
+                    </button>
                     <Typography variant="caption" className="text-gray-500">
                         (attach files, or change details)
                     </Typography>
                 </Stack>
             )}
-            <Collapse in={displayMore}>
+            {displayMore && (
                 <Stack className="gap-1 mt-1">
                     <Stack className="flex-row space-x-2">
                         {showStatus && (
@@ -91,7 +89,7 @@ export const NoteInputs = ({
                         <FileField source="src" title="title" />
                     </FileInput>
                 </Stack>
-            </Collapse>
+            )}
         </>
     );
 };

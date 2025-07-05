@@ -16,18 +16,19 @@ import {
     Stack,
     Avatar,
     IconButton,
-} from '@/components/ui-kit';
-import { useMediaQuery } from '../hooks/useMediaQuery';
+    useTheme,
+    useMediaQuery,
+} from '@mui/material';
 import {
-    ClockIcon,
-    ExclamationTriangleIcon,
-    DocumentTextIcon,
-    PhoneIcon,
-    EnvelopeIcon,
-    BuildingOfficeIcon,
-    UserIcon,
-    EllipsisVerticalIcon,
-} from '@heroicons/react/24/outline';
+    Schedule as ScheduleIcon,
+    Warning as WarningIcon,
+    Assignment as TaskIcon,
+    Phone as PhoneIcon,
+    Email as EmailIcon,
+    Business as BusinessIcon,
+    Person as PersonIcon,
+    MoreVert as MoreVertIcon,
+} from '@mui/icons-material';
 import { formatDistanceToNow, isAfter, isPast, format } from 'date-fns';
 import { useGetList, Link } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
@@ -42,7 +43,8 @@ interface ReminderWithDetails extends Reminder {
 }
 
 export const FollowUpRemindersWidget = () => {
-    const isMobile = useMediaQuery('(max-width: 768px)');
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
 
     // Get upcoming and overdue reminders

@@ -67,6 +67,8 @@ export { Select, SelectItem } from './Select';
 export { TextField, TextInput } from './TextField';
 export { Switch, FormControlLabel } from './Switch';
 export { Tabs, TabPanel, TabItem, TabContext, useTabContext } from './Tabs';
+export { Autocomplete, AutocompleteInput } from './Autocomplete';
+export { Snackbar, Toast, useSnackbar } from './Snackbar';
 
 // Utility exports
 export type { default as CircularProgressProps } from './CircularProgress';

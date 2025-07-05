@@ -1,5 +1,4 @@
 import { Stack, Typography } from '../components/ui-kit';
-import { Link } from '@mui/material';
 import { useListContext } from 'react-admin';
 import { Link as RouterLink } from 'react-router-dom';
 import { Avatar } from '../contacts/Avatar';
@@ -13,13 +12,12 @@ export const ContactList = () => {
                 <Stack className="flex-row gap-1" key={contact.id}>
                     <Avatar record={contact} />
                     <Stack>
-                        <Link
-                            component={RouterLink}
+                        <RouterLink
                             to={`/contacts/${contact.id}/show`}
-                            variant="body2"
+                            className="text-blue-600 hover:text-blue-800 hover:underline text-sm"
                         >
                             {contact.first_name} {contact.last_name}
-                        </Link>
+                        </RouterLink>
                         <Typography variant="caption" className="text-gray-500">
                             {contact.title}
                             {contact.title &&

@@ -1,5 +1,6 @@
 import { PhoneIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
-import { Divider, Link, Stack, Tooltip, Typography } from '@mui/material';
+import { Divider, Stack, Tooltip, Typography } from '@/components/ui-kit';
+import { Link } from 'react-router-dom';
 import {
     DateField,
     EditButton,
@@ -23,12 +24,12 @@ export const CompanyAside = ({ link = 'edit' }: CompanyAsideProps) => {
     if (!record) return null;
 
     return (
-        <Stack ml={4} width={250} minWidth={250} spacing={2}>
-            <Stack direction="row" spacing={1}>
+        <Stack className="ml-4 w-64 min-w-64 gap-2">
+            <Stack className="flex-row gap-1">
                 {link === 'edit' ? (
-                    <EditButton label="Edit Company" />
+                    <EditButton label="Edit Organization" />
                 ) : (
-                    <ShowButton label="Show Company" />
+                    <ShowButton label="Show Organization" />
                 )}
             </Stack>
 
@@ -50,15 +51,10 @@ const CompanyInfo = ({ record }: { record: Company }) => {
 
     return (
         <Stack>
-            <Typography variant="subtitle2">Company Info</Typography>
-            <Divider sx={{ mb: 1 }} />
+            <Typography variant="subtitle2">Organization Info</Typography>
+            <Divider className="mb-1" />
             {record.website && (
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    gap={1}
-                    minHeight={24}
-                >
+                <Stack className="flex-row items-center gap-1 min-h-6">
                     <GlobeAltIcon className="w-4 h-4 text-gray-500" />
                     <UrlField
                         source="website"
@@ -71,35 +67,24 @@ const CompanyInfo = ({ record }: { record: Company }) => {
                 </Stack>
             )}
             {record.linkedin_url && (
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    gap={1}
-                    minHeight={24}
-                >
+                <Stack className="flex-row items-center gap-1 min-h-6">
                     <span className="w-4 h-4 text-gray-500 text-sm font-medium flex items-center">in</span>
                     <Tooltip title={record.linkedin_url}>
-                        <Typography
-                            variant="body2"
-                            component={Link}
+                        <a
                             href={record.linkedin_url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
                         >
                             LinkedIn
-                        </Typography>
+                        </a>
                     </Tooltip>
                 </Stack>
             )}
             {record.phone_number && (
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    gap={1}
-                    minHeight={24}
-                >
-                    <PhoneIcon color="disabled" fontSize="small" />
-                    <TextField source="phone_number" color="textSecondary" />
+                <Stack className="flex-row items-center gap-1 min-h-6">
+                    <PhoneIcon className="w-4 h-4 text-gray-500" />
+                    <TextField source="phone_number" className="text-gray-600" />
                 </Stack>
             )}
         </Stack>
@@ -114,7 +99,7 @@ const ContextInfo = ({ record }: { record: Company }) => {
     return (
         <Stack>
             <Typography variant="subtitle2">Context</Typography>
-            <Divider sx={{ mb: 1 }} />
+            <Divider className="mb-1" />
             {record.sector && (
                 <Typography
                     component="span"

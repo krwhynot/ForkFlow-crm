@@ -1,5 +1,4 @@
-import { Box } from '../components/ui-kit';
-import { FormControlLabel, Switch } from '@mui/material';
+import { Box, FormControlLabel, Switch } from '../components/ui-kit';
 import { useGetIdentity, useListFilterContext } from 'react-admin';
 
 export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
@@ -27,7 +26,7 @@ export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
                         name="checkedC"
                     />
                 }
-                label="Only companies I manage"
+                label="Only organizations I manage"
             />
         </Box>
     );

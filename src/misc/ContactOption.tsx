@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@/components/ui-kit';
 import { useRecordContext } from 'react-admin';
 import { Avatar } from '../contacts/Avatar';
 import { Contact } from '../types';

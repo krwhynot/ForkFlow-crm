@@ -99,7 +99,7 @@ export const InteractionTimeline = ({
                                 }}
                             >
                                 <TypeIcon
-                                    className={compact ? 'w-4 h-4' : 'w-5 h-5'}
+                                    fontSize={compact ? 'small' : 'medium'}
                                 />
                             </Avatar>
                             {index < sortedInteractions.length - 1 && (
