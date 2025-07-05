@@ -11,26 +11,22 @@ export { Badge } from './Badge';
 export { Box } from './Box';
 export { Button } from './Button';
 export {
-    Card,
-    CardContent,
+    Card, CardActions, CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
-    CardTitle,
+    CardTitle
 } from './Card';
 export { Checkbox } from './Checkbox';
 export { Chip } from './Chip';
 export { CircularProgress, Spinner } from './CircularProgress';
 export {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    DialogCloseButton,
+    Dialog, DialogActions,
+    DialogCloseButton, DialogContent, DialogTitle
 } from './Dialog';
 export { Divider } from './Divider';
 export { Dropdown, DropdownItem } from './Dropdown';
-export { Fab, SpeedDial, SpeedDialAction, Backdrop } from './Fab';
+export { Backdrop, Fab, SpeedDial, SpeedDialAction } from './Fab';
 export { Filter } from './Filter';
 export { Grid } from './Grid';
 export { IconButton } from './IconButton';
@@ -38,12 +34,7 @@ export { Input } from './Input';
 export { LinearProgress } from './LinearProgress';
 export {
     List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    ListItemButton,
-    ListItemAvatar,
-    ListItemSecondaryAction,
+    ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemSecondaryAction, ListItemText
 } from './List';
 export { Menu, MenuItem } from './Menu';
 export { Modal } from './Modal';
@@ -55,16 +46,17 @@ export {
     TableCell,
     TableHead,
     TableHeader,
-    TableRow,
+    TableRow
 } from './Table';
 export { Tooltip } from './Tooltip';
 export { Typography } from './Typography';
 
 // New components for Material-UI migration
-export { Stepper, Step, StepLabel, StepContent } from './Stepper';
 export { ImageList, ImageListItem } from './ImageList';
 export { Select, SelectItem } from './Select';
+export { Step, StepContent, StepLabel, Stepper } from './Stepper';
 
 // Utility exports
-export type { default as CircularProgressProps } from './CircularProgress';
 export type { default as AvatarProps } from './Avatar';
+export type { default as CircularProgressProps } from './CircularProgress';
+
