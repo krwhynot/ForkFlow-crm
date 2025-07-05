@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Box, CircularProgress, Fade } from '@mui/material';
+import { Box, CircularProgress } from '../../components/ui-kit';
 import { useViewMode } from '../hooks/useViewMode';
 import { Organization } from '../../types';
 
@@ -47,13 +47,7 @@ export const ViewModeRenderer: React.FC<ViewModeRendererProps> = ({
     // Loading fallback component
     const LoadingFallback = () => (
         <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '200px',
-                width: '100%',
-            }}
+            className="flex justify-center items-center min-h-[200px] w-full"
         >
             <CircularProgress size={40} />
         </Box>
@@ -63,27 +57,13 @@ export const ViewModeRenderer: React.FC<ViewModeRendererProps> = ({
     if (error) {
         return (
             <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '200px',
-                    flexDirection: 'column',
-                    gap: 2,
-                    color: 'error.main',
-                }}
+                className="flex justify-center items-center min-h-[200px] flex-col gap-2 text-red-600"
             >
                 <Box>Error loading organizations: {error}</Box>
                 {onRefresh && (
                     <button
                         onClick={onRefresh}
-                        style={{
-                            padding: '8px 16px',
-                            borderRadius: '4px',
-                            border: '1px solid',
-                            background: 'transparent',
-                            cursor: 'pointer',
-                        }}
+                        className="px-4 py-2 rounded border border-gray-300 bg-transparent cursor-pointer hover:bg-gray-50"
                     >
                         Retry
                     </button>
@@ -115,13 +95,11 @@ export const ViewModeRenderer: React.FC<ViewModeRendererProps> = ({
     };
 
     return (
-        <Fade in={true} timeout={300}>
-            <Box sx={{ width: '100%', minHeight: '200px' }}>
-                <Suspense fallback={<LoadingFallback />}>
-                    {renderView()}
-                </Suspense>
-            </Box>
-        </Fade>
+        <Box className="w-full min-h-[200px]">
+            <Suspense fallback={<LoadingFallback />}>
+                {renderView()}
+            </Suspense>
+        </Box>
     );
 };
 

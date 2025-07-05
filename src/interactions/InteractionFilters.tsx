@@ -10,7 +10,7 @@ import {
     useGetList,
 } from 'react-admin';
 import { Stack, Typography } from '@/components/ui-kit';
-import { Divider } from '@mui/material';
+import { Divider } from '../components/ui-kit';
 
 export const InteractionFilters = () => {
     // Get interaction types from settings

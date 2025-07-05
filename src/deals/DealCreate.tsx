@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle } from '../components/ui-kit';
 import { useQueryClient } from '@tanstack/react-query';
 import {
     Create,

@@ -1,5 +1,5 @@
 import { Droppable } from '@hello-pangea/dnd';
-import { Box, Chip, Paper, Typography } from '@mui/material';
+import { Box, Chip, Paper, Typography } from '../components/ui-kit';
 import { Deal } from '../types';
 import { OpportunityCard } from './OpportunityCard';
 import { FoodServiceStage } from './stages';
@@ -20,42 +20,27 @@ export const OpportunityColumn = ({
 
     return (
         <Paper
-            sx={{
-                minWidth: 300,
-                maxWidth: 300,
-                backgroundColor: stage.color,
-                borderRadius: 2,
-                overflow: 'hidden',
-            }}
+            className="min-w-[300px] max-w-[300px] rounded-lg overflow-hidden"
+            style={{ backgroundColor: stage.color }}
         >
             {/* Stage Header */}
             <Box
-                sx={{
-                    p: 2,
-                    borderBottom: '1px solid',
-                    borderColor: 'divider',
-                    backgroundColor: 'background.paper',
-                }}
+                className="p-2 border-b border-gray-200 bg-white"
             >
                 <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 1,
-                    }}
+                    className="flex justify-between items-center mb-1"
                 >
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h6" className="font-semibold">
                         {stage.name}
                     </Typography>
                     <Chip
                         label={opportunityCount}
                         size="small"
                         color="primary"
-                        sx={{ minWidth: 24 }}
+                        className="min-w-[24px]"
                     />
                 </Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" className="text-gray-600">
                     Total:{' '}
                     {new Intl.NumberFormat('en-US', {
                         style: 'currency',
@@ -72,16 +57,11 @@ export const OpportunityColumn = ({
                     <Box
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        sx={{
-                            minHeight: 400,
-                            maxHeight: 600,
-                            overflowY: 'auto',
-                            p: 1,
-                            backgroundColor: snapshot.isDraggingOver
-                                ? 'action.hover'
-                                : 'transparent',
-                            transition: 'background-color 0.2s ease',
-                        }}
+                        className={`min-h-[400px] max-h-[600px] overflow-y-auto p-1 transition-colors duration-200 ${
+                            snapshot.isDraggingOver
+                                ? 'bg-gray-50'
+                                : 'bg-transparent'
+                        }`}
                     >
                         {opportunities.map((opportunity, index) => (
                             <OpportunityCard
@@ -95,11 +75,7 @@ export const OpportunityColumn = ({
                         {/* Empty State */}
                         {opportunities.length === 0 && (
                             <Box
-                                sx={{
-                                    textAlign: 'center',
-                                    py: 4,
-                                    color: 'text.secondary',
-                                }}
+                                className="text-center py-4 text-gray-500"
                             >
                                 <Typography variant="body2">
                                     No opportunities in this stage

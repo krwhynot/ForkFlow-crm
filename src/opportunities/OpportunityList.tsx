@@ -10,7 +10,7 @@ import {
 } from 'react-admin';
 import { matchPath, useLocation } from 'react-router';
 
-import { Card, Stack } from '@mui/material';
+import { Card, Stack } from '../components/ui-kit';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { OpportunityCreate } from './OpportunityCreate';
 import { OpportunityEdit } from './OpportunityEdit';
@@ -76,7 +76,7 @@ const OpportunityLayout = () => {
     return (
         <Stack direction="row" component="div">
             <OpportunityListFilter />
-            <Stack sx={{ width: '100%' }}>
+            <Stack className="w-full">
                 <Title title="Food Service Sales Pipeline" />
                 <ListToolbar actions={<OpportunityListActions />} />
                 <Card>
@@ -92,7 +92,7 @@ const OpportunityListActions = () => (
         <CreateButton
             variant="contained"
             label="New Opportunity"
-            sx={{ marginLeft: 'auto' }}
+            className="ml-auto"
         />
         <ExportButton />
     </TopToolbar>

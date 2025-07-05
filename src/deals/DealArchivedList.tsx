@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from '../components/ui-kit';
-import { Dialog, DialogContent, DialogTitle, Grid } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Grid } from '../components/ui-kit';
 import { useEffect, useState } from 'react';
 import { useGetIdentity, useGetList } from 'react-admin';
 import { DialogCloseButton } from '../misc/DialogCloseButton';

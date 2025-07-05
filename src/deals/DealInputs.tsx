@@ -1,5 +1,5 @@
 import { Stack, Typography } from '../components/ui-kit';
-import { Divider } from '@mui/material';
+import { Divider } from '../components/ui-kit';
 import {
     AutocompleteArrayInput,
     AutocompleteInput,

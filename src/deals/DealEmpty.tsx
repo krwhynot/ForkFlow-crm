@@ -1,5 +1,5 @@
 import { Stack, Typography } from '../components/ui-kit';
-import { LinearProgress } from '@mui/material';
+import { LinearProgress } from '../components/ui-kit';
 import { CreateButton, useGetList } from 'react-admin';
 import useAppBarHeight from '../misc/useAppBarHeight';
 import { matchPath, useLocation } from 'react-router';
@@ -25,7 +25,7 @@ export const DealEmpty = ({ children }: { children?: React.ReactNode }) => {
     return (
         <Stack
             className="justify-center items-center gap-3"
-            sx={{
+            style={{
                 height: `calc(100dvh - ${appbarHeight}px)`,
             }}
         >

@@ -1,5 +1,5 @@
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
-import { Box } from '@mui/material';
+import { Box } from '../components/ui-kit';
 import isEqual from 'lodash/isEqual';
 import { useEffect, useState } from 'react';
 import { DataProvider, useDataProvider, useListContext } from 'react-admin';
@@ -98,14 +98,7 @@ export const OpportunityListContent = () => {
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Box
-                display="flex"
-                sx={{
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    minHeight: '70vh',
-                    gap: 2,
-                    p: 2,
-                }}
+                className="flex overflow-x-auto overflow-y-hidden min-h-[70vh] gap-2 p-2"
             >
                 {FOOD_SERVICE_STAGES.map(stage => (
                     <OpportunityColumn

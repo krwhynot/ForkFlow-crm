@@ -9,12 +9,12 @@ import {
     useNotify,
     useGetIdentity,
 } from 'react-admin';
-import { Card, CardContent, Typography, Box, Chip, Alert } from '@mui/material';
+import { Card, CardContent, Typography, Box, Chip, Alert } from '../components/ui-kit';
 import {
-    NotificationsActive as ReminderIcon,
-    Schedule as ScheduleIcon,
-    PriorityHigh as HighPriorityIcon,
-} from '@mui/icons-material';
+    BellIcon,
+    ClockIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 
 const priorityChoices = [
     { id: 'low', name: 'Low Priority' },
@@ -79,46 +79,28 @@ export const ReminderCreate = () => {
     return (
         <Create transform={transform} redirect="list">
             <SimpleForm>
-                <Box sx={{ width: '100%', mb: 2 }}>
+                <Box className="w-full mb-2">
                     <Typography variant="h6" gutterBottom>
                         Create Follow-up Reminder
                     </Typography>
 
                     {/* Quick Templates */}
-                    <Card
-                        sx={{
-                            mb: 2,
-                            bgcolor: 'primary.light',
-                            color: 'primary.contrastText',
-                        }}
-                    >
+                    <Card className="mb-2 bg-blue-100 text-blue-900">
                         <CardContent>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    mb: 1,
-                                }}
-                            >
-                                <ReminderIcon sx={{ mr: 1 }} />
+                            <Box className="flex items-center mb-1">
+                                <BellIcon className="w-5 h-5 mr-1" />
                                 <Typography variant="subtitle1">
                                     Quick Templates
                                 </Typography>
                             </Box>
                             <Typography
                                 variant="body2"
-                                sx={{ mb: 2, opacity: 0.9 }}
+                                className="mb-2 opacity-90"
                             >
                                 Click on a template to use as your reminder
                                 title:
                             </Typography>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    gap: 1,
-                                }}
-                            >
+                            <Box className="flex flex-wrap gap-1">
                                 {quickReminderTemplates.map(
                                     (template, index) => (
                                         <Chip
@@ -127,16 +109,7 @@ export const ReminderCreate = () => {
                                             onClick={() =>
                                                 handleTemplateSelect(template)
                                             }
-                                            sx={{
-                                                cursor: 'pointer',
-                                                bgcolor:
-                                                    'rgba(255,255,255,0.2)',
-                                                color: 'inherit',
-                                                '&:hover': {
-                                                    bgcolor:
-                                                        'rgba(255,255,255,0.3)',
-                                                },
-                                            }}
+                                            className="cursor-pointer bg-white bg-opacity-20 text-inherit hover:bg-opacity-30"
                                             size="small"
                                         />
                                     )
@@ -155,7 +128,7 @@ export const ReminderCreate = () => {
                         <SelectInput
                             optionText="business_name"
                             fullWidth
-                            sx={{ mb: 2 }}
+                            className="mb-2"
                         />
                     </ReferenceInput>
 
@@ -163,7 +136,7 @@ export const ReminderCreate = () => {
                         source="title"
                         label="Reminder Title"
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                         placeholder="What do you need to follow up on?"
                         helperText={
                             selectedTemplate
@@ -177,7 +150,7 @@ export const ReminderCreate = () => {
                         label="Priority Level"
                         choices={priorityChoices}
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                         defaultValue="medium"
                     />
 
@@ -185,7 +158,7 @@ export const ReminderCreate = () => {
                         source="reminder_date"
                         label="Reminder Date & Time"
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                         defaultValue={new Date(
                             Date.now() + 24 * 60 * 60 * 1000
                         ).toISOString()} // Tomorrow
@@ -198,13 +171,13 @@ export const ReminderCreate = () => {
                         rows={3}
                         fullWidth
                         placeholder="Any additional context or details..."
-                        sx={{ mb: 2 }}
+                        className="mb-2"
                     />
 
                     {/* Reminder Tips */}
-                    <Alert severity="info" sx={{ mt: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <ScheduleIcon sx={{ mr: 1 }} />
+                    <Alert severity="info" className="mt-2">
+                        <Box className="flex items-center">
+                            <ClockIcon className="w-5 h-5 mr-1" />
                             <Typography variant="body2">
                                 Set reminders for follow-ups after visits,
                                 product demos, or important conversations.

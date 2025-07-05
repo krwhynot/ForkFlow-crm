@@ -18,15 +18,15 @@ import {
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    ArrowBack as ArrowBackIcon,
-    ArrowForward as ArrowForwardIcon,
-    Check as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    Save as SaveIcon,
-    Close as CloseIcon,
-    Restore as RestoreIcon,
-} from '@mui/icons-material';
+    ArrowLeftIcon,
+    ArrowRightIcon,
+    CheckIcon,
+    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
+    DocumentArrowDownIcon,
+    XMarkIcon,
+    ArrowPathIcon,
+} from '@heroicons/react/24/outline';
 import {
     Edit,
     Form,

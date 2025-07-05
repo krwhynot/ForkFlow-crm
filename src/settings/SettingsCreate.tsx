@@ -13,19 +13,16 @@ import {
     useNotify,
     useRedirect,
 } from 'react-admin';
-import { CardContent, Grid, Box, Typography, Alert } from '@mui/material';
+import { CardContent, Grid, Box, Typography, Alert } from '../components/ui-kit';
 import { useState, useEffect } from 'react';
 import { useRealtimeSettings } from './hooks/useRealtimeSettings';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const SettingsCreateToolbar = () => {
     return (
-        <Toolbar sx={{ justifyContent: 'flex-end', p: { xs: 2, md: 3 } }}>
+        <Toolbar className="justify-end p-2 md:p-3">
             <SaveButton
-                sx={{
-                    minWidth: { xs: '100%', sm: 'auto' },
-                    minHeight: 48, // Touch-friendly
-                }}
+                className="w-full sm:w-auto min-h-[48px]"
             />
         </Toolbar>
     );
@@ -78,19 +75,19 @@ export const SettingsCreate = () => {
             })}
         >
             <Form>
-                <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+                <CardContent className="p-2 md:p-3">
                     {/* Header */}
-                    <Box mb={3}>
+                    <Box className="mb-3">
                         <Typography variant="h5" gutterBottom>
                             Create New Setting
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-600">
                             Add a new configuration setting to the system
                         </Typography>
 
                         {/* Connection Status */}
                         {!isConnected && (
-                            <Alert severity="warning" sx={{ mt: 2 }}>
+                            <Alert severity="warning" className="mt-2">
                                 Real-time updates are currently disconnected.
                                 Changes may not be reflected immediately.
                             </Alert>
@@ -98,7 +95,7 @@ export const SettingsCreate = () => {
 
                         {/* Duplicate Error */}
                         {duplicateError && (
-                            <Alert severity="error" sx={{ mt: 2 }}>
+                            <Alert severity="error" className="mt-2">
                                 {duplicateError}
                             </Alert>
                         )}
@@ -113,11 +110,7 @@ export const SettingsCreate = () => {
                                 validate={required()}
                                 fullWidth
                                 defaultValue={preselectedCategory}
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: { xs: 48, md: 56 }, // Touch-friendly
-                                    },
-                                }}
+                                className="[&_.MuiInputBase-root]:min-h-[48px] md:[&_.MuiInputBase-root]:min-h-[56px]"
                                 helperText="Select the type of setting to create"
                             />
                         </Grid>
@@ -128,11 +121,7 @@ export const SettingsCreate = () => {
                                 validate={validateKey}
                                 helperText="Unique identifier (lowercase, underscores only)"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: { xs: 48, md: 56 },
-                                    },
-                                }}
+                                className="[&_.MuiInputBase-root]:min-h-[48px] md:[&_.MuiInputBase-root]:min-h-[56px]"
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
@@ -142,11 +131,7 @@ export const SettingsCreate = () => {
                                 validate={required()}
                                 helperText="Display name shown to users"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: { xs: 48, md: 56 },
-                                    },
-                                }}
+                                className="[&_.MuiInputBase-root]:min-h-[48px] md:[&_.MuiInputBase-root]:min-h-[56px]"
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
@@ -156,11 +141,7 @@ export const SettingsCreate = () => {
                                 validate={validateColor}
                                 helperText="Hex color code (e.g., #FF5722)"
                                 fullWidth
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: { xs: 48, md: 56 },
-                                    },
-                                }}
+                                className="[&_.MuiInputBase-root]:min-h-[48px] md:[&_.MuiInputBase-root]:min-h-[56px]"
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
@@ -171,26 +152,17 @@ export const SettingsCreate = () => {
                                 helperText="Display order (1 = first)"
                                 fullWidth
                                 defaultValue={1}
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        minHeight: { xs: 48, md: 56 },
-                                    },
-                                }}
+                                className="[&_.MuiInputBase-root]:min-h-[48px] md:[&_.MuiInputBase-root]:min-h-[56px]"
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Box sx={{ pt: 1 }}>
+                            <Box className="pt-1">
                                 <BooleanInput
                                     source="active"
                                     label="Active"
                                     defaultValue={true}
                                     helperText="Whether this setting is available for use"
-                                    sx={{
-                                        '& .MuiCheckbox-root': {
-                                            minWidth: 48,
-                                            minHeight: 48, // Touch-friendly
-                                        },
-                                    }}
+                                    className="[&_.MuiCheckbox-root]:min-w-[48px] [&_.MuiCheckbox-root]:min-h-[48px]"
                                 />
                             </Box>
                         </Grid>
