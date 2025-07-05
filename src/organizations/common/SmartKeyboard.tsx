@@ -2,18 +2,12 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import {
     Box,
     TextField,
-    InputAdornment,
     IconButton,
     Chip,
     Typography,
-    Fade,
     Paper,
     List,
-    ListItem,
-    ListItemText,
-    useTheme,
-    useMediaQuery,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
     XMarkIcon,
     EyeIcon,
@@ -27,6 +21,7 @@ import {
     HashtagIcon,
 } from '@heroicons/react/24/outline';
 import { TextInput, TextInputProps } from 'react-admin';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface SmartKeyboardProps extends Omit<TextInputProps, 'type'> {
     fieldType:
@@ -77,8 +72,7 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
     source,
     ...textInputProps
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md');
     const [showPassword, setShowPassword] = useState(false);
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(
         []
@@ -369,190 +363,142 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
     const fieldIcon = getFieldIcon();
 
     return (
-        <Box sx={{ position: 'relative', width: '100%' }}>
-            <TextInput
+        <Box className="relative w-full">
+            <TextField
                 ref={inputRef}
-                source={source}
+                name={source}
                 {...textInputProps}
-                {...inputConfig}
+                type={inputConfig.type}
+                inputMode={inputConfig.inputMode}
+                pattern={inputConfig.pattern}
+                autoComplete={inputConfig.autoComplete}
                 onChange={handleInputChange}
                 error={textInputProps.error || !isValid}
-                InputProps={{
-                    ...textInputProps.InputProps,
-                    startAdornment: fieldIcon ? (
-                        <InputAdornment position="start">
-                            {fieldIcon}
-                        </InputAdornment>
-                    ) : (
-                        textInputProps.InputProps?.startAdornment
-                    ),
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            {/* QR Code Scanner */}
-                            {onScanQR && fieldType !== 'password' && (
+                value={inputValue}
+                startAdornment={fieldIcon}
+                endAdornment={
+                    <div className="flex items-center gap-1">
+                        {/* QR Code Scanner */}
+                        {onScanQR && fieldType !== 'password' && (
+                            <IconButton
+                                size="small"
+                                onClick={onScanQR}
+                                className="mr-1"
+                                aria-label="Scan QR code"
+                            >
+                                <QrCodeIcon className="w-4 h-4" />
+                            </IconButton>
+                        )}
+
+                        {/* Copy Button */}
+                        {showCopyButton &&
+                            inputValue &&
+                            fieldType !== 'password' && (
                                 <IconButton
                                     size="small"
-                                    onClick={onScanQR}
-                                    edge="end"
-                                    sx={{ mr: 0.5 }}
-                                    aria-label="Scan QR code"
+                                    onClick={handleCopy}
+                                    className="mr-1"
+                                    aria-label="Copy to clipboard"
                                 >
-                                    <QrCodeIcon className="w-4 h-4" />
+                                    <ClipboardDocumentIcon className="w-4 h-4" />
                                 </IconButton>
                             )}
 
-                            {/* Copy Button */}
-                            {showCopyButton &&
-                                inputValue &&
-                                fieldType !== 'password' && (
-                                    <IconButton
-                                        size="small"
-                                        onClick={handleCopy}
-                                        edge="end"
-                                        sx={{ mr: 0.5 }}
-                                        aria-label="Copy to clipboard"
-                                    >
-                                        <ClipboardDocumentIcon className="w-4 h-4" />
-                                    </IconButton>
+                        {/* Password Visibility Toggle */}
+                        {fieldType === 'password' && (
+                            <IconButton
+                                size="small"
+                                onClick={togglePasswordVisibility}
+                                className="mr-1"
+                                aria-label={
+                                    showPassword
+                                        ? 'Hide password'
+                                        : 'Show password'
+                                }
+                            >
+                                {showPassword ? (
+                                    <EyeSlashIcon className="w-4 h-4" />
+                                ) : (
+                                    <EyeIcon className="w-4 h-4" />
                                 )}
+                            </IconButton>
+                        )}
 
-                            {/* Password Visibility Toggle */}
-                            {fieldType === 'password' && (
-                                <IconButton
-                                    size="small"
-                                    onClick={togglePasswordVisibility}
-                                    edge="end"
-                                    sx={{ mr: 0.5 }}
-                                    aria-label={
-                                        showPassword
-                                            ? 'Hide password'
-                                            : 'Show password'
-                                    }
-                                >
-                                    {showPassword ? (
-                                        <EyeSlashIcon className="w-4 h-4" />
-                                    ) : (
-                                        <EyeIcon className="w-4 h-4" />
-                                    )}
-                                </IconButton>
-                            )}
-
-                            {/* Clear Button */}
-                            {showClearButton && inputValue && (
-                                <IconButton
-                                    size="small"
-                                    onClick={handleClear}
-                                    edge="end"
-                                    aria-label="Clear input"
-                                >
-                                    <XMarkIcon className="w-4 h-4" />
-                                </IconButton>
-                            )}
-
-                            {textInputProps.InputProps?.endAdornment}
-                        </InputAdornment>
-                    ),
-                    autoCorrect: preventAutocorrect ? 'off' : 'on',
-                    autoCapitalize:
-                        fieldType === 'email' || fieldType === 'url'
-                            ? 'off'
-                            : 'on',
-                    spellCheck:
-                        fieldType === 'email' ||
-                        fieldType === 'url' ||
-                        fieldType === 'number'
-                            ? false
-                            : true,
-                }}
-                sx={{
-                    ...textInputProps.sx,
-                    '& .MuiOutlinedInput-root': {
-                        '&.Mui-error': {
-                            '& fieldset': {
-                                borderColor: 'error.main',
-                            },
-                        },
-                    },
-                }}
+                        {/* Clear Button */}
+                        {showClearButton && inputValue && (
+                            <IconButton
+                                size="small"
+                                onClick={handleClear}
+                                aria-label="Clear input"
+                            >
+                                <XMarkIcon className="w-4 h-4" />
+                            </IconButton>
+                        )}
+                    </div>
+                }
+                autoCorrect={preventAutocorrect ? 'off' : 'on'}
+                autoCapitalize={
+                    fieldType === 'email' || fieldType === 'url'
+                        ? 'off'
+                        : 'on'
+                }
+                spellCheck={
+                    fieldType === 'email' ||
+                    fieldType === 'url' ||
+                    fieldType === 'number'
+                        ? false
+                        : true
+                }
+                className={`${textInputProps.error || !isValid ? 'border-red-500' : ''}`}
             />
 
             {/* Character count */}
             {maxLength && (
                 <Typography
                     variant="caption"
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        bottom: -20,
-                        color:
-                            inputValue.length > maxLength * 0.9
-                                ? 'warning.main'
-                                : 'text.secondary',
-                    }}
+                    className={`absolute right-2 -bottom-5 ${
+                        inputValue.length > maxLength * 0.9
+                            ? 'text-orange-500'
+                            : 'text-gray-500'
+                    }`}
                 >
                     {inputValue.length}/{maxLength}
                 </Typography>
             )}
 
             {/* Suggestions dropdown */}
-            <Fade in={showSuggestions}>
-                <Paper
-                    elevation={4}
-                    sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        zIndex: theme.zIndex.tooltip,
-                        maxHeight: 200,
-                        overflow: 'auto',
-                        mt: 0.5,
-                    }}
-                >
-                    <List dense>
+            <div
+                className={`
+                    absolute top-full left-0 right-0 z-50 max-h-48 overflow-auto mt-1
+                    transition-all duration-200 ease-in-out
+                    ${showSuggestions ? 'opacity-100 visible' : 'opacity-0 invisible'}
+                `}
+            >
+                <Paper className="shadow-lg">
+                    <List className="py-0">
                         {filteredSuggestions.map((suggestion, index) => (
-                            <ListItem
+                            <button
                                 key={index}
-                                button
-                                onClick={() =>
-                                    handleSuggestionClick(suggestion)
-                                }
-                                sx={{
-                                    py: 1,
-                                    minHeight: 44, // Touch target
-                                    '&:hover': {
-                                        backgroundColor: 'action.hover',
-                                    },
-                                }}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="w-full px-4 py-3 text-left hover:bg-gray-100 min-h-11 border-0 bg-transparent"
                             >
-                                <ListItemText
-                                    primary={suggestion}
-                                    primaryTypographyProps={{
-                                        variant: 'body2',
-                                    }}
-                                />
-                            </ListItem>
+                                <Typography variant="body2">
+                                    {suggestion}
+                                </Typography>
+                            </button>
                         ))}
                     </List>
                 </Paper>
-            </Fade>
+            </div>
 
             {/* Format hints */}
             {!isValid && inputValue && (
                 <Typography
                     variant="caption"
-                    color="error"
-                    sx={{
-                        position: 'absolute',
-                        left: 0,
-                        bottom: -20,
-                        fontSize: '0.75rem',
-                    }}
+                    className="absolute left-0 -bottom-5 text-xs text-red-600"
                 >
-                    {fieldType === 'email' &&
-                        'Please enter a valid email address'}
-                    {fieldType === 'phone' &&
-                        'Please enter a valid phone number'}
+                    {fieldType === 'email' && 'Please enter a valid email address'}
+                    {fieldType === 'phone' && 'Please enter a valid phone number'}
                     {fieldType === 'url' && 'Please enter a valid URL'}
                     {fieldType === 'number' && 'Please enter a valid number'}
                 </Typography>

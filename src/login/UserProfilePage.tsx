@@ -5,17 +5,14 @@
 
 import React, { useState } from 'react';
 import {
-    Container,
     Paper,
     Stack,
     Typography,
     Box,
-    Tab,
     Tabs,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import { useAuthProvider, useDataProvider, useNotify } from 'react-admin';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useQuery } from '@tanstack/react-query';
 import { CrmDataProvider } from '../providers/types';
 import { User } from '../types';
@@ -40,7 +37,7 @@ function TabPanel(props: TabPanelProps) {
             aria-labelledby={`profile-tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+            {value === index && <Box className="p-6">{children}</Box>}
         </div>
     );
 }
@@ -57,8 +54,7 @@ export const UserProfilePage = () => {
     const authProvider = useAuthProvider();
     const dataProvider = useDataProvider<CrmDataProvider>();
     const notify = useNotify();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
 
     // Get current user information
     const {
@@ -99,76 +95,65 @@ export const UserProfilePage = () => {
 
     if (isPending) {
         return (
-            <Container maxWidth="md" sx={{ py: 4 }}>
-                <Paper sx={{ p: 3 }}>
+            <div className="max-w-4xl mx-auto py-8 px-4">
+                <Paper className="p-6">
                     <Typography>Loading profile...</Typography>
                 </Paper>
-            </Container>
+            </div>
         );
     }
 
     if (error || !currentUser) {
         return (
-            <Container maxWidth="md" sx={{ py: 4 }}>
-                <Paper sx={{ p: 3 }}>
-                    <Typography color="error">
+            <div className="max-w-4xl mx-auto py-8 px-4">
+                <Paper className="p-6">
+                    <Typography className="text-red-600">
                         Failed to load profile information. Please try
                         refreshing the page.
                     </Typography>
                 </Paper>
-            </Container>
+            </div>
         );
     }
 
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
-            <Stack spacing={3}>
+        <div className="max-w-4xl mx-auto py-8 px-4">
+            <Stack spacing={6}>
                 <Box>
                     <Typography
                         variant={isMobile ? 'h5' : 'h4'}
                         component="h1"
-                        gutterBottom
-                        sx={{ fontWeight: 600 }}
+                        className="font-semibold mb-2"
                     >
                         My Profile
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography variant="body1" className="text-gray-600">
                         Manage your profile information and account settings
                     </Typography>
                 </Box>
 
-                <Paper sx={{ width: '100%' }}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Paper className="w-full">
+                    <Box className="border-b border-gray-200">
                         <Tabs
                             value={tabValue}
                             onChange={handleTabChange}
-                            aria-label="profile tabs"
-                            variant={isMobile ? 'scrollable' : 'standard'}
-                            scrollButtons={isMobile ? 'auto' : false}
+                            orientation={isMobile ? 'horizontal' : 'horizontal'}
+                            variant={isMobile ? 'scrollable' : 'fullWidth'}
                         >
-                            <Tab
+                            <Tabs.Tab
                                 label="Profile"
+                                className={`min-h-12 ${isMobile ? 'text-sm' : 'text-base'}`}
                                 {...a11yProps(0)}
-                                sx={{
-                                    minHeight: 48,
-                                    fontSize: isMobile ? '0.875rem' : '1rem',
-                                }}
                             />
-                            <Tab
+                            <Tabs.Tab
                                 label="Password"
+                                className={`min-h-12 ${isMobile ? 'text-sm' : 'text-base'}`}
                                 {...a11yProps(1)}
-                                sx={{
-                                    minHeight: 48,
-                                    fontSize: isMobile ? '0.875rem' : '1rem',
-                                }}
                             />
-                            <Tab
+                            <Tabs.Tab
                                 label="Security"
+                                className={`min-h-12 ${isMobile ? 'text-sm' : 'text-base'}`}
                                 {...a11yProps(2)}
-                                sx={{
-                                    minHeight: 48,
-                                    fontSize: isMobile ? '0.875rem' : '1rem',
-                                }}
                             />
                         </Tabs>
                     </Box>
@@ -192,7 +177,7 @@ export const UserProfilePage = () => {
                     </TabPanel>
                 </Paper>
             </Stack>
-        </Container>
+        </div>
     );
 };
 

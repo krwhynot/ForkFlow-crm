@@ -8,25 +8,24 @@ import {
     Chip,
     IconButton,
     Tabs,
-    Tab,
     Fab,
     Badge,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Add as AddIcon,
-    Settings as SettingsIcon,
-    TrendingUp as TrendingUpIcon,
-    Business as BusinessIcon,
-    LocalShipping as LocalShippingIcon,
-    Person as PersonIcon,
-    Psychology as PsychologyIcon,
-    AccountTree as AccountTreeIcon,
-    Category as CategoryIcon,
-    Timeline as TimelineIcon,
-    Chat as ChatIcon,
-    Edit as EditIcon,
-    Visibility as VisibilityIcon,
-} from '@mui/icons-material';
+    PlusIcon as AddIcon,
+    CogIcon as SettingsIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    TruckIcon as LocalShippingIcon,
+    UserIcon as PersonIcon,
+    LightBulbIcon as PsychologyIcon,
+    Squares2X2Icon as AccountTreeIcon,
+    TagIcon as CategoryIcon,
+    ChartBarIcon as TimelineIcon,
+    ChatBubbleLeftRightIcon as ChatIcon,
+    PencilIcon as EditIcon,
+    EyeIcon as VisibilityIcon,
+} from '@heroicons/react/24/outline';
+import { ArrowTrendingUpIcon as TrendingUpIcon } from '@heroicons/react/24/solid';
 import {
     useDataProvider,
     useGetList,
@@ -132,62 +131,45 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
     return (
         <Card
-            sx={{
-                height: '100%',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: 4,
-                },
-                borderLeft: `4px solid ${category.color}`,
-            }}
+            className="h-full cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg"
+            style={{ borderLeft: `4px solid ${category.color}` }}
             onClick={() => onManage(category.key)}
         >
-            <CardContent sx={{ p: 2 }}>
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    mb={1}
-                >
-                    <Box display="flex" alignItems="center" gap={1}>
+            <CardContent className="p-4">
+                <Box className="flex items-center justify-between mb-2">
+                    <Box className="flex items-center gap-2">
                         <Box
-                            sx={{
-                                color: category.color,
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
+                            className="flex items-center"
+                            style={{ color: category.color }}
                         >
-                            {category.icon}
+                            {React.cloneElement(category.icon, { className: 'w-5 h-5' })}
                         </Box>
                         <Typography
                             variant={isMobile ? 'subtitle1' : 'h6'}
-                            fontWeight="bold"
+                            className="font-bold"
                         >
                             {category.label}
                         </Typography>
                     </Box>
-                    <Badge badgeContent={stats.total} color="primary" max={99}>
-                        <SettingsIcon fontSize="small" />
+                    <Badge
+                        badgeContent={stats.total}
+                        color="primary"
+                        max={99}
+                        className="flex items-center"
+                    >
+                        <SettingsIcon className="w-4 h-4" />
                     </Badge>
                 </Box>
 
                 <Typography
                     variant="body2"
-                    color="text.secondary"
-                    mb={2}
-                    sx={{ minHeight: 32 }}
+                    className="text-gray-600 mb-4 min-h-8"
                 >
                     {category.description}
                 </Typography>
 
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <Box display="flex" gap={1} flexWrap="wrap">
+                <Box className="flex justify-between items-center">
+                    <Box className="flex gap-2 flex-wrap">
                         <Chip
                             label={`${stats.active} Active`}
                             size="small"
@@ -203,7 +185,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                             />
                         )}
                     </Box>
-                    <Box display="flex" gap={0.5}>
+                    <Box className="flex gap-1">
                         <IconButton
                             size="small"
                             onClick={e => {
@@ -211,9 +193,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                 // Navigate to create new setting
                                 window.location.href = `/settings/create?category=${category.key}`;
                             }}
-                            sx={{ minWidth: 44, minHeight: 44 }}
+                            className="min-w-11 min-h-11"
                         >
-                            <AddIcon fontSize="small" />
+                            <AddIcon className="w-4 h-4" />
                         </IconButton>
                     </Box>
                 </Box>
@@ -230,7 +212,7 @@ interface TabPanelProps {
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => (
     <div role="tabpanel" hidden={value !== index}>
-        {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+        {value === index && <Box className="pt-6">{children}</Box>}
     </div>
 );
 
@@ -282,25 +264,25 @@ export const SettingsAdminDashboard: React.FC = () => {
     const categories = Object.keys(CATEGORY_CONFIG);
 
     if (isLoading) {
-        return <Box p={3}>Loading settings dashboard...</Box>;
+        return <Box className="p-6">Loading settings dashboard...</Box>;
     }
 
     return (
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
+        <Box className="p-4 md:p-6">
             {/* Header */}
-            <Box mb={3}>
-                <Typography variant="h4" gutterBottom fontWeight="bold">
+            <Box className="mb-6">
+                <Typography variant="h4" className="mb-2 font-bold">
                     Settings Management
                 </Typography>
-                <Typography variant="body1" color="text.secondary" mb={2}>
+                <Typography variant="body1" className="text-gray-600 mb-4">
                     Manage all system configuration settings across{' '}
                     {categories.length} categories
                 </Typography>
 
                 {/* Quick Stats */}
-                <Box display="flex" gap={2} flexWrap="wrap">
+                <Box className="flex gap-4 flex-wrap">
                     <Chip
-                        icon={<SettingsIcon />}
+                        icon={<SettingsIcon className="w-4 h-4" />}
                         label={`${totalSettings} Total Settings`}
                         color="primary"
                         variant="filled"
@@ -319,23 +301,22 @@ export const SettingsAdminDashboard: React.FC = () => {
             </Box>
 
             {/* Navigation Tabs */}
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+            <Box className="border-b border-gray-200 mb-6">
                 <Tabs
                     value={activeTab}
                     onChange={handleTabChange}
-                    variant={isMobile ? 'scrollable' : 'standard'}
-                    scrollButtons="auto"
+                    variant={isMobile ? 'scrollable' : 'fullWidth'}
                 >
-                    <Tab label="Overview" />
-                    <Tab label="Categories" />
-                    <Tab label="Bulk Operations" />
+                    <Tabs.Tab label="Overview" />
+                    <Tabs.Tab label="Categories" />
+                    <Tabs.Tab label="Bulk Operations" />
                 </Tabs>
             </Box>
 
             {/* Tab Panels */}
             <TabPanel value={activeTab} index={0}>
                 {/* Overview - Category Cards Grid */}
-                <Grid container spacing={3}>
+                <Grid container spacing={6}>
                     {categories.map(categoryKey => {
                         const category = CATEGORY_CONFIG[categoryKey];
                         const stats = categoryStats[categoryKey] || {
@@ -366,14 +347,14 @@ export const SettingsAdminDashboard: React.FC = () => {
 
             <TabPanel value={activeTab} index={1}>
                 {/* Categories - Detailed Management */}
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" className="mb-2">
                     Category Management
                 </Typography>
-                <Typography variant="body2" color="text.secondary" mb={3}>
+                <Typography variant="body2" className="text-gray-600 mb-6">
                     Detailed view and management of each settings category
                 </Typography>
 
-                <Grid container spacing={2}>
+                <Grid container spacing={4}>
                     {categories.map(categoryKey => {
                         const category = CATEGORY_CONFIG[categoryKey];
                         const stats = categoryStats[categoryKey] || {
@@ -386,22 +367,10 @@ export const SettingsAdminDashboard: React.FC = () => {
                             <Grid item xs={12} key={categoryKey}>
                                 <Card>
                                     <CardContent>
-                                        <Box
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="space-between"
-                                        >
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={2}
-                                            >
-                                                <Box
-                                                    sx={{
-                                                        color: category.color,
-                                                    }}
-                                                >
-                                                    {category.icon}
+                                        <Box className="flex items-center justify-between">
+                                            <Box className="flex items-center gap-4">
+                                                <Box style={{ color: category.color }}>
+                                                    {React.cloneElement(category.icon, { className: 'w-6 h-6' })}
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="h6">
@@ -409,18 +378,14 @@ export const SettingsAdminDashboard: React.FC = () => {
                                                     </Typography>
                                                     <Typography
                                                         variant="body2"
-                                                        color="text.secondary"
+                                                        className="text-gray-600"
                                                     >
                                                         {category.description}
                                                     </Typography>
                                                 </Box>
                                             </Box>
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={2}
-                                            >
-                                                <Box display="flex" gap={1}>
+                                            <Box className="flex items-center gap-4">
+                                                <Box className="flex gap-2">
                                                     <Chip
                                                         label={`${stats.active} Active`}
                                                         size="small"
@@ -432,30 +397,24 @@ export const SettingsAdminDashboard: React.FC = () => {
                                                         color="primary"
                                                     />
                                                 </Box>
-                                                <Box display="flex" gap={1}>
+                                                <Box className="flex gap-2">
                                                     <IconButton
                                                         onClick={() =>
                                                             handleManageCategory(
                                                                 categoryKey
                                                             )
                                                         }
-                                                        sx={{
-                                                            minWidth: 44,
-                                                            minHeight: 44,
-                                                        }}
+                                                        className="min-w-11 min-h-11"
                                                     >
-                                                        <VisibilityIcon />
+                                                        <VisibilityIcon className="w-5 h-5" />
                                                     </IconButton>
                                                     <IconButton
                                                         onClick={() =>
                                                             (window.location.href = `/settings/create?category=${categoryKey}`)
                                                         }
-                                                        sx={{
-                                                            minWidth: 44,
-                                                            minHeight: 44,
-                                                        }}
+                                                        className="min-w-11 min-h-11"
                                                     >
-                                                        <AddIcon />
+                                                        <AddIcon className="w-5 h-5" />
                                                     </IconButton>
                                                 </Box>
                                             </Box>
@@ -470,28 +429,27 @@ export const SettingsAdminDashboard: React.FC = () => {
 
             <TabPanel value={activeTab} index={2}>
                 {/* Bulk Operations */}
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" className="mb-2">
                     Bulk Operations
                 </Typography>
-                <Typography variant="body2" color="text.secondary" mb={3}>
+                <Typography variant="body2" className="text-gray-600 mb-6">
                     Import, export, and manage settings in bulk
                 </Typography>
 
-                <Grid container spacing={3}>
+                <Grid container spacing={6}>
                     <Grid item xs={12} md={6}>
                         <Card>
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>
+                                <Typography variant="h6" className="mb-2">
                                     Import Settings
                                 </Typography>
                                 <Typography
                                     variant="body2"
-                                    color="text.secondary"
-                                    mb={2}
+                                    className="text-gray-600 mb-4"
                                 >
                                     Import settings from CSV or JSON files
                                 </Typography>
-                                <Box display="flex" gap={1}>
+                                <Box className="flex gap-2">
                                     <Chip
                                         label="CSV Import"
                                         variant="outlined"
@@ -508,17 +466,16 @@ export const SettingsAdminDashboard: React.FC = () => {
                     <Grid item xs={12} md={6}>
                         <Card>
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>
+                                <Typography variant="h6" className="mb-2">
                                     Export Settings
                                 </Typography>
                                 <Typography
                                     variant="body2"
-                                    color="text.secondary"
-                                    mb={2}
+                                    className="text-gray-600 mb-4"
                                 >
                                     Export all or selected settings data
                                 </Typography>
-                                <Box display="flex" gap={1}>
+                                <Box className="flex gap-2">
                                     <Chip
                                         label="CSV Export"
                                         variant="outlined"
@@ -538,16 +495,10 @@ export const SettingsAdminDashboard: React.FC = () => {
             <Fab
                 color="primary"
                 aria-label="add setting"
-                sx={{
-                    position: 'fixed',
-                    bottom: { xs: 16, md: 32 },
-                    right: { xs: 16, md: 32 },
-                    minWidth: 56,
-                    minHeight: 56,
-                }}
+                className="fixed bottom-4 right-4 md:bottom-8 md:right-8 min-w-14 min-h-14"
                 onClick={() => (window.location.href = '/settings/create')}
             >
-                <AddIcon />
+                <AddIcon className="w-6 h-6" />
             </Fab>
         </Box>
     );

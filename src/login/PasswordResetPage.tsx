@@ -7,17 +7,15 @@ import React from 'react';
 import {
     Button,
     CircularProgress,
-    Container,
     Stack,
     TextField,
     Typography,
     Alert,
     Box,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import { useMutation } from '@tanstack/react-query';
 import { useDataProvider, useNotify } from 'react-admin';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { CrmDataProvider } from '../providers/types';
@@ -27,8 +25,7 @@ import { PasswordResetRequest } from '../types';
 export const PasswordResetPage = () => {
     const dataProvider = useDataProvider<CrmDataProvider>();
     const { logo, title } = useConfigurationContext();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useBreakpoint('sm');
     const notify = useNotify();
 
     const { isPending, mutate, error, isSuccess } = useMutation({
@@ -75,12 +72,11 @@ export const PasswordResetPage = () => {
 
     if (isSuccess) {
         return (
-            <Stack sx={{ height: '100dvh', p: 2 }}>
+            <Stack className="h-screen p-4">
                 <Stack
                     direction="row"
-                    alignItems="center"
-                    gap={1}
-                    sx={{ mb: 2 }}
+                    spacing={2}
+                    className="items-center mb-4"
                 >
                     <img
                         src={logo}
@@ -95,37 +91,26 @@ export const PasswordResetPage = () => {
                         {title}
                     </Typography>
                 </Stack>
-                <Stack sx={{ height: '100%' }}>
-                    <Container
-                        maxWidth="xs"
-                        sx={{
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            gap: 2,
-                        }}
-                    >
-                        <Box sx={{ textAlign: 'center', mb: 2 }}>
+                <Stack className="h-full">
+                    <div className="max-w-sm mx-auto h-full flex flex-col justify-center gap-4">
+                        <Box className="text-center mb-4">
                             <Typography
                                 variant={isMobile ? 'h5' : 'h4'}
                                 component="h1"
-                                gutterBottom
-                                sx={{ fontWeight: 600 }}
+                                className="font-semibold mb-2"
                             >
                                 Check Your Email
                             </Typography>
                             <Typography
                                 variant="body1"
-                                color="text.secondary"
-                                gutterBottom
+                                className="text-gray-600 mb-2"
                             >
                                 We've sent password reset instructions to your
                                 email address.
                             </Typography>
                         </Box>
 
-                        <Alert severity="success" sx={{ mb: 2 }}>
+                        <Alert severity="success" className="mb-4">
                             <Typography variant="body2">
                                 <strong>Email Sent!</strong>
                                 <br />
@@ -134,54 +119,42 @@ export const PasswordResetPage = () => {
                             </Typography>
                         </Alert>
 
-                        <Stack spacing={2}>
+                        <Stack spacing={4}>
                             <Button
                                 component={Link}
                                 to="/login"
                                 variant="contained"
                                 size="large"
                                 fullWidth
-                                sx={{
-                                    minHeight: 48,
-                                    fontSize: '1.1rem',
-                                    fontWeight: 600,
-                                }}
+                                className="min-h-12 text-lg font-semibold"
                             >
                                 Back to Sign In
                             </Button>
 
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
-                                align="center"
+                                className="text-gray-600 text-center"
                             >
                                 Didn't receive the email?{' '}
                                 <Typography
                                     component="button"
                                     onClick={() => window.location.reload()}
                                     variant="body2"
-                                    color="primary"
-                                    sx={{
-                                        border: 'none',
-                                        background: 'none',
-                                        cursor: 'pointer',
-                                        textDecoration: 'underline',
-                                        '&:hover': { textDecoration: 'none' },
-                                    }}
+                                    className="border-0 bg-transparent cursor-pointer underline text-blue-600 hover:no-underline"
                                 >
                                     Try again
                                 </Typography>
                             </Typography>
                         </Stack>
-                    </Container>
+                    </div>
                 </Stack>
             </Stack>
         );
     }
 
     return (
-        <Stack sx={{ height: '100dvh', p: 2 }}>
-            <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 2 }}>
+        <Stack className="h-screen p-4">
+            <Stack direction="row" spacing={2} className="items-center mb-4">
                 <img
                     src={logo}
                     alt={title}
@@ -192,30 +165,19 @@ export const PasswordResetPage = () => {
                     {title}
                 </Typography>
             </Stack>
-            <Stack sx={{ height: '100%' }}>
-                <Container
-                    maxWidth="xs"
-                    sx={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        gap: 2,
-                    }}
-                >
-                    <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Stack className="h-full">
+                <div className="max-w-sm mx-auto h-full flex flex-col justify-center gap-4">
+                    <Box className="text-center mb-4">
                         <Typography
                             variant={isMobile ? 'h5' : 'h4'}
                             component="h1"
-                            gutterBottom
-                            sx={{ fontWeight: 600 }}
+                            className="font-semibold mb-2"
                         >
                             Reset Your Password
                         </Typography>
                         <Typography
                             variant="body1"
-                            color="text.secondary"
-                            gutterBottom
+                            className="text-gray-600 mb-2"
                         >
                             Enter your email address and we'll send you
                             instructions to reset your password.
@@ -223,7 +185,7 @@ export const PasswordResetPage = () => {
                     </Box>
 
                     {error && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
+                        <Alert severity="error" className="mb-4">
                             {error instanceof Error
                                 ? error.message
                                 : 'An error occurred while sending the reset email'}
@@ -233,11 +195,7 @@ export const PasswordResetPage = () => {
                     <Box
                         component="form"
                         onSubmit={handleSubmit(onSubmit)}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                        }}
+                        className="flex flex-col gap-4"
                     >
                         <TextField
                             {...register('email', {
@@ -250,16 +208,13 @@ export const PasswordResetPage = () => {
                             })}
                             label="Email address"
                             type="email"
-                            variant="outlined"
                             fullWidth
                             autoComplete="email"
                             inputMode="email"
                             autoFocus={!isMobile}
                             error={!!errors.email}
                             helperText={errors.email?.message}
-                            inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' },
-                            }}
+                            className={isMobile ? 'text-base' : 'text-sm'}
                         />
 
                         <Button
@@ -268,15 +223,10 @@ export const PasswordResetPage = () => {
                             size="large"
                             disabled={!isValid || isPending}
                             fullWidth
-                            sx={{
-                                mt: 2,
-                                minHeight: 48,
-                                fontSize: '1.1rem',
-                                fontWeight: 600,
-                            }}
+                            className="mt-4 min-h-12 text-lg font-semibold"
                         >
                             {isPending ? (
-                                <CircularProgress size={24} color="inherit" />
+                                <CircularProgress size="small" />
                             ) : (
                                 'Send Reset Instructions'
                             )}
@@ -284,26 +234,20 @@ export const PasswordResetPage = () => {
 
                         <Typography
                             variant="body2"
-                            color="text.secondary"
-                            align="center"
-                            sx={{ mt: 2 }}
+                            className="text-gray-600 text-center mt-4"
                         >
                             Remember your password?{' '}
                             <Typography
                                 component={Link}
                                 to="/login"
                                 variant="body2"
-                                color="primary"
-                                sx={{
-                                    textDecoration: 'none',
-                                    '&:hover': { textDecoration: 'underline' },
-                                }}
+                                className="text-blue-600 no-underline hover:underline"
                             >
                                 Back to Sign In
                             </Typography>
                         </Typography>
                     </Box>
-                </Container>
+                </div>
             </Stack>
         </Stack>
     );
