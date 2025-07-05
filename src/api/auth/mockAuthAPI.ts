@@ -19,15 +19,15 @@ const mockUsers: User[] = [
     {
         id: '1',
         email: 'admin@forkflow.com',
-        firstName: 'Jane',
-        lastName: 'Admin',
+        firstName: 'Admin',
+        lastName: 'User',
         role: 'admin',
-
-        principals: ['sysco', 'us-foods', 'pfg'],
-        avatar: 'https://i.pravatar.cc/150?img=1',
+        avatar: 'admin-avatar.jpg',
+        principals: ['principal1', 'principal2'],
         isActive: true,
+        lastLoginAt: '2024-01-15T10:30:00Z',
         createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-15T10:30:00Z',
     },
     {
         id: '2',
@@ -59,7 +59,6 @@ const mockUsers: User[] = [
         firstName: 'Demo',
         lastName: 'User',
         role: 'broker',
-        territory: ['west'],
         principals: ['us-foods', 'pfg'],
         avatar: 'https://i.pravatar.cc/150?img=4',
         isActive: true,
@@ -92,8 +91,6 @@ const generateMockJWT = (user: User): string => {
         role: user.role,
         firstName: user.firstName,
         lastName: user.lastName,
-        territory: user.territory,
-        principals: user.principals,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 8 * 60 * 60, // 8 hours
         jti: Math.random().toString(36).substr(2, 9),
@@ -359,7 +356,6 @@ export const mockUpdateProfile = async (
         firstName: updates.firstName,
         lastName: updates.lastName,
         avatar: updates.avatar,
-        territory: updates.territory,
         principals: updates.principals,
     };
 

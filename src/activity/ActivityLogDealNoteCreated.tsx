@@ -33,6 +33,7 @@ export function ActivityLogDealNoteCreated({
                     >
                         <ReferenceField
                             source="organizationId"
+
                             reference="organizations"
                             link={false}
                         >

@@ -77,13 +77,13 @@ export interface Organization {
     totalDealsValue?: number;
     averageDealSize?: number;
     conversionRate?: number;
-    // Territory management
+    // Account management
     assignedSalesRep?: string;
     accountManager?: string;
 }
 
 // Legacy Company type for compatibility
-export interface Company extends Organization {}
+export interface Company extends Organization { }
 
 // Organization-specific types for enhanced features
 export interface OrganizationFilter {

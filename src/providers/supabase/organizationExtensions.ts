@@ -1,7 +1,8 @@
 // src/providers/supabase/organizationExtensions.ts
 /**
- * Supabase Data Provider Extensions for Organizations
- * Adds mobile-optimized organization management with GPS, search, and territory features
+ * Organization Extensions for Supabase Data Provider
+ * Adds mobile-optimized organization management with GPS and search features
+ * Enhanced for food service brokers visiting restaurants and stores
  */
 
 import { DataProvider, Identifier } from 'react-admin';

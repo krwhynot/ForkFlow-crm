@@ -397,4 +397,8 @@ COMMENT ON TABLE interactions IS 'All interactions (emails, calls, meetings, vis
 COMMENT ON TABLE visits IS 'Physical visits to customer locations with GPS tracking';
 COMMENT ON TABLE reminders IS 'Follow-up reminders for brokers';
 COMMENT ON TABLE settings IS 'Configuration settings for various categories (priority, segment, role, etc.)';
-COMMENT ON TABLE sales IS 'User profiles for brokers and administrators'; 
+COMMENT ON TABLE sales IS 'User profiles for brokers and administrators';
+
+-- Enhanced Row Level Security (RLS) policies
+
+-- End of migration 
