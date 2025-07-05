@@ -11,24 +11,22 @@ import {
     useGetList,
     CreateButton,
     Link,
-    Button,
+    Button as RaButton,
 } from 'react-admin';
-import { Button as MuiButton, Dialog, DialogContent } from '@mui/material';
-import { Box, Stack, Chip, Typography } from '../../components/ui-kit';
+import { Box, Stack, Chip, Typography, Button, Dialog, DialogContent } from '../../components/ui-kit';
 import {
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Language as WebsiteIcon,
-    LocationOn as LocationIcon,
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    Add as AddIcon,
-    Star as StarIcon,
-    LinkedIn as LinkedInIcon,
-    History as HistoryIcon,
-    EventNote as InteractionIcon,
-    Map as MapIcon,
-} from '@mui/icons-material';
+    PhoneIcon,
+    EnvelopeIcon,
+    GlobeAltIcon,
+    MapPinIcon,
+    BuildingOfficeIcon,
+    UserIcon,
+    PlusIcon,
+    StarIcon,
+    MapIcon,
+    ClockIcon,
+    DocumentTextIcon,
+} from '@heroicons/react/24/outline';
 import { Organization, Setting, Contact } from '../../types';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { useTwTheme } from '../../hooks/useTwTheme';
@@ -43,18 +41,14 @@ const OrganizationShowActions = () => {
             <TopToolbar>
                 {/* Map Button - only show if organization has coordinates */}
                 {record?.latitude && record?.longitude && (
-                    <MuiButton
+                    <Button
                         variant="outlined"
-                        startIcon={<MapIcon />}
+                        startIcon={<MapIcon className="w-4 h-4" />}
                         onClick={() => setShowMap(true)}
-                        sx={{
-                            marginRight: 1,
-                            minHeight: 44,
-                            px: 2,
-                        }}
+                        className="mr-1 min-h-[44px] px-2"
                     >
                         View on Map
-                    </MuiButton>
+                    </Button>
                 )}
                 <EditButton />
                 <DeleteButton />
@@ -67,7 +61,7 @@ const OrganizationShowActions = () => {
                 maxWidth={false}
                 fullScreen={isFullScreen}
                 PaperProps={{
-                    sx: {
+                    style: {
                         width: isFullScreen ? '100%' : '90vw',
                         height: isFullScreen ? '100%' : '90vh',
                         maxWidth: 'none',
@@ -75,7 +69,7 @@ const OrganizationShowActions = () => {
                     },
                 }}
             >
-                <DialogContent sx={{ p: 0, height: '100%' }}>
+                <DialogContent className="p-0 h-full">
                     <Box>Map will be here</Box>
                 </DialogContent>
             </Dialog>
@@ -172,7 +166,7 @@ const OrganizationShowContent = () => {
                         <div className="p-4">
                             {/* Header */}
                             <Box className="flex items-center mb-6">
-                                <BusinessIcon className="text-4xl text-blue-500 mr-4" />
+                                <BuildingOfficeIcon className="w-10 h-10 text-blue-500 mr-4" />
                                 <Box className="flex-grow">
                                     <Typography
                                         variant="h4"
@@ -214,7 +208,7 @@ const OrganizationShowContent = () => {
                                         className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Call organization"
                                     >
-                                        <PhoneIcon />
+                                        <PhoneIcon className="w-5 h-5" />
                                     </button>
                                 )}
                                 {record.accountManager && (
@@ -223,7 +217,7 @@ const OrganizationShowContent = () => {
                                         className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Email account manager"
                                     >
-                                        <EmailIcon />
+                                        <EnvelopeIcon className="w-5 h-5" />
                                     </button>
                                 )}
                                 {record.website && (
@@ -232,7 +226,7 @@ const OrganizationShowContent = () => {
                                         className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Visit website"
                                     >
-                                        <WebsiteIcon />
+                                        <GlobeAltIcon className="w-5 h-5" />
                                     </button>
                                 )}
                                 {(record.latitude || record.address) && (
@@ -241,7 +235,7 @@ const OrganizationShowContent = () => {
                                         className="w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                         aria-label="Get directions"
                                     >
-                                        <LocationIcon />
+                                        <MapPinIcon className="w-5 h-5" />
                                     </button>
                                 )}
                             </Box>
@@ -425,16 +419,16 @@ const OrganizationShowContent = () => {
                                     >
                                         Contacts ({contacts?.length || 0})
                                     </Typography>
-                                    <MuiButton
+                                    <Button
                                         component={Link}
                                         to={`/contacts/create?organizationId=${record.id}`}
                                         variant="outlined"
                                         size="small"
-                                        startIcon={<AddIcon />}
-                                        sx={{ minHeight: 44, px: 2 }}
+                                        startIcon={<PlusIcon className="w-4 h-4" />}
+                                        className="min-h-[44px] px-2"
                                     >
                                         Add Contact
-                                    </MuiButton>
+                                    </Button>
                                 </Box>
 
                                 {contacts && contacts.length > 0 ? (
@@ -448,22 +442,22 @@ const OrganizationShowContent = () => {
                                     </Stack>
                                 ) : (
                                     <Box className="text-center py-6">
-                                        <PersonIcon className="text-5xl text-gray-400 mb-2" />
+                                        <UserIcon className="w-12 h-12 text-gray-400 mb-2 mx-auto" />
                                         <Typography
                                             variant="body2"
                                             className="text-gray-500 mb-4"
                                         >
                                             No contacts yet
                                         </Typography>
-                                        <MuiButton
+                                        <Button
                                             component={Link}
                                             to={`/contacts/create?organizationId=${record.id}`}
                                             variant="contained"
-                                            startIcon={<AddIcon />}
-                                            sx={{ minHeight: 44 }}
+                                            startIcon={<PlusIcon className="w-4 h-4" />}
+                                            className="min-h-[44px]"
                                         >
                                             Add First Contact
-                                        </MuiButton>
+                                        </Button>
                                     </Box>
                                 )}
                             </div>
@@ -595,7 +589,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="Call contact"
                             >
-                                <PhoneIcon className="text-sm" />
+                                                                        <PhoneIcon className="w-4 h-4" />
                             </button>
                         )}
                         {contact.email && (
@@ -604,7 +598,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="Email contact"
                             >
-                                <EmailIcon className="text-sm" />
+                                <EnvelopeIcon className="w-4 h-4" />
                             </button>
                         )}
                         {contact.linkedin_url && (
@@ -613,7 +607,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="LinkedIn profile"
                             >
-                                <LinkedInIcon className="text-sm" />
+                                <span className="text-sm font-bold">in</span>
                             </button>
                         )}
                     </Box>

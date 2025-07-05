@@ -13,12 +13,12 @@ import {
     useRedirect,
     useNotify,
 } from 'react-admin';
-import { Stack, Button, Dialog, DialogContent, Box, Chip } from '@mui/material';
+import { Stack, Button, Dialog, DialogContent, Box, Chip } from '../../components/ui-kit';
 import {
-    Map as MapIcon,
-    LocationOn as LocationIcon,
-    Add as AddIcon,
-} from '@mui/icons-material';
+    MapIcon,
+    MapPinIcon,
+    PlusIcon,
+} from '@heroicons/react/24/outline';
 import { ImageList } from './GridList';
 import { OrganizationListFilter } from './OrganizationListFilter';
 import { OrganizationEmpty } from './OrganizationEmpty';
@@ -138,12 +138,12 @@ const OrganizationListLayout = () => {
     return (
         <Stack direction="row" component="div">
             <OrganizationListFilter />
-            <Stack sx={{ width: '100%' }}>
-                <Box display="flex" alignItems="center" gap={2} mb={1}>
+            <Stack className="w-full">
+                <Box className="flex items-center gap-2 mb-1">
                     <Title title={'Organizations'} />
                     {hasRestrictions && (
                         <Chip
-                            icon={<LocationIcon />}
+                            icon={<MapPinIcon className="w-4 h-4" />}
                             label={`Territory: ${territoryDisplayName}`}
                             color="primary"
                             variant="outlined"
@@ -161,10 +161,10 @@ const OrganizationListLayout = () => {
                     {/* Map View Toggle */}
                     <Button
                         variant="outlined"
-                        startIcon={<MapIcon />}
+                        startIcon={<MapIcon className="w-4 h-4" />}
                         onClick={() => setShowMap(true)}
                         size={isMobile ? 'small' : 'medium'}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-[44px]"
                     >
                         {isMobile ? 'Map' : 'Map View'}
                     </Button>
@@ -189,13 +189,13 @@ const OrganizationListLayout = () => {
                     fullWidth
                     fullScreen={isMobile}
                     PaperProps={{
-                        sx: {
+                        style: {
                             height: isMobile ? '100vh' : '80vh',
-                            borderRadius: isMobile ? 0 : 2,
+                            borderRadius: isMobile ? 0 : 8,
                         },
                     }}
                 >
-                    <DialogContent sx={{ p: 0, height: '100%' }}>
+                    <DialogContent className="p-0 h-full">
                         <OrganizationMapView
                             onClose={() => setShowMap(false)}
                         />

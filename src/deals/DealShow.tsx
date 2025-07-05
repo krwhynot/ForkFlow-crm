@@ -1,6 +1,4 @@
-import { Button, Stack, Typography } from '../components/ui-kit';
-import { Box, Chip } from '@/components/ui-kit';
-import { Dialog, DialogContent, Divider } from '@mui/material';
+import { Button, Stack, Typography, Box, Chip, Dialog, DialogContent, Divider } from '@/components/ui-kit';
 import { useMutation } from '@tanstack/react-query';
 import {
     DeleteButton,
@@ -40,13 +38,9 @@ export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
             onClose={handleClose}
             fullWidth
             maxWidth="md"
-            sx={{
-                '& .MuiDialog-container': {
-                    alignItems: 'flex-start',
-                },
-            }}
+            className="[&_.dialog-container]:items-start"
         >
-            <DialogContent sx={{ padding: 0 }}>
+            <DialogContent className="p-0">
                 {!!id ? (
                     <ShowBase id={id}>
                         <DealShowContent handleClose={handleClose} />
@@ -93,7 +87,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
             />
             <Stack gap={1}>
                 {record.archivedAt ? <ArchivedTitle /> : null}
-                <Box p={2}>
+                <Box className="p-2">
                     <RelationshipBreadcrumbs
                         currentEntity="opportunity"
                         showContext={true}
@@ -105,19 +99,15 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                         }}
                     />
                 </Box>
-                <Box display="flex" p={2}>
-                    <Box flex="1">
-                        <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            mb={4}
-                        >
-                            <Stack direction="row" alignItems="center" gap={2}>
+                <Box className="flex p-2">
+                    <Box className="flex-1">
+                        <Stack className="flex-row justify-between mb-4">
+                            <Stack className="flex-row items-center gap-2">
                                 <ReferenceField
                                     source="organizationId"
                                     reference="companies"
                                     link="show"
-                                    sx={{ '& a': { textDecoration: 'none' } }}
+                                    className="[&_a]:no-underline"
                                 >
                                     <CompanyAvatar />
                                 </ReferenceField>
@@ -125,7 +115,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                     {record.name}
                                 </Typography>
                             </Stack>
-                            <Stack gap={1} direction="row" pr={6}>
+                            <Stack className="gap-1 flex-row pr-6">
                                 {record.archivedAt ? (
                                     <>
                                         <UnarchiveButton record={record} />
@@ -140,19 +130,15 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                             </Stack>
                         </Stack>
 
-                        <Box display="flex" m={2}>
-                            <Box display="flex" mr={5} flexDirection="column">
+                        <Box className="flex m-2">
+                            <Box className="flex mr-5 flex-col">
                                 <Typography
-                                    color="textSecondary"
+                                    className="text-gray-600"
                                     variant="caption"
                                 >
                                     Expected closing date
                                 </Typography>
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    gap={1}
-                                >
+                                <Stack className="flex-row items-center gap-1">
                                     <Typography variant="body2">
                                         {record.expectedClosingDate
                                             ? new Date(
@@ -173,9 +159,9 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                 </Stack>
                             </Box>
 
-                            <Box display="flex" mr={5} flexDirection="column">
+                            <Box className="flex mr-5 flex-col">
                                 <Typography
-                                    color="textSecondary"
+                                    className="text-gray-600"
                                     variant="caption"
                                 >
                                     Budget
@@ -194,9 +180,9 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                 </Typography>
                             </Box>
 
-                            <Box display="flex" mr={5} flexDirection="column">
+                            <Box className="flex mr-5 flex-col">
                                 <Typography
-                                    color="textSecondary"
+                                    className="text-gray-600"
                                     variant="caption"
                                 >
                                     Stage
@@ -208,15 +194,10 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                         </Box>
 
                         {record.contactId && (
-                            <Box m={2}>
-                                <Box
-                                    display="flex"
-                                    mr={5}
-                                    flexDirection="column"
-                                    minHeight={48}
-                                >
+                            <Box className="m-2">
+                                <Box className="flex mr-5 flex-col min-h-[48px]">
                                     <Typography
-                                        color="textSecondary"
+                                        className="text-gray-600"
                                         variant="caption"
                                     >
                                         Contact
@@ -232,9 +213,9 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                         )}
 
                         {record.description && (
-                            <Box m={2} sx={{ whiteSpace: 'pre-line' }}>
+                            <Box className="m-2 whitespace-pre-line">
                                 <Typography
-                                    color="textSecondary"
+                                    className="text-gray-600"
                                     variant="caption"
                                 >
                                     Description
@@ -245,8 +226,8 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                             </Box>
                         )}
 
-                        <Box m={2}>
-                            <Divider sx={{ mb: 3 }} />
+                        <Box className="m-2">
+                            <Divider className="mb-3" />
 
                             {/* Related Interactions */}
                             <RelatedEntitiesSection
@@ -260,7 +241,7 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
                                 emptyMessage="No interactions recorded for this opportunity yet."
                             />
 
-                            <Divider sx={{ my: 3 }} />
+                            <Divider className="my-3" />
 
                             <ReferenceManyField
                                 target="deal_id"
@@ -278,19 +259,10 @@ const DealShowContent = ({ handleClose }: { handleClose: () => void }) => {
 };
 
 const ArchivedTitle = () => (
-    <Box
-        sx={{
-            background: theme => theme.palette.warning.main,
-            px: 3,
-            py: 2,
-        }}
-    >
+    <Box className="bg-yellow-500 px-3 py-2">
         <Typography
             variant="h6"
-            fontWeight="bold"
-            sx={{
-                color: theme => theme.palette.warning.contrastText,
-            }}
+            className="font-bold text-white"
         >
             Archived Deal
         </Typography>
