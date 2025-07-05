@@ -14,7 +14,7 @@ import {
     LinearProgress,
     Alert,
     Box,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import { useLogout, useNotify } from 'react-admin';
 import {
     ClockIcon,
@@ -134,11 +134,10 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
             open={isWarningOpen}
             onClose={() => {}} // Prevent closing by clicking outside
             maxWidth="sm"
-            fullWidth
-            disableEscapeKeyDown
+            className="w-full"
         >
             <DialogTitle>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box className="flex items-center gap-2">
                     <ExclamationTriangleIcon className="w-6 h-6 text-yellow-600" />
                     <Typography variant="h6">
                         Session Timeout Warning
@@ -147,8 +146,8 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
             </DialogTitle>
 
             <DialogContent>
-                <Alert severity="warning" sx={{ mb: 2 }}>
-                    <Typography variant="body1" gutterBottom>
+                <Alert severity="warning" className="mb-4">
+                    <Typography variant="body1" className="mb-2">
                         Your session will expire in{' '}
                         <strong>{formatTime(remainingTime)}</strong> due to
                         inactivity.
@@ -159,11 +158,10 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
                     </Typography>
                 </Alert>
 
-                <Box sx={{ mt: 2 }}>
+                <Box className="mt-4">
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        gutterBottom
+                        className="text-gray-600 mb-2"
                     >
                         Time Remaining:
                     </Typography>
@@ -171,26 +169,19 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
                         variant="determinate"
                         value={warningProgress}
                         color={warningProgress > 50 ? 'warning' : 'error'}
-                        sx={{ height: 8, borderRadius: 4 }}
+                        className="h-2 rounded"
                     />
                 </Box>
 
-                <Box
-                    sx={{
-                        mt: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                    }}
-                >
+                <Box className="mt-4 flex items-center gap-2">
                     <ClockIcon className="w-4 h-4 text-gray-500" />
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" className="text-gray-600">
                         Automatic logout in {formatTime(remainingTime)}
                     </Typography>
                 </Box>
             </DialogContent>
 
-            <DialogActions sx={{ p: 2, gap: 1 }}>
+            <DialogActions className="p-4 gap-2">
                 <Button
                     onClick={() => logout()}
                     color="error"

@@ -10,7 +10,7 @@ import {
     Link,
     Stack,
     Typography,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import 'cropperjs/dist/cropper.css';
 import { useFieldValue } from 'ra-core';
 import { createRef, useCallback, useState } from 'react';
@@ -31,9 +31,8 @@ const ImageEditorField = (props: ImageEditorFieldProps) => {
     const commonProps = {
         src: imageUrl,
         onClick: () => setIsDialogOpen(true),
-        style: { cursor: 'pointer' },
-        sx: {
-            ...props.sx,
+        className: 'cursor-pointer',
+        style: {
             width: props.width || (type === 'avatar' ? 50 : 200),
             height: props.height || (type === 'avatar' ? 50 : 200),
         },
@@ -42,28 +41,34 @@ const ImageEditorField = (props: ImageEditorFieldProps) => {
     return (
         <>
             <Stack
-                direction={linkPosition === 'right' ? 'row' : 'column'}
-                alignItems={'center'}
-                gap={linkPosition === 'right' ? 2 : 0.5}
-                borderRadius={1}
-                p={props.backgroundImageColor ? 1 : 0}
-                sx={{
-                    backgroundColor:
-                        props.backgroundImageColor || 'transparent',
+                direction={linkPosition === 'right' ? 'row' : 'col'}
+                align="center"
+                gap={linkPosition === 'right' ? 4 : 2}
+                className={`rounded p-${props.backgroundImageColor ? '2' : '0'}`}
+                style={{
+                    backgroundColor: props.backgroundImageColor || 'transparent',
                 }}
             >
                 {props.type === 'avatar' ? (
                     <Avatar {...commonProps}>{emptyText}</Avatar>
                 ) : (
-                    <Box component={'img'} {...commonProps} />
+                    <img 
+                        src={imageUrl}
+                        onClick={() => setIsDialogOpen(true)}
+                        className="cursor-pointer"
+                        style={{
+                            width: props.width || 200,
+                            height: props.height || 200,
+                        }}
+                        alt="Editable content"
+                    />
                 )}
                 {linkPosition !== 'none' && (
                     <Typography
-                        component={Link}
+                        as={Link}
                         variant="caption"
                         onClick={() => setIsDialogOpen(true)}
-                        textAlign="center"
-                        sx={{ display: 'inline', cursor: 'pointer' }}
+                        className="inline cursor-pointer text-center"
                     >
                         Change
                     </Typography>
@@ -134,8 +139,8 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
         <Dialog
             open={props.open}
             onClose={props.onClose}
-            fullWidth
             maxWidth="md"
+            className="w-full"
         >
             {props.type === 'avatar' && (
                 <style>
@@ -150,15 +155,11 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
             <DialogCloseButton onClose={props.onClose} />
             <DialogTitle>Upload and resize image</DialogTitle>
             <DialogContent>
-                <Stack gap={2} justifyContent="center">
+                <Stack gap={4} className="justify-center">
                     <Stack
                         direction="row"
-                        justifyContent="center"
+                        className="justify-center bg-gray-50 cursor-pointer p-4"
                         {...getRootProps()}
-                        sx={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                            cursor: 'pointer',
-                        }}
                     >
                         <input {...getInputProps()} />
                         <p>Drop a file to upload, or click to select it.</p>
@@ -172,17 +173,15 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
                     />
                 </Stack>
             </DialogContent>
-            <DialogActions sx={{ p: 0 }}>
-                <Toolbar
-                    sx={{ width: '100%', justifyContent: 'space-between' }}
-                >
+            <DialogActions className="p-0">
+                <div className="w-full flex justify-between p-4">
                     <Button variant="contained" onClick={updateImage}>
                         Update Image
                     </Button>
                     <Button variant="text" color="error" onClick={deleteImage}>
                         Delete
                     </Button>
-                </Toolbar>
+                </div>
             </DialogActions>
         </Dialog>
     );
@@ -192,14 +191,14 @@ export default ImageEditorField;
 
 export interface ImageEditorFieldProps<
     RecordType extends Record<string, any> = Record<string, any>,
-> extends FieldProps<RecordType>,
-        AvatarProps {
+> extends FieldProps<RecordType> {
     width?: number;
     height?: number;
     type?: 'avatar' | 'image';
     onSave?: any;
     linkPosition?: 'right' | 'bottom' | 'none';
     backgroundImageColor?: string;
+    sx?: any; // For backward compatibility
 }
 
 export interface ImageEditorDialogProps extends ImageEditorFieldProps {
