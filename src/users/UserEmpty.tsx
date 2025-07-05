@@ -1,7 +1,7 @@
 // src/users/UserEmpty.tsx
 import React from 'react';
 import { CreateButton, useGetIdentity } from 'react-admin';
-import { People as PeopleIcon } from '@mui/icons-material';
+import { UsersIcon } from '@heroicons/react/24/outline';
 import { Box, Typography } from '../components/ui-kit';
 
 export const UserEmpty = () => {
@@ -9,7 +9,7 @@ export const UserEmpty = () => {
 
     return (
         <Box className="text-center mx-auto p-4 max-w-md">
-            <PeopleIcon className="text-8xl text-gray-500 mb-2" />
+            <UsersIcon className="w-20 h-20 text-gray-500 mb-2 mx-auto" />
 
             <Typography variant="h5" component="h2" className="mb-2">
                 No Users Yet

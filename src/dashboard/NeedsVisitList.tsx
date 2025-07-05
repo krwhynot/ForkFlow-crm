@@ -18,6 +18,7 @@ import {
     Badge,
 } from '@/components/ui-kit';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { useTwTheme } from '../hooks/useTwTheme';
 import {
     ExclamationTriangleIcon,
     BuildingOfficeIcon,
@@ -48,8 +49,8 @@ interface OrganizationWithLastInteraction
 }
 
 export const NeedsVisitList = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const navigate = useNavigate();
 
     // Use the new reporting API for organizations needing visits
@@ -133,13 +134,13 @@ export const NeedsVisitList = () => {
     const getUrgencyColor = (urgencyLevel: string) => {
         switch (urgencyLevel) {
             case 'critical':
-                return theme.palette.error.main;
+                return '#dc2626'; // red-600
             case 'high':
-                return theme.palette.warning.main;
+                return '#d97706'; // amber-600
             case 'medium':
-                return theme.palette.info.main;
+                return '#2563eb'; // blue-600
             default:
-                return theme.palette.success.main;
+                return '#16a34a'; // green-600
         }
     };
 
@@ -254,11 +255,9 @@ export const NeedsVisitList = () => {
                                         borderRadius: 1,
                                         backgroundColor:
                                             org.urgencyLevel === 'critical'
-                                                ? theme.palette.error.main +
-                                                  '08'
+                                                ? '#dc262620' // red-600 with 20% opacity
                                                 : org.urgencyLevel === 'high'
-                                                  ? theme.palette.warning.main +
-                                                    '08'
+                                                  ? '#d9770620' // amber-600 with 20% opacity
                                                   : 'transparent',
                                     }}
                                 >
@@ -271,9 +270,7 @@ export const NeedsVisitList = () => {
                                                             fontSize: 12,
                                                             color:
                                                                 org.priorityColor ||
-                                                                theme.palette
-                                                                    .primary
-                                                                    .main,
+                                                                '#2563eb', // blue-600
                                                         }}
                                                     />
                                                 ) : null
@@ -311,14 +308,12 @@ export const NeedsVisitList = () => {
                                                         sx={{
                                                             backgroundColor:
                                                                 org.segmentColor ||
-                                                                theme.palette
-                                                                    .grey[200],
-                                                            color: theme.palette.getContrastText(
-                                                                org.segmentColor ||
-                                                                    theme
-                                                                        .palette
-                                                                        .grey[200]
-                                                            ),
+                                                                '#e5e7eb', // gray-200
+                                                            color: org.segmentColor 
+                                                                ? (org.segmentColor.includes('#') && parseInt(org.segmentColor.substr(1), 16) > 0x888888) 
+                                                                    ? '#000000' // black for light colors
+                                                                    : '#ffffff' // white for dark colors
+                                                                : '#374151', // gray-700 for default
                                                             height: 20,
                                                             fontSize: '0.7rem',
                                                         }}

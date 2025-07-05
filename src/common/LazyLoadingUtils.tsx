@@ -1,10 +1,10 @@
 import React, { Suspense, ComponentType, ReactElement } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Box, Button, Typography, Alert, Stack } from '@mui/material';
+import { Box, Button, Typography, Alert, Stack } from '@/components/ui-kit';
 import {
-    Refresh as RefreshIcon,
-    Warning as WarningIcon,
-} from '@mui/icons-material';
+    ArrowPathIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 import { LoadingFallback, SkeletonFallback } from './LoadingComponent';
 
 interface LazyLoadErrorProps {
@@ -29,7 +29,7 @@ const LazyLoadError: React.FC<LazyLoadErrorProps> = ({
     >
         <Alert
             severity="error"
-            icon={<WarningIcon />}
+            icon={<ExclamationTriangleIcon className="w-5 h-5" />}
             sx={{ mb: 2, width: '100%', maxWidth: 600 }}
         >
             <Typography variant="h6" gutterBottom>
@@ -41,7 +41,7 @@ const LazyLoadError: React.FC<LazyLoadErrorProps> = ({
             <Stack direction="row" spacing={2} justifyContent="center">
                 <Button
                     variant="contained"
-                    startIcon={<RefreshIcon />}
+                    startIcon={<ArrowPathIcon className="w-4 h-4" />}
                     onClick={resetErrorBoundary}
                     size="small"
                 >

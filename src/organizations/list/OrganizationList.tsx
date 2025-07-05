@@ -17,11 +17,13 @@ import { Stack } from '../../components/Layout/Stack';
 import { Box } from '../../components/Layout/Box';
 import { Chip } from '../../components/DataDisplay/Chip';
 import { Button } from '../../components/Button/Button';
-import { Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
+import { Dialog, DialogContent } from '@/components/ui-kit';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    Map as MapIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    MapIcon,
+    MapPinIcon,
+} from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { OrganizationEmpty } from './OrganizationEmpty';
 import { OrganizationMapView } from './OrganizationMapView';
@@ -55,7 +57,7 @@ const OrganizationListLayout = () => {
                         <Chip
                             label={
                                 <span className="flex items-center">
-                                    <LocationIcon className="mr-1" />
+                                    <MapPinIcon className="mr-1 w-4 h-4" />
                                     {`Territory: ${territoryDisplayName}`}
                                 </span>
                             }
@@ -74,8 +76,8 @@ const OrganizationListLayout = () => {
 
 const OrganizationListActions = () => {
     const [showMap, setShowMap] = useState(false);
-    const theme = useTheme();
-    const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTwTheme();
+    const isFullScreen = useMediaQuery('(max-width: 768px)');
 
     return (
         <>
@@ -87,7 +89,7 @@ const OrganizationListActions = () => {
                     onClick={() => setShowMap(true)}
                     className="ml-1 min-h-11 px-2"
                 >
-                    <MapIcon className="mr-1" />
+                    <MapIcon className="mr-1 w-4 h-4" />
                     Map View
                 </Button>
                 <CreateButton

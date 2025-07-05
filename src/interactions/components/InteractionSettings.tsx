@@ -5,16 +5,18 @@ import {
     CardContent,
     Typography,
     Grid,
-    Switch,
-    FormControlLabel,
     Button,
     Alert,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
     Chip,
     Stack,
     Divider,
+} from '@/components/ui-kit';
+import {
+    Switch,
+    FormControlLabel,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
     TextField,
     InputAdornment,
 } from '@mui/material';
@@ -210,7 +212,7 @@ export const InteractionSettings = () => {
             <Stack spacing={2}>
                 {/* GPS Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -218,7 +220,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <LocationIcon color="primary" />
+                            <MapPinIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 GPS & Location Settings
                             </Typography>
@@ -328,7 +330,7 @@ export const InteractionSettings = () => {
                                         variant="outlined"
                                         onClick={testGPS}
                                         disabled={!settings.gpsEnabled}
-                                        startIcon={<LocationIcon />}
+                                        startIcon={<MapPinIcon className="w-4 h-4" />}
                                     >
                                         Test GPS
                                     </Button>
@@ -340,7 +342,7 @@ export const InteractionSettings = () => {
 
                 {/* Offline Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -348,7 +350,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <OfflineIcon color="primary" />
+                            <CloudSlashIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 Offline & Sync Settings
                             </Typography>
@@ -458,7 +460,7 @@ export const InteractionSettings = () => {
                                         color="warning"
                                         onClick={clearOfflineData}
                                         disabled={!settings.offlineEnabled}
-                                        startIcon={<StorageIcon />}
+                                        startIcon={<ServerIcon className="w-4 h-4" />}
                                     >
                                         Clear Offline Data
                                     </Button>
@@ -470,7 +472,7 @@ export const InteractionSettings = () => {
 
                 {/* File Upload Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -478,7 +480,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <UploadIcon color="primary" />
+                            <ArrowUpTrayIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 File Upload Settings
                             </Typography>
@@ -572,7 +574,7 @@ export const InteractionSettings = () => {
 
                 {/* Performance Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -580,7 +582,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <PerformanceIcon color="primary" />
+                            <BoltIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 Performance Monitoring
                             </Typography>
@@ -670,7 +672,7 @@ export const InteractionSettings = () => {
                 <Button
                     variant="contained"
                     size="large"
-                    startIcon={<SecurityIcon />}
+                    startIcon={<ShieldCheckIcon className="w-4 h-4" />}
                     onClick={() => {
                         // In a real implementation, this would save settings to the backend
                         alert('Settings saved successfully!');

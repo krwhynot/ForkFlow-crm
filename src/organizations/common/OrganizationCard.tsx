@@ -19,18 +19,18 @@ import {
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Language as WebsiteIcon,
-    LocationOn as LocationIcon,
-    Edit as EditIcon,
-    Business as BusinessIcon,
-    MoreVert as MoreVertIcon,
-    Visibility as ViewIcon,
-    Delete as DeleteIcon,
-    Share as ShareIcon,
-    TrendingUp as TrendingUpIcon,
-} from '@mui/icons-material';
+    PhoneIcon,
+    EnvelopeIcon,
+    GlobeAltIcon,
+    MapPinIcon,
+    PencilIcon,
+    BuildingOfficeIcon,
+    EllipsisVerticalIcon,
+    EyeIcon,
+    TrashIcon,
+    ShareIcon,
+    TrendingUpIcon,
+} from '@heroicons/react/24/outline';
 import { useRecordContext, useGetOne, Link } from 'react-admin';
 import { Organization, Setting } from '../../types';
 
@@ -258,7 +258,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                         onError={() => setImageError(true)}
                     >
                         {!imageLoaded || imageError ? (
-                            <BusinessIcon fontSize={isMobile ? 'medium' : 'large'} />
+                            <BuildingOfficeIcon className={isMobile ? 'w-5 h-5' : 'w-6 h-6'} />
                         ) : null}
                     </Avatar>
                     
@@ -280,11 +280,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                         
                         {(record.city || record.stateAbbr) && (
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <LocationIcon 
-                                    fontSize="small" 
-                                    color="action" 
-                                    sx={{ fontSize: 16 }}
-                                />
+                                <MapPinIcon className="w-4 h-4 text-gray-500" />
                                 <Typography 
                                     variant="caption" 
                                     className="text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -345,7 +341,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 {/* Revenue */}
                 {record.revenue && (
                     <Box className="flex items-center gap-1 mb-4">
-                        <TrendingUpIcon fontSize="small" color="action" />
+                        <TrendingUpIcon className="w-4 h-4 text-gray-500" />
                         <Typography variant="body2" className="font-medium">
                             {formatRevenue(record.revenue)}
                         </Typography>
@@ -403,7 +399,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Call organization"
                             >
-                                <PhoneIcon fontSize="small" />
+                                <PhoneIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -416,7 +412,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
                                 aria-label="Email account manager"
                             >
-                                <EmailIcon fontSize="small" />
+                                <EnvelopeIcon className="w-4 h-4" />
                             </IconButton>
                         </Tooltip>
                     )}
