@@ -10,24 +10,24 @@ import {
     Avatar,
 } from '@/components/ui-kit';
 import {
-    EnvelopeIcon,
-    PhoneIcon,
-    UserIcon,
-    PresentationChartBarIcon,
-    CurrencyDollarIcon,
-    ClockIcon,
-} from '@heroicons/react/24/outline';
+    Email as EmailIcon,
+    Phone as PhoneIcon,
+    PersonPin as PersonPinIcon,
+    Slideshow as DemoIcon,
+    AttachMoney as QuoteIcon,
+    Schedule as FollowUpIcon,
+} from '@mui/icons-material';
 import { ReferenceField, TextField, DateField } from 'react-admin';
 
 import { Interaction } from '../types';
 
 const interactionTypeIcons = {
-    email: EnvelopeIcon,
+    email: EmailIcon,
     call: PhoneIcon,
-    in_person: UserIcon,
-    demo: PresentationChartBarIcon,
-    quote: CurrencyDollarIcon,
-    follow_up: ClockIcon,
+    in_person: PersonPinIcon,
+    demo: DemoIcon,
+    quote: QuoteIcon,
+    follow_up: FollowUpIcon,
 };
 
 const interactionTypeColors = {
@@ -81,7 +81,7 @@ export const InteractionTimeline = ({
                     interactionTypeIcons[
                         interaction.type
                             ?.key as keyof typeof interactionTypeIcons
-                    ] || ClockIcon;
+                    ] || FollowUpIcon;
                 const typeColor =
                     interactionTypeColors[
                         interaction.type

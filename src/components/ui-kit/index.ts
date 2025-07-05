@@ -64,6 +64,9 @@ export { Typography } from './Typography';
 export { Stepper, Step, StepLabel, StepContent } from './Stepper';
 export { ImageList, ImageListItem } from './ImageList';
 export { Select, SelectItem } from './Select';
+export { TextField, TextInput } from './TextField';
+export { Switch, FormControlLabel } from './Switch';
+export { Tabs, TabPanel, TabItem, TabContext, useTabContext } from './Tabs';
 
 // Utility exports
 export type { default as CircularProgressProps } from './CircularProgress';
