@@ -1,39 +1,36 @@
-import React from 'react';
 import {
-    List,
-    Datagrid,
-    TextField,
-    DateField,
-    ReferenceField,
-    FunctionField,
-    BooleanField,
-    useListContext,
-    TopToolbar,
-    CreateButton,
-    FilterButton,
-    useUpdate,
-    useNotify,
-} from 'react-admin';
-import {
+    Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Box,
     Chip,
-    IconButton,
-    Button,
-} from '@mui/material';
+    Typography
+} from '@/components/ui-kit';
 import {
-    CheckCircle as CompleteIcon,
-    CheckCircle,
-    Schedule as ScheduleIcon,
-    PriorityHigh as HighPriorityIcon,
-    Snooze as SnoozeIcon,
-    WarningAmber as OverdueIcon,
-} from '@mui/icons-material';
-import { ReminderListFilter } from './ReminderListFilter';
-import { Reminder } from '../types';
+    ArrowPathIcon,
+    CheckCircleIcon,
+    ClockIcon,
+    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
+import {
+    BooleanField,
+    CreateButton,
+    Datagrid,
+    DateField,
+    FilterButton,
+    FunctionField,
+    List,
+    ReferenceField,
+    TextField,
+    TopToolbar,
+    useListContext,
+    useNotify,
+    useUpdate,
+} from 'react-admin';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { Reminder } from '../types';
+import { ReminderListFilter } from './ReminderListFilter';
 
 const ReminderListActions = () => (
     <TopToolbar>
@@ -59,7 +56,7 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
             high: 'error',
             urgent: 'error',
         };
-        return colorMap[priority] || 'default';
+        return colorMap[priority] || 'primary';
     };
 
     const handleComplete = async () => {
@@ -129,76 +126,53 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
 
     return (
         <Card
-            sx={{
-                mb: 1,
-                cursor: 'pointer',
-                bgcolor: record.is_completed
-                    ? 'grey.100'
+            className={`mb-1 cursor-pointer ${record.is_completed
+                    ? 'bg-gray-100 opacity-70'
                     : isOverdue
-                      ? 'error.light'
-                      : isDueToday
-                        ? 'warning.light'
-                        : 'background.paper',
-                opacity: record.is_completed ? 0.7 : 1,
-            }}
+                        ? 'bg-red-50'
+                        : isDueToday
+                            ? 'bg-yellow-50'
+                            : 'bg-white'
+                }`}
         >
-            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        mb: 1,
-                    }}
-                >
-                    <Box sx={{ flex: 1 }}>
+            <CardContent className="p-4">
+                <Box className="flex justify-between items-start mb-1">
+                    <Box className="flex-1">
                         <Typography
                             variant="h6"
-                            sx={{
-                                fontWeight: 600,
-                                fontSize: '1rem',
-                                textDecoration: record.is_completed
-                                    ? 'line-through'
-                                    : 'none',
-                            }}
+                            className={`font-semibold text-base ${record.is_completed ? 'line-through' : ''}`}
                         >
                             {record.title}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-500">
                             {record.customer_name ||
                                 `Customer #${record.customer_id}`}
                         </Typography>
                     </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 0.5,
-                            alignItems: 'center',
-                        }}
-                    >
+                    <Box className="flex gap-1 items-center">
                         <Chip
                             label={record.priority}
-                            color={getPriorityColor(record.priority)}
+                            className={
+                                getPriorityColor(record.priority) === 'error'
+                                    ? 'border-red-500 text-red-500'
+                                    : getPriorityColor(record.priority) === 'warning'
+                                      ? 'border-yellow-500 text-yellow-500'
+                                      : 'border-blue-500 text-blue-500'
+                            }
                             size="small"
+                            icon={<ExclamationTriangleIcon className="h-4 w-4" />}
                         />
                         {record.is_completed && (
-                            <CheckCircle color="success" fontSize="small" />
+                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
                         )}
                         {isOverdue && !record.is_completed && (
-                            <OverdueIcon color="error" fontSize="small" />
+                            <ExclamationCircleIcon className="h-4 w-4 text-red-500" />
                         )}
                     </Box>
                 </Box>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mb: 1,
-                        color: 'text.secondary',
-                    }}
-                >
-                    <ScheduleIcon fontSize="small" sx={{ mr: 0.5 }} />
+                <Box className="flex items-center mb-1 text-gray-500">
+                    <ClockIcon className="h-4 w-4 mr-1" />
                     <Typography variant="body2">
                         {formatDate(record.reminder_date)}
                         {record.snooze_count > 0 && (
@@ -214,35 +188,28 @@ const MobileReminderCard = ({ record }: { record: Reminder }) => {
                 {record.notes && (
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            mb: 1,
-                        }}
+                        className="text-gray-500 line-clamp-2 mb-1"
                     >
                         {record.notes}
                     </Typography>
                 )}
 
                 {!record.is_completed && (
-                    <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                    <Box className="flex gap-2 mt-1">
                         <Button
                             size="small"
-                            startIcon={<CompleteIcon />}
+                            startIcon={<CheckCircleIcon className="h-4 w-4" />}
                             onClick={handleComplete}
-                            color="success"
+                            className="border-green-500 text-green-500"
                             variant="outlined"
                         >
                             Complete
                         </Button>
                         <Button
                             size="small"
-                            startIcon={<SnoozeIcon />}
+                            startIcon={<ArrowPathIcon className="h-4 w-4" />}
                             onClick={handleSnooze}
-                            color="warning"
+                            className="border-yellow-500 text-yellow-500"
                             variant="outlined"
                         >
                             Snooze
@@ -259,8 +226,8 @@ const MobileReminderList = () => {
 
     if (!reminders?.length) {
         return (
-            <Box sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="body1" color="text.secondary">
+            <Box className="p-4 text-center">
+                <Typography variant="body1" className="text-gray-500">
                     No reminders set yet. Create your first follow-up reminder!
                 </Typography>
             </Box>
@@ -268,7 +235,7 @@ const MobileReminderList = () => {
     }
 
     return (
-        <Box sx={{ p: 1 }}>
+        <Box className="p-2">
             {reminders.map(reminder => (
                 <MobileReminderCard key={reminder.id} record={reminder} />
             ))}
@@ -294,15 +261,16 @@ const DesktopReminderList = () => (
             render={(record: Reminder) => (
                 <Chip
                     label={record.priority}
-                    color={
+                    className={
                         record.priority === 'urgent' ||
-                        record.priority === 'high'
-                            ? 'error'
+                            record.priority === 'high'
+                            ? 'border-red-500 text-red-500'
                             : record.priority === 'medium'
-                              ? 'warning'
-                              : 'info'
+                                ? 'border-yellow-500 text-yellow-500'
+                                : 'border-blue-500 text-blue-500'
                     }
                     size="small"
+                    icon={<ExclamationTriangleIcon className="h-4 w-4" />}
                 />
             )}
         />
@@ -314,7 +282,12 @@ const DesktopReminderList = () => (
             render={(record: Reminder) => {
                 if (record.is_completed) {
                     return (
-                        <Chip label="Completed" color="success" size="small" />
+                        <Chip
+                            label="Completed"
+                            className="border-green-500 text-green-500"
+                            size="small"
+                            icon={<CheckCircleIcon className="h-4 w-4" />}
+                        />
                     );
                 }
 
@@ -324,14 +297,33 @@ const DesktopReminderList = () => (
                     new Date().toDateString();
 
                 if (isOverdue) {
-                    return <Chip label="Overdue" color="error" size="small" />;
+                    return (
+                        <Chip
+                            label="Overdue"
+                            className="border-red-500 text-red-500"
+                            size="small"
+                            icon={<ExclamationCircleIcon className="h-4 w-4" />}
+                        />
+                    );
                 }
                 if (isDueToday) {
                     return (
-                        <Chip label="Due Today" color="warning" size="small" />
+                        <Chip
+                            label="Due Today"
+                            className="border-yellow-500 text-yellow-500"
+                            size="small"
+                            icon={<ClockIcon className="h-4 w-4" />}
+                        />
                     );
                 }
-                return <Chip label="Pending" color="info" size="small" />;
+                return (
+                    <Chip
+                        label="Pending"
+                        className="border-blue-500 text-blue-500"
+                        size="small"
+                        icon={<ClockIcon className="h-4 w-4" />}
+                    />
+                );
             }}
         />
 
@@ -340,12 +332,7 @@ const DesktopReminderList = () => (
         <TextField
             source="notes"
             label="Notes"
-            sx={{
-                maxWidth: 200,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-            }}
+            className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap"
         />
     </Datagrid>
 );

@@ -1,32 +1,19 @@
-import React, { useCallback, useState, useEffect } from 'react';
 import {
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
-    InputAdornment,
-} from '@mui/material';
-import {
-    Box,
-    Typography,
-    Stack,
     Alert,
-    Chip,
+    Box,
     CircularProgress,
+    Stack,
+    Typography
 } from '@/components/ui-kit';
 import {
-    TextInput,
-    required,
-    SelectInput,
-    FormDataConsumer,
-} from 'react-admin';
+    BuildingOffice2Icon as BusinessIcon
+} from '@heroicons/react/24/outline';
+import React, { useCallback } from 'react';
 import {
-    Business as BusinessIcon,
-    CheckCircle as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-} from '@mui/icons-material';
+    FormDataConsumer,
+    required,
+    TextInput
+} from 'react-admin';
 import { StepComponentProps } from './types';
 import { useRealTimeValidation } from './useRealTimeValidation';
 import {
@@ -130,9 +117,7 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
         <Box className="p-4 md:p-6">
             {/* Header */}
             <Box className="mb-6 text-center">
-                <BusinessIcon
-                    sx={{ fontSize: 48, color: 'primary.main', mb: 1 }}
-                />
+                <BusinessIcon className="text-5xl text-blue-600 mb-2" />
                 <Typography variant="h6" className="mb-2">
                     Organization Details
                 </Typography>
@@ -145,12 +130,12 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
             {/* Real-time Validation Summary */}
             {(stepValidation.errors.length > 0 ||
                 stepValidation.warnings.length > 0) && (
-                <ValidationSummary
-                    validation={stepValidation}
-                    title="Form Validation"
-                    collapsible={true}
-                />
-            )}
+                    <ValidationSummary
+                        validation={stepValidation}
+                        title="Form Validation"
+                        collapsible={true}
+                    />
+                )}
 
             <Stack gap={6}>
                 {/* Organization Name with Real-time Validation */}
@@ -181,35 +166,8 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                                 }
                                 error={hasNameErrors}
                                 InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            {isValidating ? (
-                                                <CircularProgress size={16} />
-                                            ) : hasNameErrors ? (
-                                                <ErrorIcon
-                                                    color="error"
-                                                    fontSize="small"
-                                                />
-                                            ) : hasNameWarnings ? (
-                                                <WarningIcon
-                                                    color="warning"
-                                                    fontSize="small"
-                                                />
-                                            ) : formData.name &&
-                                              formData.name.length > 2 ? (
-                                                <CheckIcon
-                                                    color="success"
-                                                    fontSize="small"
-                                                />
-                                            ) : null}
-                                        </InputAdornment>
-                                    ),
                                 }}
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        minHeight: '56px',
-                                    },
-                                }}
+                                className="min-h-14"
                             />
 
                             {/* Enhanced Validation Feedback */}
@@ -225,60 +183,37 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                 </FormDataConsumer>
 
                 {/* Business Type with Enhanced Validation */}
-                <FormControl fullWidth error={hasBusinessTypeErrors}>
-                    <InputLabel id="business-type-label">
+                <Box className="w-full">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                         Business Type
-                    </InputLabel>
-                    <Select
-                        labelId="business-type-label"
+                    </label>
+                    <select
+                        className={`block w-full rounded-md border-gray-300 py-3 px-4 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 min-h-14 ${
+                            hasBusinessTypeErrors ? 'border-red-500' : ''
+                        }`}
                         value={formData.business_type || ''}
-                        label="Business Type"
                         onChange={e =>
                             handleFieldChange('business_type', e.target.value)
                         }
-                        sx={{ minHeight: '56px' }}
                     >
+                        <option value="">Select business type</option>
                         {businessTypes.map(type => (
-                            <MenuItem
-                                key={type.value}
-                                value={type.value}
-                                sx={{ py: 1.5 }}
-                            >
-                                <Box className="flex items-center gap-4 w-full">
-                                    <Box
-                                        className="w-8 h-8 flex items-center justify-center rounded text-base"
-                                        style={{
-                                            backgroundColor: `${type.color}15`,
-                                        }}
-                                    >
-                                        {type.icon}
-                                    </Box>
-                                    <Box className="flex-1">
-                                        <Typography
-                                            variant="subtitle2"
-                                            style={{ color: type.color }}
-                                        >
-                                            {type.label}
-                                        </Typography>
-                                        {!isMobile && (
-                                            <Typography
-                                                variant="caption"
-                                                className="text-gray-600"
-                                            >
-                                                {type.description}
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                </Box>
-                            </MenuItem>
+                            <option key={type.value} value={type.value}>
+                                {type.icon} {type.label}
+                            </option>
                         ))}
-                    </Select>
-                    <FormHelperText>
-                        {hasBusinessTypeErrors
-                            ? businessTypeErrors[0]?.message
-                            : 'Select the primary business type'}
-                    </FormHelperText>
-                </FormControl>
+                    </select>
+                    {hasBusinessTypeErrors && (
+                        <Typography className="text-red-600 text-sm mt-1">
+                            {businessTypeErrors[0]?.message}
+                        </Typography>
+                    )}
+                    {!hasBusinessTypeErrors && (
+                        <Typography className="text-gray-600 text-sm mt-1">
+                            Select the primary business type
+                        </Typography>
+                    )}
+                </Box>
 
                 {/* Business Type Validation Indicator */}
                 <FieldValidationIndicator
@@ -296,45 +231,45 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                             {businessTypes.find(
                                 type => type.value === formData.business_type
                             ) && (
-                                <>
-                                    <Box className="text-2xl">
-                                        {
-                                            businessTypes.find(
-                                                type =>
-                                                    type.value ===
-                                                    formData.business_type
-                                            )?.icon
-                                        }
-                                    </Box>
-                                    <Box className="">
-                                        <Typography
-                                            variant="subtitle2"
-                                            className="text-blue-800"
-                                        >
-                                            Selected:{' '}
+                                    <>
+                                        <Box className="text-2xl">
                                             {
                                                 businessTypes.find(
                                                     type =>
                                                         type.value ===
                                                         formData.business_type
-                                                )?.label
+                                                )?.icon
                                             }
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            className="text-blue-700"
-                                        >
-                                            {
-                                                businessTypes.find(
-                                                    type =>
-                                                        type.value ===
-                                                        formData.business_type
-                                                )?.description
-                                            }
-                                        </Typography>
-                                    </Box>
-                                </>
-                            )}
+                                        </Box>
+                                        <Box className="">
+                                            <Typography
+                                                variant="subtitle2"
+                                                className="text-blue-800"
+                                            >
+                                                Selected:{' '}
+                                                {
+                                                    businessTypes.find(
+                                                        type =>
+                                                            type.value ===
+                                                            formData.business_type
+                                                    )?.label
+                                                }
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                className="text-blue-700"
+                                            >
+                                                {
+                                                    businessTypes.find(
+                                                        type =>
+                                                            type.value ===
+                                                            formData.business_type
+                                                    )?.description
+                                                }
+                                            </Typography>
+                                        </Box>
+                                    </>
+                                )}
                         </Box>
                     </Box>
                 )}
@@ -347,11 +282,7 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                         fullWidth
                         helperText="Please specify the type of business"
                         validate={required()}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                minHeight: '56px',
-                            },
-                        }}
+                        className="min-h-14"
                     />
                 )}
 

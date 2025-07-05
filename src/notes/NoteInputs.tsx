@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@/components/ui-kit';
-import { Collapse, Link } from '@mui/material';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import {
     DateTimeInput,
     FileField,
@@ -36,10 +36,10 @@ export const NoteInputs = ({
                 helperText={false}
             />
             {!displayMore && (
-                <Stack className="gap-0.5 flex-row justify-end">
-                    <Link
-                        variant="caption"
-                        href="#"
+                <Stack className="gap-1 flex-row justify-end">
+                    <button
+                        type="button"
+                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
                         onClick={e => {
                             setDisplayMore(!displayMore);
                             setValue('date', getCurrentDate());
@@ -47,13 +47,14 @@ export const NoteInputs = ({
                         }}
                     >
                         Show options
-                    </Link>
+                        <ChevronDownIcon className="h-3 w-3" />
+                    </button>
                     <Typography variant="caption" className="text-gray-500">
                         (attach files, or change details)
                     </Typography>
                 </Stack>
             )}
-            <Collapse in={displayMore}>
+            {displayMore && (
                 <Stack className="gap-1 mt-1">
                     <Stack className="flex-row space-x-2">
                         {showStatus && (
@@ -91,7 +92,7 @@ export const NoteInputs = ({
                         <FileField source="src" title="title" />
                     </FileInput>
                 </Stack>
-            </Collapse>
+            )}
         </>
     );
 };

@@ -1,19 +1,15 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import { Box } from '@/components/ui-kit';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import {
     Alert,
     AlertTitle,
-    Box,
     Collapse,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
-import {
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    CheckCircle as SuccessIcon,
-} from '@mui/icons-material';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import {
     StepValidationResult,
     ValidationError,
@@ -153,11 +149,11 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
 
     const severity = hasErrors ? 'error' : hasWarnings ? 'warning' : 'success';
     const icon = hasErrors ? (
-        <ErrorIcon />
+        <XCircleIcon className="h-6 w-6 text-red-500" />
     ) : hasWarnings ? (
-        <WarningIcon />
+        <XCircleIcon className="h-6 w-6 text-yellow-500" />
     ) : (
-        <SuccessIcon />
+        <CheckCircleIcon className="h-6 w-6 text-green-500" />
     );
 
     return (
@@ -233,9 +229,9 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                                             : 'default',
                                         '&:hover': onFieldClick
                                             ? {
-                                                  backgroundColor:
-                                                      'rgba(0,0,0,0.04)',
-                                              }
+                                                backgroundColor:
+                                                    'rgba(0,0,0,0.04)',
+                                            }
                                             : {},
                                         borderRadius: 1,
                                     }}
@@ -244,10 +240,7 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                                     }
                                 >
                                     <ListItemIcon sx={{ minWidth: 24 }}>
-                                        <ErrorIcon
-                                            fontSize="small"
-                                            color="error"
-                                        />
+                                        <XCircleIcon className="h-4 w-4 text-red-500" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={error.message}
@@ -290,9 +283,9 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                                             : 'default',
                                         '&:hover': onFieldClick
                                             ? {
-                                                  backgroundColor:
-                                                      'rgba(0,0,0,0.04)',
-                                              }
+                                                backgroundColor:
+                                                    'rgba(0,0,0,0.04)',
+                                            }
                                             : {},
                                         borderRadius: 1,
                                     }}
@@ -301,10 +294,7 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
                                     }
                                 >
                                     <ListItemIcon sx={{ minWidth: 24 }}>
-                                        <WarningIcon
-                                            fontSize="small"
-                                            color="warning"
-                                        />
+                                        <XCircleIcon className="h-4 w-4 text-yellow-500" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={warning.message}
@@ -348,43 +338,43 @@ export const FieldValidationIndicator: React.FC<
     showText = false,
     size = 'small',
 }) => {
-    const hasErrors = errors.length > 0;
-    const hasWarnings = warnings.length > 0;
+        const hasErrors = errors.length > 0;
+        const hasWarnings = warnings.length > 0;
 
-    if (!hasErrors && !hasWarnings) {
-        return null;
-    }
+        if (!hasErrors && !hasWarnings) {
+            return null;
+        }
 
-    const severity = hasErrors ? 'error' : 'warning';
-    const icon = hasErrors ? (
-        <ErrorIcon fontSize={size} color={severity} />
-    ) : (
-        <WarningIcon fontSize={size} color={severity} />
-    );
+        const severity = hasErrors ? 'error' : 'warning';
+        const icon = hasErrors ? (
+            <XCircleIcon className={`h-${size} w-${size} text-red-500`} />
+        ) : (
+            <XCircleIcon className={`h-${size} w-${size} text-yellow-500`} />
+        );
 
-    const messages = [...errors, ...warnings];
-    const primaryMessage = messages[0]?.message;
+        const messages = [...errors, ...warnings];
+        const primaryMessage = messages[0]?.message;
 
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                color: severity === 'error' ? 'error.main' : 'warning.main',
-            }}
-            title={primaryMessage}
-        >
-            {showIcon && icon}
-            {showText && (
-                <Box component="span" sx={{ fontSize: '0.75rem' }}>
-                    {primaryMessage}
-                    {messages.length > 1 && ` (+${messages.length - 1} more)`}
-                </Box>
-            )}
-        </Box>
-    );
-};
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    color: severity === 'error' ? 'error.main' : 'warning.main',
+                }}
+                title={primaryMessage}
+            >
+                {showIcon && icon}
+                {showText && (
+                    <Box component="span" sx={{ fontSize: '0.75rem' }}>
+                        {primaryMessage}
+                        {messages.length > 1 && ` (+${messages.length - 1} more)`}
+                    </Box>
+                )}
+            </Box>
+        );
+    };
 
 interface ValidationModeToggleProps {
     currentMode: 'realtime' | 'onsubmit' | 'onblur';

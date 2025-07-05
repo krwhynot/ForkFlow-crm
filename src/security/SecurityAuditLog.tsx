@@ -37,24 +37,24 @@ import {
     AccordionDetails,
 } from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    Visibility as ViewIcon,
-    Download as DownloadIcon,
-    FilterList as FilterIcon,
-    ExpandMore as ExpandMoreIcon,
-    Login as LoginIcon,
-    Logout as LogoutIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    Info as InfoIcon,
-    CheckCircle as SuccessIcon,
-    Person as PersonIcon,
-    AdminPanelSettings as AdminIcon,
-    Shield as ShieldIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    EyeIcon as ViewIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+    FunnelIcon as FilterIcon,
+    ChevronDownIcon as ExpandMoreIcon,
+    ArrowRightOnRectangleIcon as LoginIcon,
+    ArrowLeftOnRectangleIcon as LogoutIcon,
+    PencilIcon as EditIcon,
+    TrashIcon as DeleteIcon,
+    PlusIcon as AddIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    XCircleIcon as ErrorIcon,
+    InformationCircleIcon as InfoIcon,
+    CheckCircleIcon as SuccessIcon,
+    UserIcon as PersonIcon,
+    UserIcon as AdminIcon,
+    ShieldExclamationIcon as ShieldIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity } from 'react-admin';
 
 import { User } from '../types';
@@ -488,7 +488,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                                 setDetailsOpen(true);
                                             }}
                                         >
-                                            <ViewIcon />
+                                            <ViewIcon className="w-4 h-4" />
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>
@@ -593,7 +593,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                                                 setDetailsOpen(true);
                                             }}
                                         >
-                                            <ViewIcon />
+                                            <ViewIcon className="w-4 h-4" />
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>
@@ -638,7 +638,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
 
                     <Button
                         variant="outlined"
-                        startIcon={<DownloadIcon />}
+                        startIcon={<DownloadIcon className="w-4 h-4" />}
                         onClick={handleExport}
                         className="min-h-[44px]"
                     >
@@ -768,7 +768,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
             {viewType === 'both' && (
                 <>
                     <Accordion defaultExpanded>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon className="w-5 h-5" />}>
                             <Typography variant="h6">
                                 Security Events ({securityEvents.length})
                             </Typography>
@@ -779,7 +779,7 @@ export const SecurityAuditLog: React.FC<SecurityAuditLogProps> = ({
                     </Accordion>
 
                     <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon className="w-5 h-5" />}>
                             <Typography variant="h6">
                                 Audit Logs ({auditLogs.length})
                             </Typography>

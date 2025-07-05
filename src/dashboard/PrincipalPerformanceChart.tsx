@@ -1,33 +1,33 @@
-import React, { useMemo } from 'react';
 import {
+    Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Box,
     Chip,
     Stack,
-    Button,
+    Typography,
 } from '@/components/ui-kit';
 import { BarChart } from '@/components/ui-kit/Chart';
 import {
-    Business as PrincipalIcon,
-    TrendingUp as TrendingUpIcon,
-    TrendingDown as TrendingDownIcon,
-    AttachMoney as RevenueIcon,
-    Assessment as MetricsIcon,
-    Refresh as RefreshIcon,
-} from '@mui/icons-material';
-import { format, startOfMonth, subMonths } from 'date-fns';
+    ArrowTrendingUpIcon,
+    ChartBarIcon as MetricsIcon,
+    BuildingOfficeIcon as PrincipalIcon,
+    ArrowPathIcon as RefreshIcon,
+    CurrencyDollarIcon as RevenueIcon,
+    TrendingDownIcon
+} from '@heroicons/react/24/outline';
+import { startOfMonth, subMonths } from 'date-fns';
+import React, { useMemo } from 'react';
 import { useGetList } from 'react-admin';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
-import { Product, Deal, Interaction, Setting } from '../types';
+import { Deal, Interaction, Product, Setting } from '../types';
 import {
     safeAmount,
+    safeCurrencyFormat,
     safeDivide,
     safeTrend,
     validateChartData,
-    safeCurrencyFormat,
 } from '../utils/chartSafety';
 
 interface PrincipalMetrics {
@@ -228,7 +228,7 @@ export const PrincipalPerformanceChart = () => {
                     <Typography variant="h6" gutterBottom>
                         Principal Performance
                     </Typography>
-                    <Typography color="textSecondary">Loading...</Typography>
+                    <Typography className="text-gray-600">Loading...</Typography>
                 </CardContent>
             </Card>
         );
@@ -243,11 +243,11 @@ export const PrincipalPerformanceChart = () => {
                             Principal Performance
                         </Typography>
                         <Button variant="ghost" size="sm" className="p-2">
-                            <RefreshIcon />
+                            <RefreshIcon className="h-4 w-4" />
                         </Button>
                     </Box>
                     <Box className="text-center py-3">
-                        <PrincipalIcon className="text-gray-400 text-5xl mb-1" />
+                        <PrincipalIcon className="h-12 w-12 text-gray-400 mb-1" />
                         <Typography variant="body2" className="text-gray-500">
                             No principal data available
                         </Typography>
@@ -281,25 +281,22 @@ export const PrincipalPerformanceChart = () => {
                 <Stack className="flex flex-row space-x-1 flex-wrap mb-2">
                     <Chip
                         size="small"
-                        icon={<RevenueIcon />}
+                        icon={<RevenueIcon className="h-4 w-4" />}
                         label={`Total: ${formatCurrency(totalRevenue)}`}
-                        className="text-blue-600 border-blue-600 bg-transparent"
-                        variant="outlined"
+                        className="text-blue-600 border-blue-600 bg-transparent border"
                     />
                     <Chip
                         size="small"
-                        icon={<MetricsIcon />}
+                        icon={<MetricsIcon className="h-4 w-4" />}
                         label={`${totalOpportunities} Opportunities`}
-                        className="text-purple-600 border-purple-600 bg-transparent"
-                        variant="outlined"
+                        className="text-purple-600 border-purple-600 bg-transparent border"
                     />
                     {topPrincipal && (
                         <Chip
                             size="small"
-                            icon={<TrendingUpIcon />}
+                            icon={<ArrowTrendingUpIcon className="h-4 w-4" />}
                             label={`Top: ${topPrincipal.principalName}`}
-                            className="text-green-600 border-green-600 bg-transparent"
-                            variant="outlined"
+                            className="text-green-600 border-green-600 bg-transparent border"
                         />
                     )}
                 </Stack>
@@ -313,11 +310,10 @@ export const PrincipalPerformanceChart = () => {
                             <button
                                 key={index}
                                 onClick={() => setActiveTab(index)}
-                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                                    activeTab === index
+                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === index
                                         ? 'border-blue-500 text-blue-600'
                                         : 'border-transparent text-gray-500 hover:text-gray-700'
-                                } ${!isMobile ? 'flex-1' : 'flex-shrink-0'}`}
+                                    } ${!isMobile ? 'flex-1' : 'flex-shrink-0'}`}
                             >
                                 {label}
                             </button>
@@ -354,14 +350,14 @@ export const PrincipalPerformanceChart = () => {
                                 format:
                                     activeTab === 0
                                         ? (value: number) =>
-                                              formatCurrency(value).replace(
-                                                  '$',
-                                                  '$'
-                                              )
+                                            formatCurrency(value).replace(
+                                                '$',
+                                                '$'
+                                            )
                                         : activeTab === 2
-                                          ? (value: number) =>
+                                            ? (value: number) =>
                                                 `${safeAmount(value)}%`
-                                          : undefined,
+                                            : undefined,
                             }}
                         />
                     ) : (
@@ -382,9 +378,8 @@ export const PrincipalPerformanceChart = () => {
                         {principalMetrics.slice(0, 3).map((metric, index) => (
                             <Box
                                 key={metric.principalId}
-                                className={`flex justify-between items-center p-1 rounded ${
-                                    index === 0 ? 'bg-green-50' : ''
-                                }`}
+                                className={`flex justify-between items-center p-1 rounded ${index === 0 ? 'bg-green-50' : ''
+                                    }`}
                             >
                                 <Box className="flex items-center space-x-1">
                                     <Typography
@@ -397,17 +392,16 @@ export const PrincipalPerformanceChart = () => {
                                         size="small"
                                         icon={
                                             metric.monthlyTrend >= 0 ? (
-                                                <TrendingUpIcon />
+                                                <ArrowTrendingUpIcon className="h-3 w-3" />
                                             ) : (
-                                                <TrendingDownIcon />
+                                                <TrendingDownIcon className="h-3 w-3" />
                                             )
                                         }
                                         label={`${metric.monthlyTrend.toFixed(0)}%`}
-                                        className={`${
-                                            metric.monthlyTrend >= 0
+                                        className={`${metric.monthlyTrend >= 0
                                                 ? 'text-green-600 border-green-600'
                                                 : 'text-red-600 border-red-600'
-                                        } bg-transparent h-5 text-xs`}
+                                            } bg-transparent h-5 text-xs`}
                                     />
                                 </Box>
                                 <Typography

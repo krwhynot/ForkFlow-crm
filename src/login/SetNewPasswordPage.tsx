@@ -4,18 +4,8 @@
  */
 
 import React from 'react';
-import {
-    Button,
-    CircularProgress,
-    Container,
-    Stack,
-    TextField,
-    Typography,
-    Alert,
-    Box,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Button, CircularProgress, Container, Stack, TextField, Typography, Alert, Box } from '@/components/ui-kit';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useMutation } from '@tanstack/react-query';
 import { useDataProvider, useLogin, useNotify } from 'react-admin';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -34,8 +24,8 @@ export const SetNewPasswordPage = () => {
     const token = searchParams.get('token');
     const dataProvider = useDataProvider<CrmDataProvider>();
     const { logo, title } = useConfigurationContext();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const theme = useBreakpoint();
+    const isMobile = theme.isSmall;
     const notify = useNotify();
     const login = useLogin();
 

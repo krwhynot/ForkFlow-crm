@@ -270,11 +270,6 @@ GET /reports/executive-dashboard?period={days}
 GET /reports/kpi-summary
 ```
 
-#### Territory Performance
-```http
-GET /reports/territory-performance?territory={name}
-```
-
 #### Sales Velocity Analysis
 ```http
 GET /reports/sales-velocity?startDate={date}&endDate={date}

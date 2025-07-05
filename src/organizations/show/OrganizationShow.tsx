@@ -1,37 +1,31 @@
+import { Dialog, DialogContent, Button as UiKitButton } from '@/components/ui-kit';
+import {
+    PlusIcon as AddIcon,
+    BuildingOffice2Icon as BusinessIcon,
+    EnvelopeIcon as EmailIcon,
+    UserCircleIcon as LinkedInIcon,
+    MapPinIcon as LocationIcon,
+    MapIcon,
+    UserIcon as PersonIcon,
+    PhoneIcon,
+    StarIcon,
+    GlobeAltIcon as WebsiteIcon
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import {
-    Show,
-    EmailField,
-    UrlField,
-    useRecordContext,
-    useGetOne,
-    TopToolbar,
-    EditButton,
     DeleteButton,
-    useGetList,
-    CreateButton,
+    EditButton,
     Link,
-    Button,
+    Show,
+    TopToolbar,
+    useGetList,
+    useGetOne,
+    useRecordContext
 } from 'react-admin';
-import { Button as MuiButton, Dialog, DialogContent } from '@mui/material';
-import { Box, Stack, Chip, Typography } from '../../components/ui-kit';
-import {
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Language as WebsiteIcon,
-    LocationOn as LocationIcon,
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    Add as AddIcon,
-    Star as StarIcon,
-    LinkedIn as LinkedInIcon,
-    History as HistoryIcon,
-    EventNote as InteractionIcon,
-    Map as MapIcon,
-} from '@mui/icons-material';
-import { Organization, Setting, Contact } from '../../types';
+import { Box, Chip, Stack, Typography } from '../../components/ui-kit';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { useTwTheme } from '../../hooks/useTwTheme';
+import { Contact, Organization, Setting } from '../../types';
 
 const OrganizationShowActions = () => {
     const [showMap, setShowMap] = React.useState(false);
@@ -43,7 +37,7 @@ const OrganizationShowActions = () => {
             <TopToolbar>
                 {/* Map Button - only show if organization has coordinates */}
                 {record?.latitude && record?.longitude && (
-                    <MuiButton
+                    <UiKitButton
                         variant="outlined"
                         startIcon={<MapIcon />}
                         onClick={() => setShowMap(true)}
@@ -54,7 +48,7 @@ const OrganizationShowActions = () => {
                         }}
                     >
                         View on Map
-                    </MuiButton>
+                    </UiKitButton>
                 )}
                 <EditButton />
                 <DeleteButton />
@@ -155,8 +149,7 @@ const OrganizationShowContent = () => {
             window.open(url, '_blank');
         } else if (record.address) {
             const url = `https://maps.google.com/?q=${encodeURIComponent(
-                `${record.address}, ${record.city}, ${record.stateAbbr} ${
-                    record.zipcode
+                `${record.address}, ${record.city}, ${record.stateAbbr} ${record.zipcode
                 }`
             )}`;
             window.open(url, '_blank');
@@ -327,7 +320,7 @@ const OrganizationShowContent = () => {
                                             {record.city && record.stateAbbr
                                                 ? `${record.city}, ${record.stateAbbr}`
                                                 : record.city ||
-                                                  record.stateAbbr}
+                                                record.stateAbbr}
                                             {record.zipcode &&
                                                 ` ${record.zipcode}`}
                                         </Typography>
@@ -425,7 +418,7 @@ const OrganizationShowContent = () => {
                                     >
                                         Contacts ({contacts?.length || 0})
                                     </Typography>
-                                    <MuiButton
+                                    <UiKitButton
                                         component={Link}
                                         to={`/contacts/create?organizationId=${record.id}`}
                                         variant="outlined"
@@ -434,7 +427,7 @@ const OrganizationShowContent = () => {
                                         sx={{ minHeight: 44, px: 2 }}
                                     >
                                         Add Contact
-                                    </MuiButton>
+                                    </UiKitButton>
                                 </Box>
 
                                 {contacts && contacts.length > 0 ? (
@@ -455,7 +448,7 @@ const OrganizationShowContent = () => {
                                         >
                                             No contacts yet
                                         </Typography>
-                                        <MuiButton
+                                        <UiKitButton
                                             component={Link}
                                             to={`/contacts/create?organizationId=${record.id}`}
                                             variant="contained"
@@ -463,7 +456,7 @@ const OrganizationShowContent = () => {
                                             sx={{ minHeight: 44 }}
                                         >
                                             Add First Contact
-                                        </MuiButton>
+                                        </UiKitButton>
                                     </Box>
                                 )}
                             </div>
@@ -595,7 +588,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="Call contact"
                             >
-                                <PhoneIcon className="text-sm" />
+                                <PhoneIcon />
                             </button>
                         )}
                         {contact.email && (
@@ -604,7 +597,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="Email contact"
                             >
-                                <EmailIcon className="text-sm" />
+                                <EmailIcon />
                             </button>
                         )}
                         {contact.linkedin_url && (
@@ -613,7 +606,7 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
                                 className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600"
                                 aria-label="LinkedIn profile"
                             >
-                                <LinkedInIcon className="text-sm" />
+                                <LinkedInIcon />
                             </button>
                         )}
                     </Box>

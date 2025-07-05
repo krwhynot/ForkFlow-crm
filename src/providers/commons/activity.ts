@@ -8,11 +8,11 @@ import {
 } from '../../consts';
 import {
     Activity,
-    Company,
     Contact,
     ContactNote,
     Deal,
     DealNote,
+    Organization,
 } from '../../types';
 
 // FIXME: Requires 5 large queries to get the latest activities.
@@ -36,14 +36,14 @@ export async function getActivityLog(
         filter['createdBy@in'] = `(${brokerId})`;
     }
 
-    const [newCompanies, newContactsAndNotes, newDealsAndNotes] =
+    const [newOrganizations, newContactsAndNotes, newDealsAndNotes] =
         await Promise.all([
-            getNewCompanies(dataProvider, companyFilter),
+            getNewOrganizations(dataProvider, companyFilter),
             getNewContactsAndNotes(dataProvider, filter),
             getNewDealsAndNotes(dataProvider, filter),
         ]);
     return (
-        [...newCompanies, ...newContactsAndNotes, ...newDealsAndNotes]
+        [...newOrganizations, ...newContactsAndNotes, ...newDealsAndNotes]
             // sort by date desc
             .sort((a, b) =>
                 a.date && b.date ? a.date.localeCompare(b.date) * -1 : 0
@@ -53,39 +53,39 @@ export async function getActivityLog(
     );
 }
 
-const getNewCompanies = async (
+const getNewOrganizations = async (
     dataProvider: DataProvider,
     filter: any
 ): Promise<Activity[]> => {
-    const { data: companies } = await dataProvider.getList<Company>(
-        'companies',
+    const { data: organizations } = await dataProvider.getList<Organization>(
+        'organizations',
         {
             filter,
             pagination: { page: 1, perPage: 250 },
             sort: { field: 'createdAt', order: 'DESC' },
         }
     );
-    return companies.map(company => ({
-        id: `organization.${company.id}.created`,
-        type: COMPANY_CREATED,
+    return organizations.map(organization => ({
+        id: `organization.${organization.id}.created`,
+        type: COMPANY_CREATED, // Keep constant name for backwards compatibility
         organizationId:
-            typeof company.id === 'number' ? company.id : Number(company.id),
+            typeof organization.id === 'number' ? organization.id : Number(organization.id),
         organization: {
             id:
-                typeof company.id === 'number'
-                    ? company.id
-                    : Number(company.id),
-            name: company.name ?? '',
-            phone: company.phone,
-            website: company.website,
-            address: company.address,
-            city: company.city,
-            zipcode: company.zipcode,
-            createdAt: company.createdAt,
-            updatedAt: company.updatedAt,
+                typeof organization.id === 'number'
+                    ? organization.id
+                    : Number(organization.id),
+            name: organization.name ?? '',
+            phone: organization.phone,
+            website: organization.website,
+            address: organization.address,
+            city: organization.city,
+            zipcode: organization.zipcode,
+            createdAt: organization.createdAt,
+            updatedAt: organization.updatedAt,
         },
         brokerId: 0,
-        date: company.createdAt,
+        date: organization.createdAt,
     }));
 };
 

@@ -16,19 +16,18 @@ import {
     Stack,
     Avatar,
     IconButton,
-    useTheme,
-    useMediaQuery,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
-    Schedule as ScheduleIcon,
-    Warning as WarningIcon,
-    Assignment as TaskIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    MoreVert as MoreVertIcon,
-} from '@mui/icons-material';
+    ClockIcon,
+    ExclamationTriangleIcon,
+    DocumentTextIcon,
+    PhoneIcon,
+    EnvelopeIcon,
+    BuildingOfficeIcon,
+    UserIcon,
+    EllipsisVerticalIcon,
+} from '@heroicons/react/24/outline';
 import { formatDistanceToNow, isAfter, isPast, format } from 'date-fns';
 import { useGetList, Link } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
@@ -43,8 +42,7 @@ interface ReminderWithDetails extends Reminder {
 }
 
 export const FollowUpRemindersWidget = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const navigate = useNavigate();
 
     // Get upcoming and overdue reminders
@@ -88,7 +86,7 @@ export const FollowUpRemindersWidget = () => {
                 if (isOverdue) {
                     const daysPast = Math.floor(
                         (now.getTime() - reminderDate.getTime()) /
-                            (1000 * 60 * 60 * 24)
+                        (1000 * 60 * 60 * 24)
                     );
                     if (daysPast > 7) urgencyLevel = 'critical';
                     else if (daysPast > 3) urgencyLevel = 'high';
@@ -97,7 +95,7 @@ export const FollowUpRemindersWidget = () => {
                 } else {
                     const daysUntil = Math.floor(
                         (reminderDate.getTime() - now.getTime()) /
-                            (1000 * 60 * 60 * 24)
+                        (1000 * 60 * 60 * 24)
                     );
                     if (daysUntil <= 1) urgencyLevel = 'high';
                     else if (daysUntil <= 3) urgencyLevel = 'medium';
@@ -161,23 +159,23 @@ export const FollowUpRemindersWidget = () => {
     const getUrgencyColor = (urgencyLevel: string) => {
         switch (urgencyLevel) {
             case 'critical':
-                return theme.palette.error.main;
+                return '#dc2626'; // red-600
             case 'high':
-                return theme.palette.warning.main;
+                return '#d97706'; // amber-600
             case 'medium':
-                return theme.palette.info.main;
+                return '#2563eb'; // blue-600
             default:
-                return theme.palette.success.main;
+                return '#16a34a'; // green-600
         }
     };
 
     const getUrgencyIcon = (reminder: ReminderWithDetails) => {
         if (reminder.urgencyLevel === 'critical' || reminder.isOverdue) {
-            return <WarningIcon color="error" />;
+            return <ExclamationTriangleIcon className="w-5 h-5 text-red-600" />;
         }
         return (
-            <ScheduleIcon
-                color={reminder.urgencyLevel === 'high' ? 'warning' : 'primary'}
+            <ClockIcon
+                className={`w-5 h-5 ${reminder.urgencyLevel === 'high' ? 'text-yellow-600' : 'text-blue-600'}`}
             />
         );
     };
@@ -222,21 +220,21 @@ export const FollowUpRemindersWidget = () => {
                 <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
                     <Chip
                         size="small"
-                        icon={<WarningIcon />}
+                        icon={<ExclamationTriangleIcon className="w-4 h-4" />}
                         label={`${stats.overdue} Overdue`}
                         color={stats.overdue > 0 ? 'error' : 'default'}
                         variant={stats.overdue > 0 ? 'filled' : 'outlined'}
                     />
                     <Chip
                         size="small"
-                        icon={<ScheduleIcon />}
+                        icon={<ClockIcon className="w-4 h-4" />}
                         label={`${stats.today} Today`}
                         color={stats.today > 0 ? 'warning' : 'default'}
                         variant={stats.today > 0 ? 'filled' : 'outlined'}
                     />
                     <Chip
                         size="small"
-                        icon={<TaskIcon />}
+                        icon={<DocumentTextIcon className="w-4 h-4" />}
                         label={`${stats.thisWeek} This Week`}
                         color={stats.thisWeek > 0 ? 'info' : 'default'}
                         variant="outlined"
@@ -245,9 +243,8 @@ export const FollowUpRemindersWidget = () => {
 
                 {enrichedReminders.length === 0 ? (
                     <Box textAlign="center" py={3}>
-                        <TaskIcon
-                            color="disabled"
-                            sx={{ fontSize: 48, mb: 1 }}
+                        <DocumentTextIcon
+                            className="w-12 h-12 text-gray-400 mb-1"
                         />
                         <Typography variant="body2" color="textSecondary">
                             No pending follow-ups
@@ -267,7 +264,7 @@ export const FollowUpRemindersWidget = () => {
                                         mb: 1,
                                         borderRadius: 1,
                                         backgroundColor: reminder.isOverdue
-                                            ? theme.palette.error.main + '08'
+                                            ? 'rgba(220, 38, 38, 0.08)' // red-600 with 8% opacity
                                             : 'transparent',
                                     }}
                                 >
@@ -294,12 +291,12 @@ export const FollowUpRemindersWidget = () => {
                                                 </Typography>
                                                 {reminder.priority ===
                                                     'urgent' && (
-                                                    <Chip
-                                                        size="small"
-                                                        label="URGENT"
-                                                        color="error"
-                                                    />
-                                                )}
+                                                        <Chip
+                                                            size="small"
+                                                            label="URGENT"
+                                                            color="error"
+                                                        />
+                                                    )}
                                             </Box>
                                         }
                                         secondary={
@@ -309,8 +306,8 @@ export const FollowUpRemindersWidget = () => {
                                                     alignItems="center"
                                                     gap={1}
                                                 >
-                                                    <BusinessIcon
-                                                        sx={{ fontSize: 14 }}
+                                                    <BuildingOfficeIcon
+                                                        className="w-4 h-4"
                                                     />
                                                     <Typography
                                                         variant="caption"
@@ -328,10 +325,8 @@ export const FollowUpRemindersWidget = () => {
                                                         alignItems="center"
                                                         gap={1}
                                                     >
-                                                        <PersonIcon
-                                                            sx={{
-                                                                fontSize: 14,
-                                                            }}
+                                                        <UserIcon
+                                                            className="w-4 h-4"
                                                         />
                                                         <Typography
                                                             variant="caption"
@@ -388,7 +383,7 @@ export const FollowUpRemindersWidget = () => {
                                                     }
                                                 >
                                                     <PhoneIcon
-                                                        sx={{ fontSize: 16 }}
+                                                        className="w-4 h-4"
                                                     />
                                                 </IconButton>
                                             )}
@@ -400,14 +395,14 @@ export const FollowUpRemindersWidget = () => {
                                                         e.stopPropagation()
                                                     }
                                                 >
-                                                    <EmailIcon
-                                                        sx={{ fontSize: 16 }}
+                                                    <EnvelopeIcon
+                                                        className="w-4 h-4"
                                                     />
                                                 </IconButton>
                                             )}
                                             <IconButton size="small">
-                                                <MoreVertIcon
-                                                    sx={{ fontSize: 16 }}
+                                                <EllipsisVerticalIcon
+                                                    className="w-4 h-4"
                                                 />
                                             </IconButton>
                                         </Stack>
@@ -431,7 +426,7 @@ export const FollowUpRemindersWidget = () => {
                             variant="outlined"
                             fullWidth={isMobile}
                             size="small"
-                            startIcon={<TaskIcon />}
+                            startIcon={<DocumentTextIcon className="w-4 h-4" />}
                         >
                             Add Reminder
                         </Button>

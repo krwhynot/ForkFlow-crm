@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Stepper, Step, StepLabel, StepContent, Collapse } from '@mui/material';
 import {
     Box,
     Button,
@@ -18,15 +17,15 @@ import {
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    ArrowBack as ArrowBackIcon,
-    ArrowForward as ArrowForwardIcon,
-    Check as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    Save as SaveIcon,
-    Close as CloseIcon,
-    Restore as RestoreIcon,
-} from '@mui/icons-material';
+    ArrowLeftIcon as ArrowBackIcon,
+    ArrowRightIcon as ArrowForwardIcon,
+    CheckIcon,
+    ExclamationCircleIcon as ErrorIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    DocumentFloppyDiskIcon as SaveIcon,
+    XMarkIcon as CloseIcon,
+    ArrowPathIcon as RestoreIcon,
+} from '@heroicons/react/24/outline';
 import {
     Edit,
     Form,
@@ -77,7 +76,6 @@ interface StepState {
 export const MultiStepOrganizationEdit: React.FC<
     MultiStepOrganizationEditProps
 > = ({ onClose, isModal = false, redirectOnSave = 'show' }) => {
-    const theme = useTwTheme();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { identity } = useGetIdentity();
     const notify = useNotify();
@@ -413,15 +411,19 @@ export const MultiStepOrganizationEdit: React.FC<
         (stepIndex: number) => {
             const state = stepStates[stepIndex];
             if (state.completed) {
-                return <CheckIcon color="success" />;
+                return <CheckIcon className="h-5 w-5 text-green-600" />;
             }
             if (state.hasErrors) {
-                return <ErrorIcon color="error" />;
+                return <ErrorIcon className="h-5 w-5 text-red-600" />;
             }
             if (state.warningCount > 0) {
-                return <WarningIcon color="warning" />;
+                return <WarningIcon className="h-5 w-5 text-yellow-600" />;
             }
-            return stepIndex + 1;
+            return (
+                <span className="w-5 h-5 rounded-full bg-gray-300 text-gray-700 text-xs flex items-center justify-center font-medium">
+                    {stepIndex + 1}
+                </span>
+            );
         },
         [stepStates]
     );
@@ -480,7 +482,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                         onClick={handleResetForm}
                                         className="min-w-11 min-h-11"
                                     >
-                                        <RestoreIcon />
+                                        <RestoreIcon className="h-5 w-5" />
                                     </IconButton>
                                 </Tooltip>
                             )}
@@ -491,7 +493,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                         onClick={onClose}
                                         className="min-w-11 min-h-11"
                                     >
-                                        <CloseIcon />
+                                        <CloseIcon className="h-5 w-5" />
                                     </IconButton>
                                 </Tooltip>
                             )}
@@ -500,7 +502,7 @@ export const MultiStepOrganizationEdit: React.FC<
 
                     {/* Unsaved Changes Warning */}
                     {hasUnsavedChanges && (
-                        <Alert severity="warning" className="mb-4">
+                        <Alert variant="warning" className="mb-4">
                             <Typography variant="body2">
                                 You have unsaved changes. Make sure to save
                                 before leaving this page.
@@ -511,10 +513,10 @@ export const MultiStepOrganizationEdit: React.FC<
                     {/* Progress Bar */}
                     <Box className="mb-6">
                         <Box className="flex justify-between mb-2">
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Progress: {Math.round(progressPercentage)}%
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 Step {activeStep + 1} of {steps.length}
                             </Typography>
                         </Box>
@@ -525,79 +527,128 @@ export const MultiStepOrganizationEdit: React.FC<
                         />
                     </Box>
 
-                    {/* Stepper */}
-                    <Stepper
-                        activeStep={activeStep}
-                        orientation={isMobile ? 'vertical' : 'horizontal'}
-                        className="mb-6"
-                    >
-                        {steps.map((step, index) => {
-                            const state = stepStates[index];
-                            return (
-                                <Step
-                                    key={step.id}
-                                    completed={state.completed}
-                                    onClick={() => handleStepClick(index)}
-                                    className="cursor-pointer"
-                                >
-                                    <StepLabel
-                                        icon={getStepIcon(index)}
-                                        error={state.hasErrors}
-                                        optional={
-                                            !isMobile && (
-                                                <Box className="flex gap-1 mt-1">
-                                                    {state.hasChanges && (
-                                                        <Chip
-                                                            label="Modified"
-                                                            size="small"
-                                                            color="info"
-                                                            variant="outlined"
-                                                        />
-                                                    )}
-                                                    {state.errorCount > 0 && (
-                                                        <Chip
-                                                            label={`${state.errorCount} error${state.errorCount > 1 ? 's' : ''}`}
-                                                            size="small"
-                                                            color="error"
-                                                            variant="outlined"
-                                                        />
-                                                    )}
-                                                    {state.warningCount > 0 && (
-                                                        <Chip
-                                                            label={`${state.warningCount} warning${state.warningCount > 1 ? 's' : ''}`}
-                                                            size="small"
-                                                            color="warning"
-                                                            variant="outlined"
-                                                        />
-                                                    )}
-                                                </Box>
-                                            )
-                                        }
-                                    >
-                                        <Box>
-                                            <Typography variant="subtitle2">
-                                                {step.icon} {step.label}
-                                            </Typography>
-                                            {!isMobile && (
-                                                <Typography
-                                                    variant="caption"
-                                                    color="text.secondary"
-                                                >
-                                                    {step.description}
-                                                </Typography>
+                    {/* Custom Stepper */}
+                    <div className={`mb-6 ${isMobile ? 'space-y-4' : ''}`}>
+                        {isMobile ? (
+                            // Vertical Stepper for Mobile
+                            <div className="space-y-4">
+                                {steps.map((step, index) => {
+                                    const state = stepStates[index];
+                                    const isActive = index === activeStep;
+                                    return (
+                                        <div key={step.id} className="border border-gray-200 rounded-lg">
+                                            <button
+                                                onClick={() => handleStepClick(index)}
+                                                className={`w-full p-4 text-left transition-colors ${
+                                                    isActive
+                                                        ? 'bg-blue-50 border-blue-200'
+                                                        : 'hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`flex-shrink-0 ${isActive ? 'text-blue-600' : ''}`}>
+                                                        {getStepIcon(index)}
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <Typography variant="subtitle2" className={isActive ? 'text-blue-900' : ''}>
+                                                            {step.icon} {step.label}
+                                                        </Typography>
+                                                        <Typography variant="caption" className="text-gray-600">
+                                                            {step.description}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                            {isActive && (
+                                                <div className="border-t border-gray-200 p-4 bg-white">
+                                                    {renderStepContent(index)}
+                                                </div>
                                             )}
-                                        </Box>
-                                    </StepLabel>
-
-                                    {isMobile && (
-                                        <StepContent>
-                                            {renderStepContent(index)}
-                                        </StepContent>
-                                    )}
-                                </Step>
-                            );
-                        })}
-                    </Stepper>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            // Horizontal Stepper for Desktop
+                            <div className="flex items-center justify-between">
+                                {steps.map((step, index) => {
+                                    const state = stepStates[index];
+                                    const isActive = index === activeStep;
+                                    const isCompleted = state.completed;
+                                    const canClick = index <= activeStep || state.isValid;
+                                    
+                                    return (
+                                        <React.Fragment key={step.id}>
+                                            <div className="flex-1 max-w-xs">
+                                                <button
+                                                    onClick={() => canClick && handleStepClick(index)}
+                                                    disabled={!canClick}
+                                                    className={`w-full text-left p-3 rounded-lg transition-all ${
+                                                        canClick ? 'cursor-pointer hover:bg-gray-50' : 'cursor-not-allowed opacity-60'
+                                                    } ${
+                                                        isActive
+                                                            ? 'bg-blue-50 border-2 border-blue-200'
+                                                            : isCompleted
+                                                              ? 'bg-green-50 border border-green-200'
+                                                              : 'border border-gray-200'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <div className={`flex-shrink-0 ${
+                                                            isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : ''
+                                                        }`}>
+                                                            {getStepIcon(index)}
+                                                        </div>
+                                                        <Typography 
+                                                            variant="subtitle2" 
+                                                            className={`${
+                                                                isActive ? 'text-blue-900' : isCompleted ? 'text-green-900' : ''
+                                                            }`}
+                                                        >
+                                                            {step.icon} {step.label}
+                                                        </Typography>
+                                                    </div>
+                                                    <Typography variant="caption" className="text-gray-600 block mb-2">
+                                                        {step.description}
+                                                    </Typography>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {state.hasChanges && (
+                                                            <Chip
+                                                                label="Modified"
+                                                                size="small"
+                                                                className="bg-blue-100 text-blue-800 border border-blue-200"
+                                                            />
+                                                        )}
+                                                        {state.errorCount > 0 && (
+                                                            <Chip
+                                                                label={`${state.errorCount} error${state.errorCount > 1 ? 's' : ''}`}
+                                                                size="small"
+                                                                className="bg-red-100 text-red-800 border border-red-200"
+                                                            />
+                                                        )}
+                                                        {state.warningCount > 0 && (
+                                                            <Chip
+                                                                label={`${state.warningCount} warning${state.warningCount > 1 ? 's' : ''}`}
+                                                                size="small"
+                                                                className="bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            {index < steps.length - 1 && (
+                                                <div className="flex-shrink-0 mx-4">
+                                                    <ArrowRightIcon className={`h-5 w-5 ${
+                                                        index < activeStep ? 'text-green-600' : 'text-gray-400'
+                                                    }`} />
+                                                </div>
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
 
                     {/* Desktop Step Content */}
                     {!isMobile && (
@@ -607,24 +658,23 @@ export const MultiStepOrganizationEdit: React.FC<
                     )}
 
                     {/* Error Summary */}
-                    <Collapse in={Object.keys(validationErrors).length > 0}>
+                    {Object.keys(validationErrors).length > 0 && (
                         <Alert
-                            severity="error"
+                            variant="error"
                             className="mt-4"
                             action={
                                 <IconButton
-                                    color="inherit"
-                                    size="small"
                                     onClick={() => setValidationErrors({})}
+                                    className="text-red-600"
                                 >
-                                    <CloseIcon fontSize="inherit" />
+                                    <CloseIcon className="h-4 w-4" />
                                 </IconButton>
                             }
                         >
                             <Typography variant="body2" className="font-medium">
                                 Please fix the following errors:
                             </Typography>
-                            <Box as="ul" className="mt-2 mb-0 pl-4">
+                            <ul className="mt-2 mb-0 pl-4 list-disc">
                                 {Object.entries(validationErrors).map(
                                     ([field, error]) => (
                                         <li key={field}>
@@ -634,16 +684,16 @@ export const MultiStepOrganizationEdit: React.FC<
                                         </li>
                                     )
                                 )}
-                            </Box>
+                            </ul>
                         </Alert>
-                    </Collapse>
+                    )}
 
                     {/* Navigation */}
                     <Box className="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
                         <Button
                             onClick={handleBack}
                             disabled={activeStep === 0}
-                            startIcon={<ArrowBackIcon />}
+                            startIcon={<ArrowBackIcon className="h-4 w-4" />}
                             className="min-h-11"
                         >
                             Back
@@ -655,7 +705,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                     {({ formData: currentFormData }) => (
                                         <SaveButton
                                             label="Save Changes"
-                                            icon={<SaveIcon />}
+                                            icon={<SaveIcon className="h-4 w-4" />}
                                             disabled={!canSubmit}
                                             variant="contained"
                                             className="min-h-11 px-6"
@@ -667,7 +717,7 @@ export const MultiStepOrganizationEdit: React.FC<
                                 <Button
                                     onClick={handleNext}
                                     variant="contained"
-                                    endIcon={<ArrowForwardIcon />}
+                                    endIcon={<ArrowForwardIcon className="h-4 w-4" />}
                                     className="min-h-11"
                                 >
                                     Next

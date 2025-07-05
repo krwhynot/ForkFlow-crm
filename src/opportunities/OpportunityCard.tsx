@@ -1,29 +1,28 @@
 import { Draggable } from '@hello-pangea/dnd';
 import {
+    BuildingOffice2Icon as BusinessIcon,
+    PencilSquareIcon as EditIcon,
+    CurrencyDollarIcon as MoneyIcon,
+    UserIcon as PersonIcon,
+    EyeIcon as ViewIcon,
+} from '@heroicons/react/24/outline';
+import { ReferenceField, TextField, useRedirect } from 'react-admin';
+import {
     Box,
     Card,
     CardContent,
-    Typography,
     Chip,
     IconButton,
-    Stack,
     LinearProgress,
-} from '@mui/material';
-import {
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    Visibility as ViewIcon,
-    Edit as EditIcon,
-    AttachMoney as MoneyIcon,
-} from '@mui/icons-material';
-import { Link, ReferenceField, TextField, useRedirect } from 'react-admin';
-import { Deal } from '../types';
+    Stack,
+    Typography,
+} from '../components/ui-kit';
 
 export const OpportunityCard = ({
     opportunity,
     index,
 }: {
-    opportunity: Deal;
+    opportunity: any;
     index: number;
 }) => {
     if (!opportunity) return null;
@@ -48,7 +47,7 @@ export const OpportunityCardContent = ({
 }: {
     provided?: any;
     snapshot?: any;
-    opportunity: Deal;
+    opportunity: any;
 }) => {
     const redirect = useRedirect();
 
@@ -77,45 +76,22 @@ export const OpportunityCardContent = ({
 
     return (
         <Box
-            sx={{
-                mb: 1,
-                cursor: 'pointer',
-                transform: snapshot?.isDragging ? 'rotate(-2deg)' : 'none',
-                opacity: snapshot?.isDragging ? 0.9 : 1,
-            }}
+            className={`mb-2 cursor-pointer transition-all ${
+                snapshot?.isDragging ? 'rotate-1 opacity-90' : 'rotate-0 opacity-100'
+            }`}
             {...provided?.draggableProps}
             {...provided?.dragHandleProps}
             ref={provided?.innerRef}
         >
             <Card
-                sx={{
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                        boxShadow: 4,
-                        transform: 'translateY(-2px)',
-                    },
-                    minHeight: 160,
-                }}
+                className="transition-all duration-200 ease-in-out hover:shadow-lg hover:-translate-y-1 min-h-40"
             >
-                <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                <CardContent className="p-4">
                     {/* Header with Actions */}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
-                            mb: 2,
-                        }}
-                    >
+                    <Box className="flex justify-between items-start mb-4">
                         <Typography
                             variant="subtitle1"
-                            sx={{
-                                fontWeight: 600,
-                                lineHeight: 1.2,
-                                fontSize: '0.95rem',
-                                flexGrow: 1,
-                                mr: 1,
-                            }}
+                            className="font-semibold leading-tight text-sm flex-grow mr-2"
                         >
                             {opportunity.name || 'Untitled Opportunity'}
                         </Typography>
@@ -123,37 +99,26 @@ export const OpportunityCardContent = ({
                             <IconButton
                                 size="small"
                                 onClick={handleView}
-                                sx={{
-                                    minWidth: 44,
-                                    minHeight: 44,
-                                    padding: 1,
-                                }}
+                                className="min-w-11 min-h-11 p-2"
                             >
-                                <ViewIcon fontSize="small" />
+                                <ViewIcon className="h-4 w-4" />
                             </IconButton>
                             <IconButton
                                 size="small"
                                 onClick={handleEdit}
-                                sx={{
-                                    minWidth: 44,
-                                    minHeight: 44,
-                                    padding: 1,
-                                }}
+                                className="min-w-11 min-h-11 p-2"
                             >
-                                <EditIcon fontSize="small" />
+                                <EditIcon className="h-4 w-4" />
                             </IconButton>
                         </Stack>
                     </Box>
 
                     {/* Organization & Contact */}
-                    <Stack spacing={1} sx={{ mb: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Stack spacing={1} className="mb-4">
+                        <Box className="flex items-center gap-2">
                             <BusinessIcon
-                                sx={{
-                                    fontSize: 16,
-                                    mr: 1,
-                                    color: 'text.secondary',
-                                }}
+                                className="h-4 w-4 text-gray-500"
+                                aria-hidden="true"
                             />
                             <ReferenceField
                                 source="organizationId"
@@ -164,19 +129,16 @@ export const OpportunityCardContent = ({
                                 <TextField
                                     source="name"
                                     variant="body2"
-                                    sx={{ fontSize: '0.875rem' }}
+                                    className="text-sm"
                                 />
                             </ReferenceField>
                         </Box>
 
                         {opportunity.contactId && (
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Box className="flex items-center gap-2">
                                 <PersonIcon
-                                    sx={{
-                                        fontSize: 16,
-                                        mr: 1,
-                                        color: 'text.secondary',
-                                    }}
+                                    className="h-4 w-4 text-gray-500"
+                                    aria-hidden="true"
                                 />
                                 <ReferenceField
                                     source="contactId"
@@ -186,7 +148,7 @@ export const OpportunityCardContent = ({
                                 >
                                     <Typography
                                         variant="body2"
-                                        sx={{ fontSize: '0.875rem' }}
+                                        className="text-sm"
                                     >
                                         <TextField source="firstName" />{' '}
                                         <TextField source="lastName" />
@@ -197,27 +159,16 @@ export const OpportunityCardContent = ({
                     </Stack>
 
                     {/* Value and Probability */}
-                    <Box sx={{ mb: 2 }}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                mb: 1,
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box className="mb-4">
+                        <Box className="flex items-center justify-between mb-2">
+                            <Box className="flex items-center gap-2">
                                 <MoneyIcon
-                                    sx={{
-                                        fontSize: 18,
-                                        mr: 0.5,
-                                        color: 'success.main',
-                                    }}
+                                    className="h-4 w-4 text-green-500"
+                                    aria-hidden="true"
                                 />
                                 <Typography
                                     variant="h6"
-                                    color="success.main"
-                                    sx={{ fontWeight: 600, fontSize: '1rem' }}
+                                    className="font-semibold text-base text-green-600"
                                 >
                                     {formatCurrency(opportunity.amount || 0)}
                                 </Typography>
@@ -225,17 +176,13 @@ export const OpportunityCardContent = ({
                             <Chip
                                 label={`${probability}%`}
                                 size="small"
-                                color={
+                                className={`min-w-12 text-xs ${
                                     probability >= 80
-                                        ? 'success'
+                                        ? 'bg-green-100 text-green-800 border-green-200'
                                         : probability >= 50
-                                          ? 'warning'
-                                          : 'default'
-                                }
-                                sx={{
-                                    minWidth: 48,
-                                    fontSize: '0.75rem',
-                                }}
+                                            ? 'bg-amber-100 text-amber-800 border-amber-200'
+                                            : 'bg-gray-100 text-gray-800 border-gray-200'
+                                }`}
                             />
                         </Box>
 
@@ -243,20 +190,13 @@ export const OpportunityCardContent = ({
                         <LinearProgress
                             variant="determinate"
                             value={probability}
-                            sx={{
-                                height: 4,
-                                borderRadius: 2,
-                                backgroundColor: 'grey.200',
-                                '& .MuiLinearProgress-bar': {
-                                    borderRadius: 2,
-                                    backgroundColor:
-                                        probability >= 80
-                                            ? 'success.main'
-                                            : probability >= 50
-                                              ? 'warning.main'
-                                              : 'primary.main',
-                                },
-                            }}
+                            className={`h-1 rounded bg-gray-200 ${
+                                probability >= 80
+                                    ? '[&_.progress-bar]:bg-green-600'
+                                    : probability >= 50
+                                        ? '[&_.progress-bar]:bg-amber-600'
+                                        : '[&_.progress-bar]:bg-blue-600'
+                            }`}
                         />
                     </Box>
 
@@ -264,8 +204,7 @@ export const OpportunityCardContent = ({
                     {opportunity.expectedClosingDate && (
                         <Typography
                             variant="caption"
-                            color="text.secondary"
-                            sx={{ fontSize: '0.75rem' }}
+                            className="text-xs text-gray-600"
                         >
                             Expected close:{' '}
                             {new Date(

@@ -1,12 +1,4 @@
-import { useState, useEffect } from 'react';
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '../../tailwind.config.js';
-
-const fullConfig = resolveConfig(tailwindConfig);
-
-const getBreakpointValue = (value: string): number => {
-    return parseInt(value.replace('px', ''));
-};
+import { useEffect, useState } from 'react';
 
 export const useMediaQuery = (query: string): boolean => {
     const [matches, setMatches] = useState(false);
@@ -26,10 +18,16 @@ export const useMediaQuery = (query: string): boolean => {
     return matches;
 };
 
-export const useBreakpoint = (
-    breakpoint: keyof typeof fullConfig.theme.screens
-): boolean => {
-    const screens = fullConfig.theme.screens as Record<string, string>;
-    const query = `(min-width: ${getBreakpointValue(screens[breakpoint as string])}px)`;
+// Simplified breakpoint hook with standard Tailwind breakpoints
+export const useBreakpoint = (breakpoint: 'sm' | 'md' | 'lg' | 'xl' | '2xl'): boolean => {
+    const breakpoints = {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px'
+    };
+
+    const query = `(min-width: ${breakpoints[breakpoint]})`;
     return useMediaQuery(query);
 };

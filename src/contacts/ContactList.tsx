@@ -29,7 +29,6 @@ import { ContactEmpty } from './ContactEmpty';
 import { ContactImportButton } from './ContactImportButton';
 import { ContactListContent } from './ContactListContent';
 import { ContactListFilter } from './ContactListFilter';
-import { useTerritoryFilter } from '../hooks/useTerritoryFilter';
 
 export const ContactList = () => {
     const { identity } = useGetIdentity();
@@ -50,7 +49,6 @@ export const ContactList = () => {
 const ContactListLayout = () => {
     const { data, isPending, filterValues } = useListContext();
     const { identity } = useGetIdentity();
-    const { hasRestrictions, territoryDisplayName } = useTerritoryFilter();
 
     const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
@@ -64,15 +62,6 @@ const ContactListLayout = () => {
             <Stack sx={{ width: '100%' }}>
                 <Box display="flex" alignItems="center" gap={2} mb={1}>
                     <Title title={'Contacts'} />
-                    {hasRestrictions && (
-                        <Chip
-                            icon={<MapPinIcon className="h-4 w-4" />}
-                            label={`Territory: ${territoryDisplayName}`}
-                            variant="outlined"
-                            size="small"
-                            color="primary"
-                        />
-                    )}
                 </Box>
                 <ListToolbar actions={<ContactListActions />} />
                 <BulkActionsToolbar>

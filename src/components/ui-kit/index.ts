@@ -60,6 +60,11 @@ export {
 export { Tooltip } from './Tooltip';
 export { Typography } from './Typography';
 
+// New components for Material-UI migration
+export { Stepper, Step, StepLabel, StepContent } from './Stepper';
+export { ImageList, ImageListItem } from './ImageList';
+export { Select, SelectItem } from './Select';
+
 // Utility exports
 export type { default as CircularProgressProps } from './CircularProgress';
 export type { default as AvatarProps } from './Avatar';

@@ -45,23 +45,6 @@ export const testContacts = {
     },
 };
 
-export const testDeals = {
-    basic: {
-        name: 'Q1 Produce Contract',
-        amount: 15000,
-        stage: 'proposal',
-        probability: 75,
-        expectedCloseDate: '2024-03-31',
-    },
-    large: {
-        name: 'Annual Protein Supply Agreement',
-        amount: 250000,
-        stage: 'negotiation',
-        probability: 90,
-        expectedCloseDate: '2024-02-15',
-    },
-};
-
 // Test environment configuration
 export const testConfig = {
     baseUrl: 'http://localhost:5173',

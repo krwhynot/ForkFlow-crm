@@ -1,26 +1,21 @@
 import {
-    Create,
-    Form,
-    ReferenceInput,
-    SelectInput,
-    TextInput,
-    NumberInput,
-    DateInput,
-    AutocompleteInput,
-    required,
-    useGetIdentity,
-} from 'react-admin';
-import {
     Box,
     Card,
     CardContent,
-    Grid,
     Typography,
-    Slider,
-    FormControl,
-    FormLabel,
-} from '@mui/material';
-import * as React from 'react';
+} from '@/components/ui-kit';
+import {
+    AutocompleteInput,
+    Create,
+    DateInput,
+    Form,
+    NumberInput,
+    ReferenceInput,
+    required,
+    SelectInput,
+    TextInput,
+    useGetIdentity,
+} from 'react-admin';
 import { useFormContext } from 'react-hook-form';
 import { FOOD_SERVICE_PIPELINE_STAGES } from './stages';
 

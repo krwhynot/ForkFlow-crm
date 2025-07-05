@@ -1,51 +1,46 @@
 // src/security/SecurityDashboard.tsx
-import React, { useState, useEffect } from 'react';
 import {
+    Alert,
+    Badge,
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Grid,
-    Alert,
     Chip,
-    Button,
+    Grid,
+    IconButton,
     LinearProgress,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    IconButton,
-    Tooltip,
     Paper,
-    Tabs,
     Tab,
-    Badge,
+    Tabs,
+    Tooltip,
+    Typography,
 } from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    Shield as ShieldIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    CheckCircle as SuccessIcon,
-    Visibility as ViewIcon,
-    Refresh as RefreshIcon,
-    Notifications as AlertIcon,
-    TrendingUp as TrendingUpIcon,
-    TrendingDown as TrendingDownIcon,
-    Schedule as TimeIcon,
-    Person as UserIcon,
-    Computer as DeviceIcon,
-    Public as NetworkIcon,
-    VpnKey as AuthIcon,
-    Lock as LockIcon,
-    AdminPanelSettings as AdminIcon,
-} from '@mui/icons-material';
+    BellAlertIcon as AlertIcon,
+    KeyIcon as AuthIcon,
+    ComputerDesktopIcon as DeviceIcon,
+    XCircleIcon as ErrorIcon,
+    LockClosedIcon as LockIcon,
+    GlobeAltIcon as NetworkIcon,
+    ArrowPathIcon as RefreshIcon,
+    ShieldCheckIcon as SecurityIcon,
+    ShieldExclamationIcon as ShieldIcon,
+    CheckCircleIcon as SuccessIcon,
+    ClockIcon as TimeIcon,
+    EyeIcon as ViewIcon,
+    ExclamationTriangleIcon as WarningIcon
+} from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
 import { useGetIdentity, useNotify } from 'react-admin';
 
-import { User } from '../types';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { SecurityAuditLog } from './SecurityAuditLog';
 import { SessionManager } from './SessionManager';
-import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface SecurityMetrics {
     securityScore: number;
@@ -218,15 +213,15 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     const getAlertIcon = (type: string) => {
         switch (type) {
             case 'critical':
-                return <ErrorIcon color="error" />;
+                return <ErrorIcon className="w-5 h-5 text-red-600" />;
             case 'high':
-                return <WarningIcon color="error" />;
+                return <WarningIcon className="w-5 h-5 text-red-600" />;
             case 'medium':
-                return <WarningIcon color="warning" />;
+                return <WarningIcon className="w-5 h-5 text-yellow-600" />;
             case 'low':
-                return <AlertIcon color="info" />;
+                return <AlertIcon className="w-5 h-5 text-blue-600" />;
             default:
-                return <AlertIcon color="action" />;
+                return <AlertIcon className="w-5 h-5 text-gray-500" />;
         }
     };
 
@@ -262,7 +257,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" className="m-8">
+            <Alert variant="error" className="m-8">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access the security
@@ -277,12 +272,12 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
             {!compactView && (
                 <Box className="flex justify-between items-center mb-8">
                     <Box className="flex items-center gap-2">
-                        <SecurityIcon color="primary" className="text-[32px]" />
+                        <SecurityIcon className="w-8 h-8 text-blue-600" />
                         <Box>
                             <Typography variant="h4" component="h1">
                                 Security Dashboard
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-500">
                                 Real-time security monitoring and threat
                                 detection
                             </Typography>
@@ -291,20 +286,20 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
                     <Box className="flex gap-1">
                         <Button
-                            variant="outlined"
-                            startIcon={<RefreshIcon />}
+                            variant="secondary"
                             onClick={loadSecurityData}
                             disabled={loading}
                             className="min-h-[44px]"
                         >
+                            <RefreshIcon className="mr-2" />
                             Refresh
                         </Button>
                         <Button
-                            variant={autoRefresh ? 'contained' : 'outlined'}
-                            startIcon={<TimeIcon />}
+                            variant={autoRefresh ? 'primary' : 'secondary'}
                             onClick={() => setAutoRefresh(!autoRefresh)}
                             className="min-h-[44px]"
                         >
+                            <TimeIcon className="mr-2" />
                             Auto Refresh
                         </Button>
                     </Box>
@@ -314,15 +309,15 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
             {/* Critical Alerts Banner */}
             {criticalAlerts.length > 0 && (
                 <Alert
-                    severity="error"
+                    variant="error"
                     className="mb-8"
                     action={
-                        <Button color="inherit" size="small">
+                        <Button size="small">
                             View Details
                         </Button>
                     }
                 >
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6" className="mb-2">
                         {criticalAlerts.length} Critical Security Alert(s)
                     </Typography>
                     <Typography>
@@ -348,21 +343,18 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                             </Box>
                             <Typography
                                 variant="h4"
-                                color={`${getSecurityScoreColor(
+                                className={`text-${getSecurityScoreColor(
                                     metrics?.securityScore || 0
-                                )}.main`}
+                                )}-600`}
                             >
                                 {metrics?.securityScore || 0}%
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-500">
                                 Security Score
                             </Typography>
                             <LinearProgress
                                 variant="determinate"
                                 value={metrics?.securityScore || 0}
-                                color={getSecurityScoreColor(
-                                    metrics?.securityScore || 0
-                                )}
                                 className="mt-1"
                             />
                         </CardContent>
@@ -387,10 +379,10 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                     />
                                 </Badge>
                             </Box>
-                            <Typography variant="h4" color="error.main">
+                            <Typography variant="h4" className="text-red-600">
                                 {metrics?.activeThreats || 0}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-500">
                                 Active Threats
                             </Typography>
                         </CardContent>
@@ -407,10 +399,10 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                     className="text-[40px]"
                                 />
                             </Box>
-                            <Typography variant="h4" color="warning.main">
+                            <Typography variant="h4" className="text-yellow-600">
                                 {metrics?.failedLogins || 0}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-500">
                                 Failed Logins (24h)
                             </Typography>
                         </CardContent>
@@ -427,10 +419,10 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                     className="text-[40px]"
                                 />
                             </Box>
-                            <Typography variant="h4" color="info.main">
+                            <Typography variant="h4" className="text-blue-600">
                                 {metrics?.activeSessions || 0}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-500">
                                 Active Sessions
                             </Typography>
                         </CardContent>
@@ -466,13 +458,13 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                 {/* Security Alerts Tab */}
                 {currentTab === 0 && (
                     <CardContent>
-                        <Typography variant="h6" gutterBottom>
+                        <Typography variant="h6" className="mb-4">
                             Security Alerts ({unResolvedAlerts.length}{' '}
                             unresolved)
                         </Typography>
 
                         {unResolvedAlerts.length === 0 ? (
-                            <Alert severity="success">
+                            <Alert variant="success">
                                 <Typography variant="h6">All Clear!</Typography>
                                 <Typography>
                                     No active security alerts at this time.
@@ -484,11 +476,10 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                     <ListItem
                                         key={alert.id}
                                         divider
-                                        className={`${
-                                            alert.resolved 
-                                                ? 'opacity-60 bg-transparent' 
+                                        className={`${alert.resolved
+                                                ? 'opacity-60 bg-transparent'
                                                 : 'opacity-100 bg-white'
-                                        }`}
+                                            }`}
                                     >
                                         <ListItemIcon>
                                             {getAlertIcon(alert.type)}
@@ -501,19 +492,19 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                                     </Typography>
                                                     <Chip
                                                         label={alert.type.toUpperCase()}
-                                                        color={
-                                                            getAlertColor(
-                                                                alert.type
-                                                            ) as any
-                                                        }
                                                         size="small"
+                                                        className={`
+                                                            ${alert.type === 'critical' ? 'bg-red-500 text-white' : ''}
+                                                            ${alert.type === 'high' ? 'bg-red-500 text-white' : ''}
+                                                            ${alert.type === 'medium' ? 'bg-yellow-500 text-white' : ''}
+                                                            ${alert.type === 'low' ? 'bg-blue-500 text-white' : ''}
+                                                        `}
                                                     />
                                                     {alert.resolved && (
                                                         <Chip
                                                             label="RESOLVED"
-                                                            color="success"
                                                             size="small"
-                                                            variant="outlined"
+                                                            className="border-green-500 text-green-500"
                                                         />
                                                     )}
                                                 </Box>
@@ -522,14 +513,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                                 <Box>
                                                     <Typography
                                                         variant="body2"
-                                                        gutterBottom
+                                                        className="mb-2"
                                                     >
                                                         {alert.description}
                                                     </Typography>
                                                     {alert.recommendation && (
                                                         <Typography
                                                             variant="body2"
-                                                            color="info.main"
+                                                            className="text-blue-600"
                                                         >
                                                             <strong>
                                                                 Recommendation:
@@ -541,7 +532,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                                     )}
                                                     <Typography
                                                         variant="caption"
-                                                        color="text.secondary"
+                                                        className="text-gray-500"
                                                     >
                                                         {new Date(
                                                             alert.timestamp
@@ -569,13 +560,13 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                             {!alert.resolved && (
                                                 <Button
                                                     size="small"
-                                                    variant="outlined"
-                                                    color="success"
+                                                    variant="secondary"
                                                     onClick={() =>
                                                         handleResolveAlert(
                                                             alert.id
                                                         )
                                                     }
+                                                    className="text-green-600 border-green-600"
                                                 >
                                                     Resolve
                                                 </Button>
@@ -605,7 +596,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                 {/* System Health Tab */}
                 {currentTab === 3 && (
                     <CardContent>
-                        <Typography variant="h6" gutterBottom>
+                        <Typography variant="h6" className="mb-4">
                             System Health Status
                         </Typography>
 
@@ -614,19 +605,19 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
-                                        gutterBottom
+                                        className="mb-2"
                                     >
                                         Authentication System
                                     </Typography>
                                     <Box className="flex items-center gap-1">
-                                        <SuccessIcon color="success" />
+                                        <SuccessIcon className="w-5 h-5 text-green-600" />
                                         <Typography variant="body2">
                                             Operational
                                         </Typography>
                                     </Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         Last check:{' '}
                                         {new Date().toLocaleTimeString()}
@@ -638,19 +629,19 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
-                                        gutterBottom
+                                        className="mb-2"
                                     >
                                         Database Security
                                     </Typography>
                                     <Box className="flex items-center gap-1">
-                                        <SuccessIcon color="success" />
+                                        <SuccessIcon className="w-5 h-5 text-green-600" />
                                         <Typography variant="body2">
                                             Secure
                                         </Typography>
                                     </Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         RLS policies: Active
                                     </Typography>
@@ -661,19 +652,19 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
-                                        gutterBottom
+                                        className="mb-2"
                                     >
                                         API Security
                                     </Typography>
                                     <Box className="flex items-center gap-1">
-                                        <WarningIcon color="warning" />
+                                        <WarningIcon className="w-5 h-5 text-yellow-600" />
                                         <Typography variant="body2">
                                             Rate limiting active
                                         </Typography>
                                     </Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         Current load: 78% of limit
                                     </Typography>
@@ -684,19 +675,19 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
-                                        gutterBottom
+                                        className="mb-2"
                                     >
                                         Security Monitoring
                                     </Typography>
                                     <Box className="flex items-center gap-1">
-                                        <SuccessIcon color="success" />
+                                        <SuccessIcon className="w-5 h-5 text-green-600" />
                                         <Typography variant="body2">
                                             Active
                                         </Typography>
                                     </Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                     >
                                         {metrics &&
                                             `Last scan: ${new Date(
@@ -708,14 +699,14 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                         </Grid>
 
                         {/* Security Recommendations */}
-                        <Box mt={3}>
-                            <Typography variant="h6" gutterBottom>
+                        <Box className="mt-6">
+                            <Typography variant="h6" className="mb-4">
                                 Security Recommendations
                             </Typography>
                             <List dense>
                                 <ListItem>
                                     <ListItemIcon>
-                                        <LockIcon color="info" />
+                                        <LockIcon className="w-5 h-5 text-blue-600" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Enable MFA for all admin users"
@@ -724,7 +715,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 </ListItem>
                                 <ListItem>
                                     <ListItemIcon>
-                                        <TimeIcon color="warning" />
+                                        <TimeIcon className="w-5 h-5 text-yellow-600" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Review password policies"
@@ -733,7 +724,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
                                 </ListItem>
                                 <ListItem>
                                     <ListItemIcon>
-                                        <NetworkIcon color="info" />
+                                        <NetworkIcon className="w-5 h-5 text-blue-600" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Monitor suspicious IP addresses"

@@ -44,7 +44,7 @@ export function ActivityLogContactCreated({
                         to{' '}
                         <ReferenceField
                             source="entityId"
-                            reference="companies"
+                            reference="organizations"
                             record={activity}
                             link="show"
                         />{' '}

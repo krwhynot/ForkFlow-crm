@@ -1,8 +1,7 @@
-import { Stack } from '@/components/ui-kit';
-import { ImageList, ImageListItem } from '@mui/material';
+import { Stack, ImageList, ImageListItem } from '@/components/ui-kit';
 import { ContactNote, DealNote, RAFile } from '../types';
 import { FileField } from 'react-admin';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { PaperClipIcon } from '@heroicons/react/24/outline';
 
 export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
     if (!note.attachments || note.attachments.length === 0) {
@@ -46,7 +45,7 @@ export const NoteAttachments = ({ note }: { note: ContactNote | DealNote }) => {
             {otherAttachments.length > 0 &&
                 otherAttachments.map((attachment: RAFile, index: number) => (
                     <Stack key={index} className="flex-row items-center">
-                        <AttachFileIcon fontSize="small" />
+                        <PaperClipIcon className="w-4 h-4" />
                         <FileField
                             record={{ attachment }}
                             source="attachment.src"

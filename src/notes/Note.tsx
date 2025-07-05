@@ -1,16 +1,16 @@
-import TrashIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ContentSave from '@mui/icons-material/Save';
 import {
     Box,
     Button,
+    IconButton,
     Stack,
+    Tooltip,
     Typography,
 } from '@/components/ui-kit';
 import {
-    IconButton,
-    Tooltip,
-} from '@mui/material';
+    TrashIcon,
+    PencilIcon as EditIcon,
+    DocumentCheckIcon as ContentSave,
+} from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import {
     Form,
@@ -96,7 +96,7 @@ export const Note = ({
                 ) : (
                     <ReferenceField
                         source="organizationId"
-                        reference="companies"
+                        reference="organizations"
                         link="show"
                     >
                         <CompanyAvatar width={20} height={20} />
@@ -107,7 +107,7 @@ export const Note = ({
                         record={note}
                         resource={resource}
                         source="organizationId"
-                        reference="companies"
+                        reference="organizations"
                         link={false}
                     >
                         <WithRecord
@@ -127,12 +127,12 @@ export const Note = ({
                                 size="small"
                                 onClick={handleEnterEditMode}
                             >
-                                <EditIcon />
+                                <EditIcon className="h-4 w-4" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete note">
                             <IconButton size="small" onClick={handleDelete}>
-                                <TrashIcon />
+                                <TrashIcon className="h-4 w-4" />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -155,7 +155,7 @@ export const Note = ({
                             color="primary"
                             variant="contained"
                             disabled={isPending}
-                            startIcon={<ContentSave />}
+                            startIcon={<ContentSave className="h-4 w-4" />}
                         >
                             Update Note
                         </Button>

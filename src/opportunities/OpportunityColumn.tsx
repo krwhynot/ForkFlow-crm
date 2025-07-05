@@ -1,6 +1,5 @@
 import { Droppable } from '@hello-pangea/dnd';
-import { Box, Chip, Paper, Typography } from '@mui/material';
-import { Deal } from '../types';
+import { Box, Chip, Paper, Typography } from '../components/ui-kit';
 import { OpportunityCard } from './OpportunityCard';
 import { FoodServiceStage } from './stages';
 

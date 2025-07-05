@@ -1,15 +1,26 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { OverridableStringUnion } from '@mui/types';
-import { Variant } from '@mui/material/styles/createTypography';
-import { TypographyPropsVariantOverrides } from '@mui/material/Typography';
+// Allowed variants for Typography
+export type TypographyVariant =
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'subtitle1'
+    | 'subtitle2'
+    | 'body1'
+    | 'body2'
+    | 'caption'
+    | 'button'
+    | 'overline'
+    | 'inherit';
 
-type TypographyProps = {
-    variant?: OverridableStringUnion<
-        Variant | 'inherit',
-        TypographyPropsVariantOverrides
-    >;
+// Updated props type
+export type TypographyProps = {
+    variant?: TypographyVariant;
     component?: React.ElementType;
     className?: string;
     children: React.ReactNode;

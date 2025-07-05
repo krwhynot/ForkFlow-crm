@@ -34,7 +34,7 @@ export function ActivityLogCompanyCreated({
                 </ReferenceField>{' '}
                 added company{' '}
                 <Link
-                    to={`/companies/${organization.id}/show`}
+                    to={`/organizations/${organization.id}/show`}
                     className="font-medium text-blue-600 hover:underline"
                 >
                     {organization.name}

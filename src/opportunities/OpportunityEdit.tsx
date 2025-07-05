@@ -1,32 +1,26 @@
 import {
-    Edit,
-    Form,
-    ReferenceInput,
-    SelectInput,
-    TextInput,
-    NumberInput,
-    DateInput,
-    AutocompleteInput,
-    required,
-    useRecordContext,
-    DeleteButton,
-    Toolbar,
-    SaveButton,
-} from 'react-admin';
-import {
     Box,
     Card,
     CardContent,
-    Grid,
     Typography,
-    Slider,
-    FormControl,
-    FormLabel,
-} from '@mui/material';
-import * as React from 'react';
+} from '@/components/ui-kit';
+import {
+    AutocompleteInput,
+    DateInput,
+    DeleteButton,
+    Edit,
+    Form,
+    NumberInput,
+    ReferenceInput,
+    required,
+    SaveButton,
+    SelectInput,
+    TextInput,
+    Toolbar,
+    useRecordContext,
+} from 'react-admin';
 import { useFormContext } from 'react-hook-form';
 import { FOOD_SERVICE_PIPELINE_STAGES } from './stages';
-import { Deal } from '../types';
 
 const OpportunityEditToolbar = () => (
     <Toolbar>

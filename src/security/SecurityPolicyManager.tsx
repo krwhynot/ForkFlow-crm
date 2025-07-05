@@ -25,20 +25,20 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    AdminPanelSettings as AdminIcon,
-    Key as KeyIcon,
-    Schedule as TimeIcon,
-    Block as BlockIcon,
-    Shield as ShieldIcon,
-    Warning as WarningIcon,
-    CheckCircle as CheckIcon,
-    Settings as SettingsIcon,
-    Save as SaveIcon,
-    Refresh as RefreshIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    UserIcon as AdminIcon,
+    KeyIcon,
+    ClockIcon as TimeIcon,
+    NoSymbolIcon as BlockIcon,
+    ShieldExclamationIcon as ShieldIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    CheckCircleIcon as CheckIcon,
+    CogIcon as SettingsIcon,
+    BookmarkSquareIcon as SaveIcon,
+    ArrowPathIcon as RefreshIcon,
+} from '@heroicons/react/24/outline';
 import { useNotify, useGetIdentity } from 'react-admin';
 
 import { User } from '../types';
@@ -348,7 +348,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                                         e.target.checked.toString()
                                     )
                                 }
-                                color="primary"
+                                className="text-blue-600"
                             />
                         }
                         label=""
@@ -369,13 +369,13 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                             max: setting.max,
                             style: { textAlign: 'center' },
                         }}
-                        sx={{ width: 100 }}
+                        className="w-25"
                     />
                 );
 
             case 'select':
                 return (
-                    <FormControl size="small" sx={{ minWidth: 120 }}>
+                    <FormControl size="small" className="min-w-30">
                         <Select
                             value={currentValue}
                             onChange={e =>
@@ -399,7 +399,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                             handleSettingChange(setting.id, e.target.value)
                         }
                         size="small"
-                        sx={{ width: 200 }}
+                        className="w-50"
                     />
                 );
         }
@@ -408,15 +408,15 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     const getCategoryIcon = (category: string) => {
         switch (category) {
             case 'session':
-                return <TimeIcon />;
+                return <TimeIcon className="w-5 h-5" />;
             case 'password':
-                return <KeyIcon />;
+                return <KeyIcon className="w-5 h-5" />;
             case 'security':
-                return <ShieldIcon />;
+                return <ShieldIcon className="w-5 h-5" />;
             case 'monitoring':
-                return <WarningIcon />;
+                return <WarningIcon className="w-5 h-5" />;
             default:
-                return <SettingsIcon />;
+                return <SettingsIcon className="w-5 h-5" />;
         }
     };
 
@@ -451,7 +451,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" sx={{ m: 3 }}>
+            <Alert variant="error" className="m-3">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access security policy
@@ -462,16 +462,11 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
     }
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box className="p-3">
             {/* Header */}
-            <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={3}
-            >
-                <Box display="flex" alignItems="center" gap={2}>
-                    <SecurityIcon color="primary" sx={{ fontSize: 32 }} />
+            <Box className="flex justify-between items-center mb-3">
+                <Box className="flex items-center gap-2">
+                    <SecurityIcon className="w-8 h-8 text-blue-600" />
                     <Box>
                         <Typography variant="h4" component="h1">
                             Security Policy Manager
@@ -483,22 +478,22 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                     </Box>
                 </Box>
 
-                <Box display="flex" gap={1}>
+                <Box className="flex gap-1">
                     <Button
                         variant="outlined"
-                        startIcon={<RefreshIcon />}
+                        startIcon={<RefreshIcon className="w-4 h-4" />}
                         onClick={loadSettings}
                         disabled={loading}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-11"
                     >
                         Refresh
                     </Button>
                     <Button
                         variant="contained"
-                        startIcon={<SaveIcon />}
+                        startIcon={<SaveIcon className="w-4 h-4" />}
                         onClick={() => setSaveDialogOpen(true)}
                         disabled={!hasChanges || loading}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-11"
                     >
                         Save Changes
                     </Button>
@@ -506,7 +501,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
             </Box>
 
             {hasChanges && (
-                <Alert severity="warning" sx={{ mb: 3 }}>
+                <Alert variant="warning" className="mb-3">
                     <Typography variant="body1" gutterBottom>
                         You have unsaved changes to security settings.
                     </Typography>
@@ -514,7 +509,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                         size="small"
                         variant="outlined"
                         onClick={handleReset}
-                        sx={{ mt: 1 }}
+                        className="mt-1"
                     >
                         Reset Changes
                     </Button>
@@ -528,26 +523,27 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                         <Grid item xs={12} lg={6} key={category}>
                             <Card>
                                 <CardContent>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={2}
-                                        mb={2}
-                                    >
+                                    <Box className="flex items-center gap-2 mb-2">
                                         {getCategoryIcon(category)}
                                         <Typography
                                             variant="h6"
-                                            sx={{ textTransform: 'capitalize' }}
+                                            className="capitalize"
                                         >
                                             {category} Settings
                                         </Typography>
                                         <Chip
                                             label={categorySettings.length}
                                             size="small"
-                                            color={
-                                                getCategoryColor(
-                                                    category
-                                                ) as any
+                                            className={
+                                                getCategoryColor(category) === 'primary' 
+                                                    ? 'bg-blue-500 text-white'
+                                                    : getCategoryColor(category) === 'secondary'
+                                                    ? 'bg-gray-500 text-white' 
+                                                    : getCategoryColor(category) === 'error'
+                                                    ? 'bg-red-500 text-white'
+                                                    : getCategoryColor(category) === 'warning'
+                                                    ? 'bg-yellow-500 text-white'
+                                                    : 'bg-gray-400 text-white'
                                             }
                                         />
                                     </Box>
@@ -559,16 +555,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                                                     key={setting.id}
                                                 >
                                                     <ListItem
-                                                        sx={{
-                                                            flexDirection:
-                                                                isMobile
-                                                                    ? 'column'
-                                                                    : 'row',
-                                                            alignItems: isMobile
-                                                                ? 'flex-start'
-                                                                : 'center',
-                                                            py: 2,
-                                                        }}
+                                                        className={`${isMobile ? 'flex-col items-start' : 'flex-row items-center'} py-2`}
                                                     >
                                                         <ListItemText
                                                             primary={
@@ -600,30 +587,10 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                                                                     )}
                                                                 </Box>
                                                             }
-                                                            sx={{
-                                                                flex: 1,
-                                                                mr: isMobile
-                                                                    ? 0
-                                                                    : 2,
-                                                            }}
+                                                            className={`flex-1 ${isMobile ? 'mr-0' : 'mr-2'}`}
                                                         />
                                                         <ListItemSecondaryAction
-                                                            sx={{
-                                                                position:
-                                                                    isMobile
-                                                                        ? 'static'
-                                                                        : 'absolute',
-                                                                right: isMobile
-                                                                    ? 'auto'
-                                                                    : 16,
-                                                                transform:
-                                                                    isMobile
-                                                                        ? 'none'
-                                                                        : 'translateY(-50%)',
-                                                                mt: isMobile
-                                                                    ? 1
-                                                                    : 0,
-                                                            }}
+                                                            className={`${isMobile ? 'static mt-1' : 'absolute right-4 -translate-y-1/2'}`}
                                                         >
                                                             {renderSettingControl(
                                                                 setting
@@ -652,7 +619,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                 fullWidth
             >
                 <DialogTitle>
-                    <Box display="flex" alignItems="center" gap={2}>
+                    <Box className="flex items-center gap-2">
                         <WarningIcon color="warning" />
                         Confirm Security Policy Changes
                     </Box>
@@ -683,7 +650,7 @@ export const SecurityPolicyManager: React.FC<SecurityPolicyManagerProps> = ({
                         variant="contained"
                         onClick={handleSave}
                         disabled={loading}
-                        color="warning"
+                        className="bg-yellow-500 text-white"
                     >
                         Apply Changes
                     </Button>

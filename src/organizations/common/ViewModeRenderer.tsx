@@ -1,7 +1,7 @@
+import { Box, CircularProgress, Fade } from '@/components/ui-kit';
 import React, { Suspense } from 'react';
-import { Box, CircularProgress, Fade } from '@mui/material';
-import { useViewMode } from '../hooks/useViewMode';
 import { Organization } from '../../types';
+import { useViewMode } from '../hooks/useViewMode';
 
 // Lazy load components for better performance
 const OrganizationTable = React.lazy(() =>

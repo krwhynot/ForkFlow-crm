@@ -1,34 +1,31 @@
+import { Divider } from '@/components/ui-kit';
+import {
+    ArrowTrendingUpIcon,
+    BuildingStorefrontIcon as BusinessIcon,
+    CameraIcon as PhotoIcon
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import {
+    BooleanField,
+    DeleteButton,
+    EditButton,
+    ReferenceField,
     Show,
     SimpleShowLayout,
     TextField,
-    NumberField,
-    BooleanField,
-    ReferenceField,
-    EditButton,
-    DeleteButton,
     TopToolbar,
-    useRecordContext,
+    useRecordContext
 } from 'react-admin';
-import { Product } from '../types';
 import { Card } from '../components/Card/Card';
 import { CardContent } from '../components/Card/CardContent';
-import { Grid } from '@/components/ui-kit';
-import { Typography } from '../components/Typography/Typography';
 import { Chip } from '../components/DataDisplay/Chip';
 import { Box } from '../components/Layout/Box';
-import { Divider } from '@/components/ui-kit';
 import { Stack } from '../components/Layout/Stack';
-import { PriceField } from './PriceField';
-import {
-    TrendingUp as TrendingUpIcon,
-    Inventory as InventoryIcon,
-    PhotoCamera as PhotoIcon,
-    Business as BusinessIcon,
-} from '@mui/icons-material';
-import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
 import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
+import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
+import { Typography } from '../components/Typography/Typography';
+import { Product } from '../types';
+import { PriceField } from './PriceField';
 
 const ProductShowActions = () => (
     <TopToolbar>
@@ -227,7 +224,7 @@ const PriceHistory = () => (
     <Card className="mb-2">
         <CardContent>
             <Box className="flex items-center mb-2">
-                <TrendingUpIcon className="mr-1 text-blue-500" />
+                <ArrowTrendingUpIcon className="mr-1 text-blue-500" />
                 <Typography variant="h6" className="font-semibold">
                     Price History
                 </Typography>
@@ -293,10 +290,7 @@ const ProductImages = () => {
                 <Divider className="mb-2" />
 
                 {/* Upload Area */}
-                <Box
-                    component="label"
-                    className="block p-2 border-2 border-dashed border-blue-500 rounded-lg text-center cursor-pointer mb-2 bg-gray-50 hover:bg-gray-100"
-                >
+                <label className="block p-2 border-2 border-dashed border-blue-500 rounded-lg text-center cursor-pointer mb-2 bg-gray-50 hover:bg-gray-100">
                     <input
                         type="file"
                         accept="image/*"
@@ -315,7 +309,7 @@ const ProductImages = () => {
                     <Typography variant="body2" className="text-gray-500">
                         JPG, PNG, GIF up to 10MB each
                     </Typography>
-                </Box>
+                </label>
 
                 {/* Image Gallery */}
                 {images.length > 0 ? (

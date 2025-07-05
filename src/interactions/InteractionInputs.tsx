@@ -16,27 +16,22 @@ import {
     useNotify,
 } from 'react-admin';
 import {
-    Stack,
+    Alert,
     Box,
-    Typography,
     Button,
     Chip,
+    CircularProgress,
+    Stack,
+    Typography,
 } from '@/components/ui-kit';
 import {
-    Collapse,
-    Alert,
-    FormControlLabel,
-    Switch,
-    CircularProgress,
-} from '@mui/material';
-import {
-    LocationOn as LocationIcon,
-    ExpandMore as ExpandMoreIcon,
-    ExpandLess as ExpandLessIcon,
-    CloudOff as OfflineIcon,
-    CloudDone as OnlineIcon,
-    GpsFixed as GpsIcon,
-} from '@mui/icons-material';
+    MapPinIcon as LocationIcon,
+    ChevronDownIcon as ExpandMoreIcon,
+    ChevronUpIcon as ExpandLessIcon,
+    CloudIcon as OfflineIcon,
+    CheckCircleIcon as OnlineIcon,
+    MapPinIcon as GpsIcon,
+} from '@heroicons/react/24/outline';
 
 import { LocationProvider } from '../components/mobile';
 import { useGPSService, useOfflineService } from '../providers/mobile';
@@ -162,7 +157,7 @@ export const InteractionInputs = () => {
     };
 
     return (
-        <Stack spacing={3}>
+        <Stack className="gap-6">
             {/* Offline Status Indicator */}
             <Box className="flex justify-between items-center">
                 <Typography variant="h6" gutterBottom>
@@ -174,13 +169,13 @@ export const InteractionInputs = () => {
                     <Chip
                         icon={
                             offlineStatus.isOnline ? (
-                                <OnlineIcon />
+                                <OnlineIcon className="h-4 w-4" />
                             ) : (
-                                <OfflineIcon />
+                                <OfflineIcon className="h-4 w-4" />
                             )
                         }
                         label={offlineStatus.isOnline ? 'Online' : 'Offline'}
-                        color={offlineStatus.isOnline ? 'success' : 'warning'}
+                        className={`${offlineStatus.isOnline ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
                         size="small"
                     />
 
@@ -188,7 +183,7 @@ export const InteractionInputs = () => {
                     {offlineStatus.pendingActions > 0 && (
                         <Chip
                             label={`${offlineStatus.pendingActions} pending`}
-                            color="info"
+                            className="bg-blue-100 text-blue-800"
                             size="small"
                         />
                     )}
@@ -296,18 +291,15 @@ export const InteractionInputs = () => {
                     </Typography>
 
                     <Stack className="space-y-2">
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={gpsEnabled}
-                                    onChange={e =>
-                                        setGpsEnabled(e.target.checked)
-                                    }
-                                    color="primary"
-                                />
-                            }
-                            label="Capture GPS location"
-                        />
+                        <label className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                checked={gpsEnabled}
+                                onChange={e => setGpsEnabled(e.target.checked)}
+                                className="toggle toggle-primary"
+                            />
+                            <span>Capture GPS location</span>
+                        </label>
 
                         {gpsEnabled && (
                             <Box>
@@ -316,9 +308,9 @@ export const InteractionInputs = () => {
                                         variant="outlined"
                                         startIcon={
                                             locationLoading ? (
-                                                <CircularProgress size={16} />
+                                                <CircularProgress className="h-4 w-4" />
                                             ) : (
-                                                <GpsIcon />
+                                                <GpsIcon className="h-4 w-4" />
                                             )
                                         }
                                         onClick={refreshLocation}
@@ -332,7 +324,7 @@ export const InteractionInputs = () => {
                                     {location && (
                                         <Button
                                             variant="text"
-                                            startIcon={<LocationIcon />}
+                                            startIcon={<LocationIcon className="h-4 w-4" />}
                                             onClick={() => {
                                                 // Open in maps app
                                                 const url = `https://maps.google.com/maps?q=${location.latitude},${location.longitude}`;
@@ -345,7 +337,7 @@ export const InteractionInputs = () => {
                                 </Box>
 
                                 {location && (
-                                    <Alert severity="success" className="mb-2">
+                                    <Alert variant="success" className="mb-2">
                                         <Box>
                                             <strong>Location captured:</strong>{' '}
                                             {gpsService.formatCoordinates(
@@ -367,7 +359,7 @@ export const InteractionInputs = () => {
                                 )}
 
                                 {locationError && (
-                                    <Alert severity="error" className="mb-2">
+                                    <Alert variant="error" className="mb-2">
                                         {locationError}
                                         <Button
                                             size="small"
@@ -415,14 +407,14 @@ export const InteractionInputs = () => {
                 <Button
                     onClick={() => setShowAdvanced(!showAdvanced)}
                     startIcon={
-                        showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                        showAdvanced ? <ExpandLessIcon className="h-4 w-4" /> : <ExpandMoreIcon className="h-4 w-4" />
                     }
                     className="mb-2"
                 >
                     {showAdvanced ? 'Hide' : 'Show'} Advanced Options
                 </Button>
 
-                <Collapse in={showAdvanced}>
+                {showAdvanced && (
                     <Stack className="space-y-2">
                         <Typography variant="subtitle1" gutterBottom>
                             Follow-up & Outcomes
@@ -500,14 +492,14 @@ export const InteractionInputs = () => {
                             </FileInput>
 
                             {!offlineStatus.isOnline && (
-                                <Alert severity="info" className="mt-1">
+                                <Alert variant="info" className="mt-1">
                                     Files will be uploaded when connection is
                                     restored.
                                 </Alert>
                             )}
                         </Box>
                     </Stack>
-                </Collapse>
+                )}
             </Box>
         </Stack>
     );

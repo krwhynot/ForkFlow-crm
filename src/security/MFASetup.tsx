@@ -1,49 +1,43 @@
 // src/security/MFASetup.tsx
-import React, { useState, useEffect } from 'react';
 import {
+    Alert,
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Button,
-    TextField,
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
-    Alert,
-    Grid,
+    Chip,
     Dialog,
-    DialogTitle,
-    DialogContent,
     DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
     List,
     ListItem,
-    ListItemText,
     ListItemIcon,
-    Chip,
-    IconButton,
-    Tooltip,
+    ListItemText,
     Paper,
-    Divider,
+    Step,
+    StepContent,
+    StepLabel,
+    Stepper,
+    TextField,
+    Typography
 } from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    Smartphone as PhoneIcon,
-    QrCode as QrCodeIcon,
-    Key as KeyIcon,
-    Check as CheckIcon,
-    Close as CloseIcon,
-    Refresh as RefreshIcon,
-    Download as DownloadIcon,
-    Warning as WarningIcon,
-    Shield as ShieldIcon,
-    Visibility as ViewIcon,
-    VisibilityOff as HideIcon,
-} from '@mui/icons-material';
+    CheckCircleIcon as CheckIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+    EyeSlashIcon as HideIcon,
+    KeyIcon,
+    DevicePhoneMobileIcon as PhoneIcon,
+    QrCodeIcon,
+    ShieldCheckIcon as SecurityIcon,
+    ShieldExclamationIcon as ShieldIcon,
+    EyeIcon as ViewIcon,
+    ExclamationTriangleIcon as WarningIcon
+} from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
 import { useGetIdentity, useNotify } from 'react-admin';
 
-import { User } from '../types';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface MFAMethod {
@@ -171,13 +165,13 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 const updatedMethods = mfaMethods.map(method =>
                     method.id === selectedMethod.id
                         ? {
-                              ...method,
-                              isEnabled: true,
-                              setupAt: new Date().toISOString(),
-                              isDefault: !mfaMethods.some(
-                                  m => m.isEnabled && m.isDefault
-                              ),
-                          }
+                            ...method,
+                            isEnabled: true,
+                            setupAt: new Date().toISOString(),
+                            isDefault: !mfaMethods.some(
+                                m => m.isEnabled && m.isDefault
+                            ),
+                        }
                         : method
                 );
 
@@ -252,15 +246,15 @@ export const MFASetup: React.FC<MFASetupProps> = ({
     const getMethodIcon = (type: string) => {
         switch (type) {
             case 'totp':
-                return <PhoneIcon />;
+                return <PhoneIcon className="w-5 h-5" />;
             case 'email':
-                return <KeyIcon />;
+                return <KeyIcon className="w-5 h-5" />;
             case 'sms':
-                return <PhoneIcon />;
+                return <PhoneIcon className="w-5 h-5" />;
             case 'backup_codes':
-                return <SecurityIcon />;
+                return <SecurityIcon className="w-5 h-5" />;
             default:
-                return <SecurityIcon />;
+                return <SecurityIcon className="w-5 h-5" />;
         }
     };
 
@@ -300,17 +294,12 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                             <Typography paragraph>
                                 Scan this QR code with your authenticator app:
                             </Typography>
-                            <Box display="flex" justifyContent="center" mb={2}>
-                                <Paper sx={{ p: 2, textAlign: 'center' }}>
-                                    <QrCodeIcon
-                                        sx={{
-                                            fontSize: 120,
-                                            color: 'text.secondary',
-                                        }}
-                                    />
+                            <Box className="flex justify-center mb-2">
+                                <Paper className="p-2 text-center">
+                                    <QrCodeIcon className="w-30 h-30 text-gray-500" />
                                     <Typography
                                         variant="caption"
-                                        display="block"
+                                        className="block"
                                     >
                                         QR Code would be displayed here
                                     </Typography>
@@ -329,23 +318,18 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 label: 'Save Backup Codes',
                 content: (
                     <Box>
-                        <Typography paragraph color="error">
-                            <WarningIcon
-                                sx={{ mr: 1, verticalAlign: 'middle' }}
-                            />
+                        <Typography paragraph className="text-red-600">
+                            <WarningIcon className="mr-1 align-middle w-5 h-5 inline" />
                             Save these backup codes in a secure location. Each
                             code can only be used once.
                         </Typography>
-                        <Paper sx={{ p: 2, bgcolor: 'background.default' }}>
+                        <Paper className="p-2 bg-gray-50">
                             <Grid container spacing={1}>
                                 {backupCodes.map((code, index) => (
                                     <Grid item xs={6} key={index}>
                                         <Typography
                                             variant="body2"
-                                            sx={{
-                                                fontFamily: 'monospace',
-                                                textAlign: 'center',
-                                            }}
+                                            className="font-mono text-center"
                                         >
                                             {code}
                                         </Typography>
@@ -353,10 +337,10 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                 ))}
                             </Grid>
                         </Paper>
-                        <Box display="flex" gap={1} mt={2}>
+                        <Box className="flex gap-1 mt-2">
                             <Button
                                 variant="outlined"
-                                startIcon={<DownloadIcon />}
+                                startIcon={<DownloadIcon className="w-4 h-4" />}
                                 onClick={() => {
                                     // In production, generate and download a file
                                     const text = backupCodes.join('\n');
@@ -369,9 +353,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                 variant="outlined"
                                 startIcon={
                                     showBackupCodes ? (
-                                        <HideIcon />
+                                        <HideIcon className="w-4 h-4" />
                                     ) : (
-                                        <ViewIcon />
+                                        <ViewIcon className="w-4 h-4" />
                                     )
                                 }
                                 onClick={() =>
@@ -437,7 +421,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
         <Box className={`${compactView ? 'p-1' : 'p-8'}`}>
             {!compactView && (
                 <Box className="flex items-center gap-2 mb-8">
-                    <ShieldIcon color="primary" className="text-[32px]" />
+                    <ShieldIcon className="w-8 h-8 text-blue-600" />
                     <Box>
                         <Typography variant="h4" component="h1">
                             Multi-Factor Authentication
@@ -450,7 +434,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
             )}
 
             {mfaRequired && enabledMethods.length === 0 && (
-                <Alert severity="error" sx={{ mb: 3 }}>
+                <Alert variant="error" className="mb-3">
                     <Typography variant="h6" gutterBottom>
                         MFA Required
                     </Typography>
@@ -463,16 +447,14 @@ export const MFASetup: React.FC<MFASetupProps> = ({
 
             {/* Enabled Methods */}
             {enabledMethods.length > 0 && (
-                <Card sx={{ mb: 3 }}>
+                <Card className="mb-3">
                     <CardContent>
                         <Typography
                             variant="h6"
                             gutterBottom
-                            color="success.main"
+                            className="text-green-600"
                         >
-                            <CheckIcon
-                                sx={{ mr: 1, verticalAlign: 'middle' }}
-                            />
+                            <CheckIcon className="mr-1 align-middle w-5 h-5 inline" />
                             Enabled MFA Methods ({enabledMethods.length})
                         </Typography>
 
@@ -484,18 +466,14 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={1}
-                                            >
+                                            <Box className="flex items-center gap-1">
                                                 <Typography variant="body1">
                                                     {method.name}
                                                 </Typography>
                                                 {method.isDefault && (
                                                     <Chip
                                                         label="Default"
-                                                        color="primary"
+                                                        className="bg-blue-500 text-white"
                                                         size="small"
                                                     />
                                                 )}
@@ -509,7 +487,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                 {method.setupAt && (
                                                     <Typography
                                                         variant="caption"
-                                                        color="text.secondary"
+                                                        className="text-gray-500"
                                                     >
                                                         Setup:{' '}
                                                         {new Date(
@@ -529,7 +507,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                             </Box>
                                         }
                                     />
-                                    <Box display="flex" gap={1}>
+                                    <Box className="flex gap-1">
                                         {!method.isDefault && (
                                             <Button
                                                 size="small"
@@ -544,7 +522,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                         <Button
                                             size="small"
                                             variant="outlined"
-                                            color="error"
+                                            className="border-red-500 text-red-500"
                                             onClick={() =>
                                                 handleDisableMethod(method.id)
                                             }
@@ -585,7 +563,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                         onClick={() =>
                                             handleSetupMethod(method)
                                         }
-                                        sx={{ minHeight: 44 }}
+                                        className="min-h-11"
                                     >
                                         Enable
                                     </Button>
@@ -605,7 +583,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                 fullScreen={isMobile}
             >
                 <DialogTitle>
-                    <Box display="flex" alignItems="center" gap={2}>
+                    <Box className="flex items-center gap-2">
                         {selectedMethod && getMethodIcon(selectedMethod.type)}
                         Setup {selectedMethod?.name}
                     </Box>
@@ -618,7 +596,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                     <StepLabel>{step.label}</StepLabel>
                                     <StepContent>
                                         {step.content}
-                                        <Box sx={{ mb: 2, mt: 2 }}>
+                                        <Box className="mb-2 mt-2">
                                             <Button
                                                 variant="contained"
                                                 onClick={() => {
@@ -626,7 +604,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                         index ===
                                                         (renderSetupSteps()
                                                             ?.length ?? 0) -
-                                                            1
+                                                        1
                                                     ) {
                                                         if (
                                                             selectedMethod.type ===
@@ -645,18 +623,18 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                 }}
                                                 disabled={
                                                     index ===
-                                                        (renderSetupSteps()
-                                                            ?.length ?? 0) -
-                                                            1 &&
+                                                    (renderSetupSteps()
+                                                        ?.length ?? 0) -
+                                                    1 &&
                                                     selectedMethod.type !==
-                                                        'backup_codes' &&
+                                                    'backup_codes' &&
                                                     verificationCode.length < 6
                                                 }
-                                                sx={{ mr: 1, minHeight: 44 }}
+                                                className="mr-1 min-h-11"
                                             >
                                                 {index ===
-                                                (renderSetupSteps()?.length ??
-                                                    0) -
+                                                    (renderSetupSteps()?.length ??
+                                                        0) -
                                                     1
                                                     ? 'Complete Setup'
                                                     : 'Next'}
@@ -668,7 +646,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({
                                                             activeStep - 1
                                                         )
                                                     }
-                                                    sx={{ minHeight: 44 }}
+                                                    className="min-h-11"
                                                 >
                                                     Back
                                                 </Button>

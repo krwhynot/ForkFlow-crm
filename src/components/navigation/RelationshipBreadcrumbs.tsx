@@ -1,27 +1,26 @@
-import React from 'react';
-import { Typography, Box, Chip } from '@/components/ui-kit';
-import { Breadcrumbs, Link } from '@mui/material';
+import { Box, Chip } from '@/components/ui-kit';
 import {
-    Business as OrganizationIcon,
-    Person as ContactIcon,
-    Inventory as ProductIcon,
-    TrendingUp as OpportunityIcon,
-    EventNote as InteractionIcon,
-    NavigateNext as NavigateNextIcon,
-} from '@mui/icons-material';
+    UserIcon as ContactIcon,
+    CalendarDaysIcon as InteractionIcon,
+    ChevronRightIcon as NavigateNextIcon,
+    ArrowTrendingUpIcon as OpportunityIcon,
+    BuildingOfficeIcon as OrganizationIcon,
+    CubeIcon as ProductIcon,
+} from '@heroicons/react/24/outline';
+import React from 'react';
 import { Link as RouterLink, useRecordContext } from 'react-admin';
-import { Organization, Contact, Product, Deal, Interaction } from '../../types';
+import { Contact, Deal, Interaction, Organization, Product } from '../../types';
 
 interface RelationshipBreadcrumbsProps {
     /**
      * Current entity type being viewed
      */
     currentEntity:
-        | 'organization'
-        | 'contact'
-        | 'product'
-        | 'opportunity'
-        | 'interaction';
+    | 'organization'
+    | 'contact'
+    | 'product'
+    | 'opportunity'
+    | 'interaction';
 
     /**
      * Show relationship context - displays parent/related entities
@@ -48,15 +47,15 @@ export const RelationshipBreadcrumbs: React.FC<
     const getEntityIcon = (entityType: string) => {
         switch (entityType) {
             case 'organization':
-                return <OrganizationIcon className="text-base mr-1" />;
+                return <OrganizationIcon className="h-4 w-4 mr-1" />;
             case 'contact':
-                return <ContactIcon className="text-base mr-1" />;
+                return <ContactIcon className="h-4 w-4 mr-1" />;
             case 'product':
-                return <ProductIcon className="text-base mr-1" />;
+                return <ProductIcon className="h-4 w-4 mr-1" />;
             case 'opportunity':
-                return <OpportunityIcon className="text-base mr-1" />;
+                return <OpportunityIcon className="h-4 w-4 mr-1" />;
             case 'interaction':
-                return <InteractionIcon className="text-base mr-1" />;
+                return <InteractionIcon className="h-4 w-4 mr-1" />;
             default:
                 return null;
         }
@@ -114,7 +113,7 @@ export const RelationshipBreadcrumbs: React.FC<
                 breadcrumbs.push({
                     entity: 'organization',
                     label: org.name,
-                    link: `/companies/${org.id}/show`,
+                    link: `/organizations/${org.id}/show`,
                 });
             }
         }
@@ -124,7 +123,7 @@ export const RelationshipBreadcrumbs: React.FC<
             breadcrumbs.push({
                 entity: 'organization',
                 label: org.name,
-                link: `/companies/${org.id}/show`,
+                link: `/organizations/${org.id}/show`,
             });
 
             if (relationships.contact) {
@@ -152,7 +151,7 @@ export const RelationshipBreadcrumbs: React.FC<
                 breadcrumbs.push({
                     entity: 'organization',
                     label: org.name,
-                    link: `/companies/${org.id}/show`,
+                    link: `/organizations/${org.id}/show`,
                 });
             }
 
@@ -221,50 +220,43 @@ export const RelationshipBreadcrumbs: React.FC<
 
     return (
         <Box className="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
-            <Breadcrumbs
-                separator={
-                    <NavigateNextIcon className="text-sm text-gray-400" />
-                }
-                aria-label="relationship breadcrumbs"
-                className="[&_.MuiBreadcrumbs-separator]:text-gray-400"
-            >
+            <nav aria-label="relationship breadcrumbs" className="flex items-center space-x-2">
                 {breadcrumbPath.map((crumb, index) => {
                     const isLast = index === breadcrumbPath.length - 1;
                     const colorClass = getEntityColorClass(crumb.entity);
                     const bgClass = getEntityBgClass(crumb.entity);
 
-                    if (isLast || !crumb.link) {
-                        return (
-                            <Chip
-                                key={`${crumb.entity}-${index}`}
-                                label={crumb.label}
-                                size="small"
-                                className={`max-w-50 ${
-                                    isLast
+                    return (
+                        <React.Fragment key={`${crumb.entity}-${index}`}>
+                            {index > 0 && (
+                                <NavigateNextIcon className="h-4 w-4 text-gray-400" />
+                            )}
+
+                            {isLast || !crumb.link ? (
+                                <Chip
+                                    label={crumb.label}
+                                    size="small"
+                                    className={`max-w-50 truncate ${isLast
                                         ? `${bgClass} text-white`
                                         : `bg-transparent ${colorClass}`
-                                } [&_.MuiChip-label]:overflow-hidden [&_.MuiChip-label]:text-ellipsis`}
-                            />
-                        );
-                    }
-
-                    return (
-                        <Link
-                            key={`${crumb.entity}-${index}`}
-                            component={RouterLink}
-                            to={crumb.link}
-                            underline="none"
-                            className="no-underline"
-                        >
-                            <Chip
-                                label={crumb.label}
-                                size="small"
-                                className={`max-w-50 cursor-pointer ${colorClass} bg-transparent hover:bg-gray-100 [&_.MuiChip-label]:overflow-hidden [&_.MuiChip-label]:text-ellipsis`}
-                            />
-                        </Link>
+                                        }`}
+                                />
+                            ) : (
+                                <RouterLink
+                                    to={crumb.link}
+                                    className="no-underline"
+                                >
+                                    <Chip
+                                        label={crumb.label}
+                                        size="small"
+                                        className={`max-w-50 cursor-pointer ${colorClass} bg-transparent hover:bg-gray-100 truncate`}
+                                    />
+                                </RouterLink>
+                            )}
+                        </React.Fragment>
                     );
                 })}
-            </Breadcrumbs>
+            </nav>
         </Box>
     );
 };

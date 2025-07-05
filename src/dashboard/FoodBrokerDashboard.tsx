@@ -11,7 +11,6 @@ import { ReminderDashboard } from '../reminders/ReminderDashboard';
 import { Customer, Order, Reminder, Visit } from '../types';
 import { BrokerKPICards } from './BrokerKPICards';
 import { DashboardActivityLog } from './DashboardActivityLog';
-import { TerritoryOverview } from './TerritoryOverview';
 import { VisitTrends } from './VisitTrends';
 
 const RecentActivity = () => {
@@ -150,7 +149,7 @@ export const FoodBrokerDashboard = () => {
                 Food Broker Dashboard
             </Typography>
             <Typography variant="subtitle1" className="text-gray-600 mb-6">
-                Welcome back! Here's what's happening in your territory.
+                                        Welcome back! Here's what's happening with your customers.
             </Typography>
 
             {/* Advanced KPI Cards */}
@@ -172,10 +171,6 @@ export const FoodBrokerDashboard = () => {
                 </Grid>
                 <Grid item xs={12} xl={4}>
                     <Stack spacing={3}>
-                        <TerritoryOverview
-                            customers={customers || []}
-                            visits={visits || []}
-                        />
                         <RecentActivity />
                         <DashboardActivityLog />
                     </Stack>

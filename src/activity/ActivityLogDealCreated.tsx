@@ -24,7 +24,7 @@ export function ActivityLogDealCreated({
         <div className="flex items-center space-x-2">
             <ReferenceField
                 source="entityId"
-                reference="companies"
+                reference="organizations"
                 record={activity}
                 link={false}
             >
@@ -51,7 +51,7 @@ export function ActivityLogDealCreated({
                         to company{' '}
                         <ReferenceField
                             source="entityId"
-                            reference="companies"
+                            reference="organizations"
                             record={activity}
                             link="show"
                         />{' '}

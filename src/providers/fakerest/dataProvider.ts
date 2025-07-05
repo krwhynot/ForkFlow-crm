@@ -10,36 +10,29 @@ import {
 import {
     BrokerDashboardStats,
     BrokerFormData,
-    Company,
     Contact,
     Deal,
-    GPSCoordinates,
     Interaction,
     Organization,
     Sale,
-    SalesFormData,
-    Setting,
     SignUpData,
-    Task,
-    Visit,
+    Task
 } from '../../types';
 import { getActivityLog } from '../commons/activity';
 import { getCompanyAvatar } from '../commons/getCompanyAvatar';
 import { getContactAvatar } from '../commons/getContactAvatar';
+import { fileUploadService, gpsService, offlineService } from '../mobile';
+import { performanceMonitor } from '../monitoring/performanceMonitor';
+import { createReportingProvider } from '../reporting/reportingProvider';
 import {
-    CrmDataProvider,
-    OrganizationSearchFilters,
-    OrganizationStats,
+    OrganizationStats
 } from '../types';
 import { authProvider, USER_STORAGE_KEY } from './authProvider';
 import generateData from './dataGenerator';
-import { withSupabaseFilterAdapter } from './internal/supabaseAdapter';
-import { organizationFilterEngine } from './internal/organizationFilters';
-import { organizationValidator } from './organizationValidator';
 import { interactionValidator } from './interactionValidator';
-import { offlineService, gpsService, fileUploadService } from '../mobile';
-import { performanceMonitor } from '../monitoring/performanceMonitor';
-import { createReportingProvider } from '../reporting/reportingProvider';
+import { organizationFilterEngine } from './internal/organizationFilters';
+import { withSupabaseFilterAdapter } from './internal/supabaseAdapter';
+import { organizationValidator } from './organizationValidator';
 
 const baseDataProvider = fakeRestDataProvider(generateData(), true, 300);
 
@@ -119,17 +112,17 @@ async function processContactAvatar(
     return { ...params, data: newData };
 }
 
-async function fetchAndUpdateCompanyData(
+async function fetchAndUpdateOrganizationData(
     params: UpdateParams<Contact>,
     dataProvider: DataProvider
 ): Promise<UpdateParams<Contact>>;
 
-async function fetchAndUpdateCompanyData(
+async function fetchAndUpdateOrganizationData(
     params: CreateParams<Contact>,
     dataProvider: DataProvider
 ): Promise<CreateParams<Contact>>;
 
-async function fetchAndUpdateCompanyData(
+async function fetchAndUpdateOrganizationData(
     params: CreateParams<Contact> | UpdateParams<Contact>,
     dataProvider: DataProvider
 ): Promise<CreateParams<Contact> | UpdateParams<Contact>> {
@@ -140,15 +133,15 @@ async function fetchAndUpdateCompanyData(
         return params;
     }
 
-    const { data: company } = await dataProvider.getOne('companies', {
+    const { data: organization } = await dataProvider.getOne('organizations', {
         id: newData.organizationId,
     });
 
-    if (!company) {
+    if (!organization) {
         return params;
     }
 
-    newData.organization = { ...company };
+    newData.organization = { ...organization };
     return { ...params, data: newData };
 }
 
@@ -327,33 +320,33 @@ const dataProviderWithCustomMethod = {
             searchQuery: params.filter?.q,
             filters: params.filter
                 ? {
-                      priorityId: params.filter.priorityId,
-                      segmentId: params.filter.segmentId,
-                      distributorId: params.filter.distributorId,
-                      accountManager: params.filter.accountManager,
-                      city: params.filter.city,
-                      state: params.filter.state,
-                      zipCode: params.filter.zipCode,
-                      hasContacts: params.filter.hasContacts,
-                      hasOpportunities: params.filter.hasOpportunities,
-                      lastContactDateBefore:
-                          params.filter.lastContactDateBefore,
-                      lastContactDateAfter: params.filter.lastContactDateAfter,
-                  }
+                    priorityId: params.filter.priorityId,
+                    segmentId: params.filter.segmentId,
+                    distributorId: params.filter.distributorId,
+                    accountManager: params.filter.accountManager,
+                    city: params.filter.city,
+                    state: params.filter.state,
+                    zipCode: params.filter.zipCode,
+                    hasContacts: params.filter.hasContacts,
+                    hasOpportunities: params.filter.hasOpportunities,
+                    lastContactDateBefore:
+                        params.filter.lastContactDateBefore,
+                    lastContactDateAfter: params.filter.lastContactDateAfter,
+                }
                 : undefined,
             sort: params.sort
                 ? {
-                      field: params.sort.field,
-                      order: params.sort.order,
-                  }
+                    field: params.sort.field,
+                    order: params.sort.order,
+                }
                 : undefined,
             pagination: params.pagination
                 ? {
-                      offset:
-                          (params.pagination.page - 1) *
-                          params.pagination.perPage,
-                      limit: params.pagination.perPage,
-                  }
+                    offset:
+                        (params.pagination.page - 1) *
+                        params.pagination.perPage,
+                    limit: params.pagination.perPage,
+                }
                 : undefined,
         };
 
@@ -549,8 +542,8 @@ const dataProviderWithCustomMethod = {
         const lastContactDate =
             allDates.length > 0
                 ? allDates.reduce((latest, current) =>
-                      current > latest ? current : latest
-                  )
+                    current > latest ? current : latest
+                )
                 : undefined;
 
         // Calculate conversion rate (won deals / total deals)
@@ -642,20 +635,20 @@ const dataProviderWithCustomMethod = {
         ] = await Promise.all([
             result.data.organizationId
                 ? baseDataProvider
-                      .getOne('organizations', {
-                          id: result.data.organizationId,
-                      })
-                      .catch(() => null)
+                    .getOne('organizations', {
+                        id: result.data.organizationId,
+                    })
+                    .catch(() => null)
                 : null,
             result.data.contactId
                 ? baseDataProvider
-                      .getOne('contacts', { id: result.data.contactId })
-                      .catch(() => null)
+                    .getOne('contacts', { id: result.data.contactId })
+                    .catch(() => null)
                 : null,
             result.data.opportunityId
                 ? baseDataProvider
-                      .getOne('deals', { id: result.data.opportunityId })
-                      .catch(() => null)
+                    .getOne('deals', { id: result.data.opportunityId })
+                    .catch(() => null)
                 : null,
             baseDataProvider
                 .getList('settings', {
@@ -1601,20 +1594,20 @@ const dataProviderWithCustomMethod = {
     },
 };
 
-async function updateCompany(
-    companyId: Identifier,
-    updateFn: (company: Company) => Partial<Company>
+async function updateOrganization(
+    organizationId: Identifier,
+    updateFn: (organization: Organization) => Partial<Organization>
 ) {
-    const { data: company } = await dataProvider.getOne<Company>('companies', {
-        id: companyId,
+    const { data: organization } = await dataProvider.getOne<Organization>('organizations', {
+        id: organizationId,
     });
 
-    return await dataProvider.update('companies', {
-        id: companyId,
+    return await dataProvider.update('organizations', {
+        id: organizationId,
         data: {
-            ...updateFn(company),
+            ...updateFn(organization),
         },
-        previousData: company,
+        previousData: organization,
     });
 }
 
@@ -1623,7 +1616,6 @@ const requiredResources = [
     'organizations',
     'contacts',
     'settings',
-    'companies',
     'tasks',
     'deals',
     'dealNotes',
@@ -1675,9 +1667,9 @@ export const dataProvider = withLifecycleCallbacks(
 
                 const newSaleId = params.meta.identity.id as Identifier;
 
-                const [companies, contacts, contactNotes, deals] =
+                const [organizations, contacts, contactNotes, deals] =
                     await Promise.all([
-                        dataProvider.getList('companies', {
+                        dataProvider.getList('organizations', {
                             filter: { salesId: params.id },
                             pagination: {
                                 page: 1,
@@ -1712,8 +1704,8 @@ export const dataProvider = withLifecycleCallbacks(
                     ]);
 
                 await Promise.all([
-                    dataProvider.updateMany('companies', {
-                        ids: companies.data.map(company => company.id),
+                    dataProvider.updateMany('organizations', {
+                        ids: organizations.data.map(organization => organization.id),
                         data: {
                             salesId: newSaleId,
                         },
@@ -1745,14 +1737,14 @@ export const dataProvider = withLifecycleCallbacks(
             resource: 'contacts',
             beforeCreate: async (params, dataProvider) => {
                 const newParams = await processContactAvatar(params);
-                return fetchAndUpdateCompanyData(newParams, dataProvider);
+                return fetchAndUpdateOrganizationData(newParams, dataProvider);
             },
             afterCreate: async result => {
                 if (result.data.organizationId != null) {
-                    await updateCompany(
+                    await updateOrganization(
                         result.data.organizationId,
-                        company => ({
-                            nb_contacts: (company.nb_contacts ?? 0) + 1,
+                        organization => ({
+                            nb_contacts: (organization.nb_contacts ?? 0) + 1,
                         })
                     );
                 }
@@ -1761,14 +1753,14 @@ export const dataProvider = withLifecycleCallbacks(
             },
             beforeUpdate: async params => {
                 const newParams = await processContactAvatar(params);
-                return fetchAndUpdateCompanyData(newParams, dataProvider);
+                return fetchAndUpdateOrganizationData(newParams, dataProvider);
             },
             afterDelete: async result => {
                 if (result.data.organizationId != null) {
-                    await updateCompany(
+                    await updateOrganization(
                         result.data.organizationId,
-                        company => ({
-                            nb_contacts: (company.nb_contacts ?? 1) - 1,
+                        organization => ({
+                            nb_contacts: (organization.nb_contacts ?? 1) - 1,
                         })
                     );
                 }
@@ -1843,42 +1835,7 @@ export const dataProvider = withLifecycleCallbacks(
                 return result;
             },
         } satisfies ResourceCallbacks<Task>,
-        {
-            resource: 'companies',
-            beforeCreate: async params => {
-                const createParams = await processCompanyLogo(params);
 
-                return {
-                    ...createParams,
-                    data: {
-                        ...createParams.data,
-                        created_at: new Date().toISOString(),
-                    },
-                };
-            },
-            beforeUpdate: async params => {
-                return await processCompanyLogo(params);
-            },
-            afterUpdate: async (result, dataProvider) => {
-                // get all contacts of the company and for each contact, update the company_name
-                const { id, name } = result.data;
-                const { data: contacts } = await dataProvider.getList(
-                    'contacts',
-                    {
-                        filter: { organizationId: id },
-                        pagination: { page: 1, perPage: 1000 },
-                        sort: { field: 'id', order: 'ASC' },
-                    }
-                );
-
-                const contactIds = contacts.map(contact => contact.id);
-                await dataProvider.updateMany('contacts', {
-                    ids: contactIds,
-                    data: { organization: { name } },
-                });
-                return result;
-            },
-        } satisfies ResourceCallbacks<Company>,
         {
             resource: 'deals',
             beforeCreate: async params => {
@@ -1892,8 +1849,8 @@ export const dataProvider = withLifecycleCallbacks(
                 };
             },
             afterCreate: async result => {
-                await updateCompany(result.data.organizationId, company => ({
-                    nb_deals: (company.nb_deals ?? 0) + 1,
+                await updateOrganization(result.data.organizationId, organization => ({
+                    nb_deals: (organization.nb_deals ?? 0) + 1,
                 }));
 
                 return result;
@@ -1908,8 +1865,8 @@ export const dataProvider = withLifecycleCallbacks(
                 };
             },
             afterDelete: async result => {
-                await updateCompany(result.data.organizationId, company => ({
-                    nb_deals: (company.nb_deals ?? 1) - 1,
+                await updateOrganization(result.data.organizationId, organization => ({
+                    nb_deals: (organization.nb_deals ?? 1) - 1,
                 }));
 
                 return result;
@@ -2158,7 +2115,7 @@ export const dataProvider = withLifecycleCallbacks(
                             !currentLastContact ||
                             (thisInteractionDate &&
                                 new Date(thisInteractionDate) >
-                                    new Date(currentLastContact))
+                                new Date(currentLastContact))
                         ) {
                             await dataProvider.update('organizations', {
                                 id: result.data.organizationId,

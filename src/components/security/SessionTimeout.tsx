@@ -17,9 +17,9 @@ import {
 } from '@mui/material';
 import { useLogout, useNotify } from 'react-admin';
 import {
-    Timer as TimerIcon,
-    Warning as WarningIcon,
-} from '@mui/icons-material';
+    ClockIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 
 interface SessionTimeoutProps {
     timeoutMinutes?: number;
@@ -139,7 +139,7 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
         >
             <DialogTitle>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <WarningIcon color="warning" />
+                    <ExclamationTriangleIcon className="w-6 h-6 text-yellow-600" />
                     <Typography variant="h6">
                         Session Timeout Warning
                     </Typography>
@@ -183,7 +183,7 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
                         gap: 1,
                     }}
                 >
-                    <TimerIcon fontSize="small" color="action" />
+                    <ClockIcon className="w-4 h-4 text-gray-500" />
                     <Typography variant="caption" color="text.secondary">
                         Automatic logout in {formatTime(remainingTime)}
                     </Typography>

@@ -1,57 +1,54 @@
-import React from 'react';
 import {
+    Avatar,
+    Badge,
+    Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Box,
+    Chip,
+    CircularProgress,
+    Divider,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Chip,
     Stack,
-    Button,
-    Divider,
-    CircularProgress,
-    Avatar,
-    Badge,
+    Typography,
 } from '@/components/ui-kit';
-import { ListItemButton } from '@mui/material';
-import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
-    Business as OrganizationIcon,
-    Person as ContactIcon,
-    Inventory as ProductIcon,
-    TrendingUp as OpportunityIcon,
-    EventNote as InteractionIcon,
-    Add as AddIcon,
-    ArrowForward as ArrowForwardIcon,
-    AttachMoney as MoneyIcon,
-    Schedule as ScheduleIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-} from '@mui/icons-material';
+    PlusIcon as AddIcon,
+    ArrowRightIcon as ArrowForwardIcon,
+    UserIcon as ContactIcon,
+    EnvelopeIcon as EmailIcon,
+    CalendarDaysIcon as InteractionIcon,
+    CurrencyDollarIcon as MoneyIcon,
+    ArrowTrendingUpIcon as OpportunityIcon,
+    BuildingOfficeIcon as OrganizationIcon,
+    PhoneIcon,
+    CubeIcon as ProductIcon,
+    ClockIcon as ScheduleIcon,
+} from '@heroicons/react/24/outline';
+import React from 'react';
 import { Link, useGetList, useRecordContext } from 'react-admin';
-import { formatCurrency, formatDate } from '../../utils/formatters';
 import {
-    Organization,
     Contact,
-    Product,
     Deal,
     Interaction,
-    Setting,
+    Organization,
+    Product
 } from '../../types';
+import { formatCurrency, formatDate } from '../../utils/formatters';
 
 interface RelatedEntitiesSectionProps {
     /**
      * The entity type that this section is being displayed for
      */
     entityType:
-        | 'organization'
-        | 'contact'
-        | 'product'
-        | 'opportunity'
-        | 'interaction';
+    | 'organization'
+    | 'contact'
+    | 'product'
+    | 'opportunity'
+    | 'interaction';
 
     /**
      * Title of the section
@@ -62,11 +59,11 @@ interface RelatedEntitiesSectionProps {
      * What type of related entities to display
      */
     relatedType:
-        | 'contacts'
-        | 'opportunities'
-        | 'interactions'
-        | 'products'
-        | 'organizations';
+    | 'contacts'
+    | 'opportunities'
+    | 'interactions'
+    | 'products'
+    | 'organizations';
 
     /**
      * Filter to apply when fetching related entities
@@ -104,7 +101,6 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
     viewAllLink,
     emptyMessage,
 }) => {
-    const theme = useTheme();
     const record = useRecordContext();
 
     // Fetch related entities
@@ -155,17 +151,17 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
     const getIcon = () => {
         switch (relatedType) {
             case 'contacts':
-                return <ContactIcon />;
+                return <ContactIcon className="h-5 w-5" />;
             case 'opportunities':
-                return <OpportunityIcon />;
+                return <OpportunityIcon className="h-5 w-5" />;
             case 'interactions':
-                return <InteractionIcon />;
+                return <InteractionIcon className="h-5 w-5" />;
             case 'products':
-                return <ProductIcon />;
+                return <ProductIcon className="h-5 w-5" />;
             case 'organizations':
-                return <OrganizationIcon />;
+                return <OrganizationIcon className="h-5 w-5" />;
             default:
-                return <ArrowForwardIcon />;
+                return <ArrowForwardIcon className="h-5 w-5" />;
         }
     };
 
@@ -207,135 +203,93 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
 
     const renderContactItem = (contact: Contact, isLast: boolean) => (
         <React.Fragment key={contact.id}>
-            <ListItemButton
-                component={Link}
-                to={`/contacts/${contact.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
-            >
-                <ListItemIcon>
-                    <Avatar
-                        sx={{
-                            width: 40,
-                            height: 40,
-                            bgcolor: 'secondary.main',
-                        }}
-                    >
-                        {contact.firstName?.charAt(0)}
-                        {contact.lastName?.charAt(0)}
-                    </Avatar>
-                </ListItemIcon>
-                <ListItemText
-                    primary={`${contact.firstName} ${contact.lastName}`}
-                    secondary={
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            sx={{ mt: 0.5 }}
-                        >
-                            {contact.isPrimary && (
-                                <Chip
-                                    label="Primary"
-                                    size="small"
-                                    color="primary"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
-                                />
-                            )}
-                            {contact.phone && (
-                                <Chip
-                                    icon={<PhoneIcon sx={{ fontSize: 12 }} />}
-                                    label="Phone"
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
-                                />
-                            )}
-                            {contact.email && (
-                                <Chip
-                                    icon={<EmailIcon sx={{ fontSize: 12 }} />}
-                                    label="Email"
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
-                                />
-                            )}
-                        </Stack>
-                    }
-                />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
-            </ListItemButton>
-            {!isLast && <Divider variant="inset" component="li" />}
+            <ListItem className="min-h-16 px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                <Link to={`/contacts/${contact.id}/show`} className="flex items-center w-full no-underline">
+                    <ListItemIcon>
+                        <Avatar className="w-10 h-10 bg-gray-600">
+                            {contact.firstName?.charAt(0)}
+                            {contact.lastName?.charAt(0)}
+                        </Avatar>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={`${contact.firstName} ${contact.lastName}`}
+                        secondary={
+                            <Stack className="flex-row space-x-1 items-center mt-1">
+                                {contact.isPrimary && (
+                                    <Chip
+                                        label="Primary"
+                                        size="small"
+                                        className="bg-blue-100 text-blue-800 h-5 text-xs"
+                                    />
+                                )}
+                                {contact.phone && (
+                                    <Chip
+                                        icon={<PhoneIcon className="h-3 w-3" />}
+                                        label="Phone"
+                                        size="small"
+                                        className="border border-gray-300 bg-transparent h-5 text-xs"
+                                    />
+                                )}
+                                {contact.email && (
+                                    <Chip
+                                        icon={<EmailIcon className="h-3 w-3" />}
+                                        label="Email"
+                                        size="small"
+                                        className="border border-gray-300 bg-transparent h-5 text-xs"
+                                    />
+                                )}
+                            </Stack>
+                        }
+                    />
+                    <ArrowForwardIcon className="h-5 w-5 text-gray-400" />
+                </Link>
+            </ListItem>
+            {!isLast && <Divider className="ml-14" />}
         </React.Fragment>
     );
 
     const renderOpportunityItem = (opportunity: Deal, isLast: boolean) => (
         <React.Fragment key={opportunity.id}>
-            <ListItemButton
-                component={Link}
-                to={`/opportunities/${opportunity.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
-            >
-                <ListItemIcon>
-                    <Badge
-                        badgeContent={`${opportunity.probability}%`}
-                        color={
-                            opportunity.probability >= 75
-                                ? 'success'
-                                : opportunity.probability >= 50
-                                  ? 'warning'
-                                  : 'default'
+            <ListItem className="min-h-16 px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                <Link to={`/opportunities/${opportunity.id}/show`} className="flex items-center w-full no-underline">
+                    <ListItemIcon>
+                        <div className="relative">
+                            <OpportunityIcon className="h-8 w-8 text-yellow-600" />
+                            <Badge
+                                content={`${opportunity.probability}%`}
+                                className={`absolute -top-1 -right-1 text-xs h-4 min-w-6 ${opportunity.probability >= 75
+                                    ? 'bg-green-500 text-white'
+                                    : opportunity.probability >= 50
+                                        ? 'bg-yellow-500 text-white'
+                                        : 'bg-gray-500 text-white'
+                                    }`}
+                            />
+                        </div>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={
+                            opportunity.name || `Opportunity #${opportunity.id}`
                         }
-                        sx={{
-                            '& .MuiBadge-badge': {
-                                fontSize: '0.6rem',
-                                height: 16,
-                                minWidth: 24,
-                            },
-                        }}
-                    >
-                        <OpportunityIcon
-                            sx={{ fontSize: 32, color: 'warning.main' }}
-                        />
-                    </Badge>
-                </ListItemIcon>
-                <ListItemText
-                    primary={
-                        opportunity.name || `Opportunity #${opportunity.id}`
-                    }
-                    secondary={
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            sx={{ mt: 0.5 }}
-                        >
-                            <Chip
-                                icon={<MoneyIcon sx={{ fontSize: 12 }} />}
-                                label={formatCurrency(opportunity.amount)}
-                                size="small"
-                                color="success"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
-                            />
-                            <Chip
-                                label={opportunity.stage?.replace('_', ' ')}
-                                size="small"
-                                variant="outlined"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
-                            />
-                        </Stack>
-                    }
-                />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
-            </ListItemButton>
-            {!isLast && <Divider variant="inset" component="li" />}
+                        secondary={
+                            <Stack className="flex-row space-x-1 items-center mt-1">
+                                <Chip
+                                    icon={<MoneyIcon className="h-3 w-3" />}
+                                    label={formatCurrency(opportunity.amount)}
+                                    size="small"
+                                    className="bg-green-100 text-green-800 h-5 text-xs"
+                                />
+                                <Chip
+                                    label={opportunity.stage?.replace('_', ' ')}
+                                    size="small"
+                                    className="border border-gray-300 bg-transparent h-5 text-xs"
+                                />
+                            </Stack>
+                        }
+                    />
+                    <ArrowForwardIcon className="h-5 w-5 text-gray-400" />
+                </Link>
+            </ListItem>
+            {!isLast && <Divider className="ml-14" />}
         </React.Fragment>
     );
 
@@ -344,109 +298,80 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
         isLast: boolean
     ) => (
         <React.Fragment key={interaction.id}>
-            <ListItemButton
-                component={Link}
-                to={`/interactions/${interaction.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
-            >
-                <ListItemIcon>
-                    <InteractionIcon
-                        sx={{
-                            fontSize: 32,
-                            color: interaction.isCompleted
-                                ? 'success.main'
-                                : 'info.main',
-                        }}
-                    />
-                </ListItemIcon>
-                <ListItemText
-                    primary={interaction.subject}
-                    secondary={
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            sx={{ mt: 0.5 }}
-                        >
-                            <Chip
-                                icon={<ScheduleIcon sx={{ fontSize: 12 }} />}
-                                label={formatDate(
-                                    interaction.scheduledDate ||
+            <ListItem className="min-h-16 px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                <Link to={`/interactions/${interaction.id}/show`} className="flex items-center w-full no-underline">
+                    <ListItemIcon>
+                        <InteractionIcon
+                            className={`h-8 w-8 ${interaction.isCompleted
+                                ? 'text-green-600'
+                                : 'text-blue-600'
+                                }`}
+                        />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={interaction.subject}
+                        secondary={
+                            <Stack className="flex-row space-x-1 items-center mt-1">
+                                <Chip
+                                    icon={<ScheduleIcon className="h-3 w-3" />}
+                                    label={formatDate(
+                                        interaction.scheduledDate ||
                                         interaction.createdAt
-                                )}
-                                size="small"
-                                variant="outlined"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
-                            />
-                            <Chip
-                                label={
-                                    interaction.isCompleted
-                                        ? 'Completed'
-                                        : 'Scheduled'
-                                }
-                                size="small"
-                                color={
-                                    interaction.isCompleted
-                                        ? 'success'
-                                        : 'default'
-                                }
-                                sx={{ height: 20, fontSize: '0.7rem' }}
-                            />
-                        </Stack>
-                    }
-                />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
-            </ListItemButton>
-            {!isLast && <Divider variant="inset" component="li" />}
+                                    )}
+                                    size="small"
+                                    className="border border-gray-300 bg-transparent h-5 text-xs"
+                                />
+                                <Chip
+                                    label={
+                                        interaction.isCompleted
+                                            ? 'Completed'
+                                            : 'Scheduled'
+                                    }
+                                    size="small"
+                                    className={`h-5 text-xs ${interaction.isCompleted
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-100 text-gray-800'
+                                        }`}
+                                />
+                            </Stack>
+                        }
+                    />
+                    <ArrowForwardIcon className="h-5 w-5 text-gray-400" />
+                </Link>
+            </ListItem>
+            {!isLast && <Divider className="ml-14" />}
         </React.Fragment>
     );
 
     const renderProductItem = (product: Product, isLast: boolean) => (
         <React.Fragment key={product.id}>
-            <ListItemButton
-                component={Link}
-                to={`/products/${product.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
-            >
-                <ListItemIcon>
-                    <ProductIcon sx={{ fontSize: 32, color: 'success.main' }} />
-                </ListItemIcon>
-                <ListItemText
-                    primary={product.name}
-                    secondary={
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            sx={{ mt: 0.5 }}
-                        >
-                            <Chip
-                                label={product.category}
-                                size="small"
-                                variant="outlined"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
-                            />
-                            <Chip
-                                icon={<MoneyIcon sx={{ fontSize: 12 }} />}
-                                label={formatCurrency(product.price)}
-                                size="small"
-                                color="success"
-                                sx={{ height: 20, fontSize: '0.7rem' }}
-                            />
-                        </Stack>
-                    }
-                />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
-            </ListItemButton>
-            {!isLast && <Divider variant="inset" component="li" />}
+            <ListItem className="min-h-16 px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                <Link to={`/products/${product.id}/show`} className="flex items-center w-full no-underline">
+                    <ListItemIcon>
+                        <ProductIcon className="h-8 w-8 text-green-600" />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={product.name}
+                        secondary={
+                            <Stack className="flex-row space-x-1 items-center mt-1">
+                                <Chip
+                                    label={product.category}
+                                    size="small"
+                                    className="border border-gray-300 bg-transparent h-5 text-xs"
+                                />
+                                <Chip
+                                    icon={<MoneyIcon className="h-3 w-3" />}
+                                    label={formatCurrency(product.price)}
+                                    size="small"
+                                    className="bg-green-100 text-green-800 h-5 text-xs"
+                                />
+                            </Stack>
+                        }
+                    />
+                    <ArrowForwardIcon className="h-5 w-5 text-gray-400" />
+                </Link>
+            </ListItem>
+            {!isLast && <Divider className="ml-14" />}
         </React.Fragment>
     );
 
@@ -455,51 +380,36 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
         isLast: boolean
     ) => (
         <React.Fragment key={organization.id}>
-            <ListItemButton
-                component={Link}
-                to={`/companies/${organization.id}/show`}
-                sx={{
-                    minHeight: 64,
-                    px: 2,
-                    py: 1,
-                }}
-            >
-                <ListItemIcon>
-                    <OrganizationIcon
-                        sx={{ fontSize: 32, color: 'primary.main' }}
+            <ListItem className="min-h-16 px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                <Link to={`/organizations/${organization.id}/show`} className="flex items-center w-full no-underline">
+                    <ListItemIcon>
+                        <OrganizationIcon className="h-8 w-8 text-blue-600" />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={organization.name}
+                        secondary={
+                            <Stack className="flex-row space-x-1 items-center mt-1">
+                                {organization.segment && (
+                                    <Chip
+                                        label={organization.segment.label}
+                                        size="small"
+                                        className="border border-gray-300 bg-transparent h-5 text-xs"
+                                    />
+                                )}
+                                {organization.contactCount && (
+                                    <Chip
+                                        label={`${organization.contactCount} contacts`}
+                                        size="small"
+                                        className="border border-gray-300 bg-transparent h-5 text-xs"
+                                    />
+                                )}
+                            </Stack>
+                        }
                     />
-                </ListItemIcon>
-                <ListItemText
-                    primary={organization.name}
-                    secondary={
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            sx={{ mt: 0.5 }}
-                        >
-                            {organization.segment && (
-                                <Chip
-                                    label={organization.segment.label}
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
-                                />
-                            )}
-                            {organization.contactCount && (
-                                <Chip
-                                    label={`${organization.contactCount} contacts`}
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ height: 20, fontSize: '0.7rem' }}
-                                />
-                            )}
-                        </Stack>
-                    }
-                />
-                <ArrowForwardIcon sx={{ color: 'text.secondary' }} />
-            </ListItemButton>
-            {!isLast && <Divider variant="inset" component="li" />}
+                    <ArrowForwardIcon className="h-5 w-5 text-gray-400" />
+                </Link>
+            </ListItem>
+            {!isLast && <Divider className="ml-14" />}
         </React.Fragment>
     );
 
@@ -510,22 +420,10 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
     return (
         <Card>
             <CardContent>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 2,
-                    }}
-                >
+                <Box className="flex justify-between items-center mb-4">
                     <Typography
                         variant="h6"
-                        sx={{
-                            fontWeight: 600,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                        }}
+                        className="font-semibold flex items-center gap-2"
                     >
                         {getIcon()}
                         {title} ({relatedEntities?.length || 0})
@@ -537,8 +435,8 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                             to={createLink}
                             variant="outlined"
                             size="small"
-                            startIcon={<AddIcon />}
-                            sx={{ minHeight: 44, px: 2 }}
+                            startIcon={<AddIcon className="h-4 w-4" />}
+                            className="min-h-11 px-4"
                         >
                             {getCreateButtonText()}
                         </Button>
@@ -546,34 +444,28 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                 </Box>
 
                 {isLoading ? (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            py: 3,
-                        }}
-                    >
-                        <CircularProgress size={24} />
+                    <Box className="flex justify-center py-6">
+                        <CircularProgress className="h-6 w-6" />
                     </Box>
                 ) : error ? (
-                    <Typography color="error" variant="body2" sx={{ py: 2 }}>
+                    <Typography className="text-red-600 py-4" variant="body2">
                         Error loading {relatedType}
                     </Typography>
                 ) : relatedEntities && relatedEntities.length > 0 ? (
                     <>
-                        <List sx={{ py: 0 }}>
+                        <List className="py-0">
                             {relatedEntities.map((entity, index) =>
                                 renderEntityItem(entity, index)
                             )}
                         </List>
 
                         {viewAllLink && relatedEntities.length >= maxItems && (
-                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                            <Box className="mt-4 text-center">
                                 <Button
                                     component={Link}
                                     to={viewAllLink}
                                     variant="text"
-                                    endIcon={<ArrowForwardIcon />}
+                                    endIcon={<ArrowForwardIcon className="h-4 w-4" />}
                                 >
                                     View All {title}
                                 </Button>
@@ -581,12 +473,11 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                         )}
                     </>
                 ) : (
-                    <Box sx={{ textAlign: 'center', py: 3 }}>
+                    <Box className="text-center py-6">
                         {getIcon()}
                         <Typography
                             variant="body2"
-                            color="text.secondary"
-                            sx={{ mt: 1, mb: 2 }}
+                            className="text-gray-600 mt-2 mb-4"
                         >
                             {emptyMessage || defaultEmptyMessage}
                         </Typography>
@@ -595,8 +486,8 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
                                 component={Link}
                                 to={createLink}
                                 variant="contained"
-                                startIcon={<AddIcon />}
-                                sx={{ minHeight: 44 }}
+                                startIcon={<AddIcon className="h-4 w-4" />}
+                                className="min-h-11"
                             >
                                 {getCreateButtonText()}
                             </Button>

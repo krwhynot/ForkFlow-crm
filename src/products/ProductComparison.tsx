@@ -1,30 +1,26 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useGetMany, useGetList, Loading } from 'react-admin';
 import {
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
+    Box,
+    Button,
+    Chip,
+    Dialog,
+    DialogContent,
+    DialogTitle,
     IconButton,
     Paper,
     Stack,
-} from '@mui/material';
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
     Typography,
-    Chip,
-    Button,
 } from '@/components/ui-kit';
 import {
-    Close as CloseIcon,
-    CheckCircle as ActiveIcon,
-    Cancel as InactiveIcon,
-} from '@mui/icons-material';
+    XMarkIcon as CloseIcon
+} from '@heroicons/react/24/outline';
+import * as React from 'react';
+import { useState } from 'react';
+import { Loading, useGetList, useGetMany } from 'react-admin';
 
 import { Product, Setting } from '../types';
 import { PriceField } from './PriceField';
@@ -103,45 +99,31 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
             onClose={onClose}
             maxWidth="xl"
             fullWidth
-            PaperProps={{
-                sx: { height: '90vh' },
-            }}
+            className="[&_.dialog-paper]:h-[90vh]"
         >
             <DialogTitle>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                    }}
-                >
+                <Box className="flex justify-between items-center">
                     <Typography variant="h6" component="div">
                         Product Comparison ({products.length} products)
                     </Typography>
                     <IconButton onClick={onClose} size="small">
-                        <CloseIcon />
+                        <CloseIcon className="h-5 w-5" />
                     </IconButton>
                 </Box>
             </DialogTitle>
 
             <DialogContent dividers>
-                <Paper sx={{ overflow: 'auto', maxHeight: '70vh' }}>
+                <Paper className="overflow-auto max-h-[70vh]">
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
-                                <TableCell
-                                    sx={{ minWidth: 150, fontWeight: 600 }}
-                                >
+                                <TableCell className="min-w-37 font-semibold">
                                     Attribute
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{
-                                            minWidth: 200,
-                                            fontWeight: 600,
-                                            textAlign: 'center',
-                                        }}
+                                        className="min-w-50 font-semibold text-center"
                                     >
                                         <Stack spacing={1} alignItems="center">
                                             <Typography variant="h6" noWrap>
@@ -149,7 +131,7 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
                                             </Typography>
                                             <Typography
                                                 variant="body2"
-                                                color="text.secondary"
+                                                className="text-gray-600"
                                             >
                                                 SKU: {product.sku}
                                             </Typography>
@@ -162,13 +144,13 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
                         <TableBody>
                             {/* Price Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Price
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <PriceField
                                             record={product}
@@ -181,13 +163,13 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Category Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Category
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Chip
                                             label={product.category || 'N/A'}
@@ -206,13 +188,13 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Principal Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Principal/Brand
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Typography variant="body2">
                                             {getPrincipalName(
@@ -225,13 +207,13 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Package Size Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Package Size
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Typography variant="body2">
                                             {product.packageSize || 'N/A'}
@@ -242,13 +224,13 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Unit of Measure Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Unit of Measure
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Typography variant="body2">
                                             {product.unitOfMeasure || 'N/A'}
@@ -259,13 +241,13 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Status Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Status
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Chip
                                             label={
@@ -286,26 +268,17 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Description Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Description
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{
-                                            textAlign: 'center',
-                                            maxWidth: 200,
-                                        }}
+                                        className="text-center max-w-50"
                                     >
                                         <Typography
                                             variant="body2"
-                                            sx={{
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 3,
-                                                WebkitBoxOrient: 'vertical',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                            }}
+                                            className="line-clamp-3 overflow-hidden text-ellipsis"
                                         >
                                             {product.description ||
                                                 'No description available'}
@@ -316,17 +289,17 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Created By Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Created By
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             {product.createdBy || 'N/A'}
                                         </Typography>
@@ -336,22 +309,22 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
 
                             {/* Created Date Row */}
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 600 }}>
+                                <TableCell className="font-semibold">
                                     Created Date
                                 </TableCell>
                                 {products.map(product => (
                                     <TableCell
                                         key={product.id}
-                                        sx={{ textAlign: 'center' }}
+                                        className="text-center"
                                     >
                                         <Typography
                                             variant="body2"
-                                            color="text.secondary"
+                                            className="text-gray-600"
                                         >
                                             {product.createdAt
                                                 ? new Date(
-                                                      product.createdAt
-                                                  ).toLocaleDateString()
+                                                    product.createdAt
+                                                ).toLocaleDateString()
                                                 : 'N/A'}
                                         </Typography>
                                     </TableCell>

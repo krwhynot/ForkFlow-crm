@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+    content: [
+        './index.html',
+        './src/**/*.{js,ts,jsx,tsx}',
+        './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
+    ],
     theme: {
         extend: {
             // Custom breakpoints for responsive design
@@ -14,17 +18,29 @@ module.exports = {
             },
             // Color schemes for priority levels and status indicators
             colors: {
+                // ForkFlow Brand Colors
+                'forkflow-green': '#A6C66D',
+                'forkflow-light-gray': '#F4F4F4',
+                'forkflow-medium-gray': '#EDEDED',
+                
+                // Primary palette for consistency
                 primary: {
-                    50: '#eff6ff',
-                    100: '#dbeafe',
-                    200: '#bfdbfe',
-                    300: '#93c5fd',
-                    400: '#60a5fa',
-                    500: '#3b82f6',
-                    600: '#2563eb',
-                    700: '#1d4ed8',
-                    800: '#1e40af',
-                    900: '#1e3a8a',
+                    50: '#f0f9ff',
+                    500: '#A6C66D',
+                    600: '#8BB055',
+                    900: '#1e293b',
+                },
+                
+                // Tremor color overrides
+                tremor: {
+                    brand: {
+                        faint: '#A6C66D10',
+                        muted: '#A6C66D40',
+                        subtle: '#A6C66D80',
+                        DEFAULT: '#A6C66D',
+                        emphasis: '#8BB055',
+                        inverted: '#FFFFFF',
+                    },
                 },
                 blue: {
                     50: '#eff6ff',
@@ -90,6 +106,7 @@ module.exports = {
             },
             // Touch target utilities for WCAG compliance
             spacing: {
+                '44': '44px', // Minimum touch target
                 touch: '44px', // Minimum touch target size
                 'touch-sm': '36px', // Small touch target
                 'touch-lg': '52px', // Large touch target
@@ -150,8 +167,7 @@ module.exports = {
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
     ],
-    // Ensure compatibility with Material-UI
     corePlugins: {
-        preflight: true, // Disable Tailwind's CSS reset to avoid conflicts with MUI
+        preflight: true,
     },
 };

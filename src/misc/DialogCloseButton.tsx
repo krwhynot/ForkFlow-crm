@@ -1,5 +1,4 @@
-import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export const DialogCloseButton = ({
     onClose,
@@ -13,17 +12,14 @@ export const DialogCloseButton = ({
     color?: string;
 }) => {
     return (
-        <IconButton
+        <button
             aria-label="close"
             onClick={onClose}
-            sx={{
-                position: 'absolute',
-                right,
-                top,
-                color: theme => (color ? color : theme.palette.grey[500]),
-            }}
+            type="button"
+            className={`absolute z-10 p-1 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors${color ? ` text-[${color}]` : ' text-gray-500'}`}
+            style={{ top, right }}
         >
-            <CloseIcon />
-        </IconButton>
+            <XMarkIcon className="w-5 h-5" />
+        </button>
     );
 };

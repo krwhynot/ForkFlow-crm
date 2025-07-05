@@ -17,14 +17,14 @@ import {
     Box,
     Chip,
     Button,
+    Divider,
 } from '@/components/ui-kit';
-import { Divider } from '@mui/material';
 import {
-    LocationOn as LocationIcon,
-    AccessTime as TimeIcon,
-    Navigation as DirectionsIcon,
-    Person as PersonIcon,
-} from '@mui/icons-material';
+    MapPinIcon as LocationIcon,
+    ClockIcon as TimeIcon,
+    ArrowTopRightOnSquareIcon as DirectionsIcon,
+    UserIcon as PersonIcon,
+} from '@heroicons/react/24/outline';
 import { Visit } from '../types';
 
 const VisitShowActions = () => (
@@ -61,7 +61,7 @@ const LocationCard = ({ visit }: { visit: Visit }) => {
                 <Box className="flex items-center justify-between mb-2">
                     <Typography variant="h6">GPS Location</Typography>
                     <Chip
-                        icon={<LocationIcon />}
+                        icon={<LocationIcon className="w-4 h-4" />}
                         label="Location Recorded"
                         color="success"
                         size="small"
@@ -79,7 +79,7 @@ const LocationCard = ({ visit }: { visit: Visit }) => {
 
                 <Button
                     variant="outlined"
-                    startIcon={<DirectionsIcon />}
+                    startIcon={<DirectionsIcon className="w-4 h-4" />}
                     onClick={openMaps}
                     size="small"
                 >
@@ -120,7 +120,7 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
                 </Typography>
 
                 <Box className="flex items-center mb-2">
-                    <PersonIcon className="mr-1 text-gray-500" />
+                    <PersonIcon className="w-4 h-4 mr-1 text-gray-500" />
                     <Typography variant="body1">
                         Customer:{' '}
                         {visit.customer_name ||
@@ -143,7 +143,7 @@ const VisitDetailsCard = ({ visit }: { visit: Visit }) => {
                 </Box>
 
                 <Box className="flex items-center mb-2">
-                    <TimeIcon className="mr-1 text-gray-500" />
+                    <TimeIcon className="w-4 h-4 mr-1 text-gray-500" />
                     <Box>
                         <Typography variant="body1">
                             {new Date(visit.visit_date).toLocaleDateString(

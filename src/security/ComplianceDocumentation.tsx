@@ -1,28 +1,26 @@
 // src/security/ComplianceDocumentation.tsx
-import React, { useState, useEffect } from 'react';
 import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Button,
+    Chip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Chip,
-    Alert,
-    Grid,
     Paper,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Tooltip,
-    IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
+    Tab,
     Table,
     TableBody,
     TableCell,
@@ -30,31 +28,30 @@ import {
     TableHead,
     TableRow,
     Tabs,
-    Tab,
-} from '@mui/material';
+    Tooltip,
+    Typography,
+} from '@/components/ui-kit';
 import {
-    Policy as PolicyIcon,
-    Security as SecurityIcon,
-    CheckCircle as CheckIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    Download as DownloadIcon,
-    ExpandMore as ExpandIcon,
-    Visibility as ViewIcon,
-    Description as DocIcon,
-    Gavel as LegalIcon,
-    Shield as ShieldIcon,
-    Lock as LockIcon,
-    Key as KeyIcon,
-    Storage as DataIcon,
-    People as PeopleIcon,
-    Assignment as TaskIcon,
-    Timeline as TimelineIcon,
-} from '@mui/icons-material';
+    CheckCircleIcon as CheckIcon,
+    DocumentTextIcon as DocIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+    XCircleIcon as ErrorIcon,
+    ChevronDownIcon as ExpandIcon,
+    KeyIcon,
+    ScaleIcon as LegalIcon,
+    LockClosedIcon as LockIcon,
+    UserGroupIcon as PeopleIcon,
+    DocumentTextIcon as PolicyIcon,
+    ShieldCheckIcon as SecurityIcon,
+    ShieldExclamationIcon as ShieldIcon,
+    ClipboardDocumentListIcon as TaskIcon,
+    ChartBarIcon as TimelineIcon,
+    EyeIcon as ViewIcon,
+    ExclamationTriangleIcon as WarningIcon
+} from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
 import { useGetIdentity, useNotify } from 'react-admin';
 
-import { User } from '../types';
-import { privacyManager } from '../utils/privacyCompliance';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface ComplianceFramework {
@@ -466,16 +463,16 @@ export const ComplianceDocumentation: React.FC<
             case 'compliant':
             case 'implemented':
             case 'active':
-                return <CheckIcon color="success" />;
+                return <CheckIcon className="w-4 h-4 text-green-600" />;
             case 'partial':
             case 'testing':
-                return <WarningIcon color="warning" />;
+                return <WarningIcon className="w-4 h-4 text-yellow-600" />;
             case 'non_compliant':
             case 'not_implemented':
             case 'inactive':
-                return <ErrorIcon color="error" />;
+                return <ErrorIcon className="w-4 h-4 text-red-600" />;
             default:
-                return <WarningIcon color="action" />;
+                return <WarningIcon className="w-4 h-4 text-gray-500" />;
         }
     };
 
@@ -513,15 +510,15 @@ export const ComplianceDocumentation: React.FC<
     const getCategoryIcon = (category: string) => {
         switch (category.toLowerCase()) {
             case 'privacy':
-                return <LockIcon />;
+                return <LockIcon className="w-5 h-5" />;
             case 'technical':
-                return <SecurityIcon />;
+                return <SecurityIcon className="w-5 h-5" />;
             case 'organizational':
-                return <PeopleIcon />;
+                return <PeopleIcon className="w-5 h-5" />;
             case 'physical':
-                return <ShieldIcon />;
+                return <ShieldIcon className="w-5 h-5" />;
             default:
-                return <TaskIcon />;
+                return <TaskIcon className="w-5 h-5" />;
         }
     };
 
@@ -530,7 +527,7 @@ export const ComplianceDocumentation: React.FC<
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" sx={{ m: 3 }}>
+            <Alert variant="error" className="m-3">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access compliance
@@ -543,31 +540,26 @@ export const ComplianceDocumentation: React.FC<
     const overallCompliance =
         frameworks.length > 0
             ? Math.round(
-                  (frameworks.filter((f) => f.status === 'compliant')
-                      .length /
-                      frameworks.length) *
-                      100
-              )
+                (frameworks.filter((f) => f.status === 'compliant')
+                    .length /
+                    frameworks.length) *
+                100
+            )
             : 0;
 
     return (
-        <Box sx={{ p: compactView ? 1 : 3 }}>
+        <Box className={`${compactView ? 'p-1' : 'p-3'}`}>
             {!compactView && (
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={3}
-                >
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <PolicyIcon color="primary" sx={{ fontSize: 32 }} />
+                <Box className="flex justify-between items-center mb-3">
+                    <Box className="flex items-center gap-2">
+                        <PolicyIcon className="w-8 h-8 text-blue-600" />
                         <Box>
                             <Typography variant="h4" component="h1">
                                 Compliance Documentation
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 Regulatory compliance status and security
                                 controls
@@ -577,9 +569,9 @@ export const ComplianceDocumentation: React.FC<
 
                     <Button
                         variant="contained"
-                        startIcon={<DownloadIcon />}
+                        startIcon={<DownloadIcon className="w-4 h-4" />}
                         onClick={() => generateComplianceReport()}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-11"
                     >
                         Generate Report
                     </Button>
@@ -587,20 +579,17 @@ export const ComplianceDocumentation: React.FC<
             )}
 
             {/* Compliance Overview */}
-            <Grid container spacing={3} sx={{ mb: 3 }}>
+            <Grid container spacing={3} className="mb-3">
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <LegalIcon
-                                color="primary"
-                                sx={{ fontSize: 40, mb: 1 }}
-                            />
-                            <Typography variant="h4" color="primary.main">
+                        <CardContent className="text-center">
+                            <LegalIcon className="w-10 h-10 text-blue-600 mb-1" />
+                            <Typography variant="h4" className="text-blue-600">
                                 {frameworks.length}
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 Frameworks
                             </Typography>
@@ -609,17 +598,14 @@ export const ComplianceDocumentation: React.FC<
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <CheckIcon
-                                color="success"
-                                sx={{ fontSize: 40, mb: 1 }}
-                            />
-                            <Typography variant="h4" color="success.main">
+                        <CardContent className="text-center">
+                            <CheckIcon className="w-10 h-10 text-green-600 mb-1" />
+                            <Typography variant="h4" className="text-green-600">
                                 {overallCompliance}%
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 Overall Compliance
                             </Typography>
@@ -628,12 +614,9 @@ export const ComplianceDocumentation: React.FC<
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <ShieldIcon
-                                color="info"
-                                sx={{ fontSize: 40, mb: 1 }}
-                            />
-                            <Typography variant="h4" color="info.main">
+                        <CardContent className="text-center">
+                            <ShieldIcon className="w-10 h-10 text-blue-600 mb-1" />
+                            <Typography variant="h4" className="text-blue-600">
                                 {
                                     controls.filter(
                                         (c) => c.status === 'active'
@@ -642,7 +625,7 @@ export const ComplianceDocumentation: React.FC<
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 Active Controls
                             </Typography>
@@ -651,26 +634,23 @@ export const ComplianceDocumentation: React.FC<
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
-                        <CardContent sx={{ textAlign: 'center' }}>
-                            <TimelineIcon
-                                color="warning"
-                                sx={{ fontSize: 40, mb: 1 }}
-                            />
-                            <Typography variant="h4" color="warning.main">
+                        <CardContent className="text-center">
+                            <TimelineIcon className="w-10 h-10 text-yellow-600 mb-1" />
+                            <Typography variant="h4" className="text-yellow-600">
                                 {
                                     frameworks.filter(
                                         (f) =>
                                             new Date(f.nextAudit) <=
                                             new Date(
                                                 Date.now() +
-                                                    30 * 24 * 60 * 60 * 1000
+                                                30 * 24 * 60 * 60 * 1000
                                             )
                                     ).length
                                 }
                             </Typography>
                             <Typography
                                 variant="body2"
-                                color="text.secondary"
+                                className="text-gray-500"
                             >
                                 Upcoming Audits
                             </Typography>
@@ -825,12 +805,12 @@ export const ComplianceDocumentation: React.FC<
                                                                     }
                                                                     color={
                                                                         req.priority ===
-                                                                        'high'
+                                                                            'high'
                                                                             ? 'error'
                                                                             : req.priority ===
-                                                                              'medium'
-                                                                            ? 'warning'
-                                                                            : 'info'
+                                                                                'medium'
+                                                                                ? 'warning'
+                                                                                : 'info'
                                                                     }
                                                                     size="small"
                                                                     variant="outlined"
@@ -867,11 +847,11 @@ export const ComplianceDocumentation: React.FC<
                                         </Table>
                                     </TableContainer>
 
-                                    <Box mt={2} display="flex" gap={1}>
+                                    <Box className="mt-2 flex gap-1">
                                         <Button
                                             size="small"
                                             variant="outlined"
-                                            startIcon={<DownloadIcon />}
+                                            startIcon={<DownloadIcon className="w-4 h-4" />}
                                             onClick={() =>
                                                 generateComplianceReport(
                                                     framework.id
@@ -910,24 +890,20 @@ export const ComplianceDocumentation: React.FC<
                                     {controls.map((control) => (
                                         <TableRow key={control.id}>
                                             <TableCell>
-                                                <Box
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    gap={1}
-                                                >
+                                                <Box className="flex items-center gap-1">
                                                     {getCategoryIcon(
                                                         control.category
                                                     )}
                                                     <Box>
                                                         <Typography
                                                             variant="body2"
-                                                            fontWeight="medium"
+                                                            className="font-medium"
                                                         >
                                                             {control.name}
                                                         </Typography>
                                                         <Typography
                                                             variant="caption"
-                                                            color="text.secondary"
+                                                            className="text-gray-500"
                                                         >
                                                             {
                                                                 control.description
@@ -1000,7 +976,7 @@ export const ComplianceDocumentation: React.FC<
                             Risk Assessment Summary
                         </Typography>
 
-                        <Alert severity="info" sx={{ mb: 3 }}>
+                        <Alert variant="info" className="mb-3">
                             <Typography>
                                 Risk assessments are conducted quarterly to
                                 identify and evaluate security risks. The next
@@ -1011,7 +987,7 @@ export const ComplianceDocumentation: React.FC<
 
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
@@ -1021,7 +997,7 @@ export const ComplianceDocumentation: React.FC<
                                     <List dense>
                                         <ListItem>
                                             <ListItemIcon>
-                                                <ErrorIcon color="error" />
+                                                <ErrorIcon className="w-5 h-5 text-red-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Critical Risk"
@@ -1030,7 +1006,7 @@ export const ComplianceDocumentation: React.FC<
                                         </ListItem>
                                         <ListItem>
                                             <ListItemIcon>
-                                                <WarningIcon color="warning" />
+                                                <WarningIcon className="w-5 h-5 text-yellow-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="High Risk"
@@ -1039,7 +1015,7 @@ export const ComplianceDocumentation: React.FC<
                                         </ListItem>
                                         <ListItem>
                                             <ListItemIcon>
-                                                <WarningIcon color="info" />
+                                                <WarningIcon className="w-5 h-5 text-blue-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Medium Risk"
@@ -1048,7 +1024,7 @@ export const ComplianceDocumentation: React.FC<
                                         </ListItem>
                                         <ListItem>
                                             <ListItemIcon>
-                                                <CheckIcon color="success" />
+                                                <CheckIcon className="w-5 h-5 text-green-600" />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary="Low Risk"
@@ -1059,7 +1035,7 @@ export const ComplianceDocumentation: React.FC<
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
@@ -1107,59 +1083,49 @@ export const ComplianceDocumentation: React.FC<
 
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
                                     >
-                                        <DocIcon
-                                            sx={{
-                                                mr: 1,
-                                                verticalAlign: 'middle',
-                                            }}
-                                        />
+                                        <DocIcon className="mr-1 align-middle w-5 h-5 inline" />
                                         Policies & Procedures
                                     </Typography>
                                     <List dense>
                                         <ListItem button>
                                             <ListItemText primary="Information Security Policy" />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                         <ListItem button>
                                             <ListItemText primary="Data Protection Policy" />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                         <ListItem button>
                                             <ListItemText primary="Incident Response Procedure" />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                         <ListItem button>
                                             <ListItemText primary="Business Continuity Plan" />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                     </List>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <Paper sx={{ p: 2 }}>
+                                <Paper className="p-2">
                                     <Typography
                                         variant="subtitle1"
                                         gutterBottom
                                     >
-                                        <KeyIcon
-                                            sx={{
-                                                mr: 1,
-                                                verticalAlign: 'middle',
-                                            }}
-                                        />
+                                        <KeyIcon className="mr-1 align-middle w-5 h-5 inline" />
                                         Audit & Assessment Reports
                                     </Typography>
                                     <List dense>
@@ -1169,7 +1135,7 @@ export const ComplianceDocumentation: React.FC<
                                                 secondary="Generated: June 15, 2024"
                                             />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                         <ListItem button>
@@ -1178,7 +1144,7 @@ export const ComplianceDocumentation: React.FC<
                                                 secondary="Generated: May 30, 2024"
                                             />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                         <ListItem button>
@@ -1187,7 +1153,7 @@ export const ComplianceDocumentation: React.FC<
                                                 secondary="Generated: April 15, 2024"
                                             />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                         <ListItem button>
@@ -1196,7 +1162,7 @@ export const ComplianceDocumentation: React.FC<
                                                 secondary="Generated: March 30, 2024"
                                             />
                                             <IconButton size="small">
-                                                <DownloadIcon />
+                                                <DownloadIcon className="w-4 h-4" />
                                             </IconButton>
                                         </ListItem>
                                     </List>
@@ -1229,12 +1195,12 @@ export const ComplianceDocumentation: React.FC<
                                 Requirements Summary
                             </Typography>
 
-                            <Grid container spacing={2} sx={{ mb: 3 }}>
+                            <Grid container spacing={2} className="mb-3">
                                 <Grid item xs={4}>
-                                    <Paper sx={{ p: 2, textAlign: 'center' }}>
+                                    <Paper className="p-2 text-center">
                                         <Typography
                                             variant="h4"
-                                            color="success.main"
+                                            className="text-green-600"
                                         >
                                             {
                                                 selectedFramework.requirements.filter(
@@ -1250,10 +1216,10 @@ export const ComplianceDocumentation: React.FC<
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Paper sx={{ p: 2, textAlign: 'center' }}>
+                                    <Paper className="p-2 text-center">
                                         <Typography
                                             variant="h4"
-                                            color="warning.main"
+                                            className="text-yellow-600"
                                         >
                                             {
                                                 selectedFramework.requirements.filter(
@@ -1268,10 +1234,10 @@ export const ComplianceDocumentation: React.FC<
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Paper sx={{ p: 2, textAlign: 'center' }}>
+                                    <Paper className="p-2 text-center">
                                         <Typography
                                             variant="h4"
-                                            color="error.main"
+                                            className="text-red-600"
                                         >
                                             {
                                                 selectedFramework.requirements.filter(
@@ -1293,16 +1259,11 @@ export const ComplianceDocumentation: React.FC<
                             </Typography>
 
                             {selectedFramework.requirements.map((req) => (
-                                <Paper key={req.id} sx={{ p: 2, mb: 2 }}>
-                                    <Box
-                                        display="flex"
-                                        justifyContent="space-between"
-                                        alignItems="start"
-                                        mb={1}
-                                    >
+                                <Paper key={req.id} className="p-2 mb-2">
+                                    <Box className="flex justify-between items-start mb-1">
                                         <Typography
                                             variant="subtitle1"
-                                            fontWeight="medium"
+                                            className="font-medium"
                                         >
                                             {req.title}
                                         </Typography>
@@ -1321,7 +1282,7 @@ export const ComplianceDocumentation: React.FC<
                                     </Box>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        className="text-gray-500"
                                         paragraph
                                     >
                                         {req.description}
@@ -1329,7 +1290,7 @@ export const ComplianceDocumentation: React.FC<
                                     <Box>
                                         <Typography
                                             variant="caption"
-                                            color="text.secondary"
+                                            className="text-gray-500"
                                         >
                                             Controls: {req.controls.join(', ')}{' '}
                                             • Responsible: {req.responsible}
@@ -1341,16 +1302,16 @@ export const ComplianceDocumentation: React.FC<
                                     </Box>
                                     {req.evidence &&
                                         req.evidence.length > 0 && (
-                                            <Box mt={1}>
+                                            <Box className="mt-1">
                                                 <Typography
                                                     variant="caption"
-                                                    fontWeight="medium"
+                                                    className="font-medium"
                                                 >
                                                     Evidence:
                                                 </Typography>
                                                 <Typography
                                                     variant="caption"
-                                                    display="block"
+                                                    className="block"
                                                 >
                                                     {req.evidence.join(', ')}
                                                 </Typography>
@@ -1367,7 +1328,7 @@ export const ComplianceDocumentation: React.FC<
                     </Button>
                     <Button
                         variant="contained"
-                        startIcon={<DownloadIcon />}
+                        startIcon={<DownloadIcon className="w-4 h-4" />}
                         onClick={() => {
                             if (selectedFramework) {
                                 generateComplianceReport(selectedFramework.id);
@@ -1381,3150 +1342,3 @@ export const ComplianceDocumentation: React.FC<
         </Box>
     );
 };
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.
-- [ts Error] Line 1430: Cannot find name 'dev'.
-- [ts Error] Line 1430: Cannot find name 'settings'.
-- [ts Error] Line 1430: Cannot find name 'cline_mcp_settings'.
-- [ts Error] Line 1432: Cannot find name 'Recently'.
-- [ts Error] Line 1432: Cannot find name 'Modified'.
-- [ts Error] Line 1432: Cannot find name 'Files'.
-- [ts Error] Line 1433: Cannot find name 'These'.
-- [ts Error] Line 1433: Cannot find name 'files'.
-- [ts Error] Line 1433: Cannot find name 'have'.
-- [ts Error] Line 1433: Cannot find name 'been'.
-- [ts Error] Line 1433: Cannot find name 'modified'.
-- [ts Error] Line 1433: Cannot find name 'since'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'last'.
-- [ts Error] Line 1433: Cannot find name 'accessed'.
-- [ts Error] Line 1433: Cannot find name 'them'.
-- [ts Error] Line 1433: Cannot find name 'file'.
-- [ts Error] Line 1433: Cannot find name 'was'.
-- [ts Error] Line 1433: Cannot find name 'just'.
-- [ts Error] Line 1433: Cannot find name 'edited'.
-- [ts Error] Line 1433: Cannot find name 'so'.
-- [ts Error] Line 1433: Cannot find name 'you'.
-- [ts Error] Line 1433: Cannot find name 'may'.
-- [ts Error] Line 1433: Cannot find name 'need'.
-- [ts Error] Line 1433: Cannot find name 'to'.
-- [ts Error] Line 1433: Cannot find name 're'.
-- [ts Error] Line 1433: Cannot find name 'read'.
-- [ts Error] Line 1433: Cannot find name 'before'.
-- [ts Error] Line 1433: Cannot find name 'editing'.
-- [ts Error] Line 1434: Cannot find name 'src'.
-- [ts Error] Line 1434: Cannot find name 'security'.
-- [ts Error] Line 1434: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1436: Cannot find name 'Current'.
-- [ts Error] Line 1436: Cannot find name 'Time'.
-- [ts Error] Line 1437: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1437: Cannot find name 'PM'.
-- [ts Error] Line 1437: Cannot find name 'America'.
-- [ts Error] Line 1437: Cannot find name 'Chicago'.
-- [ts Error] Line 1437: Cannot find name 'UTC'.
-- [ts Error] Line 1439: Cannot find name 'Context'.
-- [ts Error] Line 1439: Cannot find name 'Usage'.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1440: Cannot find name 'K'.
-- [ts Error] Line 1440: Cannot find name 'tokens'.
-- [ts Error] Line 1440: Cannot find name 'used'.
-- [ts Error] Line 1442: Cannot find name 'Current'.
-- [ts Error] Line 1442: Cannot find name 'Mode'.
-- [ts Error] Line 1443: Cannot find name 'ACT'.
-- [ts Error] Line 1443: Cannot find name 'MODE'.
-- [ts Error] Line 1444: Cannot find name 'environment_details'.<environment_details>
-# VSCode Visible Files
-src/security/ComplianceDocumentation.tsx
-
-# VSCode Open Tabs
-.mcp.json
-src/organizations/common/SlideUpModal.tsx
-src/components/ui-kit/Input.tsx
-tailwind.config.js
-src/App.tsx
-src/index.css
-vite.config.ts
-src/index.tsx
-src/root/CRM.tsx
-doc/mui-migration-audit.md
-.storybook/main.ts
-.storybook/preview.ts
-src/components/ui-kit/Box.stories.tsx
-src/components/ui-kit/Box.tsx
-src/components/ui-kit/Stack.tsx
-src/components/ui-kit/Stack.stories.tsx
-src/components/ui-kit/Typography.tsx
-src/components/ui-kit/Typography.stories.tsx
-src/hooks/useBreakpoint.ts
-src/hooks/useTwTheme.ts
-src/visits/VisitList.tsx
-src/users/UserShow.tsx
-src/users/UserProfileDashboard.tsx
-src/users/UserListFilter.tsx
-src/users/UserList.tsx
-src/users/UserEdit.tsx
-src/users/UserCreate.tsx
-src/users/UserActivityTracker.tsx
-src/settings/SettingsCreate.tsx
-src/settings/SettingsBulkOperations.tsx
-src/settings/SettingsAdminDashboard.tsx
-src/security/SessionManager.tsx
-src/security/SecurityTestSuite.tsx
-src/security/SecurityPolicyManager.tsx
-src/security/SecurityDashboard.tsx
-src/security/ComplianceDocumentation.tsx
-../../Users/Revadmin/AppData/Roaming/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/security/ComplianceDocumentation.tsx
-
-# Current Time
-7/3/2025, 3:00:24 PM (America/Chicago, UTC-5:00)
-
-# Context Window Usage
-414,742 / 1,048.576K tokens used (40%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-
-New problems detected after saving the file:
-src/security/ComplianceDocumentation.tsx
-- [ts Error] Line 1385: Declaration or statement expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Identifier expected.
-- [ts Error] Line 1387: Argument expression expected.
-- [ts Error] Line 1387: '(' expected.
-- [ts Error] Line 1387: ')' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unknown keyword or identifier. Did you mean 'for matter'?
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Declaration or statement expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: ';' expected.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1387: Unexpected keyword or identifier.
-- [ts Error] Line 1389: Identifier expected.
-- [ts Error] Line 1390: Invalid character.
-- [ts Error] Line 1390: ';' expected.
-- [ts Error] Line 1390: Unexpected keyword or identifier.
-- [ts Error] Line 1393: Invalid character.
-- [ts Error] Line 1393: ';' expected.
-- [ts Error] Line 1393: Unexpected keyword or identifier.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Expression expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1430: Identifier expected.
-- [ts Error] Line 1432: Invalid character.
-- [ts Error] Line 1432: ';' expected.
-- [ts Error] Line 1432: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: Unexpected keyword or identifier.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ',' expected.
-- [ts Error] Line 1433: ';' expected.
-- [ts Error] Line 1436: Invalid character.
-- [ts Error] Line 1436: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ';' expected.
-- [ts Error] Line 1437: ',' expected.
-- [ts Error] Line 1437: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1439: Invalid character.
-- [ts Error] Line 1439: ';' expected.
-- [ts Error] Line 1439: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Octal literals are not allowed. Use the syntax '0o0'.
-- [ts Error] Line 1440: Decimals with leading zeros are not allowed.
-- [ts Error] Line 1440: ';' expected.
-- [ts Error] Line 1440: Unexpected keyword or identifier.
-- [ts Error] Line 1440: Expression expected.
-- [ts Error] Line 1442: Invalid character.
-- [ts Error] Line 1442: ';' expected.
-- [ts Error] Line 1443: Unexpected keyword or identifier.
-- [ts Error] Line 1444: Declaration or statement expected.
-- [ts Error] Line 1444: Expression expected.
-- [ts Error] Line 1385: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'IMPORTANT'.
-- [ts Error] Line 1387: Cannot find name 'For'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'future'.
-- [ts Error] Line 1387: Cannot find name 'changes'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'use'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'final_file_content'.
-- [ts Error] Line 1387: Cannot find name 'shown'.
-- [ts Error] Line 1387: Cannot find name 'above'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'reference'.
-- [ts Error] Line 1387: Cannot find name 'content'.
-- [ts Error] Line 1387: Cannot find name 'reflects'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'current'.
-- [ts Error] Line 1387: Cannot find name 'state'.
-- [ts Error] Line 1387: Cannot find name 'of'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'file'.
-- [ts Error] Line 1387: Left side of comma operator is unused and has no side effects.
-- [ts Error] Line 1387: Cannot find name 'including'.
-- [ts Error] Line 1387: 'any' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1387: Cannot find name 'auto'.
-- [ts Error] Line 1387: Cannot find name 'formatting'.
-- [ts Error] Line 1387: Cannot find name 'e'.
-- [ts Error] Line 1387: Cannot find name 'you'.
-- [ts Error] Line 1387: Cannot find name 'used'.
-- [ts Error] Line 1387: Cannot find name 'single'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'but'.
-- [ts Error] Line 1387: Cannot find name 'the'.
-- [ts Error] Line 1387: Cannot find name 'formatter'.
-- [ts Error] Line 1387: Cannot find name 'converted'.
-- [ts Error] Line 1387: Cannot find name 'them'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'double'.
-- [ts Error] Line 1387: Cannot find name 'quotes'.
-- [ts Error] Line 1387: Cannot find name 'Always'.
-- [ts Error] Line 1387: Cannot find name 'base'.
-- [ts Error] Line 1387: Cannot find name 'your'.
-- [ts Error] Line 1387: Cannot find name 'SEARCH'.
-- [ts Error] Line 1387: Cannot find name 'REPLACE'.
-- [ts Error] Line 1387: Cannot find name 'operations'.
-- [ts Error] Line 1387: Cannot find name 'on'.
-- [ts Error] Line 1387: Cannot find name 'final'.
-- [ts Error] Line 1387: Cannot find name 'version'.
-- [ts Error] Line 1387: Cannot find name 'to'.
-- [ts Error] Line 1387: Cannot find name 'ensure'.
-- [ts Error] Line 1387: Cannot find name 'accuracy'.
-- [ts Error] Line 1389: Cannot find name 'environment_details'.
-- [ts Error] Line 1390: Cannot find name 'VSCode'.
-- [ts Error] Line 1390: Cannot find name 'Visible'.
-- [ts Error] Line 1390: Cannot find name 'Files'.
-- [ts Error] Line 1391: Cannot find name 'src'.
-- [ts Error] Line 1391: Cannot find name 'security'.
-- [ts Error] Line 1391: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1393: Cannot find name 'VSCode'.
-- [ts Error] Line 1393: Cannot find name 'Open'.
-- [ts Error] Line 1394: Property 'mcp' does not exist on type 'OverridableComponent<TabsTypeMap<{}, "div">>'.
-- [ts Error] Line 1395: Cannot find name 'src'.
-- [ts Error] Line 1395: Cannot find name 'organizations'.
-- [ts Error] Line 1395: Cannot find name 'common'.
-- [ts Error] Line 1395: Cannot find name 'SlideUpModal'.
-- [ts Error] Line 1396: Cannot find name 'src'.
-- [ts Error] Line 1396: Cannot find name 'components'.
-- [ts Error] Line 1396: Cannot find name 'ui'.
-- [ts Error] Line 1396: Cannot find name 'kit'.
-- [ts Error] Line 1396: Cannot find name 'Input'.
-- [ts Error] Line 1397: Cannot find name 'tailwind'.
-- [ts Error] Line 1398: Cannot find name 'src'.
-- [ts Error] Line 1398: Cannot find name 'App'.
-- [ts Error] Line 1399: Cannot find name 'src'.
-- [ts Error] Line 1399: Cannot find name 'index'.
-- [ts Error] Line 1400: Cannot find name 'vite'.
-- [ts Error] Line 1401: Cannot find name 'src'.
-- [ts Error] Line 1401: Cannot find name 'index'.
-- [ts Error] Line 1402: Cannot find name 'src'.
-- [ts Error] Line 1402: Cannot find name 'root'.
-- [ts Error] Line 1402: Cannot find name 'CRM'.
-- [ts Error] Line 1403: Cannot find name 'doc'.
-- [ts Error] Line 1403: Cannot find name 'mui'.
-- [ts Error] Line 1403: Cannot find name 'migration'.
-- [ts Error] Line 1403: Cannot find name 'audit'.
-- [ts Error] Line 1404: Cannot find name 'main'.
-- [ts Error] Line 1405: Cannot find name 'preview'.
-- [ts Error] Line 1406: Cannot find name 'src'.
-- [ts Error] Line 1406: Cannot find name 'components'.
-- [ts Error] Line 1406: Cannot find name 'ui'.
-- [ts Error] Line 1406: Cannot find name 'kit'.
-- [ts Error] Line 1406: Property 'stories' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1407: Cannot find name 'src'.
-- [ts Error] Line 1407: Cannot find name 'components'.
-- [ts Error] Line 1407: Cannot find name 'ui'.
-- [ts Error] Line 1407: Cannot find name 'kit'.
-- [ts Error] Line 1407: Property 'tsx' does not exist on type 'OverridableComponent<BoxTypeMap<{}, "div", Theme>>'.
-- [ts Error] Line 1408: Cannot find name 'src'.
-- [ts Error] Line 1408: Cannot find name 'components'.
-- [ts Error] Line 1408: Cannot find name 'ui'.
-- [ts Error] Line 1408: Cannot find name 'kit'.
-- [ts Error] Line 1408: Cannot find name 'Stack'.
-- [ts Error] Line 1409: Cannot find name 'src'.
-- [ts Error] Line 1409: Cannot find name 'components'.
-- [ts Error] Line 1409: Cannot find name 'ui'.
-- [ts Error] Line 1409: Cannot find name 'kit'.
-- [ts Error] Line 1409: Cannot find name 'Stack'.
-- [ts Error] Line 1410: Cannot find name 'src'.
-- [ts Error] Line 1410: Cannot find name 'components'.
-- [ts Error] Line 1410: Cannot find name 'ui'.
-- [ts Error] Line 1410: Cannot find name 'kit'.
-- [ts Error] Line 1410: Property 'tsx' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1411: Cannot find name 'src'.
-- [ts Error] Line 1411: Cannot find name 'components'.
-- [ts Error] Line 1411: Cannot find name 'ui'.
-- [ts Error] Line 1411: Cannot find name 'kit'.
-- [ts Error] Line 1411: Property 'stories' does not exist on type 'OverridableComponent<TypographyTypeMap<{}, "span">>'.
-- [ts Error] Line 1412: Cannot find name 'src'.
-- [ts Error] Line 1412: Cannot find name 'hooks'.
-- [ts Error] Line 1412: Property 'ts' does not exist on type '(size: string | number | symbol) => boolean'.
-- [ts Error] Line 1413: Cannot find name 'src'.
-- [ts Error] Line 1413: Cannot find name 'hooks'.
-- [ts Error] Line 1413: Cannot find name 'useTwTheme'.
-- [ts Error] Line 1414: Cannot find name 'src'.
-- [ts Error] Line 1414: Cannot find name 'visits'.
-- [ts Error] Line 1414: Cannot find name 'VisitList'.
-- [ts Error] Line 1415: Cannot find name 'src'.
-- [ts Error] Line 1415: Cannot find name 'users'.
-- [ts Error] Line 1415: Cannot find name 'UserShow'.
-- [ts Error] Line 1416: Cannot find name 'src'.
-- [ts Error] Line 1416: Cannot find name 'users'.
-- [ts Error] Line 1416: Cannot find name 'UserProfileDashboard'.
-- [ts Error] Line 1417: Cannot find name 'src'.
-- [ts Error] Line 1417: Cannot find name 'users'.
-- [ts Error] Line 1417: Cannot find name 'UserListFilter'.
-- [ts Error] Line 1418: Cannot find name 'src'.
-- [ts Error] Line 1418: Cannot find name 'users'.
-- [ts Error] Line 1418: Cannot find name 'UserList'.
-- [ts Error] Line 1419: Cannot find name 'src'.
-- [ts Error] Line 1419: Cannot find name 'users'.
-- [ts Error] Line 1419: Cannot find name 'UserEdit'.
-- [ts Error] Line 1420: Cannot find name 'src'.
-- [ts Error] Line 1420: Cannot find name 'users'.
-- [ts Error] Line 1420: Cannot find name 'UserCreate'.
-- [ts Error] Line 1421: Cannot find name 'src'.
-- [ts Error] Line 1421: Cannot find name 'users'.
-- [ts Error] Line 1421: Cannot find name 'UserActivityTracker'.
-- [ts Error] Line 1422: Cannot find name 'src'.
-- [ts Error] Line 1422: Cannot find name 'settings'.
-- [ts Error] Line 1422: Cannot find name 'SettingsCreate'.
-- [ts Error] Line 1423: Cannot find name 'src'.
-- [ts Error] Line 1423: Cannot find name 'settings'.
-- [ts Error] Line 1423: Cannot find name 'SettingsBulkOperations'.
-- [ts Error] Line 1424: Cannot find name 'src'.
-- [ts Error] Line 1424: Cannot find name 'settings'.
-- [ts Error] Line 1424: Cannot find name 'SettingsAdminDashboard'.
-- [ts Error] Line 1425: Cannot find name 'src'.
-- [ts Error] Line 1425: Cannot find name 'security'.
-- [ts Error] Line 1425: Cannot find name 'SessionManager'.
-- [ts Error] Line 1426: Cannot find name 'src'.
-- [ts Error] Line 1426: Cannot find name 'security'.
-- [ts Error] Line 1426: Cannot find name 'SecurityTestSuite'.
-- [ts Error] Line 1427: Cannot find name 'src'.
-- [ts Error] Line 1427: Cannot find name 'security'.
-- [ts Error] Line 1427: Cannot find name 'SecurityPolicyManager'.
-- [ts Error] Line 1428: Cannot find name 'src'.
-- [ts Error] Line 1428: Cannot find name 'security'.
-- [ts Error] Line 1428: Cannot find name 'SecurityDashboard'.
-- [ts Error] Line 1429: Cannot find name 'src'.
-- [ts Error] Line 1429: Cannot find name 'security'.
-- [ts Error] Line 1429: Property 'tsx' does not exist on type 'FC<ComplianceDocumentationProps>'.
-- [ts Error] Line 1430: Cannot find name 'Users'.
-- [ts Error] Line 1430: Cannot find name 'Revadmin'.
-- [ts Error] Line 1430: Cannot find name 'AppData'.
-- [ts Error] Line 1430: Cannot find name 'Roaming'.
-- [ts Error] Line 1430: Cannot find name 'Code'.
-- [ts Error] Line 1430: 'User' only refers to a type, but is being used as a value here.
-- [ts Error] Line 1430: Cannot find name 'globalStorage'.
-- [ts Error] Line 1430: Cannot find name 'saoudrizwan'.

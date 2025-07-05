@@ -1,32 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import {
+    Alert,
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Grid,
-    Button,
-    Alert,
-    LinearProgress,
     Chip,
-    Tab,
-    Tabs,
+    LinearProgress,
+    Paper,
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
-    Paper,
-} from '@mui/material';
+    Typography,
+} from '@/components/ui-kit';
 import {
-    Speed as PerformanceIcon,
-    Refresh as RefreshIcon,
-    Download as DownloadIcon,
-    Warning as WarningIcon,
-    CheckCircle as SuccessIcon,
-    Error as ErrorIcon,
-} from '@mui/icons-material';
+    ArrowPathIcon as RefreshIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    CheckCircleIcon as SuccessIcon,
+    XCircleIcon as ErrorIcon,
+    ChartBarIcon as PerformanceIcon,
+} from '@heroicons/react/24/outline';
 
 import { usePerformanceMonitor } from '../../providers/monitoring/performanceMonitor';
 
@@ -45,7 +41,7 @@ function TabPanel({ children, value, index, ...other }: TabPanelProps) {
             aria-labelledby={`performance-tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+            {value === index && <Box className="p-6">{children}</Box>}
         </div>
     );
 }
@@ -79,12 +75,6 @@ export const PerformanceDashboard = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const handleTabChange = (
-        _event: React.SyntheticEvent,
-        newValue: number
-    ) => {
-        setTabValue(newValue);
-    };
 
     const exportMetrics = () => {
         const csv = performanceMonitor.exportMetricsAsCSV();
@@ -106,8 +96,8 @@ export const PerformanceDashboard = () => {
 
     if (!summary) {
         return (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
-                <LinearProgress sx={{ flexGrow: 1 }} />
+            <Box className="flex items-center gap-4 p-4">
+                <LinearProgress className="flex-grow" />
                 <Typography variant="body2">
                     Loading performance data...
                 </Typography>
@@ -122,23 +112,16 @@ export const PerformanceDashboard = () => {
         summary.warnings.slowUploads > 0;
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box className="w-full">
             {/* Header */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mb: 3,
-                }}
-            >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box className="flex justify-between items-center mb-6">
+                <Box className="flex items-center gap-4">
                     <PerformanceIcon color="primary" />
                     <Typography variant="h5">Performance Monitor</Typography>
                     <Chip label={summary.timeRange} color="info" size="small" />
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box className="flex gap-2">
                     <Button
                         variant="outlined"
                         startIcon={
@@ -171,11 +154,11 @@ export const PerformanceDashboard = () => {
 
             {/* Warnings Alert */}
             {hasWarnings && (
-                <Alert severity="warning" icon={<WarningIcon />} sx={{ mb: 3 }}>
+                <Alert variant="warning" className="mb-6">
                     <Typography variant="subtitle2" gutterBottom>
                         Performance Issues Detected
                     </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    <Box className="flex flex-wrap gap-2">
                         {summary.warnings.slowApiCalls > 0 && (
                             <Chip
                                 label={`${summary.warnings.slowApiCalls} slow API calls`}
@@ -209,21 +192,15 @@ export const PerformanceDashboard = () => {
             )}
 
             {/* Summary Cards */}
-            <Grid container spacing={3} sx={{ mb: 3 }}>
+            <Box className="grid gap-6 md:grid-cols-3 mb-6">
                 {/* API Performance */}
-                <Grid item xs={12} md={4}>
+                <Box>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 API Performance
                             </Typography>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    mb: 1,
-                                }}
-                            >
+                            <Box className="flex justify-between mb-2">
                                 <Typography variant="body2">
                                     Total Calls:
                                 </Typography>
@@ -288,22 +265,16 @@ export const PerformanceDashboard = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Box>
 
                 {/* GPS Performance */}
-                <Grid item xs={12} md={4}>
+                <Box>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 GPS Performance
                             </Typography>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    mb: 1,
-                                }}
-                            >
+                            <Box className="flex justify-between mb-2">
                                 <Typography variant="body2">
                                     Acquisitions:
                                 </Typography>
@@ -360,73 +331,50 @@ export const PerformanceDashboard = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Box>
 
                 {/* Upload Performance */}
-                <Grid item xs={12} md={4}>
+                <Box>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 Upload Performance
                             </Typography>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    mb: 1,
-                                }}
-                            >
+                            <Box className="flex justify-between mb-2">
                                 <Typography variant="body2">
                                     Total Uploads:
                                 </Typography>
-                                <Typography variant="body2" fontWeight="bold">
+                                <Typography variant="body2" className="font-bold">
                                     {summary.uploads.totalUploads}
                                 </Typography>
                             </Box>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    mb: 1,
-                                }}
-                            >
+                            <Box className="flex justify-between mb-2">
                                 <Typography variant="body2">
                                     Success Rate:
                                 </Typography>
                                 <Chip
                                     label={`${summary.uploads.successRate}%`}
-                                    color={
+                                    className={`${
                                         summary.uploads.successRate >= 95
-                                            ? 'success'
-                                            : 'warning'
-                                    }
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-yellow-100 text-yellow-800'
+                                    }`}
                                     size="small"
                                 />
                             </Box>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    mb: 1,
-                                }}
-                            >
+                            <Box className="flex justify-between mb-2">
                                 <Typography variant="body2">
                                     Avg Upload Time:
                                 </Typography>
-                                <Typography variant="body2" fontWeight="bold">
+                                <Typography variant="body2" className="font-bold">
                                     {summary.uploads.avgUploadTime}ms
                                 </Typography>
                             </Box>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
+                            <Box className="flex justify-between">
                                 <Typography variant="body2">
                                     Data Uploaded:
                                 </Typography>
-                                <Typography variant="body2" fontWeight="bold">
+                                <Typography variant="body2" className="font-bold">
                                     {(
                                         summary.uploads.totalDataUploaded /
                                         1024 /
@@ -437,23 +385,44 @@ export const PerformanceDashboard = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
 
             {/* Detailed Metrics Tabs */}
             <Card>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={tabValue} onChange={handleTabChange}>
-                        <Tab
-                            label={`API Calls (${allMetrics?.api?.length || 0})`}
-                        />
-                        <Tab
-                            label={`GPS Events (${allMetrics?.gps?.length || 0})`}
-                        />
-                        <Tab
-                            label={`Uploads (${allMetrics?.uploads?.length || 0})`}
-                        />
-                    </Tabs>
+                <Box className="border-b border-gray-200">
+                    <nav className="flex space-x-8 px-6">
+                        <button
+                            className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                                tabValue === 0
+                                    ? 'border-blue-500 text-blue-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                            onClick={() => setTabValue(0)}
+                        >
+                            API Calls ({allMetrics?.api?.length || 0})
+                        </button>
+                        <button
+                            className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                                tabValue === 1
+                                    ? 'border-blue-500 text-blue-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                            onClick={() => setTabValue(1)}
+                        >
+                            GPS Events ({allMetrics?.gps?.length || 0})
+                        </button>
+                        <button
+                            className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                                tabValue === 2
+                                    ? 'border-blue-500 text-blue-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                            onClick={() => setTabValue(2)}
+                        >
+                            Uploads ({allMetrics?.uploads?.length || 0})
+                        </button>
+                    </nav>
                 </Box>
 
                 <TabPanel value={tabValue} index={0}>
@@ -504,22 +473,16 @@ export const PerformanceDashboard = () => {
                                             </TableCell>
                                             <TableCell>
                                                 {metric.success ? (
-                                                    <SuccessIcon
-                                                        color="success"
-                                                        fontSize="small"
-                                                    />
+                                                    <SuccessIcon className="h-4 w-4 text-green-600" />
                                                 ) : (
-                                                    <ErrorIcon
-                                                        color="error"
-                                                        fontSize="small"
-                                                    />
+                                                    <ErrorIcon className="h-4 w-4 text-red-600" />
                                                 )}
                                             </TableCell>
                                             <TableCell>
                                                 {metric.errorMessage && (
                                                     <Typography
                                                         variant="caption"
-                                                        color="error"
+                                                        className="text-red-600"
                                                     >
                                                         {metric.errorMessage}
                                                     </Typography>
@@ -529,7 +492,7 @@ export const PerformanceDashboard = () => {
                                     ))}
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </div>
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={1}>
@@ -558,12 +521,12 @@ export const PerformanceDashboard = () => {
                                             <TableCell>
                                                 <Typography
                                                     variant="body2"
-                                                    color={
+                                                    className={`${
                                                         metric.acquisitionTime >
                                                         10000
-                                                            ? 'error'
-                                                            : 'inherit'
-                                                    }
+                                                            ? 'text-red-600'
+                                                            : ''
+                                                    }`}
                                                 >
                                                     {metric.acquisitionTime}ms
                                                 </Typography>
@@ -571,11 +534,11 @@ export const PerformanceDashboard = () => {
                                             <TableCell>
                                                 <Typography
                                                     variant="body2"
-                                                    color={
+                                                    className={`${
                                                         metric.accuracy > 100
-                                                            ? 'warning.main'
-                                                            : 'inherit'
-                                                    }
+                                                            ? 'text-yellow-600'
+                                                            : ''
+                                                    }`}
                                                 >
                                                     ±
                                                     {Math.round(
@@ -586,22 +549,16 @@ export const PerformanceDashboard = () => {
                                             </TableCell>
                                             <TableCell>
                                                 {metric.success ? (
-                                                    <SuccessIcon
-                                                        color="success"
-                                                        fontSize="small"
-                                                    />
+                                                    <SuccessIcon className="h-4 w-4 text-green-600" />
                                                 ) : (
-                                                    <ErrorIcon
-                                                        color="error"
-                                                        fontSize="small"
-                                                    />
+                                                    <ErrorIcon className="h-4 w-4 text-red-600" />
                                                 )}
                                             </TableCell>
                                             <TableCell>
                                                 {metric.errorType && (
                                                     <Typography
                                                         variant="caption"
-                                                        color="error"
+                                                        className="text-red-600"
                                                     >
                                                         {metric.errorType}
                                                     </Typography>
@@ -611,7 +568,7 @@ export const PerformanceDashboard = () => {
                                     ))}
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </div>
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={2}>
@@ -647,12 +604,12 @@ export const PerformanceDashboard = () => {
                                             <TableCell>
                                                 <Typography
                                                     variant="body2"
-                                                    color={
+                                                    className={`${
                                                         metric.uploadTime >
                                                         30000
-                                                            ? 'error'
-                                                            : 'inherit'
-                                                    }
+                                                            ? 'text-red-600'
+                                                            : ''
+                                                    }`}
                                                 >
                                                     {metric.uploadTime}ms
                                                 </Typography>
@@ -672,22 +629,16 @@ export const PerformanceDashboard = () => {
                                             </TableCell>
                                             <TableCell>
                                                 {metric.success ? (
-                                                    <SuccessIcon
-                                                        color="success"
-                                                        fontSize="small"
-                                                    />
+                                                    <SuccessIcon className="h-4 w-4 text-green-600" />
                                                 ) : (
-                                                    <ErrorIcon
-                                                        color="error"
-                                                        fontSize="small"
-                                                    />
+                                                    <ErrorIcon className="h-4 w-4 text-red-600" />
                                                 )}
                                             </TableCell>
                                             <TableCell>
                                                 {metric.errorMessage && (
                                                     <Typography
                                                         variant="caption"
-                                                        color="error"
+                                                        className="text-red-600"
                                                     >
                                                         {metric.errorMessage}
                                                     </Typography>
@@ -697,7 +648,7 @@ export const PerformanceDashboard = () => {
                                     ))}
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </div>
                 </TabPanel>
             </Card>
         </Box>

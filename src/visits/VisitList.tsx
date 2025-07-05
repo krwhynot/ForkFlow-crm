@@ -20,10 +20,10 @@ import {
     Button,
 } from '@/components/ui-kit';
 import {
-    LocationOn as LocationIcon,
-    AccessTime as TimeIcon,
-    Navigation as DirectionsIcon,
-} from '@mui/icons-material';
+    MapPinIcon as LocationIcon,
+    ClockIcon as TimeIcon,
+    ArrowTopRightOnSquareIcon as DirectionsIcon,
+} from '@heroicons/react/24/outline';
 import { VisitListFilter } from './VisitListFilter';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { Visit } from '../types';
@@ -81,7 +81,7 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                 </Box>
 
                 <Box className="flex items-center mb-1 text-gray-500">
-                    <TimeIcon fontSize="small" className="mr-0.5" />
+                    <TimeIcon className="w-4 h-4 mr-0.5" />
                     <Typography variant="body2">
                         {new Date(record.date).toLocaleDateString()} at{' '}
                         {new Date(record.date).toLocaleTimeString([], {
@@ -97,8 +97,7 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                 {hasLocation && (
                     <Box className="flex items-center mb-1">
                         <LocationIcon
-                            fontSize="small"
-                            className="mr-0.5 text-green-600"
+                            className="w-4 h-4 mr-0.5 text-green-600"
                         />
                         <Typography
                             variant="body2"
@@ -113,7 +112,7 @@ const MobileVisitCard = ({ record }: { record: Visit }) => {
                             onClick={openMaps}
                             className="p-0.5 min-w-8 min-h-8"
                         >
-                            <DirectionsIcon fontSize="small" />
+                            <DirectionsIcon className="w-4 h-4" />
                         </Button>
                     </Box>
                 )}
@@ -199,8 +198,7 @@ const DesktopVisitList = () => (
                     return (
                         <Box className="flex items-center">
                             <LocationIcon
-                                fontSize="small"
-                                className="mr-0.5 text-green-600"
+                                className="w-4 h-4 mr-0.5 text-green-600"
                             />
                             <Typography variant="body2">GPS</Typography>
                         </Box>

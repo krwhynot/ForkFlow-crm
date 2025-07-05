@@ -13,12 +13,12 @@ import {
     IconButton,
     Box,
     Typography,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Edit as EditIcon,
-    Visibility as ViewIcon,
-    Business as BusinessIcon,
-} from '@mui/icons-material';
+    PencilSquareIcon as EditIcon,
+    EyeIcon as ViewIcon,
+    BuildingOffice2Icon as BusinessIcon,
+} from '@heroicons/react/24/outline';
 import { Organization, OrganizationListViewMode } from '../../types';
 
 interface OrganizationTableProps {
@@ -288,7 +288,7 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                             minWidth: '32px',
                                         }}
                                     >
-                                        <ViewIcon fontSize="small" />
+                                        <ViewIcon />
                                     </IconButton>
                                     <IconButton
                                         size="small"
@@ -298,7 +298,7 @@ export const OrganizationTable: React.FC<OrganizationTableProps> = ({
                                             minWidth: '32px',
                                         }}
                                     >
-                                        <EditIcon fontSize="small" />
+                                        <EditIcon />
                                     </IconButton>
                                 </Box>
                             </TableCell>

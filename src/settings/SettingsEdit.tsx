@@ -10,7 +10,7 @@ import {
     DeleteButton,
     required,
 } from 'react-admin';
-import { CardContent, Grid } from '@mui/material';
+import { CardContent, Grid } from '@/components/ui-kit';
 
 const SettingsEditToolbar = () => (
     <Toolbar>

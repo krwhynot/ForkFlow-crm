@@ -1,6 +1,7 @@
-import { Stack, Typography, Button, Box } from '../../components/ui-kit';
-import { Divider, useMediaQuery, useTheme } from '@mui/material';
-import { LocationOn as LocationIcon } from '@mui/icons-material';
+import { Stack, Typography, Button, Box, Divider } from '../../components/ui-kit';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
+import { MapPinIcon } from '@heroicons/react/24/outline';
 import {
     ReferenceInput,
     SelectInput,
@@ -47,8 +48,8 @@ const isZipCode = (zipCode: string) => {
 };
 
 export const OrganizationInputs = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     return (
         <Stack gap={4} p={1}>
@@ -237,9 +238,9 @@ const OrganizationAddressInputs = () => {
                 <Typography variant="h6">Address</Typography>
                 <Button
                     size="small"
-                    startIcon={<LocationIcon />}
+                    startIcon={<MapPinIcon className="w-4 h-4" />}
                     onClick={captureGPSLocation}
-                    sx={{ minHeight: 44, px: 2 }}
+                    className="min-h-11 px-2"
                 >
                     GPS
                 </Button>

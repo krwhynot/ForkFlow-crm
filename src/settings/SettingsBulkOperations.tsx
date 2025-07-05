@@ -14,15 +14,15 @@ import {
     ListItemText,
     ListItemIcon,
     Divider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    CloudUpload as UploadIcon,
-    CloudDownload as DownloadIcon,
-    CheckCircle as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    Delete as DeleteIcon,
-} from '@mui/icons-material';
+    CloudArrowUpIcon as UploadIcon,
+    CloudArrowDownIcon as DownloadIcon,
+    CheckCircleIcon as CheckIcon,
+    ExclamationCircleIcon as ErrorIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    TrashIcon as DeleteIcon,
+} from '@heroicons/react/24/outline';
 import { useDataProvider, useNotify, useGetList } from 'react-admin';
 import Papa from 'papaparse';
 import { Setting } from '../types';
@@ -317,7 +317,7 @@ export const SettingsBulkOperations: React.FC = () => {
             <Typography variant="h6" gutterBottom>
                 Bulk Operations
             </Typography>
-            <Typography variant="body2" color="text.secondary" mb={3}>
+            <Typography variant="body2" color="text.secondary" className="mb-3">
                 Import and export settings in bulk using CSV or JSON files
             </Typography>
 
@@ -332,48 +332,48 @@ export const SettingsBulkOperations: React.FC = () => {
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                mb={2}
+                                className="mb-2"
                             >
                                 Download all settings data as CSV or JSON
                             </Typography>
 
                             <Box
-                                display="flex"
-                                gap={1}
-                                flexDirection={isMobile ? 'column' : 'row'}
+                                className="flex"
+                                className="flex gap-1"
+                                className={`flex gap-1 ${isMobile ? 'flex-col' : 'flex-row'}`}
                             >
                                 <Button
                                     variant="outlined"
-                                    startIcon={<DownloadIcon />}
+                                    startIcon={<DownloadIcon className="w-4 h-4" />}
                                     onClick={() => handleExport('csv')}
                                     disabled={
                                         isProcessing || !allSettings?.length
                                     }
                                     fullWidth={isMobile}
-                                    sx={{ minHeight: 48 }}
+                                    className="min-h-12"
                                 >
                                     Export CSV
                                 </Button>
                                 <Button
                                     variant="outlined"
-                                    startIcon={<DownloadIcon />}
+                                    startIcon={<DownloadIcon className="w-4 h-4" />}
                                     onClick={() => handleExport('json')}
                                     disabled={
                                         isProcessing || !allSettings?.length
                                     }
                                     fullWidth={isMobile}
-                                    sx={{ minHeight: 48 }}
+                                    className="min-h-12"
                                 >
                                     Export JSON
                                 </Button>
                             </Box>
 
                             {allSettings && (
-                                <Box mt={2}>
+                                <Box className="mt-2">
                                     <Chip
                                         label={`${allSettings.length} settings available`}
                                         size="small"
-                                        color="primary"
+                                        className="border-blue-500 text-blue-500"
                                         variant="outlined"
                                     />
                                 </Box>
@@ -392,7 +392,7 @@ export const SettingsBulkOperations: React.FC = () => {
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                mb={2}
+                                className="mb-2"
                             >
                                 Upload CSV file to create or update settings
                             </Typography>
@@ -407,7 +407,7 @@ export const SettingsBulkOperations: React.FC = () => {
 
                             <Button
                                 variant="contained"
-                                startIcon={<UploadIcon />}
+                                startIcon={<UploadIcon className="w-4 h-4" />}
                                 onClick={triggerFileInput}
                                 disabled={isProcessing}
                                 fullWidth={isMobile}
@@ -416,11 +416,11 @@ export const SettingsBulkOperations: React.FC = () => {
                                 Select CSV File
                             </Button>
 
-                            <Box mt={2}>
-                                <Typography variant="caption" display="block">
+                            <Box className="mt-2">
+                                <Typography variant="caption" className="block">
                                     Required columns: category, key, label
                                 </Typography>
-                                <Typography variant="caption" display="block">
+                                <Typography variant="caption" className="block">
                                     Optional columns: color, sortOrder, active
                                 </Typography>
                             </Box>
@@ -431,7 +431,7 @@ export const SettingsBulkOperations: React.FC = () => {
 
             {/* Progress Indicator */}
             {isProcessing && (
-                <Box mt={3}>
+                <Box className="mt-3">
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -440,7 +440,7 @@ export const SettingsBulkOperations: React.FC = () => {
                             <LinearProgress
                                 variant="determinate"
                                 value={progress}
-                                sx={{ mb: 1 }}
+                                className="mb-1"
                             />
                             <Typography variant="body2" color="text.secondary">
                                 {Math.round(progress)}% complete
@@ -452,33 +452,33 @@ export const SettingsBulkOperations: React.FC = () => {
 
             {/* Operation Results */}
             {operationResult && (
-                <Box mt={3}>
+                <Box className="mt-3">
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 Import Results
                             </Typography>
 
-                            <Box display="flex" gap={1} mb={2} flexWrap="wrap">
+                            <Box className="flex gap-1 mb-2 flex-wrap">
                                 <Chip
-                                    icon={<CheckIcon />}
+                                    icon={<CheckIcon className="w-4 h-4" />}
                                     label={`${operationResult.success} Success`}
-                                    color="success"
+                                    className="border-green-500 text-green-500"
                                     size="small"
                                 />
                                 {operationResult.warnings > 0 && (
                                     <Chip
-                                        icon={<WarningIcon />}
+                                        icon={<WarningIcon className="w-4 h-4" />}
                                         label={`${operationResult.warnings} Warnings`}
-                                        color="warning"
+                                        className="border-yellow-500 text-yellow-500"
                                         size="small"
                                     />
                                 )}
                                 {operationResult.errors > 0 && (
                                     <Chip
-                                        icon={<ErrorIcon />}
+                                        icon={<ErrorIcon className="w-4 h-4" />}
                                         label={`${operationResult.errors} Errors`}
-                                        color="error"
+                                        className="border-red-500 text-red-500"
                                         size="small"
                                     />
                                 )}
@@ -486,7 +486,7 @@ export const SettingsBulkOperations: React.FC = () => {
 
                             {operationResult.details.length > 0 && (
                                 <>
-                                    <Divider sx={{ my: 2 }} />
+                                    <Divider className="my-2" />
                                     <Typography
                                         variant="subtitle2"
                                         gutterBottom
@@ -495,10 +495,7 @@ export const SettingsBulkOperations: React.FC = () => {
                                     </Typography>
                                     <List
                                         dense
-                                        sx={{
-                                            maxHeight: 300,
-                                            overflow: 'auto',
-                                        }}
+                                        className="max-h-75 overflow-auto"
                                     >
                                         {operationResult.details.map(
                                             (detail, index) => (
@@ -506,15 +503,15 @@ export const SettingsBulkOperations: React.FC = () => {
                                                     <ListItemIcon>
                                                         {detail.type ===
                                                             'success' && (
-                                                            <CheckIcon color="success" />
+                                                            <CheckIcon className="w-5 h-5 text-green-600" />
                                                         )}
                                                         {detail.type ===
                                                             'warning' && (
-                                                            <WarningIcon color="warning" />
+                                                            <WarningIcon className="w-5 h-5 text-yellow-600" />
                                                         )}
                                                         {detail.type ===
                                                             'error' && (
-                                                            <ErrorIcon color="error" />
+                                                            <ErrorIcon className="w-5 h-5 text-red-600" />
                                                         )}
                                                     </ListItemIcon>
                                                     <ListItemText

@@ -59,7 +59,7 @@ export function ActivityLogContactNoteCreated({
                                 >
                                     <ReferenceField
                                         source="organizationId"
-                                        reference="companies"
+                                        reference="organizations"
                                         link="show"
                                     />
                                 </ReferenceField>{' '}

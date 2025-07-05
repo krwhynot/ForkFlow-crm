@@ -17,36 +17,38 @@ import {
     ListItemText,
     Chip,
     LinearProgress,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
     Paper,
     IconButton,
     Tooltip,
+} from '@/components/ui-kit';
+import {
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    TableContainer,
     useTheme,
     useMediaQuery,
 } from '@mui/material';
 import {
-    Security as SecurityIcon,
-    Shield as ShieldIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    CheckCircle as CheckIcon,
-    Https as HttpsIcon,
-    VpnLock as VpnLockIcon,
-    BugReport as BugIcon,
-    Timeline as TimelineIcon,
-    Refresh as RefreshIcon,
-    ExpandMore as ExpandMoreIcon,
-    Visibility as ViewIcon,
-    Download as DownloadIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon,
+    ShieldExclamationIcon,
+    ExclamationTriangleIcon,
+    ExclamationCircleIcon,
+    CheckCircleIcon,
+    LockClosedIcon,
+    KeyIcon,
+    BugAntIcon,
+    ChartBarIcon,
+    ArrowPathIcon,
+    ChevronDownIcon,
+    EyeIcon,
+    ArrowDownTrayIcon,
+} from '@heroicons/react/24/outline';
 import {
     getAuditStatistics,
     getLocalAuditEvents,
@@ -184,14 +186,14 @@ export const SecurityDashboard: React.FC = () => {
     return (
         <Box sx={{ p: isMobile ? 1 : 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <SecurityIcon sx={{ mr: 1 }} />
+                <ShieldCheckIcon className="w-6 h-6 mr-2" />
                 <Typography variant="h4" component="h1">
                     Security Dashboard
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 <Tooltip title="Refresh">
                     <IconButton onClick={loadSecurityMetrics}>
-                        <RefreshIcon />
+                        <ArrowPathIcon className="w-5 h-5" />
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -291,8 +293,8 @@ export const SecurityDashboard: React.FC = () => {
                     setExpandedSection(isExpanded ? 'overview' : false)
                 }
             >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <ShieldIcon sx={{ mr: 1 }} />
+                <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
+                    <ShieldExclamationIcon className="w-5 h-5 mr-2" />
                     <Typography variant="h6">Security Overview</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -305,9 +307,9 @@ export const SecurityDashboard: React.FC = () => {
                                 <ListItem>
                                     <ListItemIcon>
                                         {metrics.httpsStatus.isSecure ? (
-                                            <CheckIcon color="success" />
+                                            <CheckCircleIcon className="w-5 h-5 text-green-600" />
                                         ) : (
-                                            <ErrorIcon color="error" />
+                                            <ExclamationCircleIcon className="w-5 h-5 text-red-600" />
                                         )}
                                     </ListItemIcon>
                                     <ListItemText
@@ -322,9 +324,9 @@ export const SecurityDashboard: React.FC = () => {
                                 <ListItem>
                                     <ListItemIcon>
                                         {metrics.httpsStatus.hasCSP ? (
-                                            <CheckIcon color="success" />
+                                            <CheckCircleIcon className="w-5 h-5 text-green-600" />
                                         ) : (
-                                            <WarningIcon color="warning" />
+                                            <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600" />
                                         )}
                                     </ListItemIcon>
                                     <ListItemText
@@ -339,9 +341,9 @@ export const SecurityDashboard: React.FC = () => {
                                 <ListItem>
                                     <ListItemIcon>
                                         {metrics.httpsStatus.hasHSTS ? (
-                                            <CheckIcon color="success" />
+                                            <CheckCircleIcon className="w-5 h-5 text-green-600" />
                                         ) : (
-                                            <WarningIcon color="warning" />
+                                            <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600" />
                                         )}
                                     </ListItemIcon>
                                     <ListItemText
@@ -363,9 +365,9 @@ export const SecurityDashboard: React.FC = () => {
                                 <ListItem>
                                     <ListItemIcon>
                                         {metrics.sessionInfo.isValid ? (
-                                            <CheckIcon color="success" />
+                                            <CheckCircleIcon className="w-5 h-5 text-green-600" />
                                         ) : (
-                                            <ErrorIcon color="error" />
+                                            <ExclamationCircleIcon className="w-5 h-5 text-red-600" />
                                         )}
                                     </ListItemIcon>
                                     <ListItemText
@@ -381,9 +383,9 @@ export const SecurityDashboard: React.FC = () => {
                                     <ListItemIcon>
                                         {metrics.offlineStatus
                                             .hasCredentials ? (
-                                            <CheckIcon color="success" />
+                                            <CheckCircleIcon className="w-5 h-5 text-green-600" />
                                         ) : (
-                                            <WarningIcon color="warning" />
+                                            <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600" />
                                         )}
                                     </ListItemIcon>
                                     <ListItemText
@@ -407,12 +409,12 @@ export const SecurityDashboard: React.FC = () => {
                     setExpandedSection(isExpanded ? 'audit' : false)
                 }
             >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <TimelineIcon sx={{ mr: 1 }} />
+                <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
+                    <ChartBarIcon className="w-5 h-5 mr-2" />
                     <Typography variant="h6">Audit Events</Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <IconButton size="small" onClick={exportAuditLog}>
-                        <DownloadIcon />
+                        <ArrowDownTrayIcon className="w-4 h-4" />
                     </IconButton>
                 </AccordionSummary>
                 <AccordionDetails>

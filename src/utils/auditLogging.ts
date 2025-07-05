@@ -3,8 +3,7 @@
  * Comprehensive logging system for security events and user activities
  */
 
-import { User } from '../types';
-import { getDeviceInfo, getCurrentLocation } from './sessionPersistence';
+import { getCurrentLocation, getDeviceInfo } from './sessionPersistence';
 
 export interface AuditEvent {
     id: string;
@@ -108,7 +107,7 @@ export type AuditEventType =
     | 'business.customer_visit'
     | 'business.deal_stage_change'
     | 'business.order_created'
-    | 'business.territory_change'
+
     | 'business.interaction_completed'
     | 'business.follow_up_scheduled';
 

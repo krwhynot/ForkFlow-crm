@@ -1,31 +1,28 @@
+import {
+    CurrencyDollarIcon as MoneyIcon
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import {
+    BooleanInput,
+    DeleteButton,
     Edit,
     Form,
     NumberInput,
+    ReferenceInput,
+    SaveButton,
     SelectInput,
     TextInput,
-    BooleanInput,
     Toolbar,
-    SaveButton,
-    DeleteButton,
     required,
-    ReferenceInput,
     useGetList,
     useRecordContext,
 } from 'react-admin';
 import { CardContent } from '../components/Card/CardContent';
-import { Typography } from '../components/Typography/Typography';
 import { Box } from '../components/Layout/Box';
-import { Chip } from '../components/DataDisplay/Chip';
-import { Stack } from '../components/Layout/Stack';
-import {
-    Business as BusinessIcon,
-    AttachMoney as MoneyIcon,
-} from '@mui/icons-material';
+import { Typography } from '../components/Typography/Typography';
 
-import { Setting, Product } from '../types';
-import { PriceField, formatPrice } from './PriceField';
+import { Product, Setting } from '../types';
+import { formatPrice } from './PriceField';
 
 const ProductEditToolbar = () => (
     <Toolbar>

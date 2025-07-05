@@ -1,41 +1,36 @@
-import React, { useMemo, useEffect } from 'react';
 import {
+    Badge,
+    Box,
+    Button,
     Card,
     CardContent,
-    Typography,
+    Chip,
+    Divider,
+    IconButton,
     List,
     ListItem,
     ListItemIcon,
-    ListItemText,
     ListItemSecondaryAction,
-    Box,
-    Chip,
-    Avatar,
-    IconButton,
-    Button,
-    Divider,
+    ListItemText,
     Stack,
-    useTheme,
-    useMediaQuery,
-    Badge,
-} from '@mui/material';
+    Typography
+} from '@/components/ui-kit';
 import {
-    Warning as WarningIcon,
-    Business as BusinessIcon,
-    Schedule as ScheduleIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Add as AddIcon,
-    LocationOn as LocationIcon,
-    Star as PriorityIcon,
-    TrendingDown as StaleIcon,
-} from '@mui/icons-material';
-import { formatDistanceToNow, subDays, differenceInDays } from 'date-fns';
-import { useGetList, Link } from 'react-admin';
+    BuildingOfficeIcon,
+    ClockIcon,
+    ExclamationTriangleIcon,
+    PhoneIcon,
+    TrendingDownIcon
+} from '@heroicons/react/24/outline';
+import { formatDistanceToNow } from 'date-fns';
+import React, { useEffect, useMemo } from 'react';
+import { Link, useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+import { useTwTheme } from '../hooks/useTwTheme';
 
-import { Organization, Interaction, Setting } from '../types';
 import { useOrganizationsNeedingVisit } from '../hooks/useReporting';
+import { Organization, Setting } from '../types';
 
 interface OrganizationWithLastInteraction
     extends Omit<Organization, 'priority' | 'segment'> {
@@ -49,8 +44,8 @@ interface OrganizationWithLastInteraction
 }
 
 export const NeedsVisitList = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTwTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
     const navigate = useNavigate();
 
     // Use the new reporting API for organizations needing visits
@@ -134,24 +129,24 @@ export const NeedsVisitList = () => {
     const getUrgencyColor = (urgencyLevel: string) => {
         switch (urgencyLevel) {
             case 'critical':
-                return theme.palette.error.main;
+                return '#dc2626'; // red-600
             case 'high':
-                return theme.palette.warning.main;
+                return '#d97706'; // amber-600
             case 'medium':
-                return theme.palette.info.main;
+                return '#2563eb'; // blue-600
             default:
-                return theme.palette.success.main;
+                return '#16a34a'; // green-600
         }
     };
 
     const getUrgencyIcon = (org: OrganizationWithLastInteraction) => {
         if (org.urgencyLevel === 'critical') {
-            return <WarningIcon color="error" />;
+            return <ExclamationTriangleIcon className="w-5 h-5 text-red-600" />;
         }
         if (org.urgencyLevel === 'high') {
-            return <StaleIcon color="warning" />;
+            return <TrendingDownIcon className="w-5 h-5 text-yellow-600" />;
         }
-        return <ScheduleIcon color="info" />;
+        return <ClockIcon className="w-5 h-5 text-blue-600" />;
     };
 
     const handleOrganizationClick = (org: OrganizationWithLastInteraction) => {
@@ -208,21 +203,21 @@ export const NeedsVisitList = () => {
                 >
                     <Chip
                         size="small"
-                        icon={<WarningIcon />}
+                        icon={<ExclamationTriangleIcon className="w-4 h-4" />}
                         label={`${stats.critical} Critical (90+ days)`}
                         color={stats.critical > 0 ? 'error' : 'default'}
                         variant={stats.critical > 0 ? 'filled' : 'outlined'}
                     />
                     <Chip
                         size="small"
-                        icon={<StaleIcon />}
+                        icon={<TrendingDownIcon className="w-4 h-4" />}
                         label={`${stats.high} High (60+ days)`}
                         color={stats.high > 0 ? 'warning' : 'default'}
                         variant={stats.high > 0 ? 'filled' : 'outlined'}
                     />
                     <Chip
                         size="small"
-                        icon={<BusinessIcon />}
+                        icon={<BuildingOfficeIcon className="w-4 h-4" />}
                         label={`${stats.neverContacted} Never contacted`}
                         color={stats.neverContacted > 0 ? 'info' : 'default'}
                         variant="outlined"
@@ -255,12 +250,10 @@ export const NeedsVisitList = () => {
                                         borderRadius: 1,
                                         backgroundColor:
                                             org.urgencyLevel === 'critical'
-                                                ? theme.palette.error.main +
-                                                  '08'
+                                                ? '#dc262620' // red-600 with 20% opacity
                                                 : org.urgencyLevel === 'high'
-                                                  ? theme.palette.warning.main +
-                                                    '08'
-                                                  : 'transparent',
+                                                    ? '#d9770620' // amber-600 with 20% opacity
+                                                    : 'transparent',
                                     }}
                                 >
                                     <ListItemIcon sx={{ minWidth: 36 }}>
@@ -272,9 +265,7 @@ export const NeedsVisitList = () => {
                                                             fontSize: 12,
                                                             color:
                                                                 org.priorityColor ||
-                                                                theme.palette
-                                                                    .primary
-                                                                    .main,
+                                                                '#2563eb', // blue-600
                                                         }}
                                                     />
                                                 ) : null
@@ -312,14 +303,12 @@ export const NeedsVisitList = () => {
                                                         sx={{
                                                             backgroundColor:
                                                                 org.segmentColor ||
-                                                                theme.palette
-                                                                    .grey[200],
-                                                            color: theme.palette.getContrastText(
-                                                                org.segmentColor ||
-                                                                    theme
-                                                                        .palette
-                                                                        .grey[200]
-                                                            ),
+                                                                '#e5e7eb', // gray-200
+                                                            color: org.segmentColor
+                                                                ? (org.segmentColor.includes('#') && parseInt(org.segmentColor.substr(1), 16) > 0x888888)
+                                                                    ? '#000000' // black for light colors
+                                                                    : '#ffffff' // white for dark colors
+                                                                : '#374151', // gray-700 for default
                                                             height: 20,
                                                             fontSize: '0.7rem',
                                                         }}
@@ -354,13 +343,13 @@ export const NeedsVisitList = () => {
                                                     variant="caption"
                                                     color={
                                                         org.urgencyLevel ===
-                                                        'critical'
+                                                            'critical'
                                                             ? 'error'
                                                             : 'textSecondary'
                                                     }
                                                     fontWeight={
                                                         org.urgencyLevel ===
-                                                        'critical'
+                                                            'critical'
                                                             ? 'bold'
                                                             : 'normal'
                                                     }
@@ -419,8 +408,8 @@ export const NeedsVisitList = () => {
                                 </ListItem>
                                 {index <
                                     organizationsNeedingVisit.length - 1 && (
-                                    <Divider />
-                                )}
+                                        <Divider />
+                                    )}
                             </React.Fragment>
                         ))}
                     </List>

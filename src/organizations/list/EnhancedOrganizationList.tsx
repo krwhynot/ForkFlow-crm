@@ -1,33 +1,30 @@
-import React, { useState, useCallback } from 'react';
+import { Box, Button, Chip, Dialog, DialogContent, Stack } from '@/components/ui-kit';
 import {
-    TopToolbar,
-    ExportButton,
+    MapPinIcon as LocationIcon,
+    MapIcon
+} from '@heroicons/react/24/outline';
+import { useCallback, useState } from 'react';
+import {
     CreateButton,
-    Pagination,
-    useGetIdentity,
+    ExportButton,
     ListBase,
-    Title,
-    ListToolbar,
-    useListContext,
+    Pagination,
     SortButton,
-    useRedirect,
+    Title,
+    TopToolbar,
+    useGetIdentity,
+    useListContext,
     useNotify,
+    useRedirect
 } from 'react-admin';
-import { Stack, Button, Dialog, DialogContent, Box, Chip } from '@mui/material';
-import {
-    Map as MapIcon,
-    LocationOn as LocationIcon,
-    Add as AddIcon,
-} from '@mui/icons-material';
-import { ImageList } from './GridList';
-import { OrganizationListFilter } from './OrganizationListFilter';
-import { OrganizationEmpty } from './OrganizationEmpty';
-import { OrganizationMapView } from './OrganizationMapView';
-import { useTerritoryFilter } from '../../hooks/useTerritoryFilter';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { Organization } from '../../types';
 import { MobileFAB } from '../common/MobileFAB';
 import { MobileOrganizationCreate } from '../form/MobileOrganizationCreate';
-import { Organization } from '../../types';
-import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { ImageList } from './GridList';
+import { OrganizationEmpty } from './OrganizationEmpty';
+import { OrganizationListFilter } from './OrganizationListFilter';
+import { OrganizationMapView } from './OrganizationMapView';
 
 /**
  * Enhanced Organization List with mobile-optimized features
@@ -36,7 +33,6 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
  * - Voice input and QR scanning integration
  * - Slide-up modal for mobile creation
  * - Enhanced mobile navigation
- * - Territory filtering and display
  */
 export const EnhancedOrganizationList = () => {
     const { identity } = useGetIdentity();
@@ -126,7 +122,6 @@ export const EnhancedOrganizationList = () => {
 
 const OrganizationListLayout = () => {
     const { data, isPending, filterValues } = useListContext();
-    const { hasRestrictions, territoryDisplayName } = useTerritoryFilter();
     const isMobile = useBreakpoint('md');
     const [showMap, setShowMap] = useState(false);
 
@@ -141,21 +136,12 @@ const OrganizationListLayout = () => {
             <Stack sx={{ width: '100%' }}>
                 <Box display="flex" alignItems="center" gap={2} mb={1}>
                     <Title title={'Organizations'} />
-                    {hasRestrictions && (
-                        <Chip
-                            icon={<LocationIcon />}
-                            label={`Territory: ${territoryDisplayName}`}
-                            color="primary"
-                            variant="outlined"
-                            size="small"
-                        />
-                    )}
                 </Box>
 
                 {/* Enhanced Toolbar */}
                 <TopToolbar>
                     <SortButton
-                        fields={['name', 'createdAt', 'nb_deals', 'revenue']}
+                        fields={['name', 'createdAt', 'revenue']}
                     />
 
                     {/* Map View Toggle */}

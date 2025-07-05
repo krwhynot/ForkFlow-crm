@@ -25,7 +25,6 @@ import { getActivityLog } from '../commons/activity';
 import { getIsInitialized } from './authProvider';
 import { supabase } from './supabase';
 import { logAuditEvent } from '../../utils/auditLogging';
-import { applyTerritoryFilter } from '../../utils/territoryFilter';
 import {
     getCurrentLocation as getInteractionLocation,
     validateFileAttachment,
@@ -50,11 +49,9 @@ import {
 import {
     searchOrganizations,
     findNearbyOrganizations,
-    getTerritoryOrganizations,
     importOrganizationsFromCSV,
     getOrganizationSummary,
     type OrganizationSearchResult,
-    type TerritoryBoundary,
     type OrganizationAnalytics,
     type BulkImportResult,
     type OrganizationSummary,
@@ -629,16 +626,6 @@ const dataProviderWithCustomMethods = {
     },
 
     /**
-     * Get organizations within a user's territory
-     */
-    async getTerritoryOrganizations(
-        userId: string,
-        territory?: TerritoryBoundary
-    ) {
-        return getTerritoryOrganizations(this, userId, territory);
-    },
-
-    /**
      * Import organizations from CSV data with validation
      */
     async importOrganizationsFromCSV(
@@ -918,39 +905,6 @@ export const dataProvider = withLifecycleCallbacks(
                     'notes',
                 ])(params);
 
-                // Then apply territory filtering based on current user
-                const { data: user } = await supabase.auth.getUser();
-                if (user?.user) {
-                    // Get user profile to check role and territory
-                    const { data: userProfile } = await supabase
-                        .from('profiles')
-                        .select('role, territory')
-                        .eq('id', user.user.id)
-                        .single();
-
-                    if (userProfile) {
-                        const userData = {
-                            id: user.user.id,
-                            email: user.user.email || '',
-                            firstName:
-                                user.user.user_metadata?.first_name || '',
-                            lastName: user.user.user_metadata?.last_name || '',
-                            role: userProfile.role || 'broker',
-                            territory: userProfile.territory || [],
-                            isActive: true,
-                            createdAt: user.user.created_at,
-                            updatedAt:
-                                user.user.updated_at || user.user.created_at,
-                        };
-
-                        processedParams = applyTerritoryFilter({
-                            user: userData,
-                            resource: 'organizations',
-                            params: processedParams,
-                        });
-                    }
-                }
-
                 return processedParams;
             },
             beforeCreate: async params => {
@@ -976,38 +930,6 @@ export const dataProvider = withLifecycleCallbacks(
                     'phone',
                     'notes',
                 ])(params);
-
-                // Apply territory filtering for contacts (through organization)
-                const { data: user } = await supabase.auth.getUser();
-                if (user?.user) {
-                    const { data: userProfile } = await supabase
-                        .from('profiles')
-                        .select('role, territory')
-                        .eq('id', user.user.id)
-                        .single();
-
-                    if (userProfile) {
-                        const userData = {
-                            id: user.user.id,
-                            email: user.user.email || '',
-                            firstName:
-                                user.user.user_metadata?.first_name || '',
-                            lastName: user.user.user_metadata?.last_name || '',
-                            role: userProfile.role || 'broker',
-                            territory: userProfile.territory || [],
-                            isActive: true,
-                            createdAt: user.user.created_at,
-                            updatedAt:
-                                user.user.updated_at || user.user.created_at,
-                        };
-
-                        processedParams = applyTerritoryFilter({
-                            user: userData,
-                            resource: 'contacts',
-                            params: processedParams,
-                        });
-                    }
-                }
 
                 return processedParams;
             },
@@ -1142,38 +1064,6 @@ export const dataProvider = withLifecycleCallbacks(
                     'locationNotes',
                 ])(params);
 
-                // Apply territory filtering for interactions (through organization)
-                const { data: user } = await supabase.auth.getUser();
-                if (user?.user) {
-                    const { data: userProfile } = await supabase
-                        .from('profiles')
-                        .select('role, territory')
-                        .eq('id', user.user.id)
-                        .single();
-
-                    if (userProfile) {
-                        const userData = {
-                            id: user.user.id,
-                            email: user.user.email || '',
-                            firstName:
-                                user.user.user_metadata?.first_name || '',
-                            lastName: user.user.user_metadata?.last_name || '',
-                            role: userProfile.role || 'broker',
-                            territory: userProfile.territory || [],
-                            isActive: true,
-                            createdAt: user.user.created_at,
-                            updatedAt:
-                                user.user.updated_at || user.user.created_at,
-                        };
-
-                        processedParams = applyTerritoryFilter({
-                            user: userData,
-                            resource: 'interactions',
-                            params: processedParams,
-                        });
-                    }
-                }
-
                 return processedParams;
             },
             beforeCreate: async params => {
@@ -1220,38 +1110,6 @@ export const dataProvider = withLifecycleCallbacks(
                     'notes',
                     'stage',
                 ])(params);
-
-                // Apply territory filtering for deals (through organization)
-                const { data: user } = await supabase.auth.getUser();
-                if (user?.user) {
-                    const { data: userProfile } = await supabase
-                        .from('profiles')
-                        .select('role, territory')
-                        .eq('id', user.user.id)
-                        .single();
-
-                    if (userProfile) {
-                        const userData = {
-                            id: user.user.id,
-                            email: user.user.email || '',
-                            firstName:
-                                user.user.user_metadata?.first_name || '',
-                            lastName: user.user.user_metadata?.last_name || '',
-                            role: userProfile.role || 'broker',
-                            territory: userProfile.territory || [],
-                            isActive: true,
-                            createdAt: user.user.created_at,
-                            updatedAt:
-                                user.user.updated_at || user.user.created_at,
-                        };
-
-                        processedParams = applyTerritoryFilter({
-                            user: userData,
-                            resource: 'deals',
-                            params: processedParams,
-                        });
-                    }
-                }
 
                 return processedParams;
             },

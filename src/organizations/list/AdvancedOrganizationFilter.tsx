@@ -1,33 +1,33 @@
-import React, { useState, useCallback, useMemo } from 'react';
 import {
+    Autocomplete,
+    Box,
     Card,
     CardContent,
-    Grid,
-    TextField,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    Select,
     Chip,
-    Box,
-    IconButton,
     Collapse,
-    Typography,
+    FormControl,
+    Grid,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select,
     Slider,
     Stack,
-    Autocomplete,
-    InputAdornment,
-} from '@mui/material';
+    TextField,
+    Typography,
+} from '@/components/ui-kit';
 import {
-    Search as SearchIcon,
-    ExpandMore as ExpandMoreIcon,
-    ExpandLess as ExpandLessIcon,
-    Clear as ClearIcon,
-    TuneIcon,
-} from '@mui/icons-material';
+    XMarkIcon as ClearIcon,
+    ChevronUpIcon as ExpandLessIcon,
+    ChevronDownIcon as ExpandMoreIcon,
+    MagnifyingGlassIcon as SearchIcon,
+    AdjustmentsHorizontalIcon as TuneIcon,
+} from '@heroicons/react/24/outline';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useListContext } from 'react-admin';
-import { useDebounce } from '../hooks/useDebounce';
 import { OrganizationFilter } from '../../types';
+import { useDebounce } from '../hooks/useDebounce';
 
 /**
  * Advanced filter component for organizations with debounced search,
@@ -165,7 +165,7 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <SearchIcon color="action" />
+                                    <SearchIcon className="h-4 w-4 text-gray-400" />
                                 </InputAdornment>
                             ),
                             endAdornment: searchQuery && (
@@ -175,7 +175,7 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                                         onClick={() => setSearchQuery('')}
                                         edge="end"
                                     >
-                                        <ClearIcon fontSize="small" />
+                                        <ClearIcon className="h-4 w-4 text-gray-400" />
                                     </IconButton>
                                 </InputAdornment>
                             ),
@@ -192,11 +192,11 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                             position: 'relative',
                         }}
                     >
-                        <TuneIcon />
+                        <TuneIcon className="h-4 w-4 text-gray-400" />
                         {expanded ? (
-                            <ExpandLessIcon sx={{ ml: 0.5 }} />
+                            <ExpandLessIcon className="h-4 w-4 text-gray-400" />
                         ) : (
-                            <ExpandMoreIcon sx={{ ml: 0.5 }} />
+                            <ExpandMoreIcon className="h-4 w-4 text-gray-400" />
                         )}
                         {activeFiltersCount > 0 && (
                             <Chip
@@ -225,7 +225,7 @@ export const AdvancedOrganizationFilter: React.FC = () => {
                             size="small"
                             sx={{ minHeight: '40px', minWidth: '40px' }}
                         >
-                            <ClearIcon />
+                            <ClearIcon className="h-4 w-4 text-gray-400" />
                         </IconButton>
                     )}
                 </Box>

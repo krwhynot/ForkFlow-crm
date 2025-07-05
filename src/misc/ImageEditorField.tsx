@@ -1,6 +1,5 @@
 import {
     Avatar,
-    AvatarProps,
     Box,
     Button,
     Dialog,
@@ -10,7 +9,7 @@ import {
     Link,
     Stack,
     Typography,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import 'cropperjs/dist/cropper.css';
 import { useFieldValue } from 'ra-core';
 import { createRef, useCallback, useState } from 'react';
@@ -193,7 +192,7 @@ export default ImageEditorField;
 export interface ImageEditorFieldProps<
     RecordType extends Record<string, any> = Record<string, any>,
 > extends FieldProps<RecordType>,
-        AvatarProps {
+    AvatarProps {
     width?: number;
     height?: number;
     type?: 'avatar' | 'image';

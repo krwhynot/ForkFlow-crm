@@ -29,13 +29,13 @@ import {
 import { useBreakpoint } from '../hooks/useBreakpoint';
 // Timeline components alternative - using simple layout instead
 import {
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-} from '@mui/icons-material';
+    EnvelopeIcon as EmailIcon,
+    PhoneIcon,
+    MapPinIcon as PersonIcon,
+    PresentationChartLineIcon as DemoIcon,
+    CurrencyDollarIcon as QuoteIcon,
+    ClockIcon as FollowUpIcon,
+} from '@heroicons/react/24/outline';
 
 import { InteractionCard } from './InteractionCard';
 import { InteractionEmpty } from './InteractionEmpty';
@@ -82,8 +82,7 @@ const InteractionListDesktop = () => (
                     <Chip
                         label={record?.label || 'Unknown'}
                         size="small"
-                        variant="outlined"
-                        className="min-w-20"
+                        className="min-w-20 border border-gray-300 bg-transparent"
                     />
                 )}
             />

@@ -4,10 +4,10 @@
  * Adds mobile-optimized organization management with GPS, search, and territory features
  */
 
-import { DataProvider, Identifier, GetListParams } from 'react-admin';
-import { Organization, GPSCoordinates } from '../../types';
-import { supabase } from './supabase';
+import { DataProvider, Identifier } from 'react-admin';
+import { GPSCoordinates, Organization } from '../../types';
 import { logAuditEvent } from '../../utils/auditLogging';
+import { supabase } from './supabase';
 
 // Organization search result interface
 export interface OrganizationSearchResult extends Organization {
@@ -502,18 +502,11 @@ export const getOrganizationSummary = async (
         filter: { organizationId },
     });
 
-    // Get active deals
-    const dealsResult = await dataProvider.getList('deals', {
-        pagination: { page: 1, perPage: 1000 },
-        sort: { field: 'updatedAt', order: 'DESC' },
-        filter: { organizationId, status: 'active' },
-    });
-
     // Calculate analytics
     const analytics = await calculateOrganizationAnalytics(
         organizationId,
         interactionsResult.data || [],
-        dealsResult.data || []
+        []
     );
 
     const summary: OrganizationSummary = {
@@ -521,11 +514,11 @@ export const getOrganizationSummary = async (
         contactCount: contacts.length,
         primaryContact: primaryContact
             ? {
-                  id: primaryContact.id,
-                  name: `${primaryContact.firstName} ${primaryContact.lastName}`,
-                  email: primaryContact.email,
-                  phone: primaryContact.phone,
-              }
+                id: primaryContact.id,
+                name: `${primaryContact.firstName} ${primaryContact.lastName}`,
+                email: primaryContact.email,
+                phone: primaryContact.phone,
+            }
             : undefined,
         recentInteractions: (interactionsResult.data || []).map(
             interaction => ({
@@ -536,13 +529,7 @@ export const getOrganizationSummary = async (
                 outcome: interaction.outcome,
             })
         ),
-        activeDeals: (dealsResult.data || []).map(deal => ({
-            id: deal.id,
-            name: deal.name || `Deal #${deal.id}`,
-            stage: deal.stage,
-            probability: deal.probability,
-            amount: deal.amount,
-        })),
+        activeDeals: [],
         analytics,
     };
 
@@ -564,9 +551,9 @@ const calculateDistance = (
     const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos((lat1 * Math.PI) / 180) *
-            Math.cos((lat2 * Math.PI) / 180) *
-            Math.sin(dLon / 2) *
-            Math.sin(dLon / 2);
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 };
@@ -708,13 +695,13 @@ const calculateOrganizationAnalytics = async (
     const daysSinceLastInteraction =
         interactions.length > 0
             ? Math.floor(
-                  (now.getTime() -
-                      new Date(
-                          interactions[0].scheduledDate ||
-                              interactions[0].createdAt
-                      ).getTime()) /
-                      (1000 * 60 * 60 * 24)
-              )
+                (now.getTime() -
+                    new Date(
+                        interactions[0].scheduledDate ||
+                        interactions[0].createdAt
+                    ).getTime()) /
+                (1000 * 60 * 60 * 24)
+            )
             : 365;
 
     let engagementScore = Math.max(0, 100 - daysSinceLastInteraction * 2);
@@ -730,9 +717,9 @@ const calculateOrganizationAnalytics = async (
     const averageCloseRate =
         activeDeals.length > 0
             ? activeDeals.reduce(
-                  (sum, deal) => sum + (deal.probability || 0),
-                  0
-              ) / activeDeals.length
+                (sum, deal) => sum + (deal.probability || 0),
+                0
+            ) / activeDeals.length
             : 0;
 
     // Identify risk factors
@@ -803,12 +790,12 @@ export const calculateDetailedEngagementScore = async (
     const lastInteraction = interactions?.[0];
     const daysSinceLastInteraction = lastInteraction
         ? Math.floor(
-              (now.getTime() -
-                  new Date(
-                      lastInteraction.scheduledDate || lastInteraction.createdAt
-                  ).getTime()) /
-                  (1000 * 60 * 60 * 24)
-          )
+            (now.getTime() -
+                new Date(
+                    lastInteraction.scheduledDate || lastInteraction.createdAt
+                ).getTime()) /
+            (1000 * 60 * 60 * 24)
+        )
         : 365;
 
     // Base score calculation
@@ -872,13 +859,9 @@ export const calculateOrganizationRisk = async (
     factors: string[];
     recommendations: string[];
 }> => {
-    const [engagementData, { data: deals }, { count: contactCount }] =
+    const [engagementData, { count: contactCount }] =
         await Promise.all([
             calculateDetailedEngagementScore(organizationId),
-            supabase
-                .from('deals')
-                .select('*')
-                .eq('organizationId', organizationId),
             supabase
                 .from('contacts')
                 .select('*', { count: 'exact', head: true })
@@ -905,25 +888,6 @@ export const calculateOrganizationRisk = async (
         riskScore += 25;
         factors.push('Declining engagement');
         recommendations.push('Investigate engagement issues');
-    }
-
-    // Pipeline risk
-    const activeDeals = (deals || []).filter(d => d.status === 'active');
-    if (activeDeals.length === 0) {
-        riskScore += 20;
-        factors.push('No active opportunities');
-        recommendations.push('Explore new opportunity development');
-    } else {
-        const avgCloseRate =
-            activeDeals.reduce(
-                (sum, deal) => sum + (deal.probability || 0),
-                0
-            ) / activeDeals.length;
-        if (avgCloseRate < 25) {
-            riskScore += 15;
-            factors.push('Low deal probability');
-            recommendations.push('Review and strengthen deal qualification');
-        }
     }
 
     // Contact coverage risk
@@ -958,13 +922,9 @@ export const calculateAdvancedOpportunityScore = async (
     confidence: 'low' | 'medium' | 'high';
     nextBestAction: string;
 }> => {
-    const [engagementData, { data: deals }, { count: contactCount }] =
+    const [engagementData, { count: contactCount }] =
         await Promise.all([
             calculateDetailedEngagementScore(organizationId),
-            supabase
-                .from('deals')
-                .select('*')
-                .eq('organizationId', organizationId),
             supabase
                 .from('contacts')
                 .select('*', { count: 'exact', head: true })
@@ -988,20 +948,11 @@ export const calculateAdvancedOpportunityScore = async (
     }
 
     // Pipeline factors
-    const activeDeals = (deals || []).filter(d => d.status === 'active');
-    const avgCloseRate =
-        activeDeals.length > 0
-            ? activeDeals.reduce(
-                  (sum, deal) => sum + (deal.probability || 0),
-                  0
-              ) / activeDeals.length
-            : 0;
-    const totalValue = activeDeals.reduce(
-        (sum, deal) => sum + (deal.amount || 0),
-        0
-    );
+    const activeDeals = [];
+    const avgCloseRate = 0;
+    const totalValue = 0;
 
-    if (avgCloseRate > 75) {
+    if (engagementData.score > 70) {
         score += 30;
         factors.push('High-probability deals in pipeline');
         actions.push('Focus on deal acceleration');

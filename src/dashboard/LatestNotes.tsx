@@ -1,5 +1,5 @@
-import NoteIcon from '@mui/icons-material/Note';
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@/components/ui-kit';
+import { DocumentTextIcon as NoteIcon } from '@heroicons/react/24/outline';
 import { formatDistance } from 'date-fns';
 import {
     FunctionField,
@@ -53,11 +53,11 @@ export const LatestNotes = () => {
 
     return (
         <div>
-            <Box display="flex" alignItems="center" marginBottom="1em">
-                <Box ml={2} mr={2} display="flex">
-                    <NoteIcon color="disabled" fontSize="large" />
+            <Box className="flex items-center mb-4">
+                <Box className="ml-4 mr-4 flex">
+                    <NoteIcon className="h-8 w-8 text-gray-400" />
                 </Box>
-                <Typography variant="h5" color="textSecondary">
+                <Typography variant="h5" className="text-gray-600">
                     My Latest Notes
                 </Typography>
             </Box>
@@ -67,11 +67,11 @@ export const LatestNotes = () => {
                         <Box
                             id={`${note.type}_${note.id}`}
                             key={`${note.type}_${note.id}`}
-                            sx={{ marginBottom: 2 }}
+                            className="mb-4"
                         >
                             <Typography
                                 variant="body2"
-                                color="textSecondary"
+                                className="text-gray-600"
                                 component="div"
                             >
                                 on{' '}
@@ -88,12 +88,7 @@ export const LatestNotes = () => {
                             <div>
                                 <Typography
                                     variant="body2"
-                                    sx={{
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: 3,
-                                        WebkitBoxOrient: 'vertical',
-                                        overflow: 'hidden',
-                                    }}
+                                    className="line-clamp-3 overflow-hidden"
                                 >
                                     {note.text}
                                 </Typography>

@@ -10,8 +10,7 @@ import {
 } from 'react-admin';
 import { matchPath, useLocation } from 'react-router';
 
-import { Card, Stack } from '@mui/material';
-import { useConfigurationContext } from '../root/ConfigurationContext';
+import { Card, Stack } from '../components/ui-kit';
 import { OpportunityCreate } from './OpportunityCreate';
 import { OpportunityEdit } from './OpportunityEdit';
 import { OpportunityEmpty } from './OpportunityEmpty';
@@ -43,7 +42,6 @@ const OpportunityLayout = () => {
     const matchShow = matchPath('/opportunities/:id/show', location.pathname);
     const matchEdit = matchPath('/opportunities/:id', location.pathname);
 
-    const { dealCategories } = useConfigurationContext();
     const { data, isPending, filterValues } = useListContext();
 
     if (matchCreate) {

@@ -1,22 +1,20 @@
-import React from 'react';
 import {
+    Box,
     Card,
     CardContent,
-    Typography,
-    Box,
-    Grid,
+    Chip,
+    LinearProgress,
     List,
     ListItem,
     ListItemText,
-    Chip,
-    LinearProgress,
-} from '@mui/material';
+    Typography,
+} from '@/components/ui-kit';
 import {
-    TrendingUp as TrendIcon,
-    Schedule as TimeIcon,
-    LocationOn as LocationIcon,
-    Assessment as StatsIcon,
-} from '@mui/icons-material';
+    MapPinIcon as LocationIcon,
+    ChartBarIcon as StatsIcon,
+    ClockIcon as TimeIcon,
+    ArrowTrendingUpIcon as TrendIcon,
+} from '@heroicons/react/24/outline';
 import { Visit } from '../types';
 
 interface VisitTrendsProps {
@@ -100,13 +98,13 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
     const weekOverWeekChange =
         lastWeekVisits.length > 0
             ? (
-                  ((thisWeekVisits.length - lastWeekVisits.length) /
-                      lastWeekVisits.length) *
-                  100
-              ).toFixed(0)
+                ((thisWeekVisits.length - lastWeekVisits.length) /
+                    lastWeekVisits.length) *
+                100
+            ).toFixed(0)
             : thisWeekVisits.length > 0
-              ? '100'
-              : '0';
+                ? '100'
+                : '0';
 
     // Visit type colors
     const getVisitTypeColor = (type: string) => {
@@ -125,81 +123,66 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
             <Typography
                 variant="h6"
                 gutterBottom
-                sx={{ display: 'flex', alignItems: 'center', mb: 3 }}
+                className="flex items-center mb-6"
             >
-                <TrendIcon sx={{ mr: 1 }} />
+                <TrendIcon className="h-5 w-5 mr-2" />
                 Visit Trends & Performance
             </Typography>
 
-            <Grid container spacing={2}>
+            <div className="grid gap-4 md:grid-cols-2">
                 {/* Weekly Performance */}
-                <Grid item xs={12} md={6}>
+                <div>
                     <Card>
                         <CardContent>
                             <Typography
                                 variant="subtitle1"
                                 gutterBottom
-                                sx={{ display: 'flex', alignItems: 'center' }}
+                                className="flex items-center"
                             >
-                                <StatsIcon sx={{ mr: 1, fontSize: 20 }} />
+                                <StatsIcon className="h-5 w-5 mr-2" />
                                 Weekly Performance
                             </Typography>
 
-                            <Box sx={{ mb: 2 }}>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        mb: 1,
-                                    }}
-                                >
+                            <Box className="mb-4">
+                                <Box className="flex justify-between items-center mb-2">
                                     <Typography
                                         variant="h4"
                                         component="span"
-                                        sx={{ fontWeight: 'bold' }}
+                                        className="font-bold"
                                     >
                                         {thisWeekVisits.length}
                                     </Typography>
                                     <Chip
                                         label={`${weekOverWeekChange > '0' ? '+' : ''}${weekOverWeekChange}%`}
-                                        color={
-                                            Number(weekOverWeekChange) >= 0
-                                                ? 'success'
-                                                : 'error'
-                                        }
+                                        className={`${Number(weekOverWeekChange) >= 0
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                            }`}
                                         size="small"
                                     />
                                 </Box>
                                 <Typography
                                     variant="body2"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     visits this week vs {lastWeekVisits.length}{' '}
                                     last week
                                 </Typography>
                             </Box>
 
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="body2" sx={{ mb: 1 }}>
+                            <Box className="mb-4">
+                                <Typography variant="body2" className="mb-2">
                                     Daily Visit Pattern (Last 7 Days)
                                 </Typography>
                                 {dailyVisitCounts.map(
                                     ({ date, count }, index) => (
                                         <Box
                                             key={index}
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                mb: 0.5,
-                                            }}
+                                            className="flex items-center mb-1"
                                         >
                                             <Typography
                                                 variant="caption"
-                                                sx={{
-                                                    minWidth: 45,
-                                                    fontSize: '0.7rem',
-                                                }}
+                                                className="min-w-[45px] text-xs"
                                             >
                                                 {date.toLocaleDateString(
                                                     undefined,
@@ -212,19 +195,11 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                                                     (count / maxDailyVisits) *
                                                     100
                                                 }
-                                                sx={{
-                                                    flex: 1,
-                                                    mx: 1,
-                                                    height: 6,
-                                                    borderRadius: 3,
-                                                }}
+                                                className="flex-1 mx-2 h-1.5 rounded-full"
                                             />
                                             <Typography
                                                 variant="caption"
-                                                sx={{
-                                                    minWidth: 20,
-                                                    fontSize: '0.7rem',
-                                                }}
+                                                className="min-w-[20px] text-xs"
                                             >
                                                 {count}
                                             </Typography>
@@ -233,14 +208,7 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                                 )}
                             </Box>
 
-                            <Box
-                                sx={{
-                                    p: 1,
-                                    bgcolor: 'primary.light',
-                                    borderRadius: 1,
-                                    color: 'primary.contrastText',
-                                }}
-                            >
+                            <Box className="p-2 bg-blue-100 rounded text-blue-900">
                                 <Typography variant="body2">
                                     <strong>Today:</strong> {todayVisits.length}{' '}
                                     visit{todayVisits.length !== 1 ? 's' : ''}
@@ -248,18 +216,18 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
+                </div>
 
                 {/* Visit Types */}
-                <Grid item xs={12} md={6}>
+                <div>
                     <Card>
                         <CardContent>
                             <Typography
                                 variant="subtitle1"
                                 gutterBottom
-                                sx={{ display: 'flex', alignItems: 'center' }}
+                                className="flex items-center"
                             >
-                                <LocationIcon sx={{ mr: 1, fontSize: 20 }} />
+                                <LocationIcon className="h-5 w-5 mr-2" />
                                 Visit Types
                             </Typography>
 
@@ -270,41 +238,32 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                                         const percentage =
                                             visits.length > 0
                                                 ? Math.round(
-                                                      (count / visits.length) *
-                                                          100
-                                                  )
+                                                    (count / visits.length) *
+                                                    100
+                                                )
                                                 : 0;
                                         return (
-                                            <ListItem key={type} sx={{ px: 0 }}>
+                                            <ListItem key={type} className="px-0">
                                                 <ListItemText
                                                     primary={type
                                                         .replace('_', ' ')
                                                         .toUpperCase()}
                                                     secondary={`${count} visits (${percentage}%)`}
                                                 />
-                                                <Box
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: 1,
-                                                    }}
-                                                >
+                                                <Box className="flex items-center gap-2">
                                                     <LinearProgress
                                                         variant="determinate"
                                                         value={percentage}
-                                                        sx={{
-                                                            width: 60,
-                                                            height: 4,
-                                                            borderRadius: 2,
-                                                        }}
+                                                        className="w-15 h-1 rounded-full"
                                                     />
                                                     <Chip
                                                         label={count}
-                                                        color={
-                                                            getVisitTypeColor(
-                                                                type
-                                                            ) as any
-                                                        }
+                                                        className={`${getVisitTypeColor(type) === 'primary' ? 'bg-blue-100 text-blue-800' :
+                                                                getVisitTypeColor(type) === 'secondary' ? 'bg-gray-100 text-gray-800' :
+                                                                    getVisitTypeColor(type) === 'success' ? 'bg-green-100 text-green-800' :
+                                                                        getVisitTypeColor(type) === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                                                                            'bg-gray-100 text-gray-800'
+                                                            }`}
                                                         size="small"
                                                     />
                                                 </Box>
@@ -314,30 +273,18 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                             </List>
 
                             {avgDuration > 0 && (
-                                <Box
-                                    sx={{
-                                        mt: 2,
-                                        p: 1,
-                                        bgcolor: 'grey.50',
-                                        borderRadius: 1,
-                                    }}
-                                >
+                                <Box className="mt-4 p-2 bg-gray-50 rounded">
                                     <Typography
                                         variant="body2"
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                        }}
+                                        className="flex items-center"
                                     >
-                                        <TimeIcon
-                                            sx={{ mr: 1, fontSize: 16 }}
-                                        />
+                                        <TimeIcon className="h-4 w-4 mr-2" />
                                         <strong>Avg Duration:</strong>{' '}
                                         {avgDuration} minutes
                                     </Typography>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         Based on {visitsWithDuration.length}{' '}
                                         visits with recorded duration
@@ -346,110 +293,102 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                             )}
                         </CardContent>
                     </Card>
-                </Grid>
+                </div>
+            </div>
 
-                {/* Monthly Overview */}
-                <Grid item xs={12}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="subtitle1" gutterBottom>
-                                Monthly Summary
-                            </Typography>
+            {/* Monthly Overview */}
+            <div className="mt-4">
+                <Card>
+                    <CardContent>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Monthly Summary
+                        </Typography>
 
-                            <Grid container spacing={2}>
-                                <Grid item xs={6} sm={3}>
-                                    <Box sx={{ textAlign: 'center', p: 1 }}>
-                                        <Typography
-                                            variant="h5"
-                                            component="div"
-                                            sx={{ fontWeight: 'bold' }}
-                                        >
-                                            {thisMonthVisits.length}
-                                        </Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                        >
-                                            This Month
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6} sm={3}>
-                                    <Box sx={{ textAlign: 'center', p: 1 }}>
-                                        <Typography
-                                            variant="h5"
-                                            component="div"
-                                            sx={{ fontWeight: 'bold' }}
-                                        >
-                                            {Math.round(
-                                                (thisMonthVisits.length /
-                                                    new Date(
-                                                        now.getFullYear(),
-                                                        now.getMonth() + 1,
-                                                        0
-                                                    ).getDate()) *
-                                                    7
-                                            )}
-                                        </Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                        >
-                                            Weekly Avg
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6} sm={3}>
-                                    <Box sx={{ textAlign: 'center', p: 1 }}>
-                                        <Typography
-                                            variant="h5"
-                                            component="div"
-                                            sx={{ fontWeight: 'bold' }}
-                                        >
-                                            {
-                                                visits.filter(
-                                                    v =>
-                                                        v.latitude &&
-                                                        v.longitude
-                                                ).length
-                                            }
-                                        </Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                        >
-                                            GPS Tracked
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6} sm={3}>
-                                    <Box sx={{ textAlign: 'center', p: 1 }}>
-                                        <Typography
-                                            variant="h5"
-                                            component="div"
-                                            sx={{ fontWeight: 'bold' }}
-                                        >
-                                            {
-                                                new Set(
-                                                    visits.map(
-                                                        v => v.customer_id
-                                                    )
-                                                ).size
-                                            }
-                                        </Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                        >
-                                            Unique Customers
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div className="text-center p-2">
+                                <Typography
+                                    variant="h5"
+                                    component="div"
+                                    className="font-bold"
+                                >
+                                    {thisMonthVisits.length}
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    className="text-gray-600"
+                                >
+                                    This Month
+                                </Typography>
+                            </div>
+                            <div className="text-center p-2">
+                                <Typography
+                                    variant="h5"
+                                    component="div"
+                                    className="font-bold"
+                                >
+                                    {Math.round(
+                                        (thisMonthVisits.length /
+                                            new Date(
+                                                now.getFullYear(),
+                                                now.getMonth() + 1,
+                                                0
+                                            ).getDate()) *
+                                        7
+                                    )}
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    className="text-gray-600"
+                                >
+                                    Weekly Avg
+                                </Typography>
+                            </div>
+                            <div className="text-center p-2">
+                                <Typography
+                                    variant="h5"
+                                    component="div"
+                                    className="font-bold"
+                                >
+                                    {
+                                        visits.filter(
+                                            v =>
+                                                v.latitude &&
+                                                v.longitude
+                                        ).length
+                                    }
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    className="text-gray-600"
+                                >
+                                    GPS Tracked
+                                </Typography>
+                            </div>
+                            <div className="text-center p-2">
+                                <Typography
+                                    variant="h5"
+                                    component="div"
+                                    className="font-bold"
+                                >
+                                    {
+                                        new Set(
+                                            visits.map(
+                                                v => v.customer_id
+                                            )
+                                        ).size
+                                    }
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    className="text-gray-600"
+                                >
+                                    Unique Customers
+                                </Typography>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </Box>
     );
 };

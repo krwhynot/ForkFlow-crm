@@ -1,41 +1,42 @@
-import * as React from 'react';
 import {
-    List,
-    Datagrid,
-    TextField,
-    BooleanField,
-    ReferenceField,
-    TopToolbar,
-    CreateButton,
-    ExportButton,
-    FilterButton,
-    TextInput,
-    SelectInput,
-    BooleanInput,
-    NumberInput,
-    useListContext,
-    useGetList,
-    useRecordContext,
-    BulkActionsToolbar,
-} from 'react-admin';
-import {
-    Stack,
-    Typography,
+    Box,
+    Button,
     Card,
     CardContent,
-    Box,
     Chip,
-    Button,
+    Stack,
+    Typography,
 } from '@/components/ui-kit';
-import { Grid } from '@mui/material';
-import { Edit as EditIcon, Visibility as ViewIcon } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import {
+    PencilSquareIcon as EditIcon,
+    EyeIcon as ViewIcon,
+} from '@heroicons/react/24/outline';
+import * as React from 'react';
+import {
+    BooleanField,
+    BooleanInput,
+    BulkActionsToolbar,
+    CreateButton,
+    Datagrid,
+    ExportButton,
+    FilterButton,
+    List,
+    NumberInput,
+    ReferenceField,
+    SelectInput,
+    TextField,
+    TextInput,
+    TopToolbar,
+    useGetList,
+    useListContext,
+    useRecordContext,
+} from 'react-admin';
 
-import { Product, Setting } from '../types';
-import { ProductBulkActions } from './ProductBulkActions';
-import { PriceField } from './PriceField';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useTwTheme } from '../hooks/useTwTheme';
+import { Product, Setting } from '../types';
+import { PriceField } from './PriceField';
+import { ProductBulkActions } from './ProductBulkActions';
 
 // Product List Actions in Top Toolbar
 const ProductListActions = () => (
@@ -131,9 +132,8 @@ const EnhancedProductCard = () => {
             component="article"
             role="button"
             tabIndex={0}
-            aria-label={`Product: ${record.name}, SKU: ${record.sku}, Price: ${
-                record.pricePerUnit ? `$${record.pricePerUnit}` : 'Not set'
-            }`}
+            aria-label={`Product: ${record.name}, SKU: ${record.sku}, Price: ${record.pricePerUnit ? `$${record.pricePerUnit}` : 'Not set'
+                }`}
             onKeyDown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();

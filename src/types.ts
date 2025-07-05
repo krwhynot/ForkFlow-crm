@@ -78,7 +78,6 @@ export interface Organization {
     averageDealSize?: number;
     conversionRate?: number;
     // Territory management
-    territoryId?: number;
     assignedSalesRep?: string;
     accountManager?: string;
 }
@@ -95,7 +94,6 @@ export interface OrganizationFilter {
     business_type?: 'restaurant' | 'grocery' | 'distributor' | 'other';
     size?: 'Very Small' | 'Small' | 'Medium' | 'Big' | 'Very Big';
     broker_id?: number;
-    territoryId?: number;
     hasDeals?: boolean;
     revenueMin?: number;
     revenueMax?: number;
@@ -213,7 +211,6 @@ export interface Sale {
     avatar?: RAFile;
     phone?: string;
     title?: string;
-    territory?: string;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -349,7 +346,6 @@ export interface User {
     avatar?: RAFile;
     phone?: string;
     title?: string;
-    territory?: string;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -386,7 +382,6 @@ export interface BrokerFormData {
     lastName: string;
     email: string;
     phone?: string;
-    territory?: string;
 }
 
 export interface PasswordResetRequest {

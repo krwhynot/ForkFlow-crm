@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { SpeedDial, SpeedDialAction, Backdrop } from '../components/ui-kit';
 import {
     PlusIcon as AddIcon,
-    BuildingOfficeIcon as OrganizationIcon,
+    XMarkIcon as CloseIcon,
     UserIcon as ContactIcon,
     DocumentTextIcon as InteractionIcon,
-    TrendingUpIcon as OpportunityIcon,
+    ArrowTrendingUpIcon as OpportunityIcon,
+    BuildingOfficeIcon as OrganizationIcon,
     CalendarIcon as ReminderIcon,
-    XMarkIcon as CloseIcon,
 } from '@heroicons/react/24/outline';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Backdrop, SpeedDial, SpeedDialAction } from '../components/ui-kit';
 
 export const QuickActionsFAB = () => {
     const isMobile = window.innerWidth < 768; // Tailwind 'md' breakpoint

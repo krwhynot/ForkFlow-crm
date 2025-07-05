@@ -1,9 +1,19 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "target": "ES2019",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "types": ["node"],
-        "typeRoots": ["./node_modules/@types", "./src/@types"],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "types": [
+            "node"
+        ],
+        "typeRoots": [
+            "./node_modules/@types",
+            "./src/@types"
+        ],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
@@ -16,8 +26,20 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        }
     },
-    "include": ["src", "src/@types/**/*"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+    "include": [
+        "src",
+        "src/@types/**/*"
+    ],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
 }

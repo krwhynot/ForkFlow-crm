@@ -1,29 +1,29 @@
-import React, { forwardRef, useMemo, useCallback } from 'react';
-import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
 import {
+    Avatar,
     Box,
+    Chip,
+    IconButton,
+    LinearProgress,
     Paper,
-    TableContainer,
     Table,
+    TableCell,
+    TableContainer,
     TableHead,
     TableRow,
-    TableCell,
     TableSortLabel,
     Typography,
-    LinearProgress,
-    Chip,
-    Avatar,
-    IconButton,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Edit as EditIcon,
-    Visibility as ViewIcon,
-    Business as BusinessIcon,
-} from '@mui/icons-material';
-import { Organization, OrganizationListViewMode } from '../../types';
-import { useInfiniteOrganizations } from '../hooks/useInfiniteOrganizations';
+    BuildingOffice2Icon as BusinessIcon,
+    PencilSquareIcon as EditIcon,
+    EyeIcon as ViewIcon,
+} from '@heroicons/react/24/outline';
+import React, { forwardRef, useCallback, useMemo } from 'react';
+import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { OrganizationListViewMode } from '../../types';
+import { useInfiniteOrganizations } from '../hooks/useInfiniteOrganizations';
 
 interface VirtualizedOrganizationTableProps {
     viewMode: OrganizationListViewMode;
@@ -118,8 +118,8 @@ export const VirtualizedOrganizationTable: React.FC<
                             active={viewMode.sortField === 'name'}
                             direction={
                                 viewMode.sortOrder.toLowerCase() as
-                                    | 'asc'
-                                    | 'desc'
+                                | 'asc'
+                                | 'desc'
                             }
                             onClick={() => handleSort('name')}
                         >
@@ -135,8 +135,8 @@ export const VirtualizedOrganizationTable: React.FC<
                                     }
                                     direction={
                                         viewMode.sortOrder.toLowerCase() as
-                                            | 'asc'
-                                            | 'desc'
+                                        | 'asc'
+                                        | 'desc'
                                     }
                                     onClick={() => handleSort('business_type')}
                                 >
@@ -151,8 +151,8 @@ export const VirtualizedOrganizationTable: React.FC<
                                     active={viewMode.sortField === 'revenue'}
                                     direction={
                                         viewMode.sortOrder.toLowerCase() as
-                                            | 'asc'
-                                            | 'desc'
+                                        | 'asc'
+                                        | 'desc'
                                     }
                                     onClick={() => handleSort('revenue')}
                                 >
@@ -166,8 +166,8 @@ export const VirtualizedOrganizationTable: React.FC<
                                     }
                                     direction={
                                         viewMode.sortOrder.toLowerCase() as
-                                            | 'asc'
-                                            | 'desc'
+                                        | 'asc'
+                                        | 'desc'
                                     }
                                     onClick={() => handleSort('nb_contacts')}
                                 >
@@ -366,14 +366,14 @@ export const VirtualizedOrganizationTable: React.FC<
                                 aria-label={`View ${org.name}`}
                                 sx={{ minHeight: '32px', minWidth: '32px' }}
                             >
-                                <ViewIcon fontSize="small" />
+                                <ViewIcon />
                             </IconButton>
                             <IconButton
                                 size="small"
                                 aria-label={`Edit ${org.name}`}
                                 sx={{ minHeight: '32px', minWidth: '32px' }}
                             >
-                                <EditIcon fontSize="small" />
+                                <EditIcon />
                             </IconButton>
                         </Box>
                     </Box>

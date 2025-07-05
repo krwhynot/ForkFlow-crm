@@ -3,26 +3,15 @@
  * Allows users to change their current password
  */
 
-import React, { useState } from 'react';
-import {
-    Box,
-    Button,
-    TextField,
-    Stack,
-    Typography,
-    Alert,
-    IconButton,
-    InputAdornment,
-    useMediaQuery,
-    useTheme,
-    CircularProgress,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useDataProvider } from 'react-admin';
+import { Alert, Box, Button, IconButton, InputAdornment, Stack, TextField, Typography } from '@/components/ui-kit';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useDataProvider } from 'react-admin';
 import { useForm } from 'react-hook-form';
 import { CrmDataProvider } from '../../providers/types';
-import { User, PasswordChangeRequest } from '../../types';
+import { PasswordChangeRequest, User } from '../../types';
 
 interface PasswordChangeFormProps {
     user: User;
@@ -43,8 +32,7 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const dataProvider = useDataProvider<CrmDataProvider>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const { isMobile } = useBreakpoint();
 
     const {
         register,
@@ -150,9 +138,9 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
                                     sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     {showCurrentPassword ? (
-                                        <VisibilityOff />
+                                        <EyeSlashIcon />
                                     ) : (
-                                        <Visibility />
+                                        <EyeIcon />
                                     )}
                                 </IconButton>
                             </InputAdornment>
@@ -193,9 +181,9 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
                                     sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     {showNewPassword ? (
-                                        <VisibilityOff />
+                                        <EyeSlashIcon />
                                     ) : (
-                                        <Visibility />
+                                        <EyeIcon />
                                     )}
                                 </IconButton>
                             </InputAdornment>
@@ -229,9 +217,9 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
                                     sx={{ minHeight: 44, minWidth: 44 }}
                                 >
                                     {showConfirmPassword ? (
-                                        <VisibilityOff />
+                                        <EyeSlashIcon />
                                     ) : (
-                                        <Visibility />
+                                        <EyeIcon />
                                     )}
                                 </IconButton>
                             </InputAdornment>

@@ -1,33 +1,32 @@
-import React from 'react';
 // Timeline implementation using simple layout instead of @mui/lab
 import {
+    Avatar,
     Box,
-    Typography,
     Card,
     CardContent,
     Chip,
     Stack,
-    Avatar,
+    Typography,
 } from '@/components/ui-kit';
 import {
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonPinIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-} from '@mui/icons-material';
-import { ReferenceField, TextField, DateField } from 'react-admin';
+    ClockIcon,
+    CurrencyDollarIcon,
+    EnvelopeIcon,
+    PhoneIcon,
+    PresentationChartBarIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
+import { DateField, ReferenceField, TextField } from 'react-admin';
 
 import { Interaction } from '../types';
 
 const interactionTypeIcons = {
-    email: EmailIcon,
+    email: EnvelopeIcon,
     call: PhoneIcon,
-    in_person: PersonPinIcon,
-    demo: DemoIcon,
-    quote: QuoteIcon,
-    follow_up: FollowUpIcon,
+    in_person: UserIcon,
+    demo: PresentationChartBarIcon,
+    quote: CurrencyDollarIcon,
+    follow_up: ClockIcon,
 };
 
 const interactionTypeColors = {
@@ -79,13 +78,13 @@ export const InteractionTimeline = ({
             {sortedInteractions.map((interaction, index) => {
                 const TypeIcon =
                     interactionTypeIcons[
-                        interaction.type
-                            ?.key as keyof typeof interactionTypeIcons
-                    ] || FollowUpIcon;
+                    interaction.type
+                        ?.key as keyof typeof interactionTypeIcons
+                    ] || ClockIcon;
                 const typeColor =
                     interactionTypeColors[
-                        interaction.type
-                            ?.key as keyof typeof interactionTypeColors
+                    interaction.type
+                        ?.key as keyof typeof interactionTypeColors
                     ] || '#455a64';
 
                 return (
@@ -99,7 +98,7 @@ export const InteractionTimeline = ({
                                 }}
                             >
                                 <TypeIcon
-                                    fontSize={compact ? 'small' : 'medium'}
+                                    className={compact ? 'w-4 h-4' : 'w-5 h-5'}
                                 />
                             </Avatar>
                             {index < sortedInteractions.length - 1 && (

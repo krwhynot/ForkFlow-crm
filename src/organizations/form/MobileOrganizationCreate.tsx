@@ -1,33 +1,26 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-    Stack,
-    Typography,
-    Button,
-    Box,
-    IconButton,
-    Chip,
     Alert,
-    Divider,
+    Box,
+    Button,
+    Chip,
+    IconButton,
+    Stack,
+    Typography
 } from '../../components/ui-kit';
+// Material-UI components removed - using UI kit components instead
 import {
-    Zoom,
-    Fab,
-} from '@mui/material';
+    ArrowLeftIcon,
+    DocumentArrowDownIcon,
+    MapPinIcon
+} from '@heroicons/react/24/outline';
+import { Create, Form, useNotify, useRedirect } from 'react-admin';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
-import {
-    ArrowBack as ArrowBackIcon,
-    Save as SaveIcon,
-    Mic as MicIcon,
-    QrCodeScanner as QrIcon,
-    CameraAlt as CameraIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
-import { Create, Form, useNotify, useRedirect, FormDataConsumer } from 'react-admin';
 import { Organization } from '../../types';
 import { SlideUpModal } from '../common/SlideUpModal';
-import { VoiceInput } from '../common/VoiceInput';
 import { SmartKeyboard } from '../common/SmartKeyboard';
+import { VoiceInput } from '../common/VoiceInput';
 import { ValidationProvider, ValidationSummary, useRealTimeValidation } from '../form/steps';
 
 interface MobileOrganizationCreateProps {
@@ -194,7 +187,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
     const handleNext = useCallback(() => {
         const currentStepFields = steps[currentStep].fields;
         const stepErrors = currentStepFields.some(field => hasFieldErrors(field));
-        
+
         if (stepErrors) {
             notify('Please fix errors before continuing', { type: 'warning' });
             return;
@@ -225,13 +218,13 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
 
             // TODO: Integrate with react-admin data provider
             console.log('Submitting organization:', submitData);
-            
+
             notify('Organization created successfully!', { type: 'success' });
-            
+
             if (onSuccess) {
                 onSuccess(submitData as Organization);
             }
-            
+
             onClose();
         } catch (error) {
             console.error('Form submission error:', error);
@@ -268,7 +261,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
     }, [initialData, notify]);
 
     const currentStepData = steps[currentStep];
-    const canProceed = !currentStepData.fields.some(field => 
+    const canProceed = !currentStepData.fields.some(field =>
         !currentStepData.optional && hasFieldErrors(field)
     );
 
@@ -407,7 +400,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                                 className="mt-2 min-w-12 min-h-12"
                                                 aria-label="Capture GPS location"
                                             >
-                                                <LocationIcon />
+                                                <MapPinIcon className="w-5 h-5" />
                                             </IconButton>
                                         </Box>
 
@@ -488,13 +481,11 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                             </Stack>
 
                             {/* Step Navigation */}
-                            <Box className="flex justify-between items-center mt-8 pt-6"
-                                borderTop: `1px solid ${theme.palette.divider}`,
-                            }}>
+                            <Box className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
                                 <Button
                                     onClick={handleBack}
                                     disabled={currentStep === 0 || isSubmitting}
-                                    startIcon={<ArrowBackIcon />}
+                                    startIcon={<ArrowLeftIcon className="w-4 h-4" />}
                                     className="min-h-12"
                                 >
                                     Back
@@ -511,7 +502,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                         onClick={handleSubmit}
                                         disabled={!canProceed || isSubmitting}
                                         variant="contained"
-                                        startIcon={<SaveIcon />}
+                                        startIcon={<DocumentArrowDownIcon className="w-4 h-4" />}
                                         className="min-h-12"
                                     >
                                         {isSubmitting ? 'Creating...' : 'Create'}

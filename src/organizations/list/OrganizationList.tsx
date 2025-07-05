@@ -1,31 +1,30 @@
 import {
-    TopToolbar,
-    ExportButton,
     CreateButton,
-    Pagination,
-    useGetIdentity,
+    ExportButton,
     ListBase,
-    Title,
     ListToolbar,
-    useListContext,
+    Pagination,
     SortButton,
+    Title,
+    TopToolbar,
+    useGetIdentity,
+    useListContext,
 } from 'react-admin';
 
-import { ImageList } from './GridList';
-import { OrganizationListFilter } from './OrganizationListFilter';
-import { Stack } from '../../components/Layout/Stack';
-import { Box } from '../../components/Layout/Box';
-import { Chip } from '../../components/DataDisplay/Chip';
-import { Button } from '../../components/Button/Button';
-import { Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
+import { Dialog, DialogContent } from '@/components/ui-kit';
 import {
-    Map as MapIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    MapIcon
+} from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { Button } from '../../components/Button/Button';
+import { Box } from '../../components/Layout/Box';
+import { Stack } from '../../components/Layout/Stack';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useTwTheme } from '../../hooks/useTwTheme';
+import { ImageList } from './GridList';
 import { OrganizationEmpty } from './OrganizationEmpty';
+import { OrganizationListFilter } from './OrganizationListFilter';
 import { OrganizationMapView } from './OrganizationMapView';
-import { useTerritoryFilter } from '../../hooks/useTerritoryFilter';
 
 export const OrganizationList = () => {
     const { identity } = useGetIdentity();
@@ -39,7 +38,6 @@ export const OrganizationList = () => {
 
 const OrganizationListLayout = () => {
     const { data, isPending, filterValues } = useListContext();
-    const { hasRestrictions, territoryDisplayName } = useTerritoryFilter();
     const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
     if (isPending) return null;
@@ -51,18 +49,6 @@ const OrganizationListLayout = () => {
             <Stack className="w-full">
                 <Box className="flex items-center gap-2 mb-1">
                     <Title title={'Organizations'} />
-                    {hasRestrictions && (
-                        <Chip
-                            label={
-                                <span className="flex items-center">
-                                    <LocationIcon className="mr-1" />
-                                    {`Territory: ${territoryDisplayName}`}
-                                </span>
-                            }
-                            size="small"
-                            className="border border-blue-500 text-blue-500"
-                        />
-                    )}
                 </Box>
                 <ListToolbar actions={<OrganizationListActions />} />
                 <ImageList />
@@ -74,8 +60,8 @@ const OrganizationListLayout = () => {
 
 const OrganizationListActions = () => {
     const [showMap, setShowMap] = useState(false);
-    const theme = useTheme();
-    const isFullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTwTheme();
+    const isFullScreen = useMediaQuery('(max-width: 768px)');
 
     return (
         <>
@@ -87,7 +73,7 @@ const OrganizationListActions = () => {
                     onClick={() => setShowMap(true)}
                     className="ml-1 min-h-11 px-2"
                 >
-                    <MapIcon className="mr-1" />
+                    <MapIcon className="mr-1 w-4 h-4" />
                     Map View
                 </Button>
                 <CreateButton

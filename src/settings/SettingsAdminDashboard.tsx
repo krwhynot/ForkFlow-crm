@@ -1,42 +1,37 @@
-import React, { useState, useEffect } from 'react';
 import {
+    Badge,
     Box,
     Card,
     CardContent,
-    Typography,
-    Grid,
     Chip,
-    IconButton,
-    Tabs,
-    Tab,
     Fab,
-    Badge,
-} from '@mui/material';
+    Grid,
+    IconButton,
+    Tab,
+    Tabs,
+    Typography,
+} from '@/components/ui-kit';
 import {
-    Add as AddIcon,
-    Settings as SettingsIcon,
-    TrendingUp as TrendingUpIcon,
-    Business as BusinessIcon,
-    LocalShipping as LocalShippingIcon,
-    Person as PersonIcon,
-    Psychology as PsychologyIcon,
-    AccountTree as AccountTreeIcon,
-    Category as CategoryIcon,
-    Timeline as TimelineIcon,
-    Chat as ChatIcon,
-    Edit as EditIcon,
-    Visibility as VisibilityIcon,
-} from '@mui/icons-material';
+    RectangleGroupIcon as AccountTreeIcon,
+    PlusIcon as AddIcon,
+    ArrowTrendingUpIcon,
+    BuildingOfficeIcon as BusinessIcon,
+    RectangleStackIcon as CategoryIcon,
+    ChatBubbleLeftRightIcon as ChatIcon,
+    TruckIcon as LocalShippingIcon,
+    UserIcon as PersonIcon,
+    LightBulbIcon as PsychologyIcon,
+    CogIcon as SettingsIcon,
+    ChartBarIcon as TimelineIcon,
+    EyeIcon as VisibilityIcon
+} from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
 import {
-    useDataProvider,
-    useGetList,
-    CreateButton,
-    EditButton,
-    ShowButton,
+    useGetList
 } from 'react-admin';
-import { Setting } from '../types';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useTwTheme } from '../hooks/useTwTheme';
+import { Setting } from '../types';
 
 interface CategoryInfo {
     key: string;
@@ -50,63 +45,63 @@ const CATEGORY_CONFIG: Record<string, CategoryInfo> = {
     priority: {
         key: 'priority',
         label: 'Priorities',
-        icon: <TrendingUpIcon />,
+        icon: <ArrowTrendingUpIcon className="w-5 h-5" />,
         color: '#22c55e',
         description: 'Organization priority levels (A-D)',
     },
     segment: {
         key: 'segment',
         label: 'Segments',
-        icon: <CategoryIcon />,
+        icon: <CategoryIcon className="w-5 h-5" />,
         color: '#8b5cf6',
         description: 'Market segments for targeting',
     },
     distributor: {
         key: 'distributor',
         label: 'Distributors',
-        icon: <LocalShippingIcon />,
+        icon: <LocalShippingIcon className="w-5 h-5" />,
         color: '#f59e0b',
         description: 'Distribution channel partners',
     },
     role: {
         key: 'role',
         label: 'Roles',
-        icon: <PersonIcon />,
+        icon: <PersonIcon className="w-5 h-5" />,
         color: '#3b82f6',
         description: 'Contact job roles and positions',
     },
     influence: {
         key: 'influence',
         label: 'Influence Levels',
-        icon: <PsychologyIcon />,
+        icon: <PsychologyIcon className="w-5 h-5" />,
         color: '#ef4444',
         description: 'Decision-making influence levels',
     },
     decision: {
         key: 'decision',
         label: 'Decision Roles',
-        icon: <AccountTreeIcon />,
+        icon: <AccountTreeIcon className="w-5 h-5" />,
         color: '#f59e0b',
         description: 'Roles in decision-making process',
     },
     principal: {
         key: 'principal',
         label: 'Principals',
-        icon: <BusinessIcon />,
+        icon: <BusinessIcon className="w-5 h-5" />,
         color: '#607d8b',
         description: 'Food service brand principals',
     },
     stage: {
         key: 'stage',
         label: 'Pipeline Stages',
-        icon: <TimelineIcon />,
+        icon: <TimelineIcon className="w-5 h-5" />,
         color: '#059669',
         description: 'Sales pipeline stages',
     },
     interaction_type: {
         key: 'interaction_type',
         label: 'Interaction Types',
-        icon: <ChatIcon />,
+        icon: <ChatIcon className="w-5 h-5" />,
         color: '#3b82f6',
         description: 'Customer interaction methods',
     },
@@ -132,78 +127,57 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
     return (
         <Card
-            sx={{
-                height: '100%',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: 4,
-                },
-                borderLeft: `4px solid ${category.color}`,
-            }}
+            className="h-full cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg"
+            style={{ borderLeft: `4px solid ${category.color}` }}
             onClick={() => onManage(category.key)}
         >
-            <CardContent sx={{ p: 2 }}>
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    mb={1}
-                >
-                    <Box display="flex" alignItems="center" gap={1}>
+            <CardContent className="p-2">
+                <Box className="flex items-center justify-between mb-1">
+                    <Box className="flex items-center gap-1">
                         <Box
-                            sx={{
-                                color: category.color,
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
+                            className="flex items-center"
+                            style={{ color: category.color }}
                         >
                             {category.icon}
                         </Box>
                         <Typography
                             variant={isMobile ? 'subtitle1' : 'h6'}
-                            fontWeight="bold"
+                            className="font-bold"
                         >
                             {category.label}
                         </Typography>
                     </Box>
-                    <Badge badgeContent={stats.total} color="primary" max={99}>
-                        <SettingsIcon fontSize="small" />
+                    <Badge badgeContent={stats.total} className="text-blue-600" max={99}>
+                        <SettingsIcon className="w-4 h-4" />
                     </Badge>
                 </Box>
 
                 <Typography
                     variant="body2"
                     color="text.secondary"
-                    mb={2}
-                    sx={{ minHeight: 32 }}
+                    className="mb-2 min-h-8"
                 >
                     {category.description}
                 </Typography>
 
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <Box display="flex" gap={1} flexWrap="wrap">
+                <Box className="flex justify-between items-center">
+                    <Box className="flex gap-1 flex-wrap">
                         <Chip
                             label={`${stats.active} Active`}
                             size="small"
-                            color="success"
+                            className="border-green-500 text-green-500"
                             variant="outlined"
                         />
                         {stats.inactive > 0 && (
                             <Chip
                                 label={`${stats.inactive} Inactive`}
                                 size="small"
-                                color="default"
+                                className="border-gray-500 text-gray-500"
                                 variant="outlined"
                             />
                         )}
                     </Box>
-                    <Box display="flex" gap={0.5}>
+                    <Box className="flex gap-0.5">
                         <IconButton
                             size="small"
                             onClick={e => {
@@ -211,9 +185,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                 // Navigate to create new setting
                                 window.location.href = `/settings/create?category=${category.key}`;
                             }}
-                            sx={{ minWidth: 44, minHeight: 44 }}
+                            className="min-w-11 min-h-11"
                         >
-                            <AddIcon fontSize="small" />
+                            <AddIcon className="w-4 h-4" />
                         </IconButton>
                     </Box>
                 </Box>
@@ -230,7 +204,7 @@ interface TabPanelProps {
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => (
     <div role="tabpanel" hidden={value !== index}>
-        {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+        {value === index && <Box className="pt-3">{children}</Box>}
     </div>
 );
 
@@ -282,44 +256,44 @@ export const SettingsAdminDashboard: React.FC = () => {
     const categories = Object.keys(CATEGORY_CONFIG);
 
     if (isLoading) {
-        return <Box p={3}>Loading settings dashboard...</Box>;
+        return <Box className="p-3">Loading settings dashboard...</Box>;
     }
 
     return (
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
+        <Box className="p-2 md:p-3">
             {/* Header */}
-            <Box mb={3}>
-                <Typography variant="h4" gutterBottom fontWeight="bold">
+            <Box className="mb-3">
+                <Typography variant="h4" gutterBottom className="font-bold">
                     Settings Management
                 </Typography>
-                <Typography variant="body1" color="text.secondary" mb={2}>
+                <Typography variant="body1" color="text.secondary" className="mb-2">
                     Manage all system configuration settings across{' '}
                     {categories.length} categories
                 </Typography>
 
                 {/* Quick Stats */}
-                <Box display="flex" gap={2} flexWrap="wrap">
+                <Box className="flex gap-2 flex-wrap">
                     <Chip
-                        icon={<SettingsIcon />}
+                        icon={<SettingsIcon className="w-4 h-4" />}
                         label={`${totalSettings} Total Settings`}
-                        color="primary"
+                        className="bg-blue-500 text-white"
                         variant="filled"
                     />
                     <Chip
                         label={`${activeSettings} Active`}
-                        color="success"
+                        className="border-green-500 text-green-500"
                         variant="outlined"
                     />
                     <Chip
                         label={`${categories.length} Categories`}
-                        color="info"
+                        className="border-blue-500 text-blue-500"
                         variant="outlined"
                     />
                 </Box>
             </Box>
 
             {/* Navigation Tabs */}
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+            <Box className="border-b border-gray-200 mb-3">
                 <Tabs
                     value={activeTab}
                     onChange={handleTabChange}
@@ -386,20 +360,10 @@ export const SettingsAdminDashboard: React.FC = () => {
                             <Grid item xs={12} key={categoryKey}>
                                 <Card>
                                     <CardContent>
-                                        <Box
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="space-between"
-                                        >
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={2}
-                                            >
+                                        <Box className="flex items-center justify-between">
+                                            <Box className="flex items-center gap-2">
                                                 <Box
-                                                    sx={{
-                                                        color: category.color,
-                                                    }}
+                                                    style={{ color: category.color }}
                                                 >
                                                     {category.icon}
                                                 </Box>
@@ -415,47 +379,37 @@ export const SettingsAdminDashboard: React.FC = () => {
                                                     </Typography>
                                                 </Box>
                                             </Box>
-                                            <Box
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={2}
-                                            >
-                                                <Box display="flex" gap={1}>
+                                            <Box className="flex items-center gap-2">
+                                                <Box className="flex gap-1">
                                                     <Chip
                                                         label={`${stats.active} Active`}
                                                         size="small"
-                                                        color="success"
+                                                        className="border-green-500 text-green-500"
                                                     />
                                                     <Chip
                                                         label={`${stats.total} Total`}
                                                         size="small"
-                                                        color="primary"
+                                                        className="bg-blue-500 text-white"
                                                     />
                                                 </Box>
-                                                <Box display="flex" gap={1}>
+                                                <Box className="flex gap-1">
                                                     <IconButton
                                                         onClick={() =>
                                                             handleManageCategory(
                                                                 categoryKey
                                                             )
                                                         }
-                                                        sx={{
-                                                            minWidth: 44,
-                                                            minHeight: 44,
-                                                        }}
+                                                        className="min-w-11 min-h-11"
                                                     >
-                                                        <VisibilityIcon />
+                                                        <VisibilityIcon className="w-5 h-5" />
                                                     </IconButton>
                                                     <IconButton
                                                         onClick={() =>
                                                             (window.location.href = `/settings/create?category=${categoryKey}`)
                                                         }
-                                                        sx={{
-                                                            minWidth: 44,
-                                                            minHeight: 44,
-                                                        }}
+                                                        className="min-w-11 min-h-11"
                                                     >
-                                                        <AddIcon />
+                                                        <AddIcon className="w-5 h-5" />
                                                     </IconButton>
                                                 </Box>
                                             </Box>
@@ -491,7 +445,7 @@ export const SettingsAdminDashboard: React.FC = () => {
                                 >
                                     Import settings from CSV or JSON files
                                 </Typography>
-                                <Box display="flex" gap={1}>
+                                <Box className="flex gap-1">
                                     <Chip
                                         label="CSV Import"
                                         variant="outlined"
@@ -518,7 +472,7 @@ export const SettingsAdminDashboard: React.FC = () => {
                                 >
                                     Export all or selected settings data
                                 </Typography>
-                                <Box display="flex" gap={1}>
+                                <Box className="flex gap-1">
                                     <Chip
                                         label="CSV Export"
                                         variant="outlined"
@@ -536,18 +490,11 @@ export const SettingsAdminDashboard: React.FC = () => {
 
             {/* Floating Action Button */}
             <Fab
-                color="primary"
+                className="bg-blue-500 text-white fixed bottom-4 md:bottom-8 right-4 md:right-8 min-w-14 min-h-14"
                 aria-label="add setting"
-                sx={{
-                    position: 'fixed',
-                    bottom: { xs: 16, md: 32 },
-                    right: { xs: 16, md: 32 },
-                    minWidth: 56,
-                    minHeight: 56,
-                }}
                 onClick={() => (window.location.href = '/settings/create')}
             >
-                <AddIcon />
+                <AddIcon className="w-6 h-6" />
             </Fab>
         </Box>
     );

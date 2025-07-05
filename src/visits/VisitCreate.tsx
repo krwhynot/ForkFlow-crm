@@ -1,35 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Create,
-    SimpleForm,
-    ReferenceInput,
-    SelectInput,
-    TextInput,
-    DateTimeInput,
-    NumberInput,
-    useNotify,
-    useRedirect,
-    useGetIdentity,
-} from 'react-admin';
-import {
-    Card,
-    CardContent,
-    Typography,
-    Box,
-    Chip,
-    Button,
-} from '@/components/ui-kit';
 import {
     Alert,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Chip,
     CircularProgress,
-} from '@mui/material';
+    Typography,
+} from '@/components/ui-kit';
 import {
-    LocationOn as LocationIcon,
-    AccessTime as TimeIcon,
-    MyLocation as GPSIcon,
-} from '@mui/icons-material';
+    MapIcon as GPSIcon,
+    MapPinIcon as LocationIcon,
+    ClockIcon as TimeIcon,
+} from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
+import {
+    Create,
+    DateTimeInput,
+    NumberInput,
+    ReferenceInput,
+    SelectInput,
+    SimpleForm,
+    TextInput,
+    useGetIdentity,
+    useNotify,
+    useRedirect,
+} from 'react-admin';
 import { useLocation } from '../components/mobile';
-import { GPSCoordinates } from '../types';
 
 const visitTypes = [
     { id: 'sales_call', name: 'Sales Call' },
@@ -105,25 +102,23 @@ export const VisitCreate = () => {
 
                     {/* GPS Location Card */}
                     <Card
-                        className={`mb-2 ${
-                            currentLocation
+                        className={`mb-2 ${currentLocation
                                 ? 'bg-green-50'
                                 : 'bg-gray-100'
-                        }`}
+                            }`}
                     >
                         <CardContent>
                             <Box className="flex items-center mb-1">
                                 <LocationIcon
-                                    className={`mr-1 ${
-                                        currentLocation ? 'text-green-600' : 'text-gray-400'
-                                    }`}
+                                    className={`w-5 h-5 mr-1 ${currentLocation ? 'text-green-600' : 'text-gray-400'
+                                        }`}
                                 />
                                 <Typography variant="subtitle1">
                                     GPS Location
                                 </Typography>
                                 {gpsLoading && (
                                     <CircularProgress
-                                        size={20}
+                                        size="sm"
                                         className="ml-1"
                                     />
                                 )}
@@ -158,7 +153,7 @@ export const VisitCreate = () => {
                                         </Typography>
                                     )}
                                     <Chip
-                                        icon={<LocationIcon />}
+                                        icon={<LocationIcon className="w-4 h-4" />}
                                         label="Location Captured"
                                         color="success"
                                         size="small"
@@ -180,9 +175,9 @@ export const VisitCreate = () => {
                                         size="small"
                                         startIcon={
                                             gpsLoading ? (
-                                                <CircularProgress size={16} />
+                                                <CircularProgress size="xs" />
                                             ) : (
-                                                <GPSIcon />
+                                                <GPSIcon className="w-4 h-4" />
                                             )
                                         }
                                         onClick={handleGetCurrentLocation}
@@ -265,10 +260,10 @@ export const VisitCreate = () => {
                     {/* Time Tracking Alert */}
                     <Alert severity="info" className="mt-2">
                         <Box className="flex items-center">
-                            <TimeIcon className="mr-1" />
+                            <TimeIcon className="w-4 h-4 mr-1" />
                             <Typography variant="body2">
                                 Visit time is automatically recorded. GPS
-                                location helps track your territory coverage.
+                                location helps track your customer coverage.
                             </Typography>
                         </Box>
                     </Alert>

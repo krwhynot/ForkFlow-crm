@@ -1,45 +1,44 @@
-import React, { useMemo } from 'react';
 import {
+    Box,
     Card,
     CardContent,
-    Typography,
-    Box,
     Chip,
     Stack,
+    Typography,
 } from '@/components/ui-kit';
 import { BarChart } from '@/components/ui-kit/Chart';
 import {
-    TrendingUp as TrendingUpIcon,
-    TrendingDown as TrendingDownIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Person as PersonIcon,
-    Assessment as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Reply as FollowUpIcon,
-    Assignment as InteractionIcon,
-} from '@mui/icons-material';
-import { useGetList } from 'react-admin';
+    ArrowTrendingUpIcon,
+    ArrowTrendingDownIcon,
+    PresentationChartLineIcon as DemoIcon,
+    EnvelopeIcon as EmailIcon,
+    ArrowUturnLeftIcon as FollowUpIcon,
+    DocumentTextIcon as InteractionIcon,
+    UserIcon as PersonIcon,
+    PhoneIcon,
+    CurrencyDollarIcon as QuoteIcon,
+} from '@heroicons/react/24/outline';
 import {
     format,
-    startOfWeek,
     startOfMonth,
-    subDays,
-    subWeeks,
+    startOfWeek,
     subMonths,
+    subWeeks
 } from 'date-fns';
+import React, { useMemo } from 'react';
+import { useGetList } from 'react-admin';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 import { Interaction, Setting } from '../types';
-import { safeTrend, validateChartData, safeAmount } from '../utils/chartSafety';
+import { safeAmount, safeTrend, validateChartData } from '../utils/chartSafety';
 
 const interactionTypeIcons: Record<string, React.ReactElement> = {
-    call: <PhoneIcon />,
-    email: <EmailIcon />,
-    'in-person': <PersonIcon />,
-    demo: <DemoIcon />,
-    quote: <QuoteIcon />,
-    'follow-up': <FollowUpIcon />,
+    call: <PhoneIcon className="h-4 w-4" />,
+    email: <EmailIcon className="h-4 w-4" />,
+    'in-person': <PersonIcon className="h-4 w-4" />,
+    demo: <DemoIcon className="h-4 w-4" />,
+    quote: <QuoteIcon className="h-4 w-4" />,
+    'follow-up': <FollowUpIcon className="h-4 w-4" />,
 };
 
 interface InteractionMetric {
@@ -126,7 +125,7 @@ export const InteractionMetricsCard = () => {
             i =>
                 i.completedDate &&
                 format(new Date(i.completedDate), 'yyyy-MM-dd') ===
-                    format(now, 'yyyy-MM-dd')
+                format(now, 'yyyy-MM-dd')
         );
 
         // This week's interactions
@@ -252,18 +251,16 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     metrics.weeklyTrend >= 0 ? (
-                                        <TrendingUpIcon />
+                                        <ArrowTrendingUpIcon className="h-3 w-3" />
                                     ) : (
-                                        <TrendingDownIcon />
+                                        <ArrowTrendingDownIcon className="h-3 w-3" />
                                     )
                                 }
                                 label={`${safeAmount(metrics.weeklyTrend).toFixed(0)}%`}
-                                className={`${
-                                    metrics.weeklyTrend >= 0
+                                className={`${metrics.weeklyTrend >= 0
                                         ? 'text-green-600 border-green-600'
                                         : 'text-red-600 border-red-600'
-                                } bg-transparent`}
-                                variant="outlined"
+                                    } bg-transparent border`}
                             />
                         </Stack>
                         <Typography variant="body2" className="text-gray-500">
@@ -281,18 +278,16 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     metrics.monthlyTrend >= 0 ? (
-                                        <TrendingUpIcon />
+                                        <ArrowTrendingUpIcon className="h-3 w-3" />
                                     ) : (
-                                        <TrendingDownIcon />
+                                        <ArrowTrendingDownIcon className="h-3 w-3" />
                                     )
                                 }
                                 label={`${safeAmount(metrics.monthlyTrend).toFixed(0)}%`}
-                                className={`${
-                                    metrics.monthlyTrend >= 0
+                                className={`${metrics.monthlyTrend >= 0
                                         ? 'text-green-600 border-green-600'
                                         : 'text-red-600 border-red-600'
-                                } bg-transparent`}
-                                variant="outlined"
+                                    } bg-transparent border`}
                             />
                         </Stack>
                         <Typography variant="body2" className="text-gray-500">
@@ -313,11 +308,11 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     interactionTypeIcons[type] || (
-                                        <InteractionIcon />
+                                        <InteractionIcon className="h-4 w-4" />
                                     )
                                 }
                                 label={`${type}: ${count}`}
-                                variant="outlined"
+                                className="border border-gray-300 bg-transparent"
                                 className="mb-1"
                             />
                         )

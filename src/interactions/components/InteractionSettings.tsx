@@ -1,36 +1,38 @@
-import React, { useState } from 'react';
 import {
+    Alert,
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Grid,
-    Switch,
-    FormControlLabel,
-    Button,
-    Alert,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
     Chip,
-    Stack,
     Divider,
-    TextField,
-    InputAdornment,
-} from '@mui/material';
+    Grid,
+    Stack,
+    Typography,
+} from '@/components/ui-kit';
 import {
-    ExpandMore as ExpandMoreIcon,
-    Settings as SettingsIcon,
-    LocationOn as LocationIcon,
-    CloudOff as OfflineIcon,
-    Storage as StorageIcon,
-    Speed as PerformanceIcon,
-    Security as SecurityIcon,
-    Upload as UploadIcon,
-} from '@mui/icons-material';
+    ArrowUpTrayIcon,
+    BoltIcon,
+    ChevronDownIcon,
+    CloudSlashIcon,
+    CogIcon,
+    MapPinIcon,
+    ServerIcon,
+    ShieldCheckIcon,
+} from '@heroicons/react/24/outline';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    FormControlLabel,
+    InputAdornment,
+    Switch,
+    TextField,
+} from '@mui/material';
+import React, { useState } from 'react';
 
-import { PerformanceDashboard } from './PerformanceDashboard';
 import { useGPSService, useOfflineService } from '../../providers/mobile';
+import { PerformanceDashboard } from './PerformanceDashboard';
 
 export const InteractionSettings = () => {
     const gpsService = useGPSService();
@@ -125,7 +127,7 @@ export const InteractionSettings = () => {
     return (
         <Box sx={{ width: '100%', maxWidth: 1200, mx: 'auto', p: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                <SettingsIcon color="primary" />
+                <CogIcon className="w-6 h-6 text-blue-600" />
                 <Typography variant="h4">
                     Interaction Tracking Settings
                 </Typography>
@@ -140,13 +142,11 @@ export const InteractionSettings = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <LocationIcon
-                                    color={
-                                        gpsService.isAvailable()
-                                            ? 'success'
-                                            : 'error'
-                                    }
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                <MapPinIcon
+                                    className={`w-10 h-10 mb-1 ${gpsService.isAvailable()
+                                            ? 'text-green-600'
+                                            : 'text-red-600'
+                                        }`}
                                 />
                                 <Typography variant="body2">
                                     GPS:{' '}
@@ -158,13 +158,11 @@ export const InteractionSettings = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <OfflineIcon
-                                    color={
-                                        offlineStatus.isOnline
-                                            ? 'success'
-                                            : 'warning'
-                                    }
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                <CloudSlashIcon
+                                    className={`w-10 h-10 mb-1 ${offlineStatus.isOnline
+                                            ? 'text-green-600'
+                                            : 'text-yellow-600'
+                                        }`}
                                 />
                                 <Typography variant="body2">
                                     Status:{' '}
@@ -183,9 +181,8 @@ export const InteractionSettings = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <StorageIcon
-                                    color="primary"
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                <ServerIcon
+                                    className="w-10 h-10 mb-1 text-blue-600"
                                 />
                                 <Typography variant="body2">
                                     Storage:{' '}
@@ -197,9 +194,8 @@ export const InteractionSettings = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <PerformanceIcon
-                                    color="primary"
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                <BoltIcon
+                                    className="w-10 h-10 mb-1 text-blue-600"
                                 />
                                 <Typography variant="body2">
                                     Performance: Monitoring
@@ -214,7 +210,7 @@ export const InteractionSettings = () => {
             <Stack spacing={2}>
                 {/* GPS Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -222,7 +218,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <LocationIcon color="primary" />
+                            <MapPinIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 GPS & Location Settings
                             </Typography>
@@ -332,7 +328,7 @@ export const InteractionSettings = () => {
                                         variant="outlined"
                                         onClick={testGPS}
                                         disabled={!settings.gpsEnabled}
-                                        startIcon={<LocationIcon />}
+                                        startIcon={<MapPinIcon className="w-4 h-4" />}
                                     >
                                         Test GPS
                                     </Button>
@@ -344,7 +340,7 @@ export const InteractionSettings = () => {
 
                 {/* Offline Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -352,7 +348,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <OfflineIcon color="primary" />
+                            <CloudSlashIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 Offline & Sync Settings
                             </Typography>
@@ -462,7 +458,7 @@ export const InteractionSettings = () => {
                                         color="warning"
                                         onClick={clearOfflineData}
                                         disabled={!settings.offlineEnabled}
-                                        startIcon={<StorageIcon />}
+                                        startIcon={<ServerIcon className="w-4 h-4" />}
                                     >
                                         Clear Offline Data
                                     </Button>
@@ -474,7 +470,7 @@ export const InteractionSettings = () => {
 
                 {/* File Upload Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -482,7 +478,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <UploadIcon color="primary" />
+                            <ArrowUpTrayIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 File Upload Settings
                             </Typography>
@@ -576,7 +572,7 @@ export const InteractionSettings = () => {
 
                 {/* Performance Settings */}
                 <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ChevronDownIcon className="w-5 h-5" />}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -584,7 +580,7 @@ export const InteractionSettings = () => {
                                 gap: 2,
                             }}
                         >
-                            <PerformanceIcon color="primary" />
+                            <BoltIcon className="w-5 h-5 text-blue-600" />
                             <Typography variant="h6">
                                 Performance Monitoring
                             </Typography>
@@ -674,7 +670,7 @@ export const InteractionSettings = () => {
                 <Button
                     variant="contained"
                     size="large"
-                    startIcon={<SecurityIcon />}
+                    startIcon={<ShieldCheckIcon className="w-4 h-4" />}
                     onClick={() => {
                         // In a real implementation, this would save settings to the backend
                         alert('Settings saved successfully!');

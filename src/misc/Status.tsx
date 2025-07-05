@@ -1,4 +1,4 @@
-import { Box, Tooltip } from '@mui/material';
+import { Tooltip } from '@/components/ui-kit';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 
 export const Status = ({ status }: { status: string }) => {
@@ -9,14 +9,9 @@ export const Status = ({ status }: { status: string }) => {
     if (!statusObject) return null;
     return (
         <Tooltip title={(statusObject as any)?.label ?? ''} placement="top">
-            <Box
-                marginLeft={0.5}
-                width={10}
-                height={10}
-                display="inline-block"
-                borderRadius="5px"
-                bgcolor={(statusObject as any)?.color ?? 'inherit'}
-                component="span"
+            <span
+                className="ml-1 inline-block w-2.5 h-2.5 rounded-full"
+                style={{ backgroundColor: (statusObject as any)?.color ?? 'inherit' }}
             />
         </Tooltip>
     );

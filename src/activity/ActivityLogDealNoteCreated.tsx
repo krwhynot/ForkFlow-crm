@@ -33,7 +33,7 @@ export function ActivityLogDealNoteCreated({
                     >
                         <ReferenceField
                             source="organizationId"
-                            reference="companies"
+                            reference="organizations"
                             link={false}
                         >
                             <CompanyAvatar />
@@ -66,7 +66,7 @@ export function ActivityLogDealNoteCreated({
                                 >
                                     <ReferenceField
                                         source="organizationId"
-                                        reference="companies"
+                                        reference="organizations"
                                         link="show"
                                     />
                                 </ReferenceField>{' '}

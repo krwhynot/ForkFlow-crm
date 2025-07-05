@@ -3,24 +3,15 @@
  * Allows users to update their profile information and change password
  */
 
-import React, { useState } from 'react';
-import {
-    Container,
-    Paper,
-    Stack,
-    Typography,
-    Box,
-    Tab,
-    Tabs,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
-import { useAuthProvider, useDataProvider, useNotify } from 'react-admin';
+import { Box, Container, Paper, Stack, Tab, Tabs, Typography } from '@/components/ui-kit';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useAuthProvider, useDataProvider, useNotify } from 'react-admin';
 import { CrmDataProvider } from '../providers/types';
 import { User } from '../types';
-import { ProfileForm } from './components/ProfileForm';
 import { PasswordChangeForm } from './components/PasswordChangeForm';
+import { ProfileForm } from './components/ProfileForm';
 import { SecuritySettings } from './components/SecuritySettings';
 
 interface TabPanelProps {
@@ -57,8 +48,8 @@ export const UserProfilePage = () => {
     const authProvider = useAuthProvider();
     const dataProvider = useDataProvider<CrmDataProvider>();
     const notify = useNotify();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const theme = useBreakpoint();
+    const isMobile = theme.down('sm');
 
     // Get current user information
     const {

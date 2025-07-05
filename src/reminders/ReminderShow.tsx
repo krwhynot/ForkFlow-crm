@@ -1,13 +1,4 @@
 import {
-    CheckCircle,
-    CheckCircle as CompleteIcon,
-    WarningAmber as OverdueIcon,
-    Person as PersonIcon,
-    PriorityHigh as PriorityIcon,
-    Schedule as ScheduleIcon,
-    Snooze as SnoozeIcon,
-} from '@mui/icons-material';
-import {
     Alert,
     Box,
     Button,
@@ -15,7 +6,15 @@ import {
     CardContent,
     Chip,
     Typography,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import {
+    ArrowPathIcon,
+    CheckCircleIcon,
+    ClockIcon,
+    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 import {
     DeleteButton,
     EditButton,
@@ -90,7 +89,7 @@ const ReminderStatusCard = ({ reminder }: { reminder: Reminder }) => {
             high: 'error',
             urgent: 'error',
         };
-        return colorMap[priority] || 'default';
+        return colorMap[priority] || 'primary';
     };
 
     const getStatusColor = () => {
@@ -107,45 +106,58 @@ const ReminderStatusCard = ({ reminder }: { reminder: Reminder }) => {
         return 'Pending';
     };
 
+    const getStatusIcon = () => {
+        if (reminder.is_completed) return <CheckCircleIcon className="h-4 w-4" />;
+        if (isOverdue) return <ExclamationCircleIcon className="h-4 w-4" />;
+        return <ClockIcon className="h-4 w-4" />;
+    };
+
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-4">
             <CardContent>
                 <Typography variant="h6" gutterBottom>
                     Reminder Status & Actions
                 </Typography>
 
-                <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+                <Box className="flex gap-2 mb-2 flex-wrap">
                     <Chip
                         label={getStatusText()}
-                        color={getStatusColor()}
-                        icon={
-                            reminder.is_completed ? (
-                                <CheckCircle />
-                            ) : isOverdue ? (
-                                <OverdueIcon />
-                            ) : (
-                                <ScheduleIcon />
-                            )
+                        className={
+                            getStatusColor() === 'success'
+                                ? 'border-green-500 text-green-500'
+                                : getStatusColor() === 'error'
+                                  ? 'border-red-500 text-red-500'
+                                  : getStatusColor() === 'warning'
+                                    ? 'border-yellow-500 text-yellow-500'
+                                    : 'border-blue-500 text-blue-500'
                         }
+                        icon={getStatusIcon()}
+                        size="small"
                     />
                     <Chip
                         label={`${reminder.priority} Priority`}
-                        color={getPriorityColor(reminder.priority)}
-                        icon={<PriorityIcon />}
+                        className={
+                            getPriorityColor(reminder.priority) === 'error'
+                                ? 'border-red-500 text-red-500'
+                                : getPriorityColor(reminder.priority) === 'warning'
+                                  ? 'border-yellow-500 text-yellow-500'
+                                  : 'border-blue-500 text-blue-500'
+                        }
+                        icon={<ExclamationTriangleIcon className="h-4 w-4" />}
                         size="small"
                     />
                     {reminder.snooze_count > 0 && (
                         <Chip
                             label={`Snoozed ${reminder.snooze_count} time${reminder.snooze_count > 1 ? 's' : ''}`}
-                            color="warning"
+                            className="border-yellow-500 text-yellow-500"
                             size="small"
-                            icon={<SnoozeIcon />}
+                            icon={<ArrowPathIcon className="h-4 w-4" />}
                         />
                     )}
                 </Box>
 
                 {isOverdue && !reminder.is_completed && (
-                    <Alert severity="error" sx={{ mb: 2 }}>
+                    <Alert variant="error" className="mb-2">
                         <Typography variant="body2">
                             This reminder is overdue! Consider taking action or
                             rescheduling.
@@ -154,7 +166,7 @@ const ReminderStatusCard = ({ reminder }: { reminder: Reminder }) => {
                 )}
 
                 {isDueToday && !reminder.is_completed && (
-                    <Alert severity="warning" sx={{ mb: 2 }}>
+                    <Alert variant="warning" className="mb-2">
                         <Typography variant="body2">
                             This reminder is due today. Don't forget to follow
                             up!
@@ -167,27 +179,27 @@ const ReminderStatusCard = ({ reminder }: { reminder: Reminder }) => {
                         <Typography variant="subtitle2" gutterBottom>
                             Quick Actions:
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        <Box className="flex gap-2 flex-wrap">
                             <Button
                                 variant="contained"
-                                color="success"
-                                startIcon={<CompleteIcon />}
+                                className="bg-green-500 text-white"
+                                startIcon={<CheckCircleIcon className="h-4 w-4" />}
                                 onClick={handleComplete}
                             >
                                 Mark Complete
                             </Button>
                             <Button
                                 variant="outlined"
-                                color="warning"
-                                startIcon={<SnoozeIcon />}
+                                className="border-yellow-500 text-yellow-500"
+                                startIcon={<ArrowPathIcon className="h-4 w-4" />}
                                 onClick={() => handleSnooze(2)}
                             >
                                 Snooze 2h
                             </Button>
                             <Button
                                 variant="outlined"
-                                color="warning"
-                                startIcon={<SnoozeIcon />}
+                                className="border-yellow-500 text-yellow-500"
+                                startIcon={<ArrowPathIcon className="h-4 w-4" />}
                                 onClick={() => handleSnooze(24)}
                             >
                                 Snooze 1 day
@@ -197,7 +209,7 @@ const ReminderStatusCard = ({ reminder }: { reminder: Reminder }) => {
                 )}
 
                 {reminder.is_completed && reminder.completed_at && (
-                    <Alert severity="success">
+                    <Alert variant="success">
                         <Typography variant="body2">
                             Completed on{' '}
                             {new Date(
@@ -239,14 +251,14 @@ const ReminderDetailsCard = ({ reminder }: { reminder: Reminder }) => {
     const reminderDateTime = formatDate(reminder.reminder_date);
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card className="mb-4">
             <CardContent>
                 <Typography variant="h6" gutterBottom>
                     Reminder Details
                 </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PersonIcon sx={{ mr: 1, color: 'text.secondary' }} />
+                <Box className="flex items-center mb-2">
+                    <UserIcon className="h-5 w-5 mr-2 text-gray-400" />
                     <Typography variant="body1">
                         Customer:{' '}
                         {reminder.customer_name ||
@@ -254,17 +266,17 @@ const ReminderDetailsCard = ({ reminder }: { reminder: Reminder }) => {
                     </Typography>
                 </Box>
 
-                <Typography variant="h5" sx={{ mb: 2, fontWeight: 500 }}>
+                <Typography variant="h5" className="mb-2 font-medium">
                     {reminder.title}
                 </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <ScheduleIcon sx={{ mr: 1, color: 'text.secondary' }} />
+                <Box className="flex items-center mb-2">
+                    <ClockIcon className="h-5 w-5 mr-2 text-gray-400" />
                     <Box>
                         <Typography variant="body1">
                             {reminderDateTime.date}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" className="text-gray-500">
                             at {reminderDateTime.time}
                         </Typography>
                     </Box>
@@ -273,14 +285,13 @@ const ReminderDetailsCard = ({ reminder }: { reminder: Reminder }) => {
                 {reminder.visit_id && (
                     <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 1 }}
+                        className="text-gray-500 mb-1"
                     >
                         Related to visit #{reminder.visit_id}
                     </Typography>
                 )}
 
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" className="text-gray-500">
                     Created:{' '}
                     {new Date(reminder.created_at).toLocaleDateString()}
                 </Typography>
@@ -297,7 +308,7 @@ const NotesCard = ({ reminder }: { reminder: Reminder }) => {
                     <Typography variant="h6" gutterBottom>
                         Notes
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography className="text-gray-500">
                         No additional notes for this reminder
                     </Typography>
                 </CardContent>
@@ -311,7 +322,7 @@ const NotesCard = ({ reminder }: { reminder: Reminder }) => {
                 <Typography variant="h6" gutterBottom>
                     Notes
                 </Typography>
-                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                <Typography variant="body1" className="whitespace-pre-wrap">
                     {reminder.notes}
                 </Typography>
             </CardContent>
@@ -324,7 +335,7 @@ export const ReminderShow = () => (
         <SimpleShowLayout>
             <FunctionField
                 render={(record: Reminder) => (
-                    <Box sx={{ p: 2 }}>
+                    <Box className="p-4">
                         <ReminderStatusCard reminder={record} />
                         <ReminderDetailsCard reminder={record} />
                         <NotesCard reminder={record} />

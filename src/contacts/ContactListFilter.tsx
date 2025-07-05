@@ -1,19 +1,18 @@
-import * as React from 'react';
+import {
+    ArrowTrendingUpIcon,
+    BuildingOfficeIcon,
+    CheckBadgeIcon,
+    StarIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 import {
     FilterList,
-    FilterLiveSearch,
     FilterListItem,
+    FilterLiveSearch,
     useGetIdentity,
     useGetList,
 } from 'react-admin';
 import { Box, Chip } from '../components/ui-kit';
-import {
-    BuildingOfficeIcon,
-    UserIcon,
-    TrendingUpIcon,
-    CheckBadgeIcon,
-    StarIcon,
-} from '@heroicons/react/24/outline';
 
 import { Setting } from '../types';
 
@@ -99,7 +98,7 @@ export const ContactListFilter = () => {
 
             <FilterList
                 label="Influence Level"
-                icon={<TrendingUpIcon className="h-5 w-5" />}
+                icon={<ArrowTrendingUpIcon className="h-5 w-5" />}
             >
                 {influenceSettings?.map(influence => (
                     <FilterListItem

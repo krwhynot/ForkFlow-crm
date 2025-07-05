@@ -93,7 +93,7 @@ export const getUserFromToken = (token: string): Partial<User> | null => {
         firstName: payload.firstName,
         lastName: payload.lastName,
         role: payload.role,
-        territory: payload.territory,
+
         principals: payload.principals,
     };
 };

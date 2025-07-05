@@ -1,48 +1,42 @@
-import React from 'react';
 import {
+    Alert,
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Chip,
+    Stack,
+    Typography
+} from '@/components/ui-kit';
+import {
+    BuildingOfficeIcon as BusinessIcon,
+    CheckCircleIcon as CompletedIcon,
+    PresentationChartLineIcon as DemoIcon,
+    EnvelopeIcon as EmailIcon,
+    ClockIcon as FollowUpIcon,
+    MapPinIcon as LocationIcon,
+    ArrowTrendingUpIcon as OpportunityIcon,
+    EllipsisHorizontalCircleIcon as PendingIcon,
+    UserIcon as PersonIcon,
+    MapPinIcon as PersonPinIcon,
+    PhoneIcon,
+    CurrencyDollarIcon as QuoteIcon,
+} from '@heroicons/react/24/outline';
+import {
+    DateField,
+    DeleteButton,
+    EditButton,
+    FileField,
+    FunctionField,
+    ListButton,
+    ReferenceField,
     Show,
     SimpleShowLayout,
     TextField,
-    DateField,
-    BooleanField,
-    ReferenceField,
-    FunctionField,
-    NumberField,
-    FileField,
     TopToolbar,
-    ListButton,
-    EditButton,
-    DeleteButton,
-    useRecordContext,
+    useRecordContext
 } from 'react-admin';
-import {
-    Box,
-    Typography,
-    Card,
-    CardContent,
-    Stack,
-    Chip,
-    Avatar,
-    Button,
-} from '@/components/ui-kit';
-import {
-    Divider,
-    Alert,
-} from '@mui/material';
-import {
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonPinIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-    LocationOn as LocationIcon,
-    CheckCircle as CompletedIcon,
-    RadioButtonUnchecked as PendingIcon,
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    TrendingUp as OpportunityIcon,
-} from '@mui/icons-material';
 
 import { Interaction } from '../types';
 
@@ -79,11 +73,11 @@ const InteractionHeader = () => {
 
     const TypeIcon =
         interactionTypeIcons[
-            record.type?.key as keyof typeof interactionTypeIcons
+        record.type?.key as keyof typeof interactionTypeIcons
         ] || FollowUpIcon;
     const typeColor =
         interactionTypeColors[
-            record.type?.key as keyof typeof interactionTypeColors
+        record.type?.key as keyof typeof interactionTypeColors
         ] || '#455a64';
 
     return (
@@ -96,7 +90,7 @@ const InteractionHeader = () => {
                             backgroundColor: typeColor,
                         }}
                     >
-                        <TypeIcon />
+                        <TypeIcon className="h-6 w-6 text-white" />
                     </Avatar>
                     <Box className="flex-grow">
                         <Typography variant="h5" gutterBottom>
@@ -110,18 +104,18 @@ const InteractionHeader = () => {
                             <Chip
                                 icon={
                                     record.isCompleted ? (
-                                        <CompletedIcon />
+                                        <CompletedIcon className="h-4 w-4" />
                                     ) : (
-                                        <PendingIcon />
+                                        <PendingIcon className="h-4 w-4" />
                                     )
                                 }
                                 label={
                                     record.isCompleted ? 'Completed' : 'Pending'
                                 }
-                                color={
-                                    record.isCompleted ? 'success' : 'warning'
-                                }
-                                variant="outlined"
+                                className={`border ${record.isCompleted
+                                        ? 'border-green-500 text-green-700'
+                                        : 'border-yellow-500 text-yellow-700'
+                                    }`}
                             />
                         </Stack>
                     </Box>
@@ -163,11 +157,11 @@ const InteractionDetails = () => {
                     </Typography>
                     <Stack className="space-y-2">
                         <Box className="flex items-center gap-1">
-                            <BusinessIcon color="action" />
+                            <BusinessIcon className="h-5 w-5 text-gray-500" />
                             <Box>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     Organization
                                 </Typography>
@@ -184,11 +178,11 @@ const InteractionDetails = () => {
 
                         {record.contactId && (
                             <Box className="flex items-center gap-1">
-                                <PersonIcon color="action" />
+                                <PersonIcon className="h-5 w-5 text-gray-500" />
                                 <Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         Contact
                                     </Typography>
@@ -212,11 +206,11 @@ const InteractionDetails = () => {
 
                         {record.opportunityId && (
                             <Box className="flex items-center gap-1">
-                                <OpportunityIcon color="action" />
+                                <OpportunityIcon className="h-5 w-5 text-gray-500" />
                                 <Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         Related Opportunity
                                     </Typography>
@@ -266,7 +260,7 @@ const InteractionDetails = () => {
                             <Box>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     Scheduled Date
                                 </Typography>
@@ -283,7 +277,7 @@ const InteractionDetails = () => {
                             <Box>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     Completed Date
                                 </Typography>
@@ -299,7 +293,7 @@ const InteractionDetails = () => {
                         <Box>
                             <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                className="text-gray-600"
                             >
                                 Duration
                             </Typography>
@@ -322,7 +316,7 @@ const InteractionDetails = () => {
                             <Box>
                                 <Typography
                                     variant="caption"
-                                    color="text.secondary"
+                                    className="text-gray-600"
                                 >
                                     GPS Coordinates
                                 </Typography>
@@ -336,7 +330,7 @@ const InteractionDetails = () => {
                                 <Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         Location Notes
                                     </Typography>
@@ -348,7 +342,7 @@ const InteractionDetails = () => {
 
                             <Button
                                 variant="outlined"
-                                startIcon={<LocationIcon />}
+                                startIcon={<LocationIcon className="h-4 w-4" />}
                                 onClick={openGoogleMaps}
                                 className="self-start"
                             >
@@ -371,7 +365,7 @@ const InteractionDetails = () => {
                                 <Box>
                                     <Typography
                                         variant="caption"
-                                        color="text.secondary"
+                                        className="text-gray-600"
                                     >
                                         Outcome
                                     </Typography>
@@ -386,7 +380,7 @@ const InteractionDetails = () => {
 
                             {record.followUpRequired && (
                                 <>
-                                    <Alert severity="info">
+                                    <Alert variant="info">
                                         Follow-up required
                                     </Alert>
 
@@ -394,7 +388,7 @@ const InteractionDetails = () => {
                                         <Box>
                                             <Typography
                                                 variant="caption"
-                                                color="text.secondary"
+                                                className="text-gray-600"
                                             >
                                                 Follow-up Date
                                             </Typography>
@@ -411,7 +405,7 @@ const InteractionDetails = () => {
                                         <Box>
                                             <Typography
                                                 variant="caption"
-                                                color="text.secondary"
+                                                className="text-gray-600"
                                             >
                                                 Follow-up Notes
                                             </Typography>
@@ -461,7 +455,7 @@ const InteractionDetails = () => {
                         <Box>
                             <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                className="text-gray-600"
                             >
                                 Created
                             </Typography>
@@ -475,7 +469,7 @@ const InteractionDetails = () => {
                         <Box>
                             <Typography
                                 variant="caption"
-                                color="text.secondary"
+                                className="text-gray-600"
                             >
                                 Last Updated
                             </Typography>

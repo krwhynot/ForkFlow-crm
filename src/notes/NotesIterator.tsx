@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Box, Stack } from '@/components/ui-kit';
-import { Divider } from '@mui/material';
+import { Box, Divider, Stack } from '@/components/ui-kit';
 import { useListContext } from 'react-admin';
 
 import { Note } from './Note';
@@ -28,7 +27,7 @@ export const NotesIterator = ({
                                 showStatus={showStatus}
                                 key={index}
                             />
-                            {index < data.length - 1 && <Divider />}
+                            {index < data.length - 1 && <Divider className="my-2" />}
                         </React.Fragment>
                     ))}
                 </Stack>

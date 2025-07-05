@@ -42,7 +42,7 @@ const ROLE_CONFIG: Record<
         label: 'Manager',
         icon: UserGroupIcon,
         color: 'text-yellow-500 bg-yellow-100 border-yellow-500',
-        description: 'Team and territory management',
+        description: 'Team management',
     },
     broker: {
         label: 'Broker',

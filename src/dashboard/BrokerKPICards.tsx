@@ -5,122 +5,8 @@ import {
     CurrencyDollarIcon as RevenueIcon,
     ClockIcon as TimeIcon,
 } from '@heroicons/react/24/outline';
-import { Box } from '../components/Layout/Box';
-import { Card } from '../components/Card/Card';
-import { CardContent } from '../components/Card/CardContent';
-import { Chip } from '../components/DataDisplay/Chip';
-import { LinearProgress } from '../components/Progress/LinearProgress';
-import { Typography } from '../components/Typography/Typography';
-import React from 'react';
-
-// Helper function to get theme colors
-const getColorValue = (color: string, variant: string) => {
-    const colorMap: Record<string, Record<string, string>> = {
-        primary: {
-            light: '#e3f2fd',
-            contrastText: '#1976d2',
-        },
-        success: {
-            light: '#e8f5e8',
-            contrastText: '#2e7d32',
-        },
-        info: {
-            light: '#e1f5fe',
-            contrastText: '#0288d1',
-        },
-        warning: {
-            light: '#fff3e0',
-            contrastText: '#f57c00',
-        },
-        secondary: {
-            light: '#f3e5f5',
-            contrastText: '#7b1fa2',
-        },
-    };
-    return colorMap[color]?.[variant] || '#f5f5f5';
-};
+import { BadgeDelta, Card, Flex, Grid, Metric, Text } from '@tremor/react';
 import { Customer, Order, Visit } from '../types';
-
-interface KPICardProps {
-    title: string;
-    value: string | number;
-    subtitle?: string;
-    icon: React.ReactNode;
-    color: string;
-    progress?: number;
-    trend?: 'up' | 'down' | 'stable';
-    trendValue?: string;
-}
-
-const KPICard = ({
-    title,
-    value,
-    subtitle,
-    icon,
-    color,
-    progress,
-    trend,
-    trendValue,
-}: KPICardProps) => (
-    <Card className="h-full">
-        <CardContent className="p-4">
-            <Box className="flex items-start justify-between mb-2">
-                <Box
-                    className="rounded p-2 flex items-center"
-                    style={{
-                        backgroundColor: getColorValue(color, 'light'),
-                        color: getColorValue(color, 'contrastText'),
-                    }}
-                >
-                    {icon}
-                </Box>
-                {trend && trendValue && (
-                    <Chip
-                        label={trendValue}
-                        className={`h-5 text-xs ${
-                            trend === 'up'
-                                ? 'bg-green-500 text-white'
-                                : trend === 'down'
-                                  ? 'bg-red-500 text-white'
-                                  : 'bg-gray-200 text-gray-700'
-                        }`}
-                        size="small"
-                    />
-                )}
-            </Box>
-
-            <Typography variant="h4" component="div" className="font-bold mb-1">
-                {value}
-            </Typography>
-
-            <Typography variant="body2" className="text-gray-600 mb-2">
-                {title}
-            </Typography>
-
-            {subtitle && (
-                <Typography variant="caption" className="text-gray-600">
-                    {subtitle}
-                </Typography>
-            )}
-
-            {progress !== undefined && (
-                <Box className="mt-2">
-                    <LinearProgress
-                        variant="determinate"
-                        value={progress}
-                        className="h-1 rounded"
-                    />
-                    <Typography
-                        variant="caption"
-                        className="text-gray-600 mt-1 block"
-                    >
-                        {progress}% of target
-                    </Typography>
-                </Box>
-            )}
-        </CardContent>
-    </Card>
-);
 
 interface BrokerKPICardsProps {
     customers: Customer[];
@@ -173,11 +59,11 @@ export const BrokerKPICards = ({
     const avgVisitDuration =
         visitsWithDuration.length > 0
             ? Math.round(
-                  visitsWithDuration.reduce(
-                      (sum, v) => sum + (v.duration_minutes || 0),
-                      0
-                  ) / visitsWithDuration.length
-              )
+                visitsWithDuration.reduce(
+                    (sum, v) => sum + (v.duration_minutes || 0),
+                    0
+                ) / visitsWithDuration.length
+            )
             : 0;
 
     // GPS coverage - visits with location data
@@ -186,37 +72,33 @@ export const BrokerKPICards = ({
         totalVisits > 0 ? Math.round((visitsWithGPS / totalVisits) * 100) : 0;
 
     // Customer visit frequency
+    const customerIds = new Set(visits.map(v => v.organizationId).filter(Boolean));
     const customersWithVisits = customers.filter(
-        c => c.total_visits && c.total_visits > 0
+        c => customerIds.has(c.id)
     ).length;
     const customerEngagement =
         totalCustomers > 0
             ? Math.round((customersWithVisits / totalCustomers) * 100)
             : 0;
 
-    // Calculate trends
-    const customerGrowthTrend =
+    // Calculate growth percentages
+    const customerGrowth =
         newCustomersLastMonth > 0
-            ? (
-                  ((newCustomersThisMonth - newCustomersLastMonth) /
-                      newCustomersLastMonth) *
-                  100
-              ).toFixed(0) + '%'
+            ? ((newCustomersThisMonth - newCustomersLastMonth) /
+                newCustomersLastMonth) *
+            100
             : newCustomersThisMonth > 0
-              ? '+100%'
-              : '0%';
+                ? 100
+                : 0;
 
-    const visitTrend =
+    const visitGrowth =
         visitsLastMonth > 0
-            ? (
-                  ((visitsThisMonth - visitsLastMonth) / visitsLastMonth) *
-                  100
-              ).toFixed(0) + '%'
+            ? ((visitsThisMonth - visitsLastMonth) / visitsLastMonth) * 100
             : visitsThisMonth > 0
-              ? '+100%'
-              : '0%';
+                ? 100
+                : 0;
 
-    // Order metrics (if available)
+    // Order metrics
     const ordersThisMonth = orders.filter(
         o => new Date(o.order_date) >= monthStart
     ).length;
@@ -224,79 +106,115 @@ export const BrokerKPICards = ({
     const avgOrderValue =
         orders.length > 0 ? (totalRevenue / orders.length).toFixed(0) : 0;
 
-    const kpis = [
-        {
-            title: 'Total Customers',
-            value: totalCustomers,
-            subtitle: `${newCustomersThisMonth} added this month`,
-            icon: <PeopleIcon className="h-6 w-6" />,
-            color: 'primary',
-            trend:
-                newCustomersThisMonth >= newCustomersLastMonth
-                    ? 'up'
-                    : ('down' as const),
-            trendValue: customerGrowthTrend,
-        },
-        {
-            title: 'Visits This Week',
-            value: visitsThisWeek,
-            subtitle: `${visitsThisMonth} total this month`,
-            icon: <LocationIcon className="h-6 w-6" />,
-            color: 'success',
-            trend:
-                visitsThisMonth >= visitsLastMonth ? 'up' : ('down' as const),
-            trendValue: visitTrend,
-        },
-        {
-            title: 'Avg Visit Duration',
-            value: `${avgVisitDuration}m`,
-            subtitle:
-                avgVisitDuration > 0 ? 'minutes per visit' : 'No duration data',
-            icon: <TimeIcon className="h-6 w-6" />,
-            color: 'info',
-        },
-        {
-            title: 'GPS Coverage',
-            value: `${gpsCoverage}%`,
-            subtitle: `${visitsWithGPS} of ${totalVisits} visits`,
-            icon: <LocationIcon className="h-6 w-6" />,
-            color: 'warning',
-            progress: gpsCoverage,
-        },
-        {
-            title: 'Customer Engagement',
-            value: `${customerEngagement}%`,
-            subtitle: `${customersWithVisits} customers visited`,
-            icon: <MetricsIcon className="h-6 w-6" />,
-            color: 'secondary',
-            progress: customerEngagement,
-        },
-        {
-            title: 'Orders This Month',
-            value: ordersThisMonth,
-            subtitle:
-                orders.length > 0
-                    ? `$${avgOrderValue} avg value`
-                    : 'No orders yet',
-            icon: <RevenueIcon className="h-6 w-6" />,
-            color: 'success',
-        },
-    ];
-
-    const kpiCards = kpis.map(kpi => ({
-        ...kpi,
-        trend: (['up', 'down', 'stable'].includes((kpi.trend ?? '') as string)
-            ? kpi.trend
-            : undefined) as 'up' | 'down' | 'stable' | undefined,
-    }));
-
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {kpiCards.map((kpi, index) => (
-                <div key={index}>
-                    <KPICard {...kpi} />
-                </div>
-            ))}
-        </div>
+        <Grid numItems={1} numItemsSm={2} numItemsLg={3} className="gap-6">
+            <Card className="max-w-lg mx-auto">
+                <Flex alignItems="start">
+                    <div>
+                        <Text>Total Customers</Text>
+                        <Metric>{totalCustomers}</Metric>
+                    </div>
+                    <BadgeDelta deltaType={customerGrowth >= 0 ? "increase" : "decrease"}>
+                        {customerGrowth.toFixed(1)}%
+                    </BadgeDelta>
+                </Flex>
+                <Flex className="mt-4">
+                    <Text className="text-sm text-tremor-content-subtle">
+                        {newCustomersThisMonth} new this month
+                    </Text>
+                    <PeopleIcon className="h-4 w-4 text-tremor-content-subtle" />
+                </Flex>
+            </Card>
+
+            <Card className="max-w-lg mx-auto">
+                <Flex alignItems="start">
+                    <div>
+                        <Text>Weekly Visits</Text>
+                        <Metric>{visitsThisWeek}</Metric>
+                    </div>
+                    <BadgeDelta deltaType={visitGrowth >= 0 ? "increase" : "decrease"}>
+                        {visitGrowth.toFixed(1)}%
+                    </BadgeDelta>
+                </Flex>
+                <Flex className="mt-4">
+                    <Text className="text-sm text-tremor-content-subtle">
+                        {visitsThisMonth} total this month
+                    </Text>
+                    <LocationIcon className="h-4 w-4 text-tremor-content-subtle" />
+                </Flex>
+            </Card>
+
+            <Card className="max-w-lg mx-auto">
+                <Flex alignItems="start">
+                    <div>
+                        <Text>Average Order Value</Text>
+                        <Metric>${avgOrderValue}</Metric>
+                    </div>
+                    <BadgeDelta deltaType="unchanged">
+                        {ordersThisMonth} orders
+                    </BadgeDelta>
+                </Flex>
+                <Flex className="mt-4">
+                    <Text className="text-sm text-tremor-content-subtle">
+                        ${totalRevenue.toFixed(2)} total revenue
+                    </Text>
+                    <RevenueIcon className="h-4 w-4 text-tremor-content-subtle" />
+                </Flex>
+            </Card>
+
+            <Card className="max-w-lg mx-auto">
+                <Flex alignItems="start">
+                    <div>
+                        <Text>Customer Engagement</Text>
+                        <Metric>{customerEngagement}%</Metric>
+                    </div>
+                    <BadgeDelta deltaType={customerEngagement >= 75 ? "increase" : customerEngagement >= 50 ? "moderateIncrease" : "decrease"}>
+                        Active Customers
+                    </BadgeDelta>
+                </Flex>
+                <Flex className="mt-4">
+                    <Text className="text-sm text-tremor-content-subtle">
+                        {customersWithVisits} customers visited
+                    </Text>
+                    <MetricsIcon className="h-4 w-4 text-tremor-content-subtle" />
+                </Flex>
+            </Card>
+
+            <Card className="max-w-lg mx-auto">
+                <Flex alignItems="start">
+                    <div>
+                        <Text>Average Visit Duration</Text>
+                        <Metric>{avgVisitDuration} min</Metric>
+                    </div>
+                    <BadgeDelta deltaType={avgVisitDuration >= 30 ? "increase" : "moderateDecrease"}>
+                        Time Spent
+                    </BadgeDelta>
+                </Flex>
+                <Flex className="mt-4">
+                    <Text className="text-sm text-tremor-content-subtle">
+                        {visitsWithDuration.length} tracked visits
+                    </Text>
+                    <TimeIcon className="h-4 w-4 text-tremor-content-subtle" />
+                </Flex>
+            </Card>
+
+            <Card className="max-w-lg mx-auto">
+                <Flex alignItems="start">
+                    <div>
+                        <Text>GPS Coverage</Text>
+                        <Metric>{gpsCoverage}%</Metric>
+                    </div>
+                    <BadgeDelta deltaType={gpsCoverage >= 90 ? "increase" : gpsCoverage >= 75 ? "moderateIncrease" : "decrease"}>
+                        Location Data
+                    </BadgeDelta>
+                </Flex>
+                <Flex className="mt-4">
+                    <Text className="text-sm text-tremor-content-subtle">
+                        {visitsWithGPS} visits with location
+                    </Text>
+                    <LocationIcon className="h-4 w-4 text-tremor-content-subtle" />
+                </Flex>
+            </Card>
+        </Grid>
     );
 };

@@ -3,25 +3,13 @@
  * Allows users to update their basic profile information
  */
 
-import React, { useState } from 'react';
-import {
-    Box,
-    Button,
-    TextField,
-    Avatar,
-    Stack,
-    Typography,
-    IconButton,
-    Chip,
-    Alert,
-    useMediaQuery,
-    useTheme,
-    CircularProgress,
-} from '@mui/material';
-import { PhotoCamera, Delete, Add } from '@mui/icons-material';
-import { useDataProvider } from 'react-admin';
+import { Alert, Avatar, Box, Button, Chip, IconButton, Stack, TextField, Typography } from '@/components/ui-kit';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { PlusIcon as AddIcon, TrashIcon as DeleteIcon, CameraIcon as PhotoCameraIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState } from 'react';
+import { useDataProvider } from 'react-admin';
+import { useForm } from 'react-hook-form';
 import { CrmDataProvider } from '../../providers/types';
 import { User, UserProfileUpdate } from '../../types';
 
@@ -34,7 +22,6 @@ interface ProfileFormData {
     firstName: string;
     lastName: string;
     avatar?: File | string;
-    territory: string[];
     principals: string[];
 }
 
@@ -45,11 +32,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     const [avatarPreview, setAvatarPreview] = useState<string | null>(
         user.avatar || null
     );
-    const [newTerritory, setNewTerritory] = useState('');
-    const [newPrincipal, setNewPrincipal] = useState('');
     const dataProvider = useDataProvider<CrmDataProvider>();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const { isMobile } = useBreakpoint();
 
     const {
         control,
@@ -63,12 +47,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         defaultValues: {
             firstName: user.firstName,
             lastName: user.lastName,
-            territory: user.territory || [],
             principals: user.principals || [],
         },
     });
 
-    const watchedTerritory = watch('territory');
     const watchedPrincipals = watch('principals');
 
     const { isPending, mutate, error } = useMutation({
@@ -119,23 +101,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         setAvatarPreview(null);
     };
 
-    const handleAddTerritory = () => {
-        if (
-            newTerritory.trim() &&
-            !watchedTerritory.includes(newTerritory.trim())
-        ) {
-            setValue('territory', [...watchedTerritory, newTerritory.trim()]);
-            setNewTerritory('');
-        }
-    };
-
-    const handleRemoveTerritory = (territoryToRemove: string) => {
-        setValue(
-            'territory',
-            watchedTerritory.filter(t => t !== territoryToRemove)
-        );
-    };
-
     const handleAddPrincipal = () => {
         if (
             newPrincipal.trim() &&
@@ -157,7 +122,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         const updateData: UserProfileUpdate = {
             firstName: data.firstName,
             lastName: data.lastName,
-            territory: data.territory,
             principals: data.principals,
         };
 
@@ -211,7 +175,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                                 component="span"
                                 sx={{ minHeight: 44, minWidth: 44 }}
                             >
-                                <PhotoCamera />
+                                <PhotoCameraIcon />
                             </IconButton>
                         </label>
                         {avatarPreview && (
@@ -220,7 +184,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                                 onClick={handleRemoveAvatar}
                                 sx={{ minHeight: 44, minWidth: 44 }}
                             >
-                                <Delete />
+                                <DeleteIcon />
                             </IconButton>
                         )}
                     </Stack>
@@ -290,62 +254,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                     }}
                 />
 
-                {/* Territory Management */}
-                <Box>
-                    <Typography variant="h6" gutterBottom>
-                        Sales Territory
-                    </Typography>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 1,
-                            mb: 2,
-                            flexWrap: 'wrap',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <TextField
-                            label="Add Territory"
-                            value={newTerritory}
-                            onChange={e => setNewTerritory(e.target.value)}
-                            size="small"
-                            onKeyPress={e =>
-                                e.key === 'Enter' &&
-                                (e.preventDefault(), handleAddTerritory())
-                            }
-                            inputProps={{
-                                style: { fontSize: isMobile ? '16px' : '14px' },
-                            }}
-                        />
-                        <IconButton
-                            onClick={handleAddTerritory}
-                            color="primary"
-                            disabled={!newTerritory.trim()}
-                            sx={{ minHeight: 44, minWidth: 44 }}
-                        >
-                            <Add />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {watchedTerritory.map(territory => (
-                            <Chip
-                                key={territory}
-                                label={territory}
-                                onDelete={() =>
-                                    handleRemoveTerritory(territory)
-                                }
-                                color="primary"
-                                variant="outlined"
-                            />
-                        ))}
-                        {watchedTerritory.length === 0 && (
-                            <Typography variant="body2" color="text.secondary">
-                                No territories assigned
-                            </Typography>
-                        )}
-                    </Box>
-                </Box>
-
                 {/* Principals Management */}
                 <Box>
                     <Typography variant="h6" gutterBottom>
@@ -379,7 +287,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                             disabled={!newPrincipal.trim()}
                             sx={{ minHeight: 44, minWidth: 44 }}
                         >
-                            <Add />
+                            <AddIcon />
                         </IconButton>
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>

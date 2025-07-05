@@ -1,43 +1,42 @@
 // src/users/UserCreate.tsx
-import React, { useState } from 'react';
 import {
-    Create,
-    SimpleForm,
-    TextInput,
-    SelectInput,
-    BooleanInput,
-    required,
-    email,
-    minLength,
-    useNotify,
-    useRedirect,
-    SaveButton,
-    Toolbar,
-    useCreate,
-    FormDataConsumer,
-} from 'react-admin';
-import {
+    Alert,
+    Avatar,
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Avatar,
+    Chip,
     IconButton,
     Stack,
-    Alert,
-    Chip,
-    Button,
+    Typography,
 } from '@/components/ui-kit';
 import {
-    PhotoCamera as PhotoCameraIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Person as PersonIcon,
-} from '@mui/icons-material';
+    PlusIcon as AddIcon,
+    TrashIcon as DeleteIcon,
+    UserIcon as PersonIcon,
+    CameraIcon as PhotoCameraIcon,
+} from '@heroicons/react/24/outline';
+import React, { useState } from 'react';
+import {
+    BooleanInput,
+    Create,
+    email,
+    FormDataConsumer,
+    minLength,
+    required,
+    SaveButton,
+    SelectInput,
+    SimpleForm,
+    TextInput,
+    Toolbar,
+    useNotify,
+    useRedirect
+} from 'react-admin';
 
-import { UserRole, User } from '../types';
 import { RoleChip } from '../components/auth/RoleChip';
-import { validateTerritory } from '../utils/territoryFilter';
+import { UserRole } from '../types';
+
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const roleChoices = [
@@ -74,9 +73,7 @@ export const UserCreate = () => {
 const UserCreateForm = () => {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
-    const [territory, setTerritory] = useState<string[]>([]);
     const [principals, setPrincipals] = useState<string[]>([]);
-    const [newTerritory, setNewTerritory] = useState('');
     const [newPrincipal, setNewPrincipal] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -116,27 +113,7 @@ const UserCreateForm = () => {
         setAvatarPreview(null);
     };
 
-    const handleAddTerritory = () => {
-        if (newTerritory.trim() && !territory.includes(newTerritory.trim())) {
-            const validation = validateTerritory([
-                ...territory,
-                newTerritory.trim(),
-            ]);
-            if (!validation.isValid) {
-                notify(validation.errors[validation.errors.length - 1], {
-                    type: 'error',
-                });
-                return;
-            }
 
-            setTerritory([...territory, newTerritory.trim()]);
-            setNewTerritory('');
-        }
-    };
-
-    const handleRemoveTerritory = (territoryToRemove: string) => {
-        setTerritory(territory.filter(t => t !== territoryToRemove));
-    };
 
     const handleAddPrincipal = () => {
         if (newPrincipal.trim() && !principals.includes(newPrincipal.trim())) {
@@ -159,7 +136,6 @@ const UserCreateForm = () => {
     const transform = (data: any) => {
         const transformedData = {
             ...data,
-            territory,
             principals,
             password: password || generateRandomPassword(),
             isActive: data.isActive ?? true,
@@ -186,13 +162,12 @@ const UserCreateForm = () => {
                     <Box className="flex items-center gap-4 mb-6">
                         <Avatar
                             src={avatarPreview || undefined}
-                            className={`${
-                                isMobile
-                                    ? 'w-20 h-20 text-2xl'
-                                    : 'w-25 h-25 text-3xl'
-                            }`}
+                            className={`${isMobile
+                                ? 'w-20 h-20 text-2xl'
+                                : 'w-25 h-25 text-3xl'
+                                }`}
                         >
-                            <PersonIcon fontSize="large" />
+                            <PersonIcon className="w-12 h-12" />
                         </Avatar>
                         <Stack>
                             <input
@@ -207,7 +182,7 @@ const UserCreateForm = () => {
                                     className="text-blue-600 min-h-11 min-w-11"
                                     aria-label="upload picture"
                                 >
-                                    <PhotoCameraIcon />
+                                    <PhotoCameraIcon className="w-5 h-5" />
                                 </IconButton>
                             </label>
                             {avatarPreview && (
@@ -215,7 +190,7 @@ const UserCreateForm = () => {
                                     className="text-red-600 min-h-11 min-w-11"
                                     onClick={handleRemoveAvatar}
                                 >
-                                    <DeleteIcon />
+                                    <DeleteIcon className="w-5 h-5" />
                                 </IconButton>
                             )}
                         </Stack>
@@ -347,71 +322,7 @@ const UserCreateForm = () => {
                 {({ formData }) =>
                     formData.role === 'broker' && (
                         <>
-                            {/* Territory Management */}
-                            <Card className="mb-6 w-full">
-                                <CardContent>
-                                    <Typography variant="h6" gutterBottom>
-                                        Sales Territory
-                                    </Typography>
 
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                        paragraph
-                                    >
-                                        Assign territories for this broker. Use
-                                        state codes (CA, NY), cities (Los
-                                        Angeles), or ZIP codes (90210).
-                                    </Typography>
-
-                                    <Box className="flex gap-2 mb-4 flex-wrap items-center">
-                                        <input
-                                            type="text"
-                                            placeholder="Add Territory"
-                                            value={newTerritory}
-                                            onChange={e =>
-                                                setNewTerritory(e.target.value)
-                                            }
-                                            onKeyPress={e =>
-                                                e.key === 'Enter' &&
-                                                (e.preventDefault(),
-                                                handleAddTerritory())
-                                            }
-                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                                isMobile ? 'text-base' : 'text-sm'
-                                            }`}
-                                        />
-                                        <IconButton
-                                            onClick={handleAddTerritory}
-                                            className="text-blue-600 min-h-11 min-w-11"
-                                            disabled={!newTerritory.trim()}
-                                        >
-                                            <AddIcon />
-                                        </IconButton>
-                                    </Box>
-
-                                    <Box className="flex gap-2 flex-wrap">
-                                        {territory.map(area => (
-                                            <Chip
-                                                key={area}
-                                                label={area}
-                                                onDelete={() =>
-                                                    handleRemoveTerritory(area)
-                                                }
-                                                className="border-blue-500 text-blue-500"
-                                            />
-                                        ))}
-                                        {territory.length === 0 && (
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                            >
-                                                No territories assigned
-                                            </Typography>
-                                        )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
 
                             {/* Principals Management */}
                             <Card className="mb-6 w-full">
@@ -440,18 +351,17 @@ const UserCreateForm = () => {
                                             onKeyPress={e =>
                                                 e.key === 'Enter' &&
                                                 (e.preventDefault(),
-                                                handleAddPrincipal())
+                                                    handleAddPrincipal())
                                             }
-                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                                isMobile ? 'text-base' : 'text-sm'
-                                            }`}
+                                            className={`px-3 py-2 border border-gray-300 rounded text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isMobile ? 'text-base' : 'text-sm'
+                                                }`}
                                         />
                                         <IconButton
                                             onClick={handleAddPrincipal}
                                             className="text-blue-600 min-h-11 min-w-11"
                                             disabled={!newPrincipal.trim()}
                                         >
-                                            <AddIcon />
+                                            <AddIcon className="w-5 h-5" />
                                         </IconButton>
                                     </Box>
 

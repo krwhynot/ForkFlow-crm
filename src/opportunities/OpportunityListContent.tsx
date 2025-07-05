@@ -1,10 +1,9 @@
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
-import { Box } from '@mui/material';
 import isEqual from 'lodash/isEqual';
 import { useEffect, useState } from 'react';
 import { DataProvider, useDataProvider, useListContext } from 'react-admin';
+import { Box } from '../components/ui-kit';
 
-import { Deal } from '../types';
 import { OpportunityColumn } from './OpportunityColumn';
 import { OpportunitiesByStage, getOpportunitiesByStage } from './stages';
 

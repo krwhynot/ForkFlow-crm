@@ -10,34 +10,32 @@ import {
     getCurrentUser,
     getUserPermissions,
     initializeAuth,
-    setupTokenRefresh,
-    isAuthenticated as checkAuthenticated,
+    setupTokenRefresh
 } from '../../api/auth/authService';
+import { LoginCredentials, User } from '../../types';
 import {
-    getAuthState,
-    clearAuthState,
-    getUserFromToken,
-    getAccessToken,
+    initializeAuditLogging,
+    logAuditEvent,
+} from '../../utils/auditLogging';
+import { initializeHTTPSSecurity } from '../../utils/httpsEnforcement';
+import {
     clearAccessToken,
+    clearAuthState,
+    getAccessToken,
+    getAuthState,
+    getUserFromToken,
 } from '../../utils/jwtUtils';
-import { User, LoginCredentials } from '../../types';
 import {
-    saveSession,
-    loadSession,
+    initializeSecurity
+} from '../../utils/securityMiddleware';
+import {
+    checkSessionConflict,
     clearSession,
     isSessionValid,
+    loadSession,
+    saveSession,
     setupActivityTracking,
-    checkSessionConflict,
 } from '../../utils/sessionPersistence';
-import {
-    logAuditEvent,
-    initializeAuditLogging,
-} from '../../utils/auditLogging';
-import {
-    initializeSecurity,
-    createSecureHttpClient,
-} from '../../utils/securityMiddleware';
-import { initializeHTTPSSecurity } from '../../utils/httpsEnforcement';
 
 // Authentication state management
 type AuthState = 'initializing' | 'authenticated' | 'unauthenticated';
@@ -372,7 +370,6 @@ export const jwtAuthProvider: AuthProvider = {
                 avatar: user.avatar,
                 email: user.email,
                 role: user.role,
-                territory: user.territory,
                 principals: user.principals,
             });
         } catch (error) {

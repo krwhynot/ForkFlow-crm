@@ -32,16 +32,16 @@ export function useContactImport() {
 
     // company cache to avoid creating the same company multiple times and costly roundtrips
     // Cache is dependent of dataProvider, so it's safe to use it as a dependency
-    const companiesCache = useMemo(
+    const organizationsCache = useMemo(
         () => new Map<string, Company>(),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [dataProvider]
     );
-    const getCompanies = useCallback(
+    const getOrganizations = useCallback(
         async (names: string[]) =>
             fetchRecordsWithCache<Company>(
-                'companies',
-                companiesCache,
+                'organizations',
+                organizationsCache,
                 names,
                 name => ({
                     name,
@@ -50,7 +50,7 @@ export function useContactImport() {
                 }),
                 dataProvider
             ),
-        [companiesCache, user?.identity?.id, dataProvider]
+        [organizationsCache, user?.identity?.id, dataProvider]
     );
 
     // Tags cache to avoid creating the same tag multiple times and costly roundtrips
@@ -74,8 +74,8 @@ export function useContactImport() {
 
     const processBatch = useCallback(
         async (batch: ContactImportSchema[]) => {
-            const [companies, tags] = await Promise.all([
-                getCompanies(
+            const [organizations, tags] = await Promise.all([
+                getOrganizations(
                     batch
                         .map(contact => contact.company?.trim())
                         .filter(name => name)
@@ -115,8 +115,8 @@ export function useContactImport() {
                             { number: phone_home, type: 'Home' },
                             { number: phone_other, type: 'Other' },
                         ].filter(({ number }) => number);
-                        const company = companyName?.trim()
-                            ? companies.get(companyName.trim())
+                        const organization = companyName?.trim()
+                            ? organizations.get(companyName.trim())
                             : undefined;
                         const tagList = parseTags(tagNames)
                             .map(name => tags.get(name))
@@ -139,7 +139,7 @@ export function useContactImport() {
                                     : today,
                                 has_newsletter,
                                 status,
-                                organizationId: company?.id,
+                                organizationId: organization?.id,
                                 tags: tagList.map(tag => tag.id),
                                 salesId: user?.identity?.id,
                                 linkedin_url,
@@ -149,7 +149,7 @@ export function useContactImport() {
                 )
             );
         },
-        [dataProvider, getCompanies, getTags, user?.identity?.id, today]
+        [dataProvider, getOrganizations, getTags, user?.identity?.id, today]
     );
 
     return processBatch;

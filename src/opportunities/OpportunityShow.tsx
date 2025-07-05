@@ -1,42 +1,38 @@
-import * as React from 'react';
 import {
+    ArrowTrendingUpIcon,
+    BuildingOffice2Icon as BusinessIcon,
+    EnvelopeIcon as EmailIcon,
+    ClockIcon as HistoryIcon,
+    UserCircleIcon as LinkedInIcon,
+    CurrencyDollarIcon as MoneyIcon,
+    UserIcon as PersonIcon,
+    PhoneIcon,
+    CubeIcon as ProductIcon,
+} from '@heroicons/react/24/outline';
+import {
+    DateField,
+    DeleteButton,
+    EditButton,
+    NumberField,
+    ReferenceField,
     Show,
     SimpleShowLayout,
     TextField,
-    NumberField,
-    DateField,
-    ReferenceField,
-    useRecordContext,
     TopToolbar,
-    EditButton,
-    DeleteButton,
+    useRecordContext,
 } from 'react-admin';
 import {
     Box,
+    Button,
     Card,
     CardContent,
-    Typography,
     Chip,
-    LinearProgress,
-    Grid,
-    Stack,
     Divider,
-    IconButton,
-    Button,
-} from '@mui/material';
-import {
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    AttachMoney as MoneyIcon,
-    TrendingUp as TrendingUpIcon,
-    History as HistoryIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LinkedIn as LinkedInIcon,
-    Inventory as ProductIcon,
-} from '@mui/icons-material';
-import { Deal } from '../types';
-import { getStageInfo, calculateStageProgress } from './stages';
+    Grid,
+    LinearProgress,
+    Stack,
+    Typography
+} from '../components/ui-kit';
 
 const OpportunityShowActions = () => (
     <TopToolbar>
@@ -82,7 +78,7 @@ const OpportunityShowContent = () => {
 };
 
 const OpportunityHeader = () => {
-    const record = useRecordContext<Deal>();
+    const record = useRecordContext();
     if (!record) return null;
 
     const stageInfo = getStageInfo(record.stage || 'lead_discovery');
@@ -112,8 +108,8 @@ const OpportunityHeader = () => {
                                     probability >= 80
                                         ? 'success'
                                         : probability >= 50
-                                          ? 'warning'
-                                          : 'default'
+                                            ? 'warning'
+                                            : 'default'
                                 }
                                 variant="outlined"
                             />
@@ -182,7 +178,7 @@ const OpportunityHeader = () => {
 };
 
 const OpportunityDetails = () => {
-    const record = useRecordContext<Deal>();
+    const record = useRecordContext();
 
     return (
         <Card>
@@ -284,7 +280,7 @@ const OpportunityDetails = () => {
 };
 
 const StageProgress = () => {
-    const record = useRecordContext<Deal>();
+    const record = useRecordContext();
     if (!record) return null;
 
     const progress = calculateStageProgress(record.stage || 'lead_discovery');
@@ -297,7 +293,7 @@ const StageProgress = () => {
                     gutterBottom
                     sx={{ display: 'flex', alignItems: 'center' }}
                 >
-                    <TrendingUpIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <ArrowTrendingUpIcon sx={{ mr: 1, color: 'primary.main' }} />
                     Pipeline Progress
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -339,8 +335,8 @@ const StageProgress = () => {
                             (record.probability || 0) >= 80
                                 ? 'success'
                                 : (record.probability || 0) >= 50
-                                  ? 'warning'
-                                  : 'primary'
+                                    ? 'warning'
+                                    : 'primary'
                         }
                         sx={{
                             height: 8,
@@ -358,7 +354,7 @@ const StageProgress = () => {
 };
 
 const ContactInfo = () => {
-    const record = useRecordContext<Deal>();
+    const record = useRecordContext();
 
     return (
         <Card>
@@ -427,7 +423,7 @@ const ContactInfo = () => {
 };
 
 const ProductInfo = () => {
-    const record = useRecordContext<Deal>();
+    const record = useRecordContext();
 
     return (
         <Card>

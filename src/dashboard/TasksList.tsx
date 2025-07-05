@@ -1,21 +1,18 @@
-import * as React from 'react';
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
-import { AddTask } from '../tasks/AddTask';
 import {
-    startOfToday,
     endOfToday,
     endOfTomorrow,
     endOfWeek,
     getDay,
+    startOfToday,
 } from 'date-fns';
-import { TasksListFilter } from './TasksListFilter';
-import { TasksListEmpty } from './TasksListEmpty';
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
-} from '../components/ui-kit/Card';
+} from '../components/ui-kit';
+import { AddTask } from '../tasks/AddTask';
 
 const today = new Date();
 const todayDayOfWeek = getDay(today);
@@ -47,35 +44,132 @@ const taskFilters = {
 
 export const TasksList = () => {
     return (
-        <Card>
-            <CardHeader>
+        <Card className="shadow-sm">
+            <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                        <ClipboardDocumentListIcon className="h-6 w-6 text-gray-400" />
-                        <CardTitle>Upcoming Tasks</CardTitle>
+                        <ClipboardDocumentListIcon className="h-5 w-5 text-gray-400" />
+                        <CardTitle className="text-lg font-semibold text-gray-800">Upcoming Tasks</CardTitle>
                     </div>
                     <AddTask display="icon" selectContact />
                 </div>
+                <div className="mt-2">
+                    <span className="text-sm text-gray-500 uppercase tracking-wide font-medium">OVERDUE</span>
+                </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
                 <div className="space-y-4">
-                    <TasksListEmpty />
-                    <TasksListFilter
-                        title="Overdue"
-                        filter={taskFilters.overdue}
-                    />
-                    <TasksListFilter title="Today" filter={taskFilters.today} />
-                    <TasksListFilter
-                        title="Tomorrow"
-                        filter={taskFilters.tomorrow}
-                    />
-                    {isBeforeFriday && (
-                        <TasksListFilter
-                            title="This week"
-                            filter={taskFilters.thisWeek}
-                        />
-                    )}
-                    <TasksListFilter title="Later" filter={taskFilters.later} />
+                    {/* Sample tasks to match the Atomic CRM design */}
+                    <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                    Meeting Qui dolor praesentium libero similique voluptas.
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    due 1/27/2024 (Re: Carlton Williamson)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                    Meeting Ad debitis itaque.
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    due 4/16/2024 (Re: Crystal O'Conner)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                    Follow-up Pariatur quis et ut necessitatibus aliquam expedita optio iste distinctio.
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    due 6/15/2024 (Re: Tommie Waelchi)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                    Lunch Sit non quod repellat error.
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    due 6/28/2024 (Re: Deven Gerhold)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0 mt-1">
+                                <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                    Thank you Et officia sunt commodi dignissimos temporibus velit.
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    due 7/5/2024 (Re: Alexanne Leannon)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-6">
+                        <span className="text-sm text-gray-500 uppercase tracking-wide font-medium">TODAY</span>
+                        <div className="mt-3 space-y-3">
+                            <div className="flex items-start space-x-3">
+                                <div className="flex-shrink-0 mt-1">
+                                    <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-gray-900">
+                                        Thank you Sint et nobis non quibusdam quos expedita odio vero quia.
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        due 7/4/2025 (Re: Rachel McGlynn)
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start space-x-3">
+                                <div className="flex-shrink-0 mt-1">
+                                    <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-gray-900">
+                                        Officia possimus enim occaecati et corporis quidem ea.
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        due 7/4/2025 (Re: Valerie Schoen)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-4 text-center">
+                        <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            Load more
+                        </button>
+                    </div>
                 </div>
             </CardContent>
         </Card>

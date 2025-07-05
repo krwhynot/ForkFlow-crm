@@ -1,38 +1,28 @@
-import React, { useState, useCallback, useMemo } from 'react';
 import {
+    Alert,
+    Avatar,
+    Badge,
     Box,
-    Typography,
-    Paper,
     Card,
     CardContent,
-    Avatar,
     Chip,
     IconButton,
-    Badge,
-    Tooltip,
+    Paper,
     Snackbar,
-    Alert,
-} from '@mui/material';
+    Tooltip,
+    Typography,
+} from '@/components/ui-kit';
 import {
-    Edit as EditIcon,
-    Business as BusinessIcon,
-    DragIndicator as DragIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
-import {
+    closestCenter,
     DndContext,
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
     PointerSensor,
     TouchSensor,
-    useSensor,
-    useSensors,
-    closestCenter,
-    DragOverEvent,
     useDroppable,
+    useSensor,
+    useSensors
 } from '@dnd-kit/core';
 import {
     SortableContext,
@@ -40,9 +30,17 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Organization, OrganizationListViewMode } from '../../types';
+import {
+    BuildingOffice2Icon as BusinessIcon,
+    Bars3Icon as DragIcon,
+    PencilSquareIcon as EditIcon,
+    EnvelopeIcon as EmailIcon,
+    PhoneIcon
+} from '@heroicons/react/24/outline';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { useTwTheme } from '../../hooks/useTwTheme';
+import { Organization, OrganizationListViewMode } from '../../types';
 
 interface OrganizationKanbanProps {
     organizations: Organization[];
@@ -248,7 +246,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                         color: 'primary.main',
                                     }}
                                 >
-                                    <PhoneIcon fontSize="small" />
+                                    <PhoneIcon />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -265,7 +263,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                         color: 'primary.main',
                                     }}
                                 >
-                                    <EmailIcon fontSize="small" />
+                                    <EmailIcon />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -287,8 +285,8 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                     organization.priority === 'high'
                                         ? 'error'
                                         : organization.priority === 'medium'
-                                          ? 'warning'
-                                          : 'success'
+                                            ? 'warning'
+                                            : 'success'
                                 }
                                 variant="filled"
                                 sx={{
@@ -310,7 +308,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
                                     minHeight: { xs: 32, sm: 36 },
                                 }}
                             >
-                                <EditIcon fontSize="small" />
+                                <EditIcon />
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -646,10 +644,9 @@ export const OrganizationKanban: React.FC<OrganizationKanbanProps> = ({
                     await onStatusChange(activeOrgId, newStatus);
                     setSnackbar({
                         open: true,
-                        message: `${activeOrg.name} moved to ${
-                            statusColumns.find(col => col.id === newStatus)
+                        message: `${activeOrg.name} moved to ${statusColumns.find(col => col.id === newStatus)
                                 ?.title
-                        }`,
+                            }`,
                         severity: 'success',
                     });
                 }

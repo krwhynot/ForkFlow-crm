@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
+import {
+    Alert,
+    Box,
+    Card,
+    CardContent,
+    Chip,
+    Typography,
+} from '@/components/ui-kit';
+import {
+    BellAlertIcon as ReminderIcon,
+    ClockIcon as ScheduleIcon,
+} from '@heroicons/react/24/outline';
+import { useState } from 'react';
 import {
     Create,
-    SimpleForm,
+    DateTimeInput,
     ReferenceInput,
     SelectInput,
+    SimpleForm,
     TextInput,
-    DateTimeInput,
-    useNotify,
     useGetIdentity,
+    useNotify,
 } from 'react-admin';
-import { Card, CardContent, Typography, Box, Chip, Alert } from '@mui/material';
-import {
-    NotificationsActive as ReminderIcon,
-    Schedule as ScheduleIcon,
-    PriorityHigh as HighPriorityIcon,
-} from '@mui/icons-material';
 
 const priorityChoices = [
     { id: 'low', name: 'Low Priority' },
@@ -30,7 +36,7 @@ const getPriorityColor = (priority: string) => {
         high: 'error',
         urgent: 'error',
     };
-    return colorMap[priority] || 'default';
+    return colorMap[priority] || 'primary';
 };
 
 const quickReminderTemplates = [
@@ -52,12 +58,9 @@ export const ReminderCreate = () => {
     const transform = (data: any) => {
         const reminderDate = new Date(data.reminder_date);
         const now = new Date();
-
-        // Set default time to 9 AM if only date is provided
         if (reminderDate.getHours() === 0 && reminderDate.getMinutes() === 0) {
             reminderDate.setHours(9, 0, 0, 0);
         }
-
         return {
             ...data,
             broker_id: identity?.id,
@@ -69,7 +72,6 @@ export const ReminderCreate = () => {
 
     const handleTemplateSelect = (template: string) => {
         setSelectedTemplate(template);
-        // This would ideally update the form field, but react-admin doesn't expose form methods easily
         notify(
             `Template selected: "${template}". Please copy to the title field.`,
             { type: 'info' }
@@ -79,72 +81,35 @@ export const ReminderCreate = () => {
     return (
         <Create transform={transform} redirect="list">
             <SimpleForm>
-                <Box sx={{ width: '100%', mb: 2 }}>
+                <Box className="w-full mb-4">
                     <Typography variant="h6" gutterBottom>
                         Create Follow-up Reminder
                     </Typography>
-
                     {/* Quick Templates */}
-                    <Card
-                        sx={{
-                            mb: 2,
-                            bgcolor: 'primary.light',
-                            color: 'primary.contrastText',
-                        }}
-                    >
+                    <Card className="mb-4 bg-blue-50 text-blue-900">
                         <CardContent>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    mb: 1,
-                                }}
-                            >
-                                <ReminderIcon sx={{ mr: 1 }} />
+                            <Box className="flex items-center mb-2">
+                                <ReminderIcon className="h-5 w-5 mr-2" />
                                 <Typography variant="subtitle1">
                                     Quick Templates
                                 </Typography>
                             </Box>
-                            <Typography
-                                variant="body2"
-                                sx={{ mb: 2, opacity: 0.9 }}
-                            >
-                                Click on a template to use as your reminder
-                                title:
+                            <Typography variant="body2" className="mb-2 opacity-90">
+                                Click on a template to use as your reminder title:
                             </Typography>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    gap: 1,
-                                }}
-                            >
-                                {quickReminderTemplates.map(
-                                    (template, index) => (
-                                        <Chip
-                                            key={index}
-                                            label={template}
-                                            onClick={() =>
-                                                handleTemplateSelect(template)
-                                            }
-                                            sx={{
-                                                cursor: 'pointer',
-                                                bgcolor:
-                                                    'rgba(255,255,255,0.2)',
-                                                color: 'inherit',
-                                                '&:hover': {
-                                                    bgcolor:
-                                                        'rgba(255,255,255,0.3)',
-                                                },
-                                            }}
-                                            size="small"
-                                        />
-                                    )
-                                )}
+                            <Box className="flex flex-wrap gap-2">
+                                {quickReminderTemplates.map((template, index) => (
+                                    <Chip
+                                        key={index}
+                                        label={template}
+                                        onClick={() => handleTemplateSelect(template)}
+                                        className="cursor-pointer bg-white/20 text-inherit hover:bg-white/30"
+                                        size="small"
+                                    />
+                                ))}
                             </Box>
                         </CardContent>
                     </Card>
-
                     {/* Reminder Form */}
                     <ReferenceInput
                         source="customer_id"
@@ -152,45 +117,31 @@ export const ReminderCreate = () => {
                         label="Customer"
                         fullWidth
                     >
-                        <SelectInput
-                            optionText="business_name"
-                            fullWidth
-                            sx={{ mb: 2 }}
-                        />
+                        <SelectInput optionText="business_name" fullWidth className="mb-4" />
                     </ReferenceInput>
-
                     <TextInput
                         source="title"
                         label="Reminder Title"
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                         placeholder="What do you need to follow up on?"
-                        helperText={
-                            selectedTemplate
-                                ? `Template: ${selectedTemplate}`
-                                : ''
-                        }
+                        helperText={selectedTemplate ? `Template: ${selectedTemplate}` : ''}
                     />
-
                     <SelectInput
                         source="priority"
                         label="Priority Level"
                         choices={priorityChoices}
                         fullWidth
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                         defaultValue="medium"
                     />
-
                     <DateTimeInput
                         source="reminder_date"
                         label="Reminder Date & Time"
                         fullWidth
-                        sx={{ mb: 2 }}
-                        defaultValue={new Date(
-                            Date.now() + 24 * 60 * 60 * 1000
-                        ).toISOString()} // Tomorrow
+                        className="mb-4"
+                        defaultValue={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()}
                     />
-
                     <TextInput
                         source="notes"
                         label="Additional Notes"
@@ -198,18 +149,14 @@ export const ReminderCreate = () => {
                         rows={3}
                         fullWidth
                         placeholder="Any additional context or details..."
-                        sx={{ mb: 2 }}
+                        className="mb-4"
                     />
-
                     {/* Reminder Tips */}
-                    <Alert severity="info" sx={{ mt: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <ScheduleIcon sx={{ mr: 1 }} />
+                    <Alert variant="info" className="mt-4">
+                        <Box className="flex items-center">
+                            <ScheduleIcon className="h-5 w-5 mr-2" />
                             <Typography variant="body2">
-                                Set reminders for follow-ups after visits,
-                                product demos, or important conversations.
-                                You'll be notified on your dashboard when
-                                reminders are due.
+                                Set reminders for follow-ups after visits, product demos, or important conversations. You'll be notified on your dashboard when reminders are due.
                             </Typography>
                         </Box>
                     </Alert>

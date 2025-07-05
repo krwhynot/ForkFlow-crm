@@ -9,8 +9,7 @@ import {
     AutocompleteInput,
     useGetList,
 } from 'react-admin';
-import { Stack, Typography } from '@/components/ui-kit';
-import { Divider } from '@mui/material';
+import { Stack, Typography, Divider } from '@/components/ui-kit';
 
 export const InteractionFilters = () => {
     // Get interaction types from settings
@@ -44,7 +43,7 @@ export const InteractionFilters = () => {
 
                 <Divider />
 
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant="subtitle2" className="text-gray-600">
                     Type & Status
                 </Typography>
 
@@ -66,7 +65,7 @@ export const InteractionFilters = () => {
 
                 <Divider />
 
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant="subtitle2" className="text-gray-600">
                     Date Range
                 </Typography>
 
@@ -93,7 +92,7 @@ export const InteractionFilters = () => {
 
                 <Divider />
 
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant="subtitle2" className="text-gray-600">
                     Relationships
                 </Typography>
 

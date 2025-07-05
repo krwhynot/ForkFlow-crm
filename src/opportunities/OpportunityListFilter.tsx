@@ -1,19 +1,12 @@
-import * as React from 'react';
+import { UserCircleIcon as AccountCircleIcon, ArrowTrendingUpIcon, BuildingOffice2Icon as BusinessIcon, CalendarDaysIcon as DateRangeIcon, FlagIcon, Squares2X2Icon as PercentIcon, UserIcon as PersonIcon } from '@heroicons/react/24/outline';
 import {
     FilterList,
-    FilterLiveSearch,
     FilterListItem,
+    FilterLiveSearch,
     useGetIdentity,
     useGetList,
 } from 'react-admin';
 import { Box, Chip } from '../components/ui-kit';
-import BusinessIcon from '@mui/icons-material/Business';
-import PersonIcon from '@mui/icons-material/Person';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import FlagIcon from '@mui/icons-material/Flag';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import PercentIcon from '@mui/icons-material/Percent';
-import DateRangeIcon from '@mui/icons-material/DateRange';
 
 export const OpportunityListFilter = () => {
     const { identity } = useGetIdentity();
@@ -106,7 +99,7 @@ export const OpportunityListFilter = () => {
                     ))}
             </FilterList>
 
-            <FilterList label="Pipeline Stage" icon={<TrendingUpIcon />}>
+            <FilterList label="Pipeline Stage" icon={<ArrowTrendingUpIcon />}>
                 {pipelineStages.map(stage => (
                     <FilterListItem
                         key={stage.id}

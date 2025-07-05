@@ -20,23 +20,23 @@ import {
     AccordionDetails,
     Tooltip,
     IconButton,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Security as SecurityIcon,
-    CheckCircle as PassIcon,
-    Error as FailIcon,
-    Warning as WarningIcon,
-    PlayArrow as RunIcon,
-    Refresh as RefreshIcon,
-    Info as InfoIcon,
-    ExpandMore as ExpandIcon,
-    BugReport as BugIcon,
-    Shield as ShieldIcon,
-    VpnKey as AuthIcon,
-    Storage as DataIcon,
-    Api as ApiIcon,
-    Policy as PolicyIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon as SecurityIcon,
+    CheckCircleIcon as PassIcon,
+    XCircleIcon as FailIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    PlayIcon as RunIcon,
+    ArrowPathIcon as RefreshIcon,
+    InformationCircleIcon as InfoIcon,
+    ChevronDownIcon as ExpandIcon,
+    BugAntIcon as BugIcon,
+    ShieldExclamationIcon as ShieldIcon,
+    KeyIcon as AuthIcon,
+    ServerStackIcon as DataIcon,
+    GlobeAltIcon as ApiIcon,
+    DocumentTextIcon as PolicyIcon,
+} from '@heroicons/react/24/outline';
 import { useGetIdentity, useNotify } from 'react-admin';
 
 import { User } from '../types';
@@ -761,12 +761,12 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
         result?: SecurityTestResult,
         isRunning: boolean = false
     ) => {
-        if (isRunning) return <RefreshIcon className="spinning" />;
-        if (!result) return <InfoIcon color="action" />;
+        if (isRunning) return <RefreshIcon className="w-5 h-5 animate-spin" />;
+        if (!result) return <InfoIcon className="w-5 h-5 text-gray-500" />;
         return result.passed ? (
-            <PassIcon color="success" />
+            <PassIcon className="w-5 h-5 text-green-600" />
         ) : (
-            <FailIcon color="error" />
+            <FailIcon className="w-5 h-5 text-red-600" />
         );
     };
 
@@ -788,17 +788,17 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
     const getCategoryIcon = (category: string) => {
         switch (category) {
             case 'authentication':
-                return <AuthIcon />;
+                return <AuthIcon className="w-5 h-5" />;
             case 'authorization':
-                return <ShieldIcon />;
+                return <ShieldIcon className="w-5 h-5" />;
             case 'data_protection':
-                return <DataIcon />;
+                return <DataIcon className="w-5 h-5" />;
             case 'api_security':
-                return <ApiIcon />;
+                return <ApiIcon className="w-5 h-5" />;
             case 'privacy_compliance':
-                return <PolicyIcon />;
+                return <PolicyIcon className="w-5 h-5" />;
             default:
-                return <SecurityIcon />;
+                return <SecurityIcon className="w-5 h-5" />;
         }
     };
 
@@ -813,7 +813,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
 
     if (!isAdmin) {
         return (
-            <Alert severity="error" sx={{ m: 3 }}>
+            <Alert variant="error" className="m-3">
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>
                     You need administrator privileges to access the security
@@ -824,16 +824,11 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
     }
 
     return (
-        <Box sx={{ p: compactView ? 1 : 3 }}>
+        <Box className={compactView ? "p-1" : "p-3"}>
             {!compactView && (
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={3}
-                >
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <BugIcon color="primary" sx={{ fontSize: 32 }} />
+                <Box className="flex justify-between items-center mb-3">
+                    <Box className="flex items-center gap-2">
+                        <BugIcon className="w-8 h-8 text-blue-600" />
                         <Box>
                             <Typography variant="h4" component="h1">
                                 Security Test Suite
@@ -847,10 +842,10 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
 
                     <Button
                         variant="contained"
-                        startIcon={<RunIcon />}
+                        startIcon={<RunIcon className="w-4 h-4" />}
                         onClick={runAllTests}
                         disabled={running}
-                        sx={{ minHeight: 44 }}
+                        className="min-h-11"
                     >
                         {running ? 'Running Tests...' : 'Run All Tests'}
                     </Button>
@@ -859,32 +854,32 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
 
             {/* Overall Score */}
             {totalTests > 0 && (
-                <Card sx={{ mb: 3 }}>
+                <Card className="mb-3">
                     <CardContent>
                         <Typography variant="h6" gutterBottom>
                             Overall Security Score
                         </Typography>
-                        <Box display="flex" alignItems="center" gap={2} mb={2}>
+                        <Box className="flex items-center gap-2 mb-2">
                             <LinearProgress
                                 variant="determinate"
                                 value={overallScore}
-                                sx={{ flexGrow: 1, height: 8 }}
-                                color={
+                                className="flex-grow h-2"
+                                className={
                                     overallScore >= 80
-                                        ? 'success'
+                                        ? 'text-green-600'
                                         : overallScore >= 60
-                                          ? 'warning'
-                                          : 'error'
+                                          ? 'text-yellow-600'
+                                          : 'text-red-600'
                                 }
                             />
                             <Typography
                                 variant="h6"
-                                color={
+                                className={
                                     overallScore >= 80
-                                        ? 'success.main'
+                                        ? 'text-green-600'
                                         : overallScore >= 60
-                                          ? 'warning.main'
-                                          : 'error.main'
+                                          ? 'text-yellow-600'
+                                          : 'text-red-600'
                                 }
                             >
                                 {overallScore}%
@@ -921,15 +916,10 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
 
                 return (
                     <Accordion key={category} defaultExpanded={!compactView}>
-                        <AccordionSummary expandIcon={<ExpandIcon />}>
-                            <Box
-                                display="flex"
-                                alignItems="center"
-                                gap={2}
-                                width="100%"
-                            >
+                        <AccordionSummary expandIcon={<ExpandIcon className="w-5 h-5" />}>
+                            <Box className="flex items-center gap-2 w-full">
                                 {getCategoryIcon(category)}
-                                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                <Typography variant="h6" className="flex-grow">
                                     {category
                                         .split('_')
                                         .map(
@@ -942,12 +932,12 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                 {categoryResults.length > 0 && (
                                     <Chip
                                         label={`${categoryScore}%`}
-                                        color={
+                                        className={
                                             categoryScore >= 80
-                                                ? 'success'
+                                                ? 'border-green-500 text-green-500'
                                                 : categoryScore >= 60
-                                                  ? 'warning'
-                                                  : 'error'
+                                                  ? 'border-yellow-500 text-yellow-500'
+                                                  : 'border-red-500 text-red-500'
                                         }
                                         size="small"
                                     />
@@ -971,11 +961,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary={
-                                                    <Box
-                                                        display="flex"
-                                                        alignItems="center"
-                                                        gap={1}
-                                                    >
+                                                    <Box className="flex items-center gap-1">
                                                         <Typography variant="body1">
                                                             {test.name}
                                                         </Typography>
@@ -984,17 +970,17 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                                             color={
                                                                 getSeverityColor(
                                                                     test.severity
-                                                                ) as any
+                                                                )
                                                             }
                                                             size="small"
                                                         />
                                                         {result && (
                                                             <Chip
                                                                 label={`${result.score}%`}
-                                                                color={
+                                                                className={
                                                                     result.passed
-                                                                        ? 'success'
-                                                                        : 'error'
+                                                                        ? 'border-green-500 text-green-500'
+                                                                        : 'border-red-500 text-red-500'
                                                                 }
                                                                 size="small"
                                                                 variant="outlined"
@@ -1013,10 +999,10 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                                         {result && (
                                                             <Typography
                                                                 variant="body2"
-                                                                color={
+                                                                className={
                                                                     result.passed
-                                                                        ? 'success.main'
-                                                                        : 'error.main'
+                                                                        ? 'text-green-600'
+                                                                        : 'text-red-600'
                                                                 }
                                                             >
                                                                 {result.message}
@@ -1025,7 +1011,7 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                                     </Box>
                                                 }
                                             />
-                                            <Box display="flex" gap={1}>
+                                            <Box className="flex gap-1">
                                                 <Tooltip title="Run Test">
                                                     <IconButton
                                                         size="small"
@@ -1034,13 +1020,13 @@ export const SecurityTestSuite: React.FC<SecurityTestSuiteProps> = ({
                                                         }
                                                         disabled={running}
                                                     >
-                                                        <RunIcon />
+                                                        <RunIcon className="w-4 h-4" />
                                                     </IconButton>
                                                 </Tooltip>
                                                 {result?.details && (
                                                     <Tooltip title="View Details">
                                                         <IconButton size="small">
-                                                            <InfoIcon />
+                                                            <InfoIcon className="w-4 h-4" />
                                                         </IconButton>
                                                     </Tooltip>
                                                 )}

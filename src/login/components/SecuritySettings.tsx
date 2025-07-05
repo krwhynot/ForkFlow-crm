@@ -3,30 +3,24 @@
  * Displays security information and session management
  */
 
-import React from 'react';
 import {
-    Box,
-    Stack,
-    Typography,
     Alert,
+    Box,
     Card,
     CardContent,
+    Chip,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Chip,
+    Stack,
+    Typography,
 } from '@/components/ui-kit';
-import { useBreakpoint } from '../../hooks/useBreakpoint';
-import {
-    Security,
-    AccessTime,
-    DeviceHub,
-    Verified,
-    Warning,
-} from '@mui/icons-material';
-import { User } from '../../types';
+import { ClockIcon as AccessTimeIcon, DevicePhoneMobileIcon as DeviceHubIcon, ShieldCheckIcon as SecurityIcon, CheckBadgeIcon as VerifiedIcon } from '@heroicons/react/24/outline';
+import React from 'react';
 import { RoleChip } from '../../components/auth/RoleChip';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { User } from '../../types';
 
 interface SecuritySettingsProps {
     user: User;
@@ -63,9 +57,6 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
 
         // Has avatar (indicates engaged user)
         if (user.avatar) score += 1;
-
-        // Has territories assigned
-        if (user.territory && user.territory.length > 0) score += 1;
 
         // Has principals assigned
         if (user.principals && user.principals.length > 0) score += 1;
@@ -104,7 +95,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
             <Card variant="outlined">
                 <CardContent>
                     <Box className="flex items-center gap-2 mb-2">
-                        <Security color={color} />
+                        <SecurityIcon className={`h-6 w-6 text-${color}`} />
                         <Box>
                             <Typography variant="h6">
                                 Security Level:{' '}
@@ -125,9 +116,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                         <Alert severity="info" className="mt-2">
                             <Typography variant="body2">
                                 <strong>Improve your security:</strong> Complete
-                                your profile with avatar, territory, and
-                                principal assignments for better account
-                                security.
+                                your profile with avatar and principal assignments for better account security.
                             </Typography>
                         </Alert>
                     )}
@@ -143,9 +132,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                     <List>
                         <ListItem>
                             <ListItemIcon>
-                                <Verified
-                                    color={user.isActive ? 'success' : 'error'}
-                                />
+                                <VerifiedIcon className={`h-6 w-6 text-${user.isActive ? 'success' : 'error'}`} />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Account Status"
@@ -167,7 +154,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
 
                         <ListItem>
                             <ListItemIcon>
-                                <AccessTime />
+                                <AccessTimeIcon className="h-6 w-6 text-gray-500" />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Last Login"
@@ -177,7 +164,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
 
                         <ListItem>
                             <ListItemIcon>
-                                <DeviceHub />
+                                <DeviceHubIcon className="h-6 w-6 text-gray-500" />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Account Created"
@@ -204,33 +191,10 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
 
                         <ListItem>
                             <ListItemText
-                                primary="Sales Territory"
-                                secondary={
-                                    user.territory &&
-                                    user.territory.length > 0 ? (
-                                        <Box className="flex gap-0.5 flex-wrap mt-0.5">
-                                            {user.territory.map(territory => (
-                                                <Chip
-                                                    key={territory}
-                                                    label={territory}
-                                                    size="small"
-                                                    variant="outlined"
-                                                />
-                                            ))}
-                                        </Box>
-                                    ) : (
-                                        'No territories assigned'
-                                    )
-                                }
-                            />
-                        </ListItem>
-
-                        <ListItem>
-                            <ListItemText
                                 primary="Principals/Brands"
                                 secondary={
                                     user.principals &&
-                                    user.principals.length > 0 ? (
+                                        user.principals.length > 0 ? (
                                         <Box className="flex gap-0.5 flex-wrap mt-0.5">
                                             {user.principals.map(principal => (
                                                 <Chip

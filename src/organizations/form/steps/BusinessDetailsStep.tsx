@@ -1,40 +1,34 @@
-import React, { useCallback, useState } from 'react';
 import {
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
-    InputAdornment,
-    Slider,
-} from '@mui/material';
-import {
-    Box,
-    Typography,
-    Stack,
     Alert,
+    Box,
+    Chip,
     Grid,
     Paper,
-    Chip,
-    Divider,
+    Stack,
+    Typography
 } from '@/components/ui-kit';
 import {
-    Business as BusinessIcon,
-    TrendingUp as RevenueIcon,
-    Notes as NotesIcon,
-    AccountCircle as ManagerIcon,
-    Star as PriorityIcon,
-    Category as SegmentIcon,
-    LocalShipping as DistributorIcon,
-} from '@mui/icons-material';
+    BuildingOffice2Icon as BusinessIcon,
+    UserIcon as PersonIcon
+} from '@heroicons/react/24/outline';
 import {
-    TextInput,
-    SelectInput,
-    useGetList,
+    FormControl,
+    FormHelperText,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select,
+    Slider,
+} from '@mui/material';
+import React, { useCallback, useState } from 'react';
+import {
     FormDataConsumer,
+    SelectInput,
+    TextInput,
+    useGetList,
 } from 'react-admin';
-import { StepComponentProps } from './types';
 import { Setting } from '../../../types';
+import { StepComponentProps } from './types';
 
 /**
  * Business Details step component
@@ -173,7 +167,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                         variant="subtitle1"
                         className="mb-2 flex items-center gap-2"
                     >
-                        <PriorityIcon fontSize="small" />
+                        <PersonIcon className="h-4 w-4 text-primary" />
                         Business Classification
                     </Typography>
 
@@ -208,24 +202,24 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                                 );
                                             const displayOption = setting
                                                 ? {
-                                                      value: setting.id,
-                                                      label: setting.label,
-                                                      color: setting.color,
-                                                      icon: setting.label
-                                                          .toLowerCase()
-                                                          .includes('high')
-                                                          ? '🔴'
-                                                          : setting.label
-                                                                  .toLowerCase()
-                                                                  .includes(
-                                                                      'medium'
-                                                                  )
+                                                    value: setting.id,
+                                                    label: setting.label,
+                                                    color: setting.color,
+                                                    icon: setting.label
+                                                        .toLowerCase()
+                                                        .includes('high')
+                                                        ? '🔴'
+                                                        : setting.label
+                                                            .toLowerCase()
+                                                            .includes(
+                                                                'medium'
+                                                            )
                                                             ? '🟡'
                                                             : '🟢',
-                                                      description:
-                                                          setting.description ||
-                                                          '',
-                                                  }
+                                                    description:
+                                                        setting.description ||
+                                                        '',
+                                                }
                                                 : option;
 
                                             return (
@@ -294,9 +288,9 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                         error={!!validationErrors.segmentId}
                                         optionText={(choice: any) => (
                                             <Box className="flex items-center gap-2">
-                                                <SegmentIcon
-                                                    fontSize="small"
-                                                    sx={{ color: choice.color }}
+                                                <PersonIcon
+                                                    className="h-4 w-4 text-primary"
+                                                    style={{ color: choice.color }}
                                                 />
                                                 <span
                                                     style={{
@@ -338,9 +332,9 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                         error={!!validationErrors.distributorId}
                                         optionText={(choice: any) => (
                                             <Box className="flex items-center gap-2">
-                                                <DistributorIcon
-                                                    fontSize="small"
-                                                    sx={{ color: choice.color }}
+                                                <PersonIcon
+                                                    className="h-4 w-4 text-primary"
+                                                    style={{ color: choice.color }}
                                                 />
                                                 <span
                                                     style={{
@@ -367,7 +361,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                         variant="subtitle1"
                         className="mb-2 flex items-center gap-2"
                     >
-                        <RevenueIcon fontSize="small" />
+                        <PersonIcon className="h-4 w-4 text-primary" />
                         Revenue Information
                     </Typography>
 
@@ -481,7 +475,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                         variant="subtitle1"
                         className="mb-2 flex items-center gap-2"
                     >
-                        <ManagerIcon fontSize="small" />
+                        <PersonIcon className="h-4 w-4 text-primary" />
                         Account Management
                     </Typography>
 
@@ -499,10 +493,10 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                                 error={!!validationErrors.accountManager}
                                 InputProps={{
                                     startAdornment: (
-                                        <ManagerIcon
-                                            sx={{
+                                        <PersonIcon
+                                            className="h-4 w-4 text-primary"
+                                            style={{
                                                 mr: 1,
-                                                color: 'action.active',
                                             }}
                                         />
                                     ),
@@ -518,7 +512,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                         variant="subtitle1"
                         className="mb-2 flex items-center gap-2"
                     >
-                        <NotesIcon fontSize="small" />
+                        <PersonIcon className="h-4 w-4 text-primary" />
                         Additional Notes
                     </Typography>
 
@@ -551,54 +545,54 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                 {(formData.priorityId ||
                     formData.segmentId ||
                     formData.revenue) && (
-                    <Paper elevation={1} className="p-6 bg-gray-50">
-                        <Typography variant="subtitle2" className="mb-2">
-                            Business Summary
-                        </Typography>
-                        <Stack gap={4}>
-                            {formData.priorityId && (
-                                <Box className="flex items-center gap-2">
-                                    <PriorityIcon
-                                        fontSize="small"
-                                        color="primary"
-                                    />
-                                    <Typography variant="body2">
-                                        Priority:{' '}
-                                        {prioritySettings?.find(
-                                            p => p.id === formData.priorityId
-                                        )?.label || formData.priorityId}
-                                    </Typography>
-                                </Box>
-                            )}
-                            {formData.segmentId && (
-                                <Box className="flex items-center gap-2">
-                                    <SegmentIcon
-                                        fontSize="small"
-                                        color="primary"
-                                    />
-                                    <Typography variant="body2">
-                                        Segment:{' '}
-                                        {segmentSettings?.find(
-                                            s => s.id === formData.segmentId
-                                        )?.label || formData.segmentId}
-                                    </Typography>
-                                </Box>
-                            )}
-                            {formData.revenue && (
-                                <Box className="flex items-center gap-2">
-                                    <RevenueIcon
-                                        fontSize="small"
-                                        color="primary"
-                                    />
-                                    <Typography variant="body2">
-                                        Revenue:{' '}
-                                        {formatCurrency(formData.revenue)}
-                                    </Typography>
-                                </Box>
-                            )}
-                        </Stack>
-                    </Paper>
-                )}
+                        <Paper elevation={1} className="p-6 bg-gray-50">
+                            <Typography variant="subtitle2" className="mb-2">
+                                Business Summary
+                            </Typography>
+                            <Stack gap={4}>
+                                {formData.priorityId && (
+                                    <Box className="flex items-center gap-2">
+                                        <PersonIcon
+                                            className="h-4 w-4 text-primary"
+                                            style={{ color: 'primary' }}
+                                        />
+                                        <Typography variant="body2">
+                                            Priority:{' '}
+                                            {prioritySettings?.find(
+                                                p => p.id === formData.priorityId
+                                            )?.label || formData.priorityId}
+                                        </Typography>
+                                    </Box>
+                                )}
+                                {formData.segmentId && (
+                                    <Box className="flex items-center gap-2">
+                                        <PersonIcon
+                                            className="h-4 w-4 text-primary"
+                                            style={{ color: 'primary' }}
+                                        />
+                                        <Typography variant="body2">
+                                            Segment:{' '}
+                                            {segmentSettings?.find(
+                                                s => s.id === formData.segmentId
+                                            )?.label || formData.segmentId}
+                                        </Typography>
+                                    </Box>
+                                )}
+                                {formData.revenue && (
+                                    <Box className="flex items-center gap-2">
+                                        <PersonIcon
+                                            className="h-4 w-4 text-primary"
+                                            style={{ color: 'primary' }}
+                                        />
+                                        <Typography variant="body2">
+                                            Revenue:{' '}
+                                            {formatCurrency(formData.revenue)}
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </Stack>
+                        </Paper>
+                    )}
 
                 {/* Quick Tips */}
                 <Alert severity="info">
@@ -613,10 +607,6 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
                         <li>
                             Business segment enables better categorization and
                             reporting
-                        </li>
-                        <li>
-                            Revenue information assists with territory planning
-                            and resource allocation
                         </li>
                         <li>
                             All business details can be updated as relationships

@@ -75,7 +75,6 @@ The ForkFlow CRM backend API implementation has been successfully completed, del
 
 ### 5. **Reporting & Analytics API** (`/reports`)
 - **Executive Dashboard**: High-level KPIs and metrics
-- **Territory Performance**: Geographic sales analysis
 - **Sales Velocity**: Deal progression tracking
 - **Pipeline Health**: Deal aging and stagnation analysis
 - **Conversion Funnel**: Lead-to-close analysis
@@ -196,7 +195,6 @@ The ForkFlow CRM backend API implementation has been successfully completed, del
 
 ### **For Sales Teams**
 - **Real-time Dashboards**: Live performance monitoring
-- **Territory Management**: Geographic sales optimization
 - **Pipeline Health**: Deal progression tracking
 - **Contact Intelligence**: Decision-maker identification
 - **Activity Tracking**: Comprehensive interaction logging
@@ -204,7 +202,6 @@ The ForkFlow CRM backend API implementation has been successfully completed, del
 ### **For Management**
 - **Executive Dashboards**: High-level KPI monitoring
 - **Forecasting**: Predictive sales analytics
-- **Performance Benchmarking**: Team and territory comparison
 - **Export Capabilities**: Data portability and reporting
 - **Integration Options**: Seamless third-party connectivity
 

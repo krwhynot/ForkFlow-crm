@@ -1,19 +1,19 @@
 // src/users/UserActivityTracker.tsx
 import React, { useState } from 'react';
 import {
-    Login as LoginIcon,
-    Logout as LogoutIcon,
-    Edit as EditIcon,
-    Create as CreateIcon,
-    Delete as DeleteIcon,
-    Security as SecurityIcon,
-    Warning as WarningIcon,
-    Info as InfoIcon,
-    History as HistoryIcon,
-    Visibility as VisibilityIcon,
-    Close as CloseIcon,
-    Download as DownloadIcon,
-} from '@mui/icons-material';
+    ArrowRightOnRectangleIcon as LoginIcon,
+    ArrowLeftOnRectangleIcon as LogoutIcon,
+    PencilIcon as EditIcon,
+    PlusIcon as CreateIcon,
+    TrashIcon as DeleteIcon,
+    ShieldCheckIcon as SecurityIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    InformationCircleIcon as InfoIcon,
+    ClockIcon as HistoryIcon,
+    EyeIcon as VisibilityIcon,
+    XMarkIcon as CloseIcon,
+    ArrowDownTrayIcon as DownloadIcon,
+} from '@heroicons/react/24/outline';
 import {
     List,
     ListItem,
@@ -138,23 +138,23 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
     const getActivityIcon = (type: UserActivity['type']) => {
         switch (type) {
             case 'login':
-                return <LoginIcon color="success" />;
+                return <LoginIcon className="w-5 h-5 text-green-600" />;
             case 'logout':
-                return <LogoutIcon color="action" />;
+                return <LogoutIcon className="w-5 h-5 text-gray-500" />;
             case 'create':
-                return <CreateIcon color="primary" />;
+                return <CreateIcon className="w-5 h-5 text-blue-600" />;
             case 'edit':
-                return <EditIcon color="info" />;
+                return <EditIcon className="w-5 h-5 text-blue-500" />;
             case 'delete':
-                return <DeleteIcon color="error" />;
+                return <DeleteIcon className="w-5 h-5 text-red-600" />;
             case 'view':
-                return <VisibilityIcon color="action" />;
+                return <VisibilityIcon className="w-5 h-5 text-gray-500" />;
             case 'security':
-                return <SecurityIcon color="warning" />;
+                return <SecurityIcon className="w-5 h-5 text-yellow-600" />;
             case 'error':
-                return <WarningIcon color="error" />;
+                return <WarningIcon className="w-5 h-5 text-red-600" />;
             default:
-                return <InfoIcon color="action" />;
+                return <InfoIcon className="w-5 h-5 text-gray-500" />;
         }
     };
 
@@ -213,7 +213,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                             variant="h6"
                             className="mb-0 flex items-center"
                         >
-                            <HistoryIcon className="mr-2" />
+                            <HistoryIcon className="w-5 h-5 mr-2" />
                             User Activity Log
                         </Typography>
 
@@ -223,7 +223,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                 size="small"
                                 onClick={onExportActivity}
                             >
-                                <DownloadIcon className="mr-1" />
+                                <DownloadIcon className="w-4 h-4 mr-1" />
                                 Export
                             </Button>
                         )}
@@ -240,7 +240,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
 
                     {displayActivities.length === 0 ? (
                         <Box className="text-center py-8">
-                            <HistoryIcon className="text-5xl text-gray-500 mb-4" />
+                            <HistoryIcon className="w-20 h-20 text-gray-500 mb-4 mx-auto" />
                             <Typography variant="body1" color="text.secondary">
                                 No activity recorded yet
                             </Typography>
@@ -331,7 +331,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                                             size="small"
                                             className="text-blue-600"
                                         >
-                                            <VisibilityIcon className="text-sm" />
+                                            <VisibilityIcon className="w-4 h-4" />
                                         </IconButton>
                                     </ListItem>
 
@@ -361,7 +361,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({
                             size="small"
                             className="text-gray-600"
                         >
-                            <CloseIcon />
+                            <CloseIcon className="w-5 h-5" />
                         </IconButton>
                     </Box>
                 </DialogTitle>

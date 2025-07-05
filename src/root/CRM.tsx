@@ -1,28 +1,25 @@
+import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 import { useEffect } from 'react';
+import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
 import {
     Admin,
     CustomRoutes,
     ListGuesser,
     RaThemeOptions,
     Resource,
-    defaultTheme,
-    localStorageStore,
+    localStorageStore
 } from 'react-admin';
-import type { AdminProps, AuthProvider, DataProvider } from 'react-admin';
 import { Route } from 'react-router';
-import { ForgotPasswordPage, SetPasswordPage } from 'ra-supabase';
 
-import Layout from '../layout/Layout';
-import { i18nProvider } from './i18nProvider';
-import companies from '../companies';
 import contacts from '../contacts';
-import { RoleDashboard as Dashboard } from '../dashboard/RoleDashboard';
-import deals from '../deals';
+import { HomeDashboard as Dashboard } from '../dashboard/HomeDashboard';
 import interactions from '../interactions';
-import opportunities from '../opportunities';
-import products from '../products';
-import { UniversalLoginPage } from '../login/UniversalLoginPage';
+import Layout from '../layout/Layout';
 import { SignupPage } from '../login/SignupPage';
+import { UniversalLoginPage } from '../login/UniversalLoginPage';
+import opportunities from '../opportunities';
+import organizations from '../organizations';
+import products from '../products';
 import {
     authProvider as defaultAuthProvider,
     dataProvider as defaultDataProvider,
@@ -36,14 +33,28 @@ import {
 import {
     defaultCompanySectors,
     defaultContactGender,
-    defaultDealCategories,
-    defaultDealPipelineStatuses,
-    defaultDealStages,
     defaultLogo,
     defaultNoteStatuses,
     defaultTaskTypes,
     defaultTitle,
 } from './defaultConfiguration';
+import { i18nProvider } from './i18nProvider';
+
+// Simple development auth provider that bypasses authentication
+const devAuthProvider: AuthProvider = {
+    login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
+    checkError: () => Promise.resolve(),
+    checkAuth: () => Promise.resolve(),
+    getPermissions: () => Promise.resolve(),
+    getIdentity: () => Promise.resolve({
+        id: 'dev-user',
+        fullName: 'Development User',
+        email: 'dev@forkflow.com',
+        role: 'broker',
+        avatar: null,
+    }),
+};
 
 // Define the interface for the CRM component props
 export type CRMProps = {
@@ -97,9 +108,6 @@ export const CRM = ({
     contactGender = defaultContactGender,
     companySectors = defaultCompanySectors,
     darkTheme,
-    dealCategories = defaultDealCategories,
-    dealPipelineStatuses = defaultDealPipelineStatuses,
-    dealStages = defaultDealStages,
     logo = defaultLogo,
     noteStatuses = defaultNoteStatuses,
     taskTypes = defaultTaskTypes,
@@ -123,14 +131,19 @@ export const CRM = ({
         img.src = `https://atomic-crm-telemetry.marmelab.com/atomic-crm-telemetry?domain=${window.location.hostname}`;
     }, [disableTelemetry]);
 
+    // Check if we should skip authentication for development
+    const skipAuth = import.meta.env.VITE_SKIP_AUTH === 'true';
+    const finalAuthProvider = skipAuth ? devAuthProvider : authProvider;
+    const requireAuth = !skipAuth;
+
     return (
         <ConfigurationProvider
             value={{
                 contactGender,
                 companySectors,
-                dealCategories,
-                dealPipelineStatuses,
-                dealStages,
+                dealCategories: [],
+                dealPipelineStatuses: [],
+                dealStages: [],
                 logo,
                 noteStatuses,
                 taskTypes,
@@ -139,13 +152,13 @@ export const CRM = ({
         >
             <Admin
                 dataProvider={dataProvider}
-                authProvider={authProvider}
+                authProvider={finalAuthProvider}
                 store={localStorageStore(undefined, 'CRM')}
                 layout={Layout}
-                loginPage={UniversalLoginPage}
+                loginPage={skipAuth ? undefined : UniversalLoginPage}
                 dashboard={Dashboard}
                 i18nProvider={i18nProvider}
-                requireAuth
+                requireAuth={requireAuth}
                 disableTelemetry
                 {...rest}
             >
@@ -167,14 +180,12 @@ export const CRM = ({
                         element={<SettingsPage />}
                     />
                 </CustomRoutes>
-                <Resource name="deals" {...deals} />
                 <Resource name="contacts" {...contacts} />
-                <Resource name="companies" {...companies} />
+                <Resource name="organizations" {...organizations} />
                 <Resource name="interactions" {...interactions} />
                 <Resource name="opportunities" {...opportunities} />
                 <Resource name="products" {...products} />
                 <Resource name="contactNotes" />
-                <Resource name="dealNotes" />
                 <Resource name="tasks" list={ListGuesser} />
                 <Resource name="sales" {...sales} />
                 <Resource name="tags" list={ListGuesser} />

@@ -3,16 +3,15 @@
  * Shows security status and session information in the app header
  */
 
-import React, { useState } from 'react';
 import {
+    CheckCircleIcon,
+    ExclamationTriangleIcon,
     ShieldCheckIcon,
     ShieldExclamationIcon,
-    ExclamationTriangleIcon,
     XCircleIcon,
-    CheckCircleIcon,
 } from '@heroicons/react/24/outline';
+import React from 'react';
 import { useGetIdentity } from 'react-admin';
-import { User } from '../../types';
 import { RoleChip } from '../auth/RoleChip';
 import { Badge } from '../ui-kit/Badge';
 import { Chip } from '../ui-kit/Chip';
@@ -63,18 +62,6 @@ export const SecurityStatusBar: React.FC<SecurityStatusBarProps> = ({
         else {
             issues.push('No role assigned');
             recommendations.push('Contact admin for role assignment');
-        }
-
-        // Check territory assignment for brokers
-        if (identity.role === 'broker') {
-            if (identity.territory && identity.territory.length > 0)
-                score += 20;
-            else {
-                issues.push('No territory assigned');
-                recommendations.push('Get territory assignment from manager');
-            }
-        } else {
-            score += 20; // Non-brokers don't need territory
         }
 
         // Check recent activity
