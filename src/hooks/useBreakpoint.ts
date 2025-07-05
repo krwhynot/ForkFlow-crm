@@ -1,23 +1,44 @@
-import { useSyncExternalStore } from 'react';
-import { theme } from '../lib/tailwind-theme';
+import { useEffect, useState } from 'react';
 
-const screens = theme.screens;
-
-type ScreenSize = keyof typeof screens;
-
-const subscribe = (callback: () => void) => {
-    window.addEventListener('resize', callback);
-    return () => window.removeEventListener('resize', callback);
+/** Tailwind CSS default breakpoints */
+const BREAKPOINT_PIXELS = {
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
 };
 
-const getSnapshot = () => window.innerWidth;
+type BreakpointKey = keyof typeof BREAKPOINT_PIXELS;
 
-export const useBreakpoint = (size: ScreenSize): boolean => {
-    const width = useSyncExternalStore(subscribe, getSnapshot);
-    const breakpoint = parseInt(screens[size]);
-    return width >= breakpoint;
-};
+type Direction = 'up' | 'down';
 
-export const useIsMobile = (): boolean => {
-    return useBreakpoint('sm');
-};
+/**
+ * useBreakpoint – checks if a Tailwind breakpoint is currently matched.
+ * Example: const isDesktop = useBreakpoint('sm', 'up');
+ */
+export function useBreakpoint(
+    breakpoint: BreakpointKey,
+    direction: Direction = 'up'
+): boolean {
+    const query =
+        direction === 'up'
+            ? `(min-width: ${BREAKPOINT_PIXELS[breakpoint]}px)`
+            : `(max-width: ${BREAKPOINT_PIXELS[breakpoint] - 1}px)`;
+
+    const [matches, setMatches] = useState<boolean>(() =>
+        typeof window !== 'undefined'
+            ? window.matchMedia(query).matches
+            : false
+    );
+
+    useEffect(() => {
+        const mql = window.matchMedia(query);
+        const handler = (ev: MediaQueryListEvent) => setMatches(ev.matches);
+        mql.addEventListener('change', handler);
+        return () => mql.removeEventListener('change', handler);
+    }, [query]);
+
+    return matches;
+}
+
+export default useBreakpoint;

@@ -1,14 +1,12 @@
-import { Box } from '@/components/ui-kit';
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import {
     Alert,
-    AlertTitle,
-    Collapse,
+    AlertTitle, Box, Collapse,
     List,
     ListItem,
     ListItemIcon,
-    ListItemText,
-} from '@mui/material';
+    ListItemText
+} from '@/components/ui-kit';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import {
     StepValidationResult,

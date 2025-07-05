@@ -90,13 +90,9 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "supabase",
-    "playwright",
     "exa",
     "filesystem",
     "sequential-thinking",
-    "Context7",
-    "knowledge",
-    "perplexity"
+    "knowledge"
   ]
 }

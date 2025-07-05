@@ -19,7 +19,7 @@ import {
     MenuItem,
     Select,
     Slider,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import React, { useCallback, useState } from 'react';
 import {
     FormDataConsumer,

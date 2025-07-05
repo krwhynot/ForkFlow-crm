@@ -3,23 +3,23 @@
  * Handles automatic logout and session warnings
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    Typography,
-    LinearProgress,
     Alert,
     Box,
-} from '@mui/material';
-import { useLogout, useNotify } from 'react-admin';
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    LinearProgress,
+    Typography,
+} from '@/components/ui-kit';
 import {
     ClockIcon,
     ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLogout, useNotify } from 'react-admin';
 
 interface SessionTimeoutProps {
     timeoutMinutes?: number;
@@ -132,7 +132,7 @@ export const SessionTimeout: React.FC<SessionTimeoutProps> = ({
     return (
         <Dialog
             open={isWarningOpen}
-            onClose={() => {}} // Prevent closing by clicking outside
+            onClose={() => { }} // Prevent closing by clicking outside
             maxWidth="sm"
             fullWidth
             disableEscapeKeyDown

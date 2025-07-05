@@ -70,3 +70,9 @@ export { Step, StepContent, StepLabel, Stepper } from './Stepper';
 export type { default as AvatarProps } from './Avatar';
 export type { default as CircularProgressProps } from './CircularProgress';
 
+// New exports
+export { Accordion, AccordionDetails, AccordionSummary } from './Accordion';
+export { Fade } from './Fade';
+export { FormControlLabel } from './FormControlLabel';
+export { Switch } from './Switch';
+

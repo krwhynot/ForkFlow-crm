@@ -3,60 +3,53 @@
  * Comprehensive security monitoring and management interface
  */
 
-import React, { useState, useEffect } from 'react';
 import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
     Box,
     Card,
     CardContent,
-    Typography,
+    Chip,
     Grid,
-    Alert,
+    IconButton,
+    LinearProgress,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Chip,
-    LinearProgress,
+    Paper,
     Table,
     TableBody,
     TableCell,
+    TableContainer,
     TableHead,
     TableRow,
-    Paper,
-    IconButton,
     Tooltip,
+    Typography,
 } from '@/components/ui-kit';
 import {
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    TableContainer,
-    useTheme,
-    useMediaQuery,
-} from '@mui/material';
-import {
-    ShieldCheckIcon,
-    ShieldExclamationIcon,
-    ExclamationTriangleIcon,
-    ExclamationCircleIcon,
-    CheckCircleIcon,
-    LockClosedIcon,
-    KeyIcon,
-    BugAntIcon,
-    ChartBarIcon,
-    ArrowPathIcon,
-    ChevronDownIcon,
-    EyeIcon,
     ArrowDownTrayIcon,
+    ArrowPathIcon,
+    ChartBarIcon,
+    CheckCircleIcon,
+    ChevronDownIcon,
+    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
+    ShieldCheckIcon,
+    ShieldExclamationIcon
 } from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
+    AuditEvent,
     getAuditStatistics,
     getLocalAuditEvents,
-    AuditEvent,
 } from '../../utils/auditLogging';
-import { getSecurityStatistics } from '../../utils/securityMiddleware';
 import { getSecurityStatus } from '../../utils/httpsEnforcement';
 import { getOfflineAuthStatus } from '../../utils/offlineAuth';
+import { getSecurityStatistics } from '../../utils/securityMiddleware';
 import { getSessionSummary } from '../../utils/sessionPersistence';
 
 interface SecurityMetrics {
@@ -74,8 +67,7 @@ export const SecurityDashboard: React.FC = () => {
     const [expandedSection, setExpandedSection] = useState<string | false>(
         'overview'
     );
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md', 'down');
 
     useEffect(() => {
         loadSecurityMetrics();
@@ -130,15 +122,15 @@ export const SecurityDashboard: React.FC = () => {
     const getSeverityColor = (severity: string) => {
         switch (severity) {
             case 'critical':
-                return theme.palette.error.main;
+                return '#ef4444'; // red-500
             case 'high':
-                return theme.palette.warning.main;
+                return '#f59e0b'; // amber-500
             case 'medium':
-                return theme.palette.info.main;
+                return '#3b82f6'; // blue-500
             case 'low':
-                return theme.palette.success.main;
+                return '#10b981'; // green-500
             default:
-                return theme.palette.grey[500];
+                return '#6b7280'; // gray-500
         }
     };
 
@@ -209,8 +201,8 @@ export const SecurityDashboard: React.FC = () => {
                                     securityScore >= 80
                                         ? 'success.main'
                                         : securityScore >= 60
-                                          ? 'warning.main'
-                                          : 'error.main'
+                                            ? 'warning.main'
+                                            : 'error.main'
                                 }
                             >
                                 {securityScore}
@@ -226,8 +218,8 @@ export const SecurityDashboard: React.FC = () => {
                                     securityScore >= 80
                                         ? 'success'
                                         : securityScore >= 60
-                                          ? 'warning'
-                                          : 'error'
+                                            ? 'warning'
+                                            : 'error'
                                 }
                             />
                         </CardContent>
@@ -522,8 +514,8 @@ export const SecurityDashboard: React.FC = () => {
                                                         ? 'success'
                                                         : event.outcome ===
                                                             'failure'
-                                                          ? 'error'
-                                                          : 'warning'
+                                                            ? 'error'
+                                                            : 'warning'
                                                 }
                                             />
                                         </TableCell>

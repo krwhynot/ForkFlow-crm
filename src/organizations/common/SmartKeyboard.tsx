@@ -1,4 +1,15 @@
 import {
+    Box,
+    Fade,
+    IconButton,
+    InputAdornment,
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    Typography,
+} from '@/components/ui-kit';
+import {
     ClipboardDocumentIcon,
     DevicePhoneMobileIcon,
     EnvelopeIcon,
@@ -10,21 +21,9 @@ import {
     QrCodeIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline';
-import {
-    Box,
-    Fade,
-    IconButton,
-    InputAdornment,
-    List,
-    ListItem,
-    ListItemText,
-    Paper,
-    Typography,
-    useMediaQuery,
-    useTheme
-} from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { TextInput, TextInputProps } from 'react-admin';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface SmartKeyboardProps extends Omit<TextInputProps, 'type'> {
     fieldType:
@@ -75,8 +74,7 @@ export const SmartKeyboard: React.FC<SmartKeyboardProps> = ({
     source,
     ...textInputProps
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useBreakpoint('md', 'down');
     const [showPassword, setShowPassword] = useState(false);
     const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(
         []

@@ -1,4 +1,7 @@
 import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
     Alert,
     Box,
     Button,
@@ -6,8 +9,12 @@ import {
     CardContent,
     Chip,
     Divider,
+    FormControlLabel,
     Grid,
+    InputAdornment,
     Stack,
+    Switch,
+    TextField,
     Typography,
 } from '@/components/ui-kit';
 import {
@@ -20,15 +27,6 @@ import {
     ServerIcon,
     ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    FormControlLabel,
-    InputAdornment,
-    Switch,
-    TextField,
-} from '@mui/material';
 import React, { useState } from 'react';
 
 import { useGPSService, useOfflineService } from '../../providers/mobile';
@@ -144,8 +142,8 @@ export const InteractionSettings = () => {
                             <Box sx={{ textAlign: 'center' }}>
                                 <MapPinIcon
                                     className={`w-10 h-10 mb-1 ${gpsService.isAvailable()
-                                            ? 'text-green-600'
-                                            : 'text-red-600'
+                                        ? 'text-green-600'
+                                        : 'text-red-600'
                                         }`}
                                 />
                                 <Typography variant="body2">
@@ -160,8 +158,8 @@ export const InteractionSettings = () => {
                             <Box sx={{ textAlign: 'center' }}>
                                 <CloudSlashIcon
                                     className={`w-10 h-10 mb-1 ${offlineStatus.isOnline
-                                            ? 'text-green-600'
-                                            : 'text-yellow-600'
+                                        ? 'text-green-600'
+                                        : 'text-yellow-600'
                                         }`}
                                 />
                                 <Typography variant="body2">
