@@ -23,20 +23,18 @@ import {
     Chip,
 } from '@/components/ui-kit';
 import {
-    Collapse,
     Alert,
-    FormControlLabel,
     Switch,
-    CircularProgress,
-} from '@mui/material';
+    Spinner,
+} from '@/components/ui-kit';
 import {
-    LocationOn as LocationIcon,
-    ExpandMore as ExpandMoreIcon,
-    ExpandLess as ExpandLessIcon,
-    CloudOff as OfflineIcon,
-    CloudDone as OnlineIcon,
-    GpsFixed as GpsIcon,
-} from '@mui/icons-material';
+    MapPinIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    CloudIcon,
+    CheckIcon,
+    MapIcon,
+} from '@heroicons/react/24/outline';
 
 import { LocationProvider } from '../components/mobile';
 import { useGPSService, useOfflineService } from '../providers/mobile';
@@ -174,9 +172,9 @@ export const InteractionInputs = () => {
                     <Chip
                         icon={
                             offlineStatus.isOnline ? (
-                                <OnlineIcon />
+                                <CheckIcon className="w-4 h-4" />
                             ) : (
-                                <OfflineIcon />
+                                <CloudIcon className="w-4 h-4" />
                             )
                         }
                         label={offlineStatus.isOnline ? 'Online' : 'Offline'}
@@ -296,18 +294,15 @@ export const InteractionInputs = () => {
                     </Typography>
 
                     <Stack className="space-y-2">
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={gpsEnabled}
-                                    onChange={e =>
-                                        setGpsEnabled(e.target.checked)
-                                    }
-                                    color="primary"
-                                />
-                            }
-                            label="Capture GPS location"
-                        />
+                        <Box className="flex items-center gap-2">
+                            <Switch
+                                checked={gpsEnabled}
+                                onCheckedChange={setGpsEnabled}
+                            />
+                            <label className="text-sm font-medium">
+                                Capture GPS location
+                            </label>
+                        </Box>
 
                         {gpsEnabled && (
                             <Box>
@@ -316,9 +311,9 @@ export const InteractionInputs = () => {
                                         variant="outlined"
                                         startIcon={
                                             locationLoading ? (
-                                                <CircularProgress size={16} />
+                                                <Spinner className="w-4 h-4" />
                                             ) : (
-                                                <GpsIcon />
+                                                <MapIcon className="w-4 h-4" />
                                             )
                                         }
                                         onClick={refreshLocation}
@@ -332,7 +327,7 @@ export const InteractionInputs = () => {
                                     {location && (
                                         <Button
                                             variant="text"
-                                            startIcon={<LocationIcon />}
+                                            startIcon={<MapPinIcon className="w-4 h-4" />}
                                             onClick={() => {
                                                 // Open in maps app
                                                 const url = `https://maps.google.com/maps?q=${location.latitude},${location.longitude}`;
@@ -415,14 +410,14 @@ export const InteractionInputs = () => {
                 <Button
                     onClick={() => setShowAdvanced(!showAdvanced)}
                     startIcon={
-                        showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                        showAdvanced ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />
                     }
                     className="mb-2"
                 >
                     {showAdvanced ? 'Hide' : 'Show'} Advanced Options
                 </Button>
 
-                <Collapse in={showAdvanced}>
+                {showAdvanced && (
                     <Stack className="space-y-2">
                         <Typography variant="subtitle1" gutterBottom>
                             Follow-up & Outcomes
@@ -507,7 +502,7 @@ export const InteractionInputs = () => {
                             )}
                         </Box>
                     </Stack>
-                </Collapse>
+                )}
             </Box>
         </Stack>
     );

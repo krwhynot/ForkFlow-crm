@@ -10,13 +10,13 @@ import {
     ListItemText,
     Chip,
     LinearProgress,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    TrendingUp as TrendIcon,
-    Schedule as TimeIcon,
-    LocationOn as LocationIcon,
-    Assessment as StatsIcon,
-} from '@mui/icons-material';
+    ArrowTrendingUpIcon,
+    ClockIcon,
+    MapPinIcon,
+    ChartBarIcon,
+} from '@heroicons/react/24/outline';
 import { Visit } from '../types';
 
 interface VisitTrendsProps {
@@ -127,7 +127,7 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                 gutterBottom
                 sx={{ display: 'flex', alignItems: 'center', mb: 3 }}
             >
-                <TrendIcon sx={{ mr: 1 }} />
+                <ArrowTrendingUpIcon className="w-5 h-5 mr-1" />
                 Visit Trends & Performance
             </Typography>
 
@@ -141,7 +141,7 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                                 gutterBottom
                                 sx={{ display: 'flex', alignItems: 'center' }}
                             >
-                                <StatsIcon sx={{ mr: 1, fontSize: 20 }} />
+                                <ChartBarIcon className="w-5 h-5 mr-1" />
                                 Weekly Performance
                             </Typography>
 
@@ -259,7 +259,7 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                                 gutterBottom
                                 sx={{ display: 'flex', alignItems: 'center' }}
                             >
-                                <LocationIcon sx={{ mr: 1, fontSize: 20 }} />
+                                <MapPinIcon className="w-5 h-5 mr-1" />
                                 Visit Types
                             </Typography>
 
@@ -329,8 +329,8 @@ export const VisitTrends = ({ visits }: VisitTrendsProps) => {
                                             alignItems: 'center',
                                         }}
                                     >
-                                        <TimeIcon
-                                            sx={{ mr: 1, fontSize: 16 }}
+                                        <ClockIcon
+                                            className="w-4 h-4 mr-1"
                                         />
                                         <strong>Avg Duration:</strong>{' '}
                                         {avgDuration} minutes

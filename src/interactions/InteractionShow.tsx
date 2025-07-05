@@ -28,31 +28,31 @@ import {
 import {
     Divider,
     Alert,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonPinIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-    LocationOn as LocationIcon,
-    CheckCircle as CompletedIcon,
-    RadioButtonUnchecked as PendingIcon,
-    Business as BusinessIcon,
-    Person as PersonIcon,
-    TrendingUp as OpportunityIcon,
-} from '@mui/icons-material';
+    EnvelopeIcon,
+    PhoneIcon,
+    UserIcon,
+    PresentationChartBarIcon,
+    CurrencyDollarIcon,
+    ClockIcon,
+    MapPinIcon,
+    CheckCircleIcon,
+    EllipsisHorizontalCircleIcon,
+    BuildingOfficeIcon,
+    UserCircleIcon,
+    ArrowTrendingUpIcon,
+} from '@heroicons/react/24/outline';
 
 import { Interaction } from '../types';
 
 const interactionTypeIcons = {
-    email: EmailIcon,
+    email: EnvelopeIcon,
     call: PhoneIcon,
-    in_person: PersonPinIcon,
-    demo: DemoIcon,
-    quote: QuoteIcon,
-    follow_up: FollowUpIcon,
+    in_person: UserIcon,
+    demo: PresentationChartBarIcon,
+    quote: CurrencyDollarIcon,
+    follow_up: ClockIcon,
 };
 
 const interactionTypeColors = {
@@ -110,9 +110,9 @@ const InteractionHeader = () => {
                             <Chip
                                 icon={
                                     record.isCompleted ? (
-                                        <CompletedIcon />
+                                        <CheckCircleIcon className="w-4 h-4" />
                                     ) : (
-                                        <PendingIcon />
+                                        <EllipsisHorizontalCircleIcon className="w-4 h-4" />
                                     )
                                 }
                                 label={
@@ -163,7 +163,7 @@ const InteractionDetails = () => {
                     </Typography>
                     <Stack className="space-y-2">
                         <Box className="flex items-center gap-1">
-                            <BusinessIcon color="action" />
+                            <BuildingOfficeIcon className="w-5 h-5 text-gray-600" />
                             <Box>
                                 <Typography
                                     variant="caption"
@@ -184,7 +184,7 @@ const InteractionDetails = () => {
 
                         {record.contactId && (
                             <Box className="flex items-center gap-1">
-                                <PersonIcon color="action" />
+                                <UserCircleIcon className="w-5 h-5 text-gray-600" />
                                 <Box>
                                     <Typography
                                         variant="caption"
@@ -212,7 +212,7 @@ const InteractionDetails = () => {
 
                         {record.opportunityId && (
                             <Box className="flex items-center gap-1">
-                                <OpportunityIcon color="action" />
+                                <ArrowTrendingUpIcon className="w-5 h-5 text-gray-600" />
                                 <Box>
                                     <Typography
                                         variant="caption"
@@ -348,7 +348,7 @@ const InteractionDetails = () => {
 
                             <Button
                                 variant="outlined"
-                                startIcon={<LocationIcon />}
+                                startIcon={<MapPinIcon className="w-4 h-4" />}
                                 onClick={openGoogleMaps}
                                 className="self-start"
                             >

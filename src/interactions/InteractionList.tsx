@@ -29,13 +29,13 @@ import {
 import { useBreakpoint } from '../hooks/useBreakpoint';
 // Timeline components alternative - using simple layout instead
 import {
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-} from '@mui/icons-material';
+    EnvelopeIcon,
+    PhoneIcon,
+    UserIcon,
+    PresentationChartBarIcon,
+    CurrencyDollarIcon,
+    ClockIcon,
+} from '@heroicons/react/24/outline';
 
 import { InteractionCard } from './InteractionCard';
 import { InteractionEmpty } from './InteractionEmpty';
@@ -43,12 +43,12 @@ import { InteractionFilters } from './InteractionFilters';
 import { Interaction } from '../types';
 
 const interactionTypeIcons = {
-    email: EmailIcon,
+    email: EnvelopeIcon,
     call: PhoneIcon,
-    in_person: PersonIcon,
-    demo: DemoIcon,
-    quote: QuoteIcon,
-    follow_up: FollowUpIcon,
+    in_person: UserIcon,
+    demo: PresentationChartBarIcon,
+    quote: CurrencyDollarIcon,
+    follow_up: ClockIcon,
 };
 
 const ListActions = () => (

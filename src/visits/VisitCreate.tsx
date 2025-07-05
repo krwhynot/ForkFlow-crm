@@ -21,13 +21,13 @@ import {
 } from '@/components/ui-kit';
 import {
     Alert,
-    CircularProgress,
-} from '@mui/material';
+    Spinner,
+} from '@/components/ui-kit';
 import {
-    LocationOn as LocationIcon,
-    AccessTime as TimeIcon,
-    MyLocation as GPSIcon,
-} from '@mui/icons-material';
+    MapPinIcon,
+    ClockIcon,
+    GlobeAltIcon,
+} from '@heroicons/react/24/outline';
 import { useLocation } from '../components/mobile';
 import { GPSCoordinates } from '../types';
 
@@ -113,8 +113,8 @@ export const VisitCreate = () => {
                     >
                         <CardContent>
                             <Box className="flex items-center mb-1">
-                                <LocationIcon
-                                    className={`mr-1 ${
+                                <MapPinIcon
+                                    className={`w-5 h-5 mr-1 ${
                                         currentLocation ? 'text-green-600' : 'text-gray-400'
                                     }`}
                                 />
@@ -122,9 +122,8 @@ export const VisitCreate = () => {
                                     GPS Location
                                 </Typography>
                                 {gpsLoading && (
-                                    <CircularProgress
-                                        size={20}
-                                        className="ml-1"
+                                    <Spinner
+                                        className="w-5 h-5 ml-1"
                                     />
                                 )}
                             </Box>
@@ -158,7 +157,7 @@ export const VisitCreate = () => {
                                         </Typography>
                                     )}
                                     <Chip
-                                        icon={<LocationIcon />}
+                                        icon={<MapPinIcon className="w-4 h-4" />}
                                         label="Location Captured"
                                         color="success"
                                         size="small"
@@ -180,9 +179,9 @@ export const VisitCreate = () => {
                                         size="small"
                                         startIcon={
                                             gpsLoading ? (
-                                                <CircularProgress size={16} />
+                                                <Spinner className="w-4 h-4" />
                                             ) : (
-                                                <GPSIcon />
+                                                <GlobeAltIcon className="w-4 h-4" />
                                             )
                                         }
                                         onClick={handleGetCurrentLocation}
@@ -265,7 +264,7 @@ export const VisitCreate = () => {
                     {/* Time Tracking Alert */}
                     <Alert severity="info" className="mt-2">
                         <Box className="flex items-center">
-                            <TimeIcon className="mr-1" />
+                            <ClockIcon className="w-5 h-5 mr-1" />
                             <Typography variant="body2">
                                 Visit time is automatically recorded. GPS
                                 location helps track your territory coverage.

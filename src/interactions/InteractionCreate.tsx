@@ -12,9 +12,9 @@ import {
 } from 'react-admin';
 import { Box, Button, Chip } from '@/components/ui-kit';
 import {
-    GpsFixed as GpsIcon,
-    CloudOff as OfflineIcon,
-} from '@mui/icons-material';
+    MapPinIcon,
+    CloudIcon,
+} from '@heroicons/react/24/outline';
 
 import { InteractionInputs } from './InteractionInputs';
 import { useInteractionAPI } from './hooks/useInteractionAPI';
@@ -42,7 +42,7 @@ const CreateActions = () => {
             <Button
                 onClick={handleGetLocation}
                 disabled={isGettingLocation}
-                startIcon={<GpsIcon />}
+                startIcon={<MapPinIcon className="w-4 h-4" />}
                 className="mr-1"
             >
                 {isGettingLocation ? 'Getting Location...' : 'Get GPS'}
@@ -51,7 +51,7 @@ const CreateActions = () => {
             {/* Offline status */}
             {!offlineStatus.isOnline && (
                 <Chip
-                    icon={<OfflineIcon />}
+                    icon={<CloudIcon className="w-4 h-4" />}
                     label="Offline Mode"
                     className="text-yellow-600 border-yellow-600 bg-yellow-50"
                     size="small"
