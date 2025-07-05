@@ -8,9 +8,9 @@ import {
     BulkDeleteButton,
 } from 'react-admin';
 import {
-    CheckCircle as ActivateIcon,
-    Cancel as DeactivateIcon,
-} from '@mui/icons-material';
+    CheckCircleIcon as ActivateIcon,
+    XCircleIcon as DeactivateIcon,
+} from '@heroicons/react/24/outline';
 import { Button } from '../components/Button/Button';
 
 export const ProductBulkActions = () => {
@@ -59,7 +59,7 @@ const BulkActivateButton = () => {
             className="min-h-11 px-2 text-green-600 border-green-600 hover:bg-green-100 hover:border-green-700"
             variant="secondary"
         >
-            <ActivateIcon className="mr-1" />
+            <ActivateIcon className="w-5 h-5 mr-1" />
             Activate
         </Button>
     );
@@ -102,7 +102,7 @@ const BulkDeactivateButton = () => {
             className="min-h-11 px-2 text-yellow-600 border-yellow-600 hover:bg-yellow-100 hover:border-yellow-700"
             variant="secondary"
         >
-            <DeactivateIcon className="mr-1" />
+            <DeactivateIcon className="w-5 h-5 mr-1" />
             Deactivate
         </Button>
     );

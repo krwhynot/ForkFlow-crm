@@ -18,9 +18,9 @@ import { Box } from '../components/Layout/Box';
 import { Chip } from '../components/DataDisplay/Chip';
 import { Stack } from '../components/Layout/Stack';
 import {
-    Business as BusinessIcon,
-    AttachMoney as MoneyIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon as BusinessIcon,
+    CurrencyDollarIcon as MoneyIcon,
+} from '@heroicons/react/24/outline';
 
 import { Setting } from '../types';
 import { PriceField, formatPrice } from './PriceField';
@@ -87,7 +87,7 @@ const PriceInputWithPreview = () => {
             />
             {price > 0 && (
                 <Box className="mt-1 flex items-center">
-                    <MoneyIcon className="mr-1 text-green-600 text-sm" />
+                    <MoneyIcon className="w-4 h-4 mr-1 text-green-600" />
                     <Typography
                         variant="body2"
                         className="text-green-600 font-medium"

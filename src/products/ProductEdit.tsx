@@ -99,7 +99,7 @@ const PriceInputWithDisplay = () => {
             />
             {currentPrice > 0 && (
                 <Box className="mt-1 flex items-center">
-                    <MoneyIcon className="mr-1 text-green-600 text-sm" />
+                    <MoneyIcon className="w-4 h-4 mr-1 text-green-600" />
                     <Typography
                         variant="body2"
                         className="text-green-600 font-medium"

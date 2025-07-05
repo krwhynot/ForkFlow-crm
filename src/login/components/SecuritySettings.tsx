@@ -19,12 +19,12 @@ import {
 } from '@/components/ui-kit';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import {
-    Security,
-    AccessTime,
-    DeviceHub,
-    Verified,
-    Warning,
-} from '@mui/icons-material';
+    ShieldCheckIcon as Security,
+    ClockIcon as AccessTime,
+    ServerIcon as DeviceHub,
+    CheckBadgeIcon as Verified,
+    ExclamationTriangleIcon as Warning,
+} from '@heroicons/react/24/outline';
 import { User } from '../../types';
 import { RoleChip } from '../../components/auth/RoleChip';
 
@@ -71,8 +71,8 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
         if (user.principals && user.principals.length > 0) score += 1;
 
         // Recent login activity
-        if (user.lastLoginAt) {
-            const lastLogin = new Date(user.lastLoginAt);
+        if (user.lastLogin) {
+            const lastLogin = new Date(user.lastLogin);
             const daysSinceLogin =
                 (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
             if (daysSinceLogin < 30) score += 1;
@@ -101,10 +101,13 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
             </Typography>
 
             {/* Security Score Card */}
-            <Card variant="outlined">
+            <Card className="border">
                 <CardContent>
                     <Box className="flex items-center gap-2 mb-2">
-                        <Security color={color} />
+                        <Security className={`w-6 h-6 ${
+                            color === 'success' ? 'text-green-500' : 
+                            color === 'warning' ? 'text-yellow-500' : 'text-red-500'
+                        }`} />
                         <Box>
                             <Typography variant="h6">
                                 Security Level:{' '}
@@ -114,7 +117,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                                     size="small"
                                 />
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" className="text-gray-600">
                                 {securityPercentage}% secure ({score}/{maxScore}{' '}
                                 criteria met)
                             </Typography>
@@ -135,7 +138,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
             </Card>
 
             {/* Account Information */}
-            <Card variant="outlined">
+            <Card className="border">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Account Information
@@ -144,7 +147,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                         <ListItem>
                             <ListItemIcon>
                                 <Verified
-                                    color={user.isActive ? 'success' : 'error'}
+                                    className={`w-5 h-5 ${user.active ? 'text-green-500' : 'text-red-500'}`}
                                 />
                             </ListItemIcon>
                             <ListItemText
@@ -152,12 +155,12 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
                                 secondary={
                                     <Chip
                                         label={
-                                            user.isActive
+                                            user.active
                                                 ? 'Active'
                                                 : 'Inactive'
                                         }
                                         color={
-                                            user.isActive ? 'success' : 'error'
+                                            user.active ? 'success' : 'error'
                                         }
                                         size="small"
                                     />
@@ -167,17 +170,17 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
 
                         <ListItem>
                             <ListItemIcon>
-                                <AccessTime />
+                                <AccessTime className="w-5 h-5 text-gray-500" />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Last Login"
-                                secondary={formatLastLogin(user.lastLoginAt)}
+                                secondary={formatLastLogin(user.lastLogin)}
                             />
                         </ListItem>
 
                         <ListItem>
                             <ListItemIcon>
-                                <DeviceHub />
+                                <DeviceHub className="w-5 h-5 text-gray-500" />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Account Created"
@@ -189,7 +192,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = ({ user }) => {
             </Card>
 
             {/* Role & Permissions */}
-            <Card variant="outlined">
+            <Card className="border">
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Role & Permissions

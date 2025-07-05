@@ -41,10 +41,10 @@ vi.mock('react-admin', async () => {
     };
 });
 
-// Mock Material-UI icons
-vi.mock('@mui/icons-material', () => ({
-    GpsFixed: () => <span data-testid="gps-icon">GPS</span>,
-    CloudOff: () => <span data-testid="offline-icon">Offline</span>,
+// Mock Heroicons (if needed)
+vi.mock('@heroicons/react/24/outline', () => ({
+    MapPinIcon: () => <span data-testid="gps-icon">GPS</span>,
+    CloudIcon: () => <span data-testid="offline-icon">Offline</span>,
 }));
 
 const renderInteractionCreate = () => {
