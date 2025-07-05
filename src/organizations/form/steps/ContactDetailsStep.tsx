@@ -13,14 +13,14 @@ import {
     Divider,
 } from '@/components/ui-kit';
 import {
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Language as WebsiteIcon,
-    LocationOn as LocationIcon,
-    Person as PersonIcon,
-    Gps as GpsIcon,
-    Check as CheckIcon,
-} from '@mui/icons-material';
+    PhoneIcon,
+    EnvelopeIcon as EmailIcon,
+    GlobeAltIcon as WebsiteIcon,
+    MapPinIcon as LocationIcon,
+    UserIcon as PersonIcon,
+    GlobeAltIcon as GpsIcon,
+    CheckIcon,
+} from '@heroicons/react/24/outline';
 import { TextInput, FormDataConsumer } from 'react-admin';
 import { StepComponentProps } from './types';
 
@@ -119,9 +119,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
         <Box className="p-4 md:p-6">
             {/* Header */}
             <Box className="mb-6 text-center">
-                <PhoneIcon
-                    sx={{ fontSize: 48, color: 'primary.main', mb: 1 }}
-                />
+                <PhoneIcon className="w-12 h-12 text-blue-600 mb-2" />
                 <Typography variant="h6" className="mb-2">
                     Contact Information
                 </Typography>
@@ -138,7 +136,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                         variant="subtitle1"
                         className="mb-2 flex items-center gap-2"
                     >
-                        <PhoneIcon fontSize="small" />
+                        <PhoneIcon className="w-4 h-4" />
                         Contact Methods
                     </Typography>
 
@@ -159,12 +157,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         error={!!validationErrors.website}
                                         InputProps={{
                                             startAdornment: (
-                                                <WebsiteIcon
-                                                    sx={{
-                                                        mr: 1,
-                                                        color: 'action.active',
-                                                    }}
-                                                />
+                                                <WebsiteIcon className="w-5 h-5 mr-2 text-gray-500" />
                                             ),
                                         }}
                                         sx={{
@@ -199,12 +192,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         error={!!validationErrors.phone}
                                         InputProps={{
                                             startAdornment: (
-                                                <PhoneIcon
-                                                    sx={{
-                                                        mr: 1,
-                                                        color: 'action.active',
-                                                    }}
-                                                />
+                                                <PhoneIcon className="w-5 h-5 mr-2 text-gray-500" />
                                             ),
                                         }}
                                         sx={{
@@ -242,12 +230,7 @@ export const ContactDetailsStep: React.FC<StepComponentProps> = ({
                                         error={!!validationErrors.email}
                                         InputProps={{
                                             startAdornment: (
-                                                <EmailIcon
-                                                    sx={{
-                                                        mr: 1,
-                                                        color: 'action.active',
-                                                    }}
-                                                />
+                                                <EmailIcon className="w-5 h-5 mr-2 text-gray-500" />
                                             ),
                                         }}
                                         sx={{

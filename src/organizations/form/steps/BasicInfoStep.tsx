@@ -22,11 +22,11 @@ import {
     FormDataConsumer,
 } from 'react-admin';
 import {
-    Business as BusinessIcon,
-    CheckCircle as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon as BusinessIcon,
+    CheckCircleIcon as CheckIcon,
+    ExclamationCircleIcon as ErrorIcon,
+    ExclamationTriangleIcon as WarningIcon,
+} from '@heroicons/react/24/outline';
 import { StepComponentProps } from './types';
 import { useRealTimeValidation } from './useRealTimeValidation';
 import {
@@ -130,9 +130,7 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
         <Box className="p-4 md:p-6">
             {/* Header */}
             <Box className="mb-6 text-center">
-                <BusinessIcon
-                    sx={{ fontSize: 48, color: 'primary.main', mb: 1 }}
-                />
+                <BusinessIcon className="w-12 h-12 text-blue-600 mb-2" />
                 <Typography variant="h6" className="mb-2">
                     Organization Details
                 </Typography>
@@ -186,21 +184,12 @@ export const BasicInfoStep: React.FC<StepComponentProps> = ({
                                             {isValidating ? (
                                                 <CircularProgress size={16} />
                                             ) : hasNameErrors ? (
-                                                <ErrorIcon
-                                                    color="error"
-                                                    fontSize="small"
-                                                />
+                                                <ErrorIcon className="w-4 h-4 text-red-600" />
                                             ) : hasNameWarnings ? (
-                                                <WarningIcon
-                                                    color="warning"
-                                                    fontSize="small"
-                                                />
+                                                <WarningIcon className="w-4 h-4 text-yellow-600" />
                                             ) : formData.name &&
                                               formData.name.length > 2 ? (
-                                                <CheckIcon
-                                                    color="success"
-                                                    fontSize="small"
-                                                />
+                                                <CheckIcon className="w-4 h-4 text-green-600" />
                                             ) : null}
                                         </InputAdornment>
                                     ),

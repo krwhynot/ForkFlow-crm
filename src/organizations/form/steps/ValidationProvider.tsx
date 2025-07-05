@@ -1,19 +1,17 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import {
     Alert,
-    AlertTitle,
     Box,
-    Collapse,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-} from '@mui/material';
+} from '@/components/ui-kit';
 import {
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    CheckCircle as SuccessIcon,
-} from '@mui/icons-material';
+    ExclamationCircleIcon as ErrorIcon,
+    ExclamationTriangleIcon as WarningIcon,
+    CheckCircleIcon as SuccessIcon,
+} from '@heroicons/react/24/outline';
 import {
     StepValidationResult,
     ValidationError,
@@ -163,43 +161,37 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
     return (
         <Alert
             severity={severity}
-            sx={{ mb: 2 }}
-            action={
-                collapsible ? (
-                    <button
-                        onClick={() => setExpanded(!expanded)}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            padding: '4px',
-                            color: 'inherit',
-                        }}
-                        aria-label={
-                            expanded ? 'Collapse details' : 'Expand details'
-                        }
-                    >
-                        {expanded ? '▼' : '▶'}
-                    </button>
-                ) : undefined
+            className="mb-4"
+            title={
+                <div className="flex items-center gap-2">
+                    {icon}
+                    {title}
+                    {hasErrors && (
+                        <span>
+                            ({validation.errors.length} error
+                            {validation.errors.length > 1 ? 's' : ''})
+                        </span>
+                    )}
+                    {hasWarnings && (
+                        <span>
+                            ({validation.warnings.length} warning
+                            {validation.warnings.length > 1 ? 's' : ''})
+                        </span>
+                    )}
+                    {collapsible && (
+                        <button
+                            onClick={() => setExpanded(!expanded)}
+                            className="ml-auto bg-transparent border-none cursor-pointer p-1 text-inherit"
+                            aria-label={
+                                expanded ? 'Collapse details' : 'Expand details'
+                            }
+                        >
+                            {expanded ? '▼' : '▶'}
+                        </button>
+                    )}
+                </div>
             }
         >
-            <AlertTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {icon}
-                {title}
-                {hasErrors && (
-                    <span>
-                        ({validation.errors.length} error
-                        {validation.errors.length > 1 ? 's' : ''})
-                    </span>
-                )}
-                {hasWarnings && (
-                    <span>
-                        ({validation.warnings.length} warning
-                        {validation.warnings.length > 1 ? 's' : ''})
-                    </span>
-                )}
-            </AlertTitle>
 
             {/* Success message */}
             {isValid && !hasWarnings && showSuccessMessage && (
@@ -207,121 +199,71 @@ export const ValidationSummary: React.FC<ValidationSummaryProps> = ({
             )}
 
             {/* Validation details */}
-            <Collapse in={expanded}>
-                {/* Errors */}
-                {hasErrors && (
-                    <Box sx={{ mt: 1 }}>
-                        <Box
-                            component="h4"
-                            sx={{
-                                m: 0,
-                                mb: 1,
-                                fontSize: '0.875rem',
-                                fontWeight: 600,
-                            }}
-                        >
-                            Errors that must be fixed:
-                        </Box>
-                        <List dense sx={{ pt: 0 }}>
-                            {validation.errors.map((error, index) => (
-                                <ListItem
-                                    key={`error-${index}`}
-                                    sx={{
-                                        pl: 0,
-                                        cursor: onFieldClick
-                                            ? 'pointer'
-                                            : 'default',
-                                        '&:hover': onFieldClick
-                                            ? {
-                                                  backgroundColor:
-                                                      'rgba(0,0,0,0.04)',
-                                              }
-                                            : {},
-                                        borderRadius: 1,
-                                    }}
-                                    onClick={() =>
-                                        handleFieldClick(error.field)
-                                    }
-                                >
-                                    <ListItemIcon sx={{ minWidth: 24 }}>
-                                        <ErrorIcon
-                                            fontSize="small"
-                                            color="error"
+            {expanded && (
+                <div>
+                    {/* Errors */}
+                    {hasErrors && (
+                        <Box className="mt-2">
+                            <h4 className="m-0 mb-2 text-sm font-semibold">
+                                Errors that must be fixed:
+                            </h4>
+                            <List dense className="pt-0">
+                                {validation.errors.map((error, index) => (
+                                    <ListItem
+                                        key={`error-${index}`}
+                                        className={`pl-0 rounded cursor-${
+                                            onFieldClick ? 'pointer' : 'default'
+                                        } hover:bg-gray-50`}
+                                        onClick={() =>
+                                            handleFieldClick(error.field)
+                                        }
+                                    >
+                                        <ListItemIcon className="min-w-[24px]">
+                                            <ErrorIcon className="w-4 h-4 text-red-600" />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={error.message}
+                                            secondary={`Field: ${error.field}`}
+                                            className="text-sm"
                                         />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={error.message}
-                                        secondary={`Field: ${error.field}`}
-                                        primaryTypographyProps={{
-                                            fontSize: '0.875rem',
-                                        }}
-                                        secondaryTypographyProps={{
-                                            fontSize: '0.75rem',
-                                        }}
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Box>
-                )}
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Box>
+                    )}
 
-                {/* Warnings */}
-                {hasWarnings && (
-                    <Box sx={{ mt: hasErrors ? 2 : 1 }}>
-                        <Box
-                            component="h4"
-                            sx={{
-                                m: 0,
-                                mb: 1,
-                                fontSize: '0.875rem',
-                                fontWeight: 600,
-                            }}
-                        >
-                            Suggestions for improvement:
-                        </Box>
-                        <List dense sx={{ pt: 0 }}>
-                            {validation.warnings.map((warning, index) => (
-                                <ListItem
-                                    key={`warning-${index}`}
-                                    sx={{
-                                        pl: 0,
-                                        cursor: onFieldClick
-                                            ? 'pointer'
-                                            : 'default',
-                                        '&:hover': onFieldClick
-                                            ? {
-                                                  backgroundColor:
-                                                      'rgba(0,0,0,0.04)',
-                                              }
-                                            : {},
-                                        borderRadius: 1,
-                                    }}
-                                    onClick={() =>
-                                        handleFieldClick(warning.field)
-                                    }
-                                >
-                                    <ListItemIcon sx={{ minWidth: 24 }}>
-                                        <WarningIcon
-                                            fontSize="small"
-                                            color="warning"
+                    {/* Warnings */}
+                    {hasWarnings && (
+                        <Box className={hasErrors ? "mt-4" : "mt-2"}>
+                            <h4 className="m-0 mb-2 text-sm font-semibold">
+                                Suggestions for improvement:
+                            </h4>
+                            <List dense className="pt-0">
+                                {validation.warnings.map((warning, index) => (
+                                    <ListItem
+                                        key={`warning-${index}`}
+                                        className={`pl-0 rounded cursor-${
+                                            onFieldClick ? 'pointer' : 'default'
+                                        } hover:bg-gray-50`}
+                                        onClick={() =>
+                                            handleFieldClick(warning.field)
+                                        }
+                                    >
+                                        <ListItemIcon className="min-w-[24px]">
+                                            <WarningIcon className="w-4 h-4 text-yellow-600" />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={warning.message}
+                                            secondary={`Field: ${warning.field}`}
+                                            className="text-sm"
                                         />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={warning.message}
-                                        secondary={`Field: ${warning.field}`}
-                                        primaryTypographyProps={{
-                                            fontSize: '0.875rem',
-                                        }}
-                                        secondaryTypographyProps={{
-                                            fontSize: '0.75rem',
-                                        }}
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Box>
-                )}
-            </Collapse>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Box>
+                    )}
+                </div>
+            )}
         </Alert>
     );
 };
@@ -356,10 +298,13 @@ export const FieldValidationIndicator: React.FC<
     }
 
     const severity = hasErrors ? 'error' : 'warning';
+    const iconClass = size === 'small' ? 'w-4 h-4' : 'w-5 h-5';
+    const colorClass = hasErrors ? 'text-red-600' : 'text-yellow-600';
+    
     const icon = hasErrors ? (
-        <ErrorIcon fontSize={size} color={severity} />
+        <ErrorIcon className={`${iconClass} ${colorClass}`} />
     ) : (
-        <WarningIcon fontSize={size} color={severity} />
+        <WarningIcon className={`${iconClass} ${colorClass}`} />
     );
 
     const messages = [...errors, ...warnings];
@@ -367,17 +312,12 @@ export const FieldValidationIndicator: React.FC<
 
     return (
         <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                color: severity === 'error' ? 'error.main' : 'warning.main',
-            }}
+            className={`flex items-center gap-1 ${colorClass}`}
             title={primaryMessage}
         >
             {showIcon && icon}
             {showText && (
-                <Box component="span" sx={{ fontSize: '0.75rem' }}>
+                <Box component="span" className="text-xs">
                     {primaryMessage}
                     {messages.length > 1 && ` (+${messages.length - 1} more)`}
                 </Box>
@@ -419,27 +359,23 @@ export const ValidationModeToggle: React.FC<ValidationModeToggleProps> = ({
     ] as const;
 
     return (
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+        <Box className="flex gap-1 flex-wrap">
             {modes.map(mode => (
                 <button
                     key={mode.value}
                     onClick={() => onModeChange(mode.value)}
                     disabled={disabled}
-                    style={{
-                        padding: '4px 8px',
-                        border: '1px solid',
-                        borderColor:
-                            currentMode === mode.value ? '#1976d2' : '#ccc',
-                        backgroundColor:
-                            currentMode === mode.value
-                                ? '#1976d2'
-                                : 'transparent',
-                        color: currentMode === mode.value ? 'white' : '#1976d2',
-                        borderRadius: '4px',
-                        cursor: disabled ? 'not-allowed' : 'pointer',
-                        fontSize: '0.75rem',
-                        opacity: disabled ? 0.6 : 1,
-                    }}
+                    className={`
+                        px-2 py-1 border rounded text-xs
+                        ${currentMode === mode.value 
+                            ? 'border-blue-600 bg-blue-600 text-white' 
+                            : 'border-gray-300 bg-transparent text-blue-600'
+                        }
+                        ${disabled 
+                            ? 'cursor-not-allowed opacity-60' 
+                            : 'cursor-pointer hover:bg-blue-50'
+                        }
+                    `}
                     title={mode.description}
                 >
                     {mode.label}

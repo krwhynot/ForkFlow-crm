@@ -19,14 +19,14 @@ import {
     Divider,
 } from '@/components/ui-kit';
 import {
-    Business as BusinessIcon,
-    TrendingUp as RevenueIcon,
-    Notes as NotesIcon,
-    AccountCircle as ManagerIcon,
-    Star as PriorityIcon,
-    Category as SegmentIcon,
-    LocalShipping as DistributorIcon,
-} from '@mui/icons-material';
+    BuildingOfficeIcon as BusinessIcon,
+    DocumentTextIcon as NotesIcon,
+    UserCircleIcon as ManagerIcon,
+    StarIcon as PriorityIcon,
+    TagIcon as SegmentIcon,
+    TruckIcon as DistributorIcon,
+} from '@heroicons/react/24/outline';
+import { ArrowTrendingUpIcon as RevenueIcon } from '@heroicons/react/24/solid';
 import {
     TextInput,
     SelectInput,
@@ -154,9 +154,7 @@ export const BusinessDetailsStep: React.FC<StepComponentProps> = ({
         <Box className="p-4 md:p-6">
             {/* Header */}
             <Box className="mb-6 text-center">
-                <BusinessIcon
-                    sx={{ fontSize: 48, color: 'primary.main', mb: 1 }}
-                />
+                <BusinessIcon className="w-12 h-12 text-blue-600 mb-2" />
                 <Typography variant="h6" className="mb-2">
                     Business Context
                 </Typography>
