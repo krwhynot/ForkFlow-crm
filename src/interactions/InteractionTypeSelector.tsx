@@ -2,21 +2,21 @@ import React from 'react';
 import { SelectInput, useGetList } from 'react-admin';
 import { Box, Typography, Avatar, Stack } from '@/components/ui-kit';
 import {
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    PersonPin as PersonPinIcon,
-    Slideshow as DemoIcon,
-    AttachMoney as QuoteIcon,
-    Schedule as FollowUpIcon,
-} from '@mui/icons-material';
+    EnvelopeIcon,
+    PhoneIcon,
+    UserIcon,
+    PresentationChartBarIcon,
+    CurrencyDollarIcon,
+    ClockIcon,
+} from '@heroicons/react/24/outline';
 
 const interactionTypeIcons = {
-    email: EmailIcon,
+    email: EnvelopeIcon,
     call: PhoneIcon,
-    in_person: PersonPinIcon,
-    demo: DemoIcon,
-    quote: QuoteIcon,
-    follow_up: FollowUpIcon,
+    in_person: UserIcon,
+    demo: PresentationChartBarIcon,
+    quote: CurrencyDollarIcon,
+    follow_up: ClockIcon,
 };
 
 const interactionTypeColors = {
@@ -77,7 +77,7 @@ export const InteractionTypeSelector = ({
         const Icon =
             interactionTypeIcons[
                 choice.key as keyof typeof interactionTypeIcons
-            ] || FollowUpIcon;
+            ] || ClockIcon;
         const color =
             interactionTypeColors[
                 choice.key as keyof typeof interactionTypeColors
@@ -95,7 +95,7 @@ export const InteractionTypeSelector = ({
                         backgroundColor: color,
                     }}
                 >
-                    <Icon fontSize="small" />
+                    <Icon className="w-4 h-4" />
                 </Avatar>
                 <Box>
                     <Typography variant="body2" className="font-medium">

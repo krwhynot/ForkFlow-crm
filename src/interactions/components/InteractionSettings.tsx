@@ -19,15 +19,15 @@ import {
     InputAdornment,
 } from '@mui/material';
 import {
-    ExpandMore as ExpandMoreIcon,
-    Settings as SettingsIcon,
-    LocationOn as LocationIcon,
-    CloudOff as OfflineIcon,
-    Storage as StorageIcon,
-    Speed as PerformanceIcon,
-    Security as SecurityIcon,
-    Upload as UploadIcon,
-} from '@mui/icons-material';
+    ChevronDownIcon,
+    CogIcon,
+    MapPinIcon,
+    CloudSlashIcon,
+    ServerIcon,
+    BoltIcon,
+    ShieldCheckIcon,
+    ArrowUpTrayIcon,
+} from '@heroicons/react/24/outline';
 
 import { PerformanceDashboard } from './PerformanceDashboard';
 import { useGPSService, useOfflineService } from '../../providers/mobile';
@@ -125,7 +125,7 @@ export const InteractionSettings = () => {
     return (
         <Box sx={{ width: '100%', maxWidth: 1200, mx: 'auto', p: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                <SettingsIcon color="primary" />
+                <CogIcon className="w-6 h-6 text-blue-600" />
                 <Typography variant="h4">
                     Interaction Tracking Settings
                 </Typography>
@@ -140,13 +140,12 @@ export const InteractionSettings = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <LocationIcon
-                                    color={
+                                <MapPinIcon
+                                    className={`w-10 h-10 mb-1 ${
                                         gpsService.isAvailable()
-                                            ? 'success'
-                                            : 'error'
-                                    }
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                            ? 'text-green-600'
+                                            : 'text-red-600'
+                                    }`}
                                 />
                                 <Typography variant="body2">
                                     GPS:{' '}
@@ -158,13 +157,12 @@ export const InteractionSettings = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <OfflineIcon
-                                    color={
+                                <CloudSlashIcon
+                                    className={`w-10 h-10 mb-1 ${
                                         offlineStatus.isOnline
-                                            ? 'success'
-                                            : 'warning'
-                                    }
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                            ? 'text-green-600'
+                                            : 'text-yellow-600'
+                                    }`}
                                 />
                                 <Typography variant="body2">
                                     Status:{' '}
@@ -183,9 +181,8 @@ export const InteractionSettings = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <StorageIcon
-                                    color="primary"
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                <ServerIcon
+                                    className="w-10 h-10 mb-1 text-blue-600"
                                 />
                                 <Typography variant="body2">
                                     Storage:{' '}
@@ -197,9 +194,8 @@ export const InteractionSettings = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <PerformanceIcon
-                                    color="primary"
-                                    sx={{ fontSize: 40, mb: 1 }}
+                                <BoltIcon
+                                    className="w-10 h-10 mb-1 text-blue-600"
                                 />
                                 <Typography variant="body2">
                                     Performance: Monitoring

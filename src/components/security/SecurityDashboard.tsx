@@ -33,20 +33,20 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import {
-    Security as SecurityIcon,
-    Shield as ShieldIcon,
-    Warning as WarningIcon,
-    Error as ErrorIcon,
-    CheckCircle as CheckIcon,
-    Https as HttpsIcon,
-    VpnLock as VpnLockIcon,
-    BugReport as BugIcon,
-    Timeline as TimelineIcon,
-    Refresh as RefreshIcon,
-    ExpandMore as ExpandMoreIcon,
-    Visibility as ViewIcon,
-    Download as DownloadIcon,
-} from '@mui/icons-material';
+    ShieldCheckIcon,
+    ShieldExclamationIcon,
+    ExclamationTriangleIcon,
+    ExclamationCircleIcon,
+    CheckCircleIcon,
+    LockClosedIcon,
+    KeyIcon,
+    BugAntIcon,
+    ChartBarIcon,
+    ArrowPathIcon,
+    ChevronDownIcon,
+    EyeIcon,
+    ArrowDownTrayIcon,
+} from '@heroicons/react/24/outline';
 import {
     getAuditStatistics,
     getLocalAuditEvents,
@@ -184,14 +184,14 @@ export const SecurityDashboard: React.FC = () => {
     return (
         <Box sx={{ p: isMobile ? 1 : 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <SecurityIcon sx={{ mr: 1 }} />
+                <ShieldCheckIcon className="w-6 h-6 mr-2" />
                 <Typography variant="h4" component="h1">
                     Security Dashboard
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 <Tooltip title="Refresh">
                     <IconButton onClick={loadSecurityMetrics}>
-                        <RefreshIcon />
+                        <ArrowPathIcon className="w-5 h-5" />
                     </IconButton>
                 </Tooltip>
             </Box>

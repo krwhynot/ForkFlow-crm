@@ -15,21 +15,20 @@ import {
     Button,
     Divider,
     Stack,
-    useTheme,
-    useMediaQuery,
     Badge,
-} from '@mui/material';
+} from '@/components/ui-kit';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
-    Warning as WarningIcon,
-    Business as BusinessIcon,
-    Schedule as ScheduleIcon,
-    Phone as PhoneIcon,
-    Email as EmailIcon,
-    Add as AddIcon,
-    LocationOn as LocationIcon,
-    Star as PriorityIcon,
-    TrendingDown as StaleIcon,
-} from '@mui/icons-material';
+    ExclamationTriangleIcon,
+    BuildingOfficeIcon,
+    ClockIcon,
+    PhoneIcon,
+    EnvelopeIcon,
+    PlusIcon,
+    MapPinIcon,
+    StarIcon,
+    TrendingDownIcon,
+} from '@heroicons/react/24/outline';
 import { formatDistanceToNow, subDays, differenceInDays } from 'date-fns';
 import { useGetList, Link } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
@@ -146,12 +145,12 @@ export const NeedsVisitList = () => {
 
     const getUrgencyIcon = (org: OrganizationWithLastInteraction) => {
         if (org.urgencyLevel === 'critical') {
-            return <WarningIcon color="error" />;
+            return <ExclamationTriangleIcon className="w-5 h-5 text-red-600" />;
         }
         if (org.urgencyLevel === 'high') {
-            return <StaleIcon color="warning" />;
+            return <TrendingDownIcon className="w-5 h-5 text-yellow-600" />;
         }
-        return <ScheduleIcon color="info" />;
+        return <ClockIcon className="w-5 h-5 text-blue-600" />;
     };
 
     const handleOrganizationClick = (org: OrganizationWithLastInteraction) => {
@@ -208,21 +207,21 @@ export const NeedsVisitList = () => {
                 >
                     <Chip
                         size="small"
-                        icon={<WarningIcon />}
+                        icon={<ExclamationTriangleIcon className="w-4 h-4" />}
                         label={`${stats.critical} Critical (90+ days)`}
                         color={stats.critical > 0 ? 'error' : 'default'}
                         variant={stats.critical > 0 ? 'filled' : 'outlined'}
                     />
                     <Chip
                         size="small"
-                        icon={<StaleIcon />}
+                        icon={<TrendingDownIcon className="w-4 h-4" />}
                         label={`${stats.high} High (60+ days)`}
                         color={stats.high > 0 ? 'warning' : 'default'}
                         variant={stats.high > 0 ? 'filled' : 'outlined'}
                     />
                     <Chip
                         size="small"
-                        icon={<BusinessIcon />}
+                        icon={<BuildingOfficeIcon className="w-4 h-4" />}
                         label={`${stats.neverContacted} Never contacted`}
                         color={stats.neverContacted > 0 ? 'info' : 'default'}
                         variant="outlined"

@@ -9,20 +9,17 @@ import {
     Alert,
     Divider,
 } from '../../components/ui-kit';
-import {
-    Zoom,
-    Fab,
-} from '@mui/material';
+// Material-UI components removed - using UI kit components instead
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    ArrowBack as ArrowBackIcon,
-    Save as SaveIcon,
-    Mic as MicIcon,
-    QrCodeScanner as QrIcon,
-    CameraAlt as CameraIcon,
-    LocationOn as LocationIcon,
-} from '@mui/icons-material';
+    ArrowLeftIcon,
+    DocumentArrowDownIcon,
+    MicrophoneIcon,
+    QrCodeIcon,
+    CameraIcon,
+    MapPinIcon,
+} from '@heroicons/react/24/outline';
 import { Create, Form, useNotify, useRedirect, FormDataConsumer } from 'react-admin';
 import { Organization } from '../../types';
 import { SlideUpModal } from '../common/SlideUpModal';
@@ -407,7 +404,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                                 className="mt-2 min-w-12 min-h-12"
                                                 aria-label="Capture GPS location"
                                             >
-                                                <LocationIcon />
+                                                <MapPinIcon className="w-5 h-5" />
                                             </IconButton>
                                         </Box>
 
@@ -488,13 +485,11 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                             </Stack>
 
                             {/* Step Navigation */}
-                            <Box className="flex justify-between items-center mt-8 pt-6"
-                                borderTop: `1px solid ${theme.palette.divider}`,
-                            }}>
+                            <Box className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
                                 <Button
                                     onClick={handleBack}
                                     disabled={currentStep === 0 || isSubmitting}
-                                    startIcon={<ArrowBackIcon />}
+                                    startIcon={<ArrowLeftIcon className="w-4 h-4" />}
                                     className="min-h-12"
                                 >
                                     Back
@@ -511,7 +506,7 @@ export const MobileOrganizationCreate: React.FC<MobileOrganizationCreateProps> =
                                         onClick={handleSubmit}
                                         disabled={!canProceed || isSubmitting}
                                         variant="contained"
-                                        startIcon={<SaveIcon />}
+                                        startIcon={<DocumentArrowDownIcon className="w-4 h-4" />}
                                         className="min-h-12"
                                     >
                                         {isSubmitting ? 'Creating...' : 'Create'}
