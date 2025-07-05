@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Button } from '@mui/material';
-import { Upload as UploadIcon } from '@mui/icons-material';
+import { Button } from '@/components/ui-kit';
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { useNotify } from 'react-admin';
 
 export const CustomerImportButton = () => {
@@ -15,13 +15,10 @@ export const CustomerImportButton = () => {
     return (
         <Button
             variant="outlined"
-            startIcon={<UploadIcon />}
+            startIcon={<ArrowUpTrayIcon className="w-5 h-5" />}
             onClick={handleImport}
             disabled={isImporting}
-            sx={{
-                minHeight: 44, // Touch-friendly
-                mr: 1,
-            }}
+            className="min-h-[44px] mr-1"
         >
             Import
         </Button>

@@ -1,6 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Stepper, Step, StepLabel, StepContent, Collapse } from '@mui/material';
 import {
+    Stepper,
+    Step,
+    StepLabel,
+    StepContent,
     Box,
     Button,
     Typography,
@@ -14,14 +17,14 @@ import {
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {
-    ArrowBack as ArrowBackIcon,
-    ArrowForward as ArrowForwardIcon,
-    Check as CheckIcon,
-    Error as ErrorIcon,
-    Warning as WarningIcon,
-    Save as SaveIcon,
-    Close as CloseIcon,
-} from '@mui/icons-material';
+    ArrowLeftIcon,
+    ArrowRightIcon,
+    CheckIcon,
+    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
+    DocumentArrowDownIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/outline';
 import {
     Create,
     Form,
@@ -316,13 +319,13 @@ export const MultiStepOrganizationCreate: React.FC<
         (stepIndex: number) => {
             const state = stepStates[stepIndex];
             if (state.completed) {
-                return <CheckIcon color="success" />;
+                return <CheckIcon className="w-5 h-5 text-green-600" />;
             }
             if (state.hasErrors) {
-                return <ErrorIcon color="error" />;
+                return <ExclamationCircleIcon className="w-5 h-5 text-red-600" />;
             }
             if (state.warningCount > 0) {
-                return <WarningIcon color="warning" />;
+                return <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600" />;
             }
             return stepIndex + 1;
         },
@@ -364,9 +367,9 @@ export const MultiStepOrganizationCreate: React.FC<
                             <Tooltip title="Close">
                                 <IconButton
                                     onClick={onClose}
-                                    sx={{ minWidth: '44px', minHeight: '44px' }}
+                                    className="min-w-[44px] min-h-[44px]"
                                 >
-                                    <CloseIcon />
+                                    <XMarkIcon className="w-5 h-5" />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -469,7 +472,7 @@ export const MultiStepOrganizationCreate: React.FC<
                     )}
 
                     {/* Error Summary */}
-                    <Collapse in={Object.keys(validationErrors).length > 0}>
+                    {Object.keys(validationErrors).length > 0 && (
                         <Alert
                             severity="error"
                             className="mt-4"
@@ -479,7 +482,7 @@ export const MultiStepOrganizationCreate: React.FC<
                                     size="small"
                                     onClick={() => setValidationErrors({})}
                                 >
-                                    <CloseIcon fontSize="inherit" />
+                                    <XMarkIcon className="w-4 h-4" />
                                 </IconButton>
                             }
                         >
@@ -498,14 +501,14 @@ export const MultiStepOrganizationCreate: React.FC<
                                 )}
                             </Box>
                         </Alert>
-                    </Collapse>
+                    )}
 
                     {/* Navigation */}
                     <Box className="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
                         <Button
                             onClick={handleBack}
                             disabled={activeStep === 0}
-                            startIcon={<ArrowBackIcon />}
+                            startIcon={<ArrowLeftIcon className="w-4 h-4" />}
                             className="min-h-11"
                         >
                             Back
@@ -517,7 +520,7 @@ export const MultiStepOrganizationCreate: React.FC<
                                     {({ formData: currentFormData }) => (
                                         <SaveButton
                                             label="Create Organization"
-                                            icon={<SaveIcon />}
+                                            icon={<DocumentArrowDownIcon className="w-4 h-4" />}
                                             disabled={!canSubmit}
                                             variant="contained"
                                             className="min-h-11 px-6"
@@ -529,7 +532,7 @@ export const MultiStepOrganizationCreate: React.FC<
                                 <Button
                                     onClick={handleNext}
                                     variant="contained"
-                                    endIcon={<ArrowForwardIcon />}
+                                    endIcon={<ArrowRightIcon className="w-4 h-4" />}
                                     className="min-h-11"
                                 >
                                     Next

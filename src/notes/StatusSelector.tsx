@@ -1,4 +1,4 @@
-import { MenuItem, TextField } from '@mui/material';
+import { Select, SelectItem } from '@/components/ui-kit';
 import * as React from 'react';
 
 import { Status } from '../misc/Status';
@@ -10,15 +10,12 @@ export const StatusSelector = ({ status, setStatus, className }: any) => {
         noteStatuses ?? [];
 
     return (
-        <TextField
-            select
+        <Select
             value={status}
-            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+            onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                 setStatus(event.target.value);
             }}
             variant="filled"
-            label={false}
-            margin="none"
             size="small"
             className={className}
         >
@@ -30,17 +27,17 @@ export const StatusSelector = ({ status, setStatus, className }: any) => {
                     'label' in status
                 ) {
                     return (
-                        <MenuItem key={status.value} value={status.value}>
+                        <SelectItem key={status.value} value={status.value}>
                             {status.label} <Status status={status.value} />
-                        </MenuItem>
+                        </SelectItem>
                     );
                 }
                 return (
-                    <MenuItem key={String(status)} value={String(status)}>
+                    <SelectItem key={String(status)} value={String(status)}>
                         {String(status)} <Status status={String(status)} />
-                    </MenuItem>
+                    </SelectItem>
                 );
             })}
-        </TextField>
+        </Select>
     );
 };
