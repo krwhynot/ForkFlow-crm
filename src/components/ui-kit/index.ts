@@ -5,6 +5,7 @@
 
 // Layout Components
 export { Alert } from './Alert';
+export { Autocomplete } from './Autocomplete';
 export { Avatar } from './Avatar';
 export { AvatarGroup } from './AvatarGroup';
 export { Badge } from './Badge';
@@ -20,6 +21,7 @@ export {
 export { Checkbox } from './Checkbox';
 export { Chip } from './Chip';
 export { CircularProgress, Spinner } from './CircularProgress';
+export { Collapse } from './Collapse';
 export {
     Dialog, DialogActions,
     DialogCloseButton, DialogContent, DialogTitle
@@ -28,9 +30,12 @@ export { Divider } from './Divider';
 export { Dropdown, DropdownItem } from './Dropdown';
 export { Backdrop, Fab, SpeedDial, SpeedDialAction } from './Fab';
 export { Filter } from './Filter';
+export { FormControl, FormControlContext, useFormControl } from './FormControl';
 export { Grid } from './Grid';
 export { IconButton } from './IconButton';
 export { Input } from './Input';
+export { InputAdornment } from './InputAdornment';
+export { InputLabel } from './InputLabel';
 export { LinearProgress } from './LinearProgress';
 export {
     List,
@@ -39,6 +44,8 @@ export {
 export { Menu, MenuItem } from './Menu';
 export { Modal } from './Modal';
 export { Paper } from './Paper';
+export { Slider } from './Slider';
+export { Snackbar } from './Snackbar';
 export { Stack } from './Stack';
 export {
     Table,
@@ -48,6 +55,9 @@ export {
     TableHeader,
     TableRow
 } from './Table';
+export { TableContainer } from './TableContainer';
+export { TableSortLabel } from './TableSortLabel';
+export { TextField } from './TextField';
 export { Tooltip } from './Tooltip';
 export { Typography } from './Typography';
 
