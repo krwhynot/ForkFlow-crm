@@ -70,7 +70,7 @@ const NewlyAddedProductsWidgetComponent: React.FC = () => {
         
         {!products?.length && (
           <div className="text-center py-8">
-            <CubeIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+            <CubeIcon className="w-6 h-6 text-gray-300 mx-auto mb-2" />
             <Text className="text-tremor-content">No recent products</Text>
           </div>
         )}

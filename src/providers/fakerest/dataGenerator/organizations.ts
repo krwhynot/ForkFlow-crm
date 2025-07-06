@@ -105,6 +105,7 @@ export const generateOrganizations = (db: Db): Organization[] => {
         'Union St',
     ];
     const accountManagers = [
+        'demo-user',
         'john.smith@forkflow.com',
         'sarah.johnson@forkflow.com',
         'mike.davis@forkflow.com',

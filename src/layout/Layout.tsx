@@ -3,7 +3,7 @@ import { CheckForApplicationUpdate } from 'react-admin';
 import Header from './Header';
 
 export const Layout = (props: any): ReactElement => (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-white">
         <Header />
         <main className="flex-grow">
             {props.children}

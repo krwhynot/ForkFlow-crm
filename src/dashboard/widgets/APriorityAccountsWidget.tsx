@@ -9,7 +9,7 @@ const APriorityAccountsWidgetComponent: React.FC = () => {
   const { data: organizations, isLoading } = useGetList('organizations', {
     pagination: { page: 1, perPage: 100 },
     filter: {
-      salesId: identity?.id,
+      accountManager: identity?.id,
       priority: 'A'
     },
   });

@@ -4,6 +4,8 @@ import {
     CogIcon,
     UserCircleIcon,
     UsersIcon,
+    MagnifyingGlassIcon,
+    BellIcon,
 } from '@heroicons/react/24/outline';
 import {
     CanAccess,
@@ -21,86 +23,82 @@ const Header = () => {
     const location = useLocation();
     const { identity } = useGetIdentity();
 
-    const tabs = [
-        { label: 'Dashboard', to: '/' },
-        { label: 'Contacts', to: '/contacts' },
-        { label: 'Organizations', to: '/organizations' },
-        { label: 'Deals', to: '/opportunities' },
-        { label: 'Products', to: '/products' },
+    const navigationItems = [
+        'Organizations',
+        'Contacts',
+        'Opportunities',
+        'Interactions',
+        'Products',
+        'Kogans',
+        'Reports'
     ];
 
     return (
-        <nav className="bg-blue-600 shadow-lg">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
+        <header className="bg-forkflow-green text-white">
+            <div className="px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    {/* Logo */}
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <Link to="/" className="flex items-center space-x-3">
-                                <img
-                                    className="h-8 w-8"
-                                    src={logo}
-                                    alt={title}
-                                />
-                                <span className="text-white font-bold text-xl">
-                                    {title}
-                                </span>
-                            </Link>
-                        </div>
-                        <div className="hidden md:block">
-                            <div className="ml-10 flex items-baseline space-x-1">
-                                {tabs.map(tab => (
-                                    <Link
-                                        key={tab.to}
-                                        to={tab.to}
-                                        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${matchPath(
-                                            `${tab.to}/*`,
-                                            location.pathname
-                                        ) || (tab.to === '/' && location.pathname === '/')
-                                            ? 'bg-blue-700 text-white'
-                                            : 'text-blue-100 hover:bg-blue-500 hover:text-white'
-                                            }`}
-                                    >
-                                        {tab.label}
-                                    </Link>
-                                ))}
+                            <div className="bg-white text-forkflow-green px-3 py-1 rounded font-bold text-xl">
+                                MFB
                             </div>
                         </div>
+                        
+                        {/* Navigation */}
+                        <nav className="hidden md:ml-10 md:flex md:space-x-8">
+                            {navigationItems.map((item) => (
+                                <a
+                                    key={item}
+                                    href="#"
+                                    className="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium transition-colors"
+                                >
+                                    {item}
+                                </a>
+                            ))}
+                        </nav>
                     </div>
-                    <div className="hidden md:block">
-                        <div className="ml-4 flex items-center md:ml-6 space-x-4">
-                            <SecurityStatusBar compact />
-                            <LoadingIndicator />
-                            <div className="text-blue-100 text-sm">
-                                Welcome, {identity?.fullName || 'User'}
-                            </div>
-                            <Dropdown
-                                button={
-                                    <button className="p-1 rounded-full text-blue-100 hover:text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 focus:ring-white transition-colors">
-                                        <span className="sr-only">
-                                            Open user menu
-                                        </span>
-                                        <UserCircleIcon
-                                            className="h-6 w-6"
-                                            aria-hidden="true"
-                                        />
-                                    </button>
-                                }
-                            >
-                                <ProfileMenu />
-                                <CanAccess resource="analytics" action="list">
-                                    <AnalyticsMenu />
-                                </CanAccess>
-                                <ConfigurationMenu />
-                                <CanAccess resource="users" action="list">
-                                    <UsersMenu />
-                                </CanAccess>
-                                <LogoutButton />
-                            </Dropdown>
+
+                    {/* Right side icons */}
+                    <div className="flex items-center space-x-4">
+                        <button className="p-2 hover:bg-forkflow-light-green rounded-full transition-colors">
+                            <MagnifyingGlassIcon className="h-5 w-5" />
+                        </button>
+                        <button className="p-2 hover:bg-forkflow-light-green rounded-full transition-colors">
+                            <BellIcon className="h-5 w-5" />
+                        </button>
+                        <SecurityStatusBar compact />
+                        <LoadingIndicator />
+                        <div className="text-white text-sm">
+                            Welcome, {identity?.fullName || 'User'}
                         </div>
+                        <Dropdown
+                            button={
+                                <button className="p-1 rounded-full text-white hover:text-gray-200 hover:bg-forkflow-light-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-forkflow-green focus:ring-white transition-colors">
+                                    <span className="sr-only">
+                                        Open user menu
+                                    </span>
+                                    <UserCircleIcon
+                                        className="h-6 w-6"
+                                        aria-hidden="true"
+                                    />
+                                </button>
+                            }
+                        >
+                            <ProfileMenu />
+                            <CanAccess resource="analytics" action="list">
+                                <AnalyticsMenu />
+                            </CanAccess>
+                            <ConfigurationMenu />
+                            <CanAccess resource="users" action="list">
+                                <UsersMenu />
+                            </CanAccess>
+                            <LogoutButton />
+                        </Dropdown>
                     </div>
                 </div>
             </div>
-        </nav>
+        </header>
     );
 };
 

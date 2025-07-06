@@ -327,6 +327,51 @@ export interface NoteStatus {
     color?: string;
 }
 
+// Homepage-specific types from implementation guide
+export interface HomepageOrganization {
+  id: string;
+  name: string;
+  address?: string;
+  priority: 'A' | 'B' | 'C' | 'D';
+  segment?: string;
+  distributor?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HomepageContact {
+  id: string;
+  organization_id: string;
+  name: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+  is_primary: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HomepageInteraction {
+  id: string;
+  organization_id: string;
+  contact_id?: string;
+  type: InteractionType;
+  subject?: string;
+  notes?: string;
+  follow_up_date?: string;
+  created_at: string;
+}
+
+export type InteractionType = 'Email' | 'Call' | 'In Person' | 'Demo/Sample' | 'Quote' | 'Follow-up';
+
+export interface DashboardStats {
+  totalOrganizations: number;
+  priorityOrganizations: number;
+  weeklyInteractions: number;
+  pipelineValue: number;
+  followUps: number;
+}
+
 // Legacy aliases for backwards compatibility
 // Company is already defined as an interface extending Organization above
 
@@ -491,4 +536,23 @@ export interface Reminder {
     notes?: string;
     completed_at?: string;
     snoozed_until?: string;
+}
+
+// Homepage-specific types for dashboard widgets
+export interface HomepageOrganization {
+    id: string;
+    name: string;
+    priority: 'A' | 'B' | 'C' | 'D';
+    created_at: string;
+    updated_at: string;
+}
+
+export interface HomepageContact {
+    id: string;
+    organization_id: string;
+    name: string;
+    role?: string;
+    is_primary: boolean;
+    created_at: string;
+    updated_at: string;
 }

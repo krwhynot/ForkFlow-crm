@@ -115,6 +115,7 @@ export const generateB2BContacts = (db: Db): Contact[] => {
                     )
                 ), // Random date within last month
                 createdBy: faker.helpers.arrayElement([
+                    'demo-user',
                     'john.smith@forkflow.com',
                     'sarah.johnson@forkflow.com',
                     'mike.davis@forkflow.com',

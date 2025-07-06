@@ -87,22 +87,6 @@
     margin: 0.5rem;
 }
 
-.form-step {
-    padding: 1rem;
-}
-
-.form-step>*+* {
-    margin-top: 1rem;
-}
-
-.form-navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-top-width: 1px;
-}
 
 .filter-container {
     display: flex;

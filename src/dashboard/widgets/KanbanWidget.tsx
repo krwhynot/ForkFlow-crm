@@ -6,11 +6,11 @@ import { Squares2X2Icon } from '@heroicons/react/24/outline';
 const KanbanWidgetComponent: React.FC = () => {
   const { data: identity } = useGetIdentity();
   
-  const { data: opportunities, isLoading } = useGetList('opportunities', {
+  const { data: opportunities, isLoading } = useGetList('deals', {
     pagination: { page: 1, perPage: 20 },
     sort: { field: 'updated_at', order: 'DESC' },
     filter: {
-      accountManager: identity?.id
+      salesId: identity?.id
     }
   });
 
@@ -112,7 +112,7 @@ const KanbanWidgetComponent: React.FC = () => {
       
       {!opportunities?.length && (
         <div className="text-center py-8">
-          <Squares2X2Icon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+          <Squares2X2Icon className="w-6 h-6 text-gray-300 mx-auto mb-2" />
           <Text className="text-tremor-content">No opportunities</Text>
         </div>
       )}

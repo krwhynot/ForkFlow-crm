@@ -1,0 +1,849 @@
+{
+  "metadata": {
+    "analysisDate": "2025-07-06T15:47:39.014Z",
+    "customUtilities": 26,
+    "cssVariables": 0,
+    "mediaQueries": 2,
+    "accessibilityFeatures": 5
+  },
+  "customUtilities": {
+    "byType": {
+      "touch-target": [
+        "touch-target-interactive"
+      ],
+      "priority-indicator": [
+        "priority-high",
+        "priority-medium",
+        "priority-low"
+      ],
+      "status-indicator": [
+        "status-prospect",
+        "status-active",
+        "status-inactive",
+        "status-closed"
+      ],
+      "organization-component": [
+        "organization-card",
+        "organization-card-mobile",
+        "organization-card-desktop"
+      ],
+      "form-component": [
+        "form-step",
+        "form-navigation"
+      ],
+      "filter-component": [
+        "filter-container"
+      ],
+      "search-component": [
+        "search-input"
+      ],
+      "general": [
+        "storybook-page",
+        "tip",
+        "tip-wrapper",
+        "storybook-header",
+        "welcome",
+        "storybook-button",
+        "storybook-button--primary",
+        "storybook-button--secondary",
+        "storybook-button--small",
+        "storybook-button--medium",
+        "storybook-button--large"
+      ]
+    },
+    "byUsage": [
+      {
+        "name": "storybook-button",
+        "usageCount": 4,
+        "filesUsed": 1
+      },
+      {
+        "name": "search-input",
+        "usageCount": 3,
+        "filesUsed": 2
+      },
+      {
+        "name": "organization-card",
+        "usageCount": 2,
+        "filesUsed": 1
+      },
+      {
+        "name": "tip",
+        "usageCount": 2,
+        "filesUsed": 1
+      },
+      {
+        "name": "touch-target-interactive",
+        "usageCount": 1,
+        "filesUsed": 1
+      },
+      {
+        "name": "priority-high",
+        "usageCount": 1,
+        "filesUsed": 1
+      },
+      {
+        "name": "priority-medium",
+        "usageCount": 1,
+        "filesUsed": 1
+      },
+      {
+        "name": "priority-low",
+        "usageCount": 1,
+        "filesUsed": 1
+      },
+      {
+        "name": "status-prospect",
+        "usageCount": 1,
+        "filesUsed": 1
+      },
+      {
+        "name": "status-active",
+        "usageCount": 1,
+        "filesUsed": 1
+      }
+    ],
+    "touchOptimized": [
+      {
+        "name": "touch-target-interactive",
+        "properties": {
+          "min-height": "44px",
+          "min-width": "44px",
+          "display": "flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "outline": "none"
+        }
+      },
+      {
+        "name": "search-input",
+        "properties": {
+          "flex": "1 1 0%",
+          "min-width": "0",
+          "min-height": "44px",
+          "outline": "none"
+        }
+      }
+    ],
+    "details": {
+      "touch-target-interactive": {
+        "file": "src/index.css",
+        "properties": {
+          "min-height": "44px",
+          "min-width": "44px",
+          "display": "flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "outline": "none"
+        },
+        "rawCSS": "min-height: 44px;\n    min-width: 44px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    outline: none;",
+        "type": "touch-target",
+        "touchOptimized": true,
+        "responsive": false
+      },
+      "priority-high": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#ef4444",
+          "border-color": "#ef4444"
+        },
+        "rawCSS": "color: #ef4444;\n    border-color: #ef4444;",
+        "type": "priority-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "priority-medium": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#f59e0b",
+          "border-color": "#f59e0b"
+        },
+        "rawCSS": "color: #f59e0b;\n    border-color: #f59e0b;",
+        "type": "priority-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "priority-low": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#22c55e",
+          "border-color": "#22c55e"
+        },
+        "rawCSS": "color: #22c55e;\n    border-color: #22c55e;",
+        "type": "priority-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "status-prospect": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#8b5cf6",
+          "background-color": "rgba(139, 92, 246, 0.1)"
+        },
+        "rawCSS": "color: #8b5cf6;\n    background-color: rgba(139, 92, 246, 0.1);",
+        "type": "status-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "status-active": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#22c55e",
+          "background-color": "rgba(34, 197, 94, 0.1)"
+        },
+        "rawCSS": "color: #22c55e;\n    background-color: rgba(34, 197, 94, 0.1);",
+        "type": "status-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "status-inactive": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#6b7280",
+          "background-color": "rgba(107, 114, 128, 0.1)"
+        },
+        "rawCSS": "color: #6b7280;\n    background-color: rgba(107, 114, 128, 0.1);",
+        "type": "status-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "status-closed": {
+        "file": "src/index.css",
+        "properties": {
+          "color": "#ef4444",
+          "background-color": "rgba(239, 68, 68, 0.1)"
+        },
+        "rawCSS": "color: #ef4444;\n    background-color: rgba(239, 68, 68, 0.1);",
+        "type": "status-indicator",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "organization-card": {
+        "file": "src/index.css",
+        "properties": {
+          "transition-property": "none"
+        },
+        "rawCSS": "transition-property: none;",
+        "type": "organization-component",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "organization-card-mobile": {
+        "file": "src/index.css",
+        "properties": {
+          "width": "100%",
+          "margin-bottom": "0.75rem"
+        },
+        "rawCSS": "width: 100%;\n    margin-bottom: 0.75rem;",
+        "type": "organization-component",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "organization-card-desktop": {
+        "file": "src/index.css",
+        "properties": {
+          "width": "20rem",
+          "margin": "0.5rem"
+        },
+        "rawCSS": "width: 20rem;\n    margin: 0.5rem;",
+        "type": "organization-component",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "form-step": {
+        "file": "src/index.css",
+        "properties": {
+          "padding": "1rem"
+        },
+        "rawCSS": "padding: 1rem;",
+        "type": "form-component",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "form-navigation": {
+        "file": "src/index.css",
+        "properties": {
+          "display": "flex",
+          "justify-content": "space-between",
+          "align-items": "center",
+          "padding": "1rem",
+          "background-color": "#f9fafb",
+          "border-top-width": "1px"
+        },
+        "rawCSS": "display: flex;\n    justify-content: space-between;\n    align-items: center;\n    padding: 1rem;\n    background-color: #f9fafb;\n    border-top-width: 1px;",
+        "type": "form-component",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "filter-container": {
+        "file": "src/index.css",
+        "properties": {
+          "display": "flex",
+          "flex-wrap": "wrap",
+          "gap": "0.5rem",
+          "padding": "1rem",
+          "background-color": "#f9fafb",
+          "border-bottom-width": "1px"
+        },
+        "rawCSS": "display: flex;\n    flex-wrap: wrap;\n    gap: 0.5rem;\n    padding: 1rem;\n    background-color: #f9fafb;\n    border-bottom-width: 1px;",
+        "type": "filter-component",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "search-input": {
+        "file": "src/index.css",
+        "properties": {
+          "flex": "1 1 0%",
+          "min-width": "0",
+          "min-height": "44px",
+          "outline": "none"
+        },
+        "rawCSS": "flex: 1 1 0%;\n    min-width: 0;\n    min-height: 44px;\n    outline: none;",
+        "type": "search-component",
+        "touchOptimized": true,
+        "responsive": false
+      },
+      "storybook-page": {
+        "file": "src/stories/page.css",
+        "properties": {
+          "margin": "0 auto",
+          "padding": "48px 20px",
+          "max-width": "600px",
+          "color": "#333",
+          "font-size": "14px",
+          "line-height": "24px",
+          "font-family": "'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        },
+        "rawCSS": "margin: 0 auto;\n  padding: 48px 20px;\n  max-width: 600px;\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "tip": {
+        "file": "src/stories/page.css",
+        "properties": {
+          "display": "inline-block",
+          "vertical-align": "top",
+          "margin-right": "10px",
+          "border-radius": "1em",
+          "background": "#e7fdd8",
+          "padding": "4px 12px",
+          "color": "#357a14",
+          "font-weight": "700",
+          "font-size": "11px",
+          "line-height": "12px"
+        },
+        "rawCSS": "display: inline-block;\n  vertical-align: top;\n  margin-right: 10px;\n  border-radius: 1em;\n  background: #e7fdd8;\n  padding: 4px 12px;\n  color: #357a14;\n  font-weight: 700;\n  font-size: 11px;\n  line-height: 12px;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "tip-wrapper": {
+        "file": "src/stories/page.css",
+        "properties": {
+          "margin-top": "40px",
+          "margin-bottom": "40px",
+          "font-size": "13px",
+          "line-height": "20px"
+        },
+        "rawCSS": "margin-top: 40px;\n  margin-bottom: 40px;\n  font-size: 13px;\n  line-height: 20px;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-header": {
+        "file": "src/stories/header.css",
+        "properties": {
+          "display": "flex",
+          "justify-content": "space-between",
+          "align-items": "center",
+          "border-bottom": "1px solid rgba(0, 0, 0, 0.1)",
+          "padding": "15px 20px",
+          "font-family": "'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        },
+        "rawCSS": "display: flex;\n  justify-content: space-between;\n  align-items: center;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  padding: 15px 20px;\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "welcome": {
+        "file": "src/stories/header.css",
+        "properties": {
+          "margin-right": "10px",
+          "color": "#333",
+          "font-size": "14px"
+        },
+        "rawCSS": "margin-right: 10px;\n  color: #333;\n  font-size: 14px;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-button": {
+        "file": "src/stories/button.css",
+        "properties": {
+          "display": "inline-block",
+          "cursor": "pointer",
+          "border": "0",
+          "border-radius": "3em",
+          "font-weight": "700",
+          "line-height": "1",
+          "font-family": "'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        },
+        "rawCSS": "display: inline-block;\n  cursor: pointer;\n  border: 0;\n  border-radius: 3em;\n  font-weight: 700;\n  line-height: 1;\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-button--primary": {
+        "file": "src/stories/button.css",
+        "properties": {
+          "background-color": "#555ab9",
+          "color": "white"
+        },
+        "rawCSS": "background-color: #555ab9;\n  color: white;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-button--secondary": {
+        "file": "src/stories/button.css",
+        "properties": {
+          "box-shadow": "rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset",
+          "background-color": "transparent",
+          "color": "#333"
+        },
+        "rawCSS": "box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;\n  background-color: transparent;\n  color: #333;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-button--small": {
+        "file": "src/stories/button.css",
+        "properties": {
+          "padding": "10px 16px",
+          "font-size": "12px"
+        },
+        "rawCSS": "padding: 10px 16px;\n  font-size: 12px;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-button--medium": {
+        "file": "src/stories/button.css",
+        "properties": {
+          "padding": "11px 20px",
+          "font-size": "14px"
+        },
+        "rawCSS": "padding: 11px 20px;\n  font-size: 14px;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      },
+      "storybook-button--large": {
+        "file": "src/stories/button.css",
+        "properties": {
+          "padding": "12px 24px",
+          "font-size": "16px"
+        },
+        "rawCSS": "padding: 12px 24px;\n  font-size: 16px;",
+        "type": "general",
+        "touchOptimized": false,
+        "responsive": false
+      }
+    }
+  },
+  "usagePatterns": {
+    "touch-target-interactive": {
+      "count": 1,
+      "files": [
+        "src/components/ui-kit/IconButton.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/components/ui-kit/IconButton.tsx",
+          "context": "touch-target-interactive"
+        }
+      ]
+    },
+    "priority-high": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "priority-high"
+        }
+      ]
+    },
+    "priority-medium": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "priority-medium"
+        }
+      ]
+    },
+    "priority-low": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "priority-low"
+        }
+      ]
+    },
+    "status-prospect": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "status-prospect"
+        }
+      ]
+    },
+    "status-active": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "status-active"
+        }
+      ]
+    },
+    "status-inactive": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "status-inactive"
+        }
+      ]
+    },
+    "status-closed": {
+      "count": 1,
+      "files": [
+        "src/lib/tailwind-theme.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/lib/tailwind-theme.ts",
+          "context": "status-closed"
+        }
+      ]
+    },
+    "organization-card": {
+      "count": 2,
+      "files": [
+        "src/organizations/list/OrganizationCards.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/organizations/list/OrganizationCards.tsx",
+          "context": "organization-card-mobile"
+        },
+        {
+          "file": "src/organizations/list/OrganizationCards.tsx",
+          "context": "organization-card-desktop"
+        }
+      ]
+    },
+    "organization-card-mobile": {
+      "count": 1,
+      "files": [
+        "src/organizations/list/OrganizationCards.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/organizations/list/OrganizationCards.tsx",
+          "context": "organization-card-mobile"
+        }
+      ]
+    },
+    "organization-card-desktop": {
+      "count": 1,
+      "files": [
+        "src/organizations/list/OrganizationCards.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/organizations/list/OrganizationCards.tsx",
+          "context": "organization-card-desktop"
+        }
+      ]
+    },
+    "form-step": {
+      "count": 0,
+      "files": [],
+      "contexts": []
+    },
+    "form-navigation": {
+      "count": 0,
+      "files": [],
+      "contexts": []
+    },
+    "filter-container": {
+      "count": 1,
+      "files": [
+        "src/organizations/list/AdvancedOrganizationFilter.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/organizations/list/AdvancedOrganizationFilter.tsx",
+          "context": "filter-container"
+        }
+      ]
+    },
+    "search-input": {
+      "count": 3,
+      "files": [
+        "src/organizations/list/AdvancedOrganizationFilter.tsx",
+        "src/interactions/__tests__/e2e/InteractionWorkflow.e2e.test.ts"
+      ],
+      "contexts": [
+        {
+          "file": "src/organizations/list/AdvancedOrganizationFilter.tsx",
+          "context": "search-input"
+        },
+        {
+          "file": "src/interactions/__tests__/e2e/InteractionWorkflow.e2e.test.ts",
+          "context": "search-input"
+        },
+        {
+          "file": "src/interactions/__tests__/e2e/InteractionWorkflow.e2e.test.ts",
+          "context": "search-input"
+        }
+      ]
+    },
+    "storybook-page": {
+      "count": 1,
+      "files": [
+        "src/stories/Page.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Page.tsx",
+          "context": "storybook-page"
+        }
+      ]
+    },
+    "tip": {
+      "count": 2,
+      "files": [
+        "src/stories/Page.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Page.tsx",
+          "context": "tip-wrapper"
+        },
+        {
+          "file": "src/stories/Page.tsx",
+          "context": "tip"
+        }
+      ]
+    },
+    "tip-wrapper": {
+      "count": 1,
+      "files": [
+        "src/stories/Page.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Page.tsx",
+          "context": "tip-wrapper"
+        }
+      ]
+    },
+    "storybook-header": {
+      "count": 1,
+      "files": [
+        "src/stories/Header.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Header.tsx",
+          "context": "storybook-header"
+        }
+      ]
+    },
+    "welcome": {
+      "count": 1,
+      "files": [
+        "src/stories/Header.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Header.tsx",
+          "context": "welcome"
+        }
+      ]
+    },
+    "storybook-button": {
+      "count": 4,
+      "files": [
+        "src/stories/Button.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Button.tsx",
+          "context": "storybook-button--primary"
+        },
+        {
+          "file": "src/stories/Button.tsx",
+          "context": "storybook-button--secondary"
+        },
+        {
+          "file": "src/stories/Button.tsx",
+          "context": "storybook-button"
+        },
+        {
+          "file": "src/stories/Button.tsx",
+          "context": "storybook-button--${size}"
+        }
+      ]
+    },
+    "storybook-button--primary": {
+      "count": 1,
+      "files": [
+        "src/stories/Button.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Button.tsx",
+          "context": "storybook-button--primary"
+        }
+      ]
+    },
+    "storybook-button--secondary": {
+      "count": 1,
+      "files": [
+        "src/stories/Button.tsx"
+      ],
+      "contexts": [
+        {
+          "file": "src/stories/Button.tsx",
+          "context": "storybook-button--secondary"
+        }
+      ]
+    },
+    "storybook-button--small": {
+      "count": 0,
+      "files": [],
+      "contexts": []
+    },
+    "storybook-button--medium": {
+      "count": 0,
+      "files": [],
+      "contexts": []
+    },
+    "storybook-button--large": {
+      "count": 0,
+      "files": [],
+      "contexts": []
+    }
+  },
+  "cssVariables": {},
+  "mediaQueries": [
+    {
+      "file": "src/index.css",
+      "condition": "(prefers-contrast: high)",
+      "rules": ".organization-card {\n        border-width: 2px;\n        border-color: #1f2937;\n    }",
+      "type": "accessibility-contrast"
+    },
+    {
+      "file": "src/index.css",
+      "condition": "(prefers-reduced-motion: reduce)",
+      "rules": ".touch-feedback,\n    .organization-card {\n        transition-property: none;\n    }",
+      "type": "accessibility-motion"
+    }
+  ],
+  "accessibilityFeatures": [
+    {
+      "type": "reduced-motion",
+      "count": 1,
+      "examples": [
+        "prefers-reduced-motion"
+      ]
+    },
+    {
+      "type": "high-contrast",
+      "count": 1,
+      "examples": [
+        "prefers-contrast"
+      ]
+    },
+    {
+      "type": "focus-outline",
+      "count": 5,
+      "examples": [
+        "outline: none",
+        "outline: none",
+        "outline: none"
+      ]
+    },
+    {
+      "type": "touch-target",
+      "count": 3,
+      "examples": [
+        "min-height: 44px",
+        "min-width: 44px",
+        "min-height: 44px"
+      ]
+    },
+    {
+      "type": "focus-state",
+      "count": 3,
+      "examples": [
+        ":focus {\n    outline: none;\n    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);\n}",
+        ":focus {\n    outline: none;\n    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);\n}",
+        ":focus {\n    outline-offset: 2px;\n}"
+      ]
+    }
+  ],
+  "responsiveDesign": {
+    "breakpointConfig": {
+      "xs": "480px",
+      "sm": "640px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px"
+    },
+    "mediaQueryTypes": {
+      "accessibility-contrast": 1,
+      "accessibility-motion": 1
+    }
+  },
+  "recommendations": [
+    {
+      "type": "Unused CSS",
+      "severity": "Low",
+      "issue": "5 custom utilities are not being used",
+      "utilities": [
+        "form-step",
+        "form-navigation",
+        "storybook-button--small",
+        "storybook-button--medium",
+        "storybook-button--large"
+      ],
+      "solution": "Consider removing unused custom utilities to reduce bundle size"
+    }
+  ]
+}

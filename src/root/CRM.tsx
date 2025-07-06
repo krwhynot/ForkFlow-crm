@@ -12,7 +12,7 @@ import {
 import { Route } from 'react-router';
 
 import contacts from '../contacts';
-import { HomeDashboard as Dashboard } from '../dashboard/HomeDashboard';
+import { HomeDashboard } from '../dashboard/HomeDashboard';
 import interactions from '../interactions';
 import Layout from '../layout/Layout';
 import { SignupPage } from '../login/SignupPage';
@@ -52,9 +52,9 @@ const devAuthProvider: AuthProvider = {
     checkAuth: () => Promise.resolve(),
     getPermissions: () => Promise.resolve(),
     getIdentity: () => Promise.resolve({
-        id: 'dev-user',
-        fullName: 'Development User',
-        email: 'dev@forkflow.com',
+        id: 'demo-user',
+        fullName: 'Demo User',
+        email: 'demo@forkflow.com',
         role: 'broker',
         avatar: null,
     }),
@@ -165,7 +165,7 @@ export const CRM = ({
                 store={localStorageStore(undefined, 'CRM')}
                 layout={Layout}
                 loginPage={skipAuth ? undefined : UniversalLoginPage}
-                dashboard={Dashboard}
+                dashboard={HomeDashboard}
                 i18nProvider={i18nProvider}
                 requireAuth={requireAuth}
                 disableTelemetry

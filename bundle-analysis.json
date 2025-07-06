@@ -1,0 +1,211 @@
+{
+  "metadata": {
+    "analysisDate": "2025-07-06T15:46:22.346Z",
+    "buildSuccess": false,
+    "analyzedFiles": 4
+  },
+  "bundleSize": {
+    "totalBytes": 5709,
+    "totalKB": "5.58",
+    "totalMB": "0.01",
+    "cssFiles": 4,
+    "avgCSSSize": "1.23"
+  },
+  "cssFiles": [
+    {
+      "path": "src/index.css",
+      "sizeKB": "2.57",
+      "rules": 24,
+      "imports": 0,
+      "mediaQueries": 2
+    },
+    {
+      "path": "src/stories/button.css",
+      "sizeKB": "0.63",
+      "rules": 6,
+      "imports": 0,
+      "mediaQueries": 0
+    },
+    {
+      "path": "src/stories/header.css",
+      "sizeKB": "0.61",
+      "rules": 5,
+      "imports": 0,
+      "mediaQueries": 0
+    },
+    {
+      "path": "src/stories/page.css",
+      "sizeKB": "1.10",
+      "rules": 10,
+      "imports": 0,
+      "mediaQueries": 0
+    }
+  ],
+  "tailwindUsage": {
+    "totalClasses": 1337,
+    "totalInstances": 10357,
+    "topClasses": [
+      {
+        "className": "flex",
+        "usage": 478,
+        "percentage": "4.62"
+      },
+      {
+        "className": "items-center",
+        "usage": 361,
+        "percentage": "3.49"
+      },
+      {
+        "className": "h-4",
+        "usage": 308,
+        "percentage": "2.97"
+      },
+      {
+        "className": "w-4",
+        "usage": 293,
+        "percentage": "2.83"
+      },
+      {
+        "className": "h-5",
+        "usage": 266,
+        "percentage": "2.57"
+      },
+      {
+        "className": "w-5",
+        "usage": 247,
+        "percentage": "2.38"
+      },
+      {
+        "className": "text-gray-500",
+        "usage": 225,
+        "percentage": "2.17"
+      },
+      {
+        "className": "mb-2",
+        "usage": 183,
+        "percentage": "1.77"
+      },
+      {
+        "className": "?",
+        "usage": 173,
+        "percentage": "1.67"
+      },
+      {
+        "className": ":",
+        "usage": 171,
+        "percentage": "1.65"
+      },
+      {
+        "className": "text-sm",
+        "usage": 148,
+        "percentage": "1.43"
+      },
+      {
+        "className": "font-medium",
+        "usage": 128,
+        "percentage": "1.24"
+      },
+      {
+        "className": "mb-4",
+        "usage": 124,
+        "percentage": "1.20"
+      },
+      {
+        "className": "text-gray-600",
+        "usage": 117,
+        "percentage": "1.13"
+      },
+      {
+        "className": "font-semibold",
+        "usage": 103,
+        "percentage": "0.99"
+      },
+      {
+        "className": "justify-between",
+        "usage": 94,
+        "percentage": "0.91"
+      },
+      {
+        "className": "text-xs",
+        "usage": 93,
+        "percentage": "0.90"
+      },
+      {
+        "className": "w-full",
+        "usage": 91,
+        "percentage": "0.88"
+      },
+      {
+        "className": "rounded",
+        "usage": 91,
+        "percentage": "0.88"
+      },
+      {
+        "className": "gap-2",
+        "usage": 87,
+        "percentage": "0.84"
+      }
+    ],
+    "utilizationRate": {
+      "classVariety": 1337,
+      "averageUsagePerClass": "7.75",
+      "topClassConcentration": "26.12%",
+      "efficiency": "Good"
+    },
+    "patternAnalysis": [
+      {
+        "pattern": "other",
+        "usage": 5540,
+        "percentage": "53.49"
+      },
+      {
+        "pattern": "sizing",
+        "usage": 1715,
+        "percentage": "16.56"
+      },
+      {
+        "pattern": "spacing",
+        "usage": 1281,
+        "percentage": "12.37"
+      },
+      {
+        "pattern": "colors",
+        "usage": 1097,
+        "percentage": "10.59"
+      },
+      {
+        "pattern": "layout",
+        "usage": 610,
+        "percentage": "5.89"
+      },
+      {
+        "pattern": "responsive",
+        "usage": 110,
+        "percentage": "1.06"
+      },
+      {
+        "pattern": "custom",
+        "usage": 4,
+        "percentage": "0.04"
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "type": "Tailwind Purging",
+      "severity": "Medium",
+      "issue": "Using 1337 unique Tailwind classes",
+      "solution": "Ensure Tailwind purging is properly configured to remove unused classes"
+    }
+  ],
+  "performanceImpact": {
+    "totalCSSSize": "4.90 KB",
+    "impact": "Low",
+    "loadTimeEstimate": {
+      "3G": "0.1s",
+      "4G": "0.0s",
+      "WiFi": "0.0s"
+    },
+    "optimizationPotential": "Medium"
+  }
+}

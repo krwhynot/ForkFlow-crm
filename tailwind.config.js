@@ -1,9 +1,44 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-        './index.html',
-        './src/**/*.{js,ts,jsx,tsx}',
-        './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
+    content: {
+        files: [
+            './index.html',
+            './src/**/*.{js,ts,jsx,tsx}',
+            './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
+        ],
+        options: {
+            // More aggressive purging options
+            defaultExtractor: (content) => {
+                return content.match(/[A-Za-z0-9-_:/]+/g) || [];
+            },
+            keyframes: true,
+        }
+    },
+    // Safelist critical utilities that should never be purged
+    safelist: [
+        // Touch target utilities (accessibility critical)
+        'touch-target-interactive',
+        'min-h-44',
+        'min-w-44',
+        // Priority and status classes (dynamic usage)
+        {
+            pattern: /^(priority|status)-(high|medium|low|prospect|active|inactive|closed)$/,
+        },
+        // Focus states (accessibility critical)
+        {
+            pattern: /^focus:(outline|ring)/,
+        },
+        // Responsive breakpoints for commonly used utilities
+        {
+            pattern: /^(xs|sm|md|lg|xl|2xl):(flex|hidden|block|grid)/,
+        },
+        // Organization card styles
+        'organization-card',
+        'organization-card-mobile', 
+        'organization-card-desktop',
+        // Search and filter utilities
+        'search-input',
+        'filter-container',
     ],
     theme: {
         extend: {
@@ -16,14 +51,9 @@ module.exports = {
                 xl: '1280px',
                 '2xl': '1536px',
             },
-            // Color schemes for priority levels and status indicators
+            // Optimized color palette - removed redundant colors, kept essential ones
             colors: {
-                // ForkFlow Brand Colors
-                'forkflow-green': '#A6C66D',
-                'forkflow-light-gray': '#F4F4F4',
-                'forkflow-medium-gray': '#EDEDED',
-                
-                // Primary palette for consistency
+                // Core ForkFlow Brand Colors (consolidated)
                 primary: {
                     50: '#f0f9ff',
                     500: '#A6C66D',
@@ -31,7 +61,7 @@ module.exports = {
                     900: '#1e293b',
                 },
                 
-                // Tremor color overrides
+                // Tremor integration (essential for charts)
                 tremor: {
                     brand: {
                         faint: '#A6C66D10',
@@ -42,46 +72,25 @@ module.exports = {
                         inverted: '#FFFFFF',
                     },
                 },
+                
+                // Essential blue palette (most used color after gray)
                 blue: {
-                    50: '#eff6ff',
-                    100: '#dbeafe',
-                    200: '#bfdbfe',
-                    300: '#93c5fd',
-                    400: '#60a5fa',
                     500: '#3b82f6',
                     600: '#2563eb',
-                    700: '#1d4ed8',
-                    800: '#1e40af',
-                    900: '#1e3a8a',
                 },
-                indigo: {
-                    50: '#eef2ff',
-                    100: '#e0e7ff',
-                    200: '#c7d2fe',
-                    300: '#a5b4fc',
-                    400: '#818cf8',
-                    500: '#6366f1',
-                    600: '#4f46e5',
-                    700: '#4338ca',
-                    800: '#3730a3',
-                    900: '#312e81',
-                },
-                white: '#ffffff',
+                
+                // Semantic colors (consolidated)
                 success: {
-                    50: '#f0fdf4',
                     500: '#22c55e',
-                    700: '#15803d',
                 },
                 warning: {
-                    50: '#fffbeb',
                     500: '#f59e0b',
-                    700: '#b45309',
                 },
                 error: {
-                    50: '#fef2f2',
                     500: '#ef4444',
-                    700: '#c53030',
                 },
+                
+                // Essential gray scale (most used colors)
                 gray: {
                     50: '#f9fafb',
                     100: '#f3f4f6',
@@ -94,32 +103,21 @@ module.exports = {
                     800: '#1f2937',
                     900: '#111827',
                 },
-                // Priority level colors
-                'priority-high': '#ef4444', // red-500
-                'priority-medium': '#f59e0b', // amber-500
-                'priority-low': '#22c55e', // green-500
-                // Status colors for organizations/deals
-                'status-prospect': '#8b5cf6', // violet-500
-                'status-active': '#22c55e', // green-500
-                'status-inactive': '#6b7280', // gray-500
-                'status-closed': '#ef4444', // red-500
+                
+                // Priority colors (used in dynamic classes)
+                'priority-high': '#ef4444',
+                'priority-medium': '#f59e0b', 
+                'priority-low': '#22c55e',
+                
+                // Status colors (used in dynamic classes)
+                'status-prospect': '#8b5cf6',
+                'status-active': '#22c55e',
+                'status-inactive': '#6b7280',
+                'status-closed': '#ef4444',
             },
-            // Touch target utilities for WCAG compliance
+            // Essential spacing (kept only widely used values)
             spacing: {
-                '44': '44px', // Minimum touch target
-                touch: '44px', // Minimum touch target size
-                'touch-sm': '36px', // Small touch target
-                'touch-lg': '52px', // Large touch target
-            },
-            // Animation utilities for smooth transitions
-            transitionProperty: {
-                touch: 'all',
-            },
-            transitionDuration: {
-                touch: '150ms',
-            },
-            transitionTimingFunction: {
-                touch: 'ease-in-out',
+                '44': '44px', // WCAG minimum touch target (critical)
             },
             fontFamily: {
                 sans: [
@@ -139,27 +137,19 @@ module.exports = {
                     '"Noto Color Emoji"',
                 ],
             },
+            // Simplified font system (kept only essential sizes/weights)
             fontSize: {
-                xs: '0.75rem',
                 sm: '0.875rem',
-                base: '1rem',
+                base: '1rem', 
                 lg: '1.125rem',
                 xl: '1.25rem',
-                '2xl': '1.5rem',
-                '3xl': '1.875rem',
             },
-            fontWeight: {
-                light: '300',
-                normal: '400',
-                medium: '500',
-                semibold: '600',
-                bold: '700',
-            },
+            // Essential minimum sizes (WCAG compliance)
             minHeight: {
-                44: '44px',
+                44: '44px', // Critical for accessibility
             },
             minWidth: {
-                44: '44px',
+                44: '44px', // Critical for accessibility  
             },
         },
     },

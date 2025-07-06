@@ -934,6 +934,168 @@ The Supabase MCP Server is configured in the ForkFlow CRM project to provide com
 
 This integration provides a complete backend-as-a-service management layer, enabling seamless development, testing, and deployment workflows for the React-admin CRM application.
 
+## Playwright MCP Server – Help Reference
+
+The Playwright MCP Server provides comprehensive web browser automation capabilities through the Model Context Protocol (MCP). It enables AI models to interact with web pages, perform browser automation tasks, take screenshots, generate PDFs, and conduct end-to-end testing workflows directly from the development environment.
+
+### Usage
+
+```bash
+npx @playwright/mcp@latest [options]
+```
+
+### Commands
+
+The Playwright MCP Server is configured via MCP and provides browser automation tools accessible within Claude Code through the following capabilities:
+
+#### Available Tools
+
+- **`browser_close`** - Close the browser page
+- **`browser_resize`** - Resize the browser window to specified dimensions
+- **`browser_console_messages`** - Returns all console messages from the browser
+- **`browser_handle_dialog`** - Handle browser dialogs (alerts, confirms, prompts)
+- **`browser_file_upload`** - Upload files to the browser
+- **`browser_install`** - Install the browser specified in configuration
+- **`browser_press_key`** - Press keyboard keys
+- **`browser_navigate`** - Navigate to URLs
+- **`browser_navigate_back`** - Go back to previous page
+- **`browser_navigate_forward`** - Go forward to next page
+- **`browser_network_requests`** - Returns all network requests since page load
+- **`browser_pdf_save`** - Save page as PDF
+- **`browser_take_screenshot`** - Take screenshots of current page or elements
+- **`browser_snapshot`** - Capture accessibility snapshot (better than screenshot)
+- **`browser_click`** - Perform click actions on web elements
+- **`browser_drag`** - Perform drag and drop between elements
+- **`browser_hover`** - Hover over elements
+- **`browser_type`** - Type text into input fields
+- **`browser_select_option`** - Select options in dropdowns
+- **`browser_tab_list`** - List all browser tabs
+- **`browser_tab_new`** - Open new tabs
+- **`browser_tab_select`** - Switch between tabs
+- **`browser_tab_close`** - Close tabs
+- **`browser_generate_playwright_test`** - Generate Playwright test code
+- **`browser_wait_for`** - Wait for text/elements or time delays
+
+### Flags/Options
+
+- `-V, --version` - Output the version number
+- `--allowed-origins <origins>` - Semicolon-separated list of origins to allow (default: allow all)
+- `--blocked-origins <origins>` - Semicolon-separated list of origins to block
+- `--block-service-workers` - Block service workers
+- `--browser <browser>` - Browser to use: chrome, firefox, webkit, msedge
+- `--browser-agent <endpoint>` - Use browser agent (experimental)
+- `--caps <caps>` - Comma-separated capabilities: tabs, pdf, history, wait, files, install
+- `--cdp-endpoint <endpoint>` - CDP endpoint to connect to
+- `--config <path>` - Path to configuration file
+- `--device <device>` - Device to emulate (e.g., "iPhone 15")
+- `--executable-path <path>` - Path to browser executable
+- `--headless` - Run browser in headless mode
+- `--host <host>` - Host to bind server (default: localhost)
+- `--ignore-https-errors` - Ignore HTTPS errors
+- `--isolated` - Keep browser profile in memory only
+- `--image-responses <mode>` - Image response handling: allow, omit, auto
+- `--no-sandbox` - Disable browser sandbox
+- `--output-dir <path>` - Directory for output files
+- `--port <port>` - Port for SSE transport
+- `--proxy-bypass <bypass>` - Comma-separated domains to bypass proxy
+- `--proxy-server <proxy>` - Proxy server specification
+- `--save-trace` - Save Playwright trace to output directory
+- `--storage-state <path>` - Path to storage state file for sessions
+- `--user-agent <ua string>` - Custom user agent string
+- `--user-data-dir <path>` - Path to user data directory
+- `--viewport-size <size>` - Browser viewport size (e.g., "1280,720")
+- `--vision` - Use screenshots instead of Aria snapshots
+- `-h, --help` - Display help information
+
+### Examples
+
+#### Basic Configuration (Current Project Setup)
+```json
+{
+  "playwright": {
+    "command": "npx",
+    "args": [
+      "@playwright/mcp@latest"
+    ]
+  }
+}
+```
+
+#### End-to-End Testing for ForkFlow CRM
+
+**Testing Contact Management:**
+```bash
+# Navigate to contacts page and test functionality
+browser_navigate("http://localhost:5173/contacts")
+browser_take_screenshot("contacts-page-test")
+browser_click("Add Contact button")
+browser_type("Contact Name field", "Test Contact")
+```
+
+**Testing Dashboard Components:**
+```bash
+# Test new MFB-themed dashboard
+browser_navigate("http://localhost:5173/")
+browser_snapshot()  # Better than screenshot for accessibility
+browser_click("Weekly Tasks metric card")
+browser_wait_for("Task details modal")
+```
+
+**Mobile Responsiveness Testing:**
+```bash
+# Test mobile-first design on different devices
+browser_resize(375, 667)  # iPhone SE size
+browser_take_screenshot("mobile-dashboard")
+browser_resize(768, 1024)  # iPad size
+browser_take_screenshot("tablet-dashboard")
+```
+
+**Form Validation Testing:**
+```bash
+# Test contact form validation
+browser_navigate("http://localhost:5173/contacts/create")
+browser_type("Email field", "invalid-email")
+browser_click("Save button")
+browser_wait_for("Validation error message")
+browser_take_screenshot("form-validation-error")
+```
+
+**Visual Regression Testing:**
+```bash
+# Generate baseline screenshots for visual comparison
+browser_navigate("http://localhost:5173/")
+browser_take_screenshot("dashboard-baseline")
+browser_navigate("http://localhost:5173/contacts")
+browser_take_screenshot("contacts-baseline")
+```
+
+### Notes
+
+- **Browser Support**: Supports Chrome, Firefox, WebKit, and Microsoft Edge browsers
+- **Mobile Testing**: Built-in device emulation for mobile-first design validation
+- **Accessibility**: Aria snapshots provide better accessibility testing than screenshots
+- **Network Monitoring**: Can capture and analyze network requests for performance testing
+- **File Operations**: Supports file uploads and PDF generation for document workflows
+- **Session Management**: Persistent storage state for testing authenticated workflows
+- **Trace Recording**: Optional Playwright trace recording for debugging test failures
+
+### Current Project Integration
+
+The Playwright MCP Server is configured in the ForkFlow CRM project to provide comprehensive browser automation for:
+
+- **End-to-End Testing**: Testing complete user workflows from login to deal closure
+- **Visual Regression**: Ensuring UI consistency across dashboard, contact, and deal pages
+- **Mobile Testing**: Validating mobile-first design with 44px touch targets
+- **Form Validation**: Testing contact forms, deal creation, and data validation
+- **Performance Testing**: Monitoring page load times and network requests
+- **Accessibility Testing**: Using Aria snapshots to ensure WCAG compliance
+- **Screenshot Documentation**: Generating visual documentation of UI components
+- **Cross-Browser Testing**: Ensuring compatibility across Chrome, Firefox, and Safari
+- **Authentication Flows**: Testing Supabase auth integration and user sessions
+- **Real-time Features**: Validating live updates and WebSocket connections
+
+This integration enables automated quality assurance and regression testing for the React-admin CRM application, ensuring reliable user experiences across all supported devices and browsers.
+
 ## Solo Development Risk Management
 
 ### Key Concerns and Issues
