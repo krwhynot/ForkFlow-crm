@@ -1,6 +1,6 @@
 import { DataProvider } from 'react-admin';
 import { supabaseDataProvider } from 'ra-supabase';
-import { supabase } from '../../lib/supabase';
+import { supabase } from './supabase';
 import { CrmDataProvider } from '../types';
 import { getIsInitialized } from './authProvider';
 

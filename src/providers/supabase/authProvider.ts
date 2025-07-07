@@ -1,6 +1,6 @@
 import { supabaseAuthProvider } from 'ra-supabase';
 import { AuthProvider } from 'react-admin';
-import { supabase } from '../../lib/supabase';
+import { supabase } from './supabase';
 import { canAccess } from '../commons/canAccess';
 
 const baseAuthProvider = supabaseAuthProvider(supabase, {
