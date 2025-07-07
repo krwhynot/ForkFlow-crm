@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, Stack } from '@/components/ui-kit';
+import { Box, Typography, Button, Stack } from '../components/ui-kit';
 import {
     ClockIcon as InteractionIcon,
     PlusIcon as AddIcon,

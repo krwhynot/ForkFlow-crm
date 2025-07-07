@@ -1,4 +1,4 @@
-import { Tooltip } from '@/components/ui-kit';
+import { Tooltip } from '../components/ui-kit';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 
 export const Status = ({ status }: { status: string }) => {

@@ -14,8 +14,8 @@ import {
     useLogout,
 } from 'react-admin';
 import { Link, matchPath, useLocation } from 'react-router-dom';
-import { SecurityStatusBar } from '../components/security/SecurityStatusBar';
-import { Dropdown, DropdownItem } from '../components/ui-kit/Dropdown';
+import { SecurityStatusBar } from '../components/features/security/SecurityStatusBar';
+import { Dropdown, DropdownItem } from '../components/core/navigation/Dropdown';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 
 const Header = () => {

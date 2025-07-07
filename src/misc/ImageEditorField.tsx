@@ -9,7 +9,7 @@ import {
     Link,
     Stack,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import 'cropperjs/dist/cropper.css';
 import { useFieldValue } from 'ra-core';
 import { createRef, useCallback, useState } from 'react';

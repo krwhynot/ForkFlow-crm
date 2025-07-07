@@ -16,7 +16,7 @@ import {
     Stack,
     Avatar,
     IconButton,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
     ClockIcon,

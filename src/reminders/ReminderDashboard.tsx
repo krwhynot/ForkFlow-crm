@@ -7,7 +7,7 @@ import {
     Chip,
     CircularProgress,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     PlusIcon as AddIcon,
     CheckCircleIcon as CompleteIcon,

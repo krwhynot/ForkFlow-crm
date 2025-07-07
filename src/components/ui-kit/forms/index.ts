@@ -25,9 +25,7 @@ export { FormHelperText } from '../FormHelperText';
 export { Filter } from '../Filter';
 
 // Enhanced Form Components
-export { FormInput } from '../FormInput';
+// FormInput moved to core/patterns
 
 // Multi-step Form Components
-export { StepNavigator } from '../StepNavigator';
-export { FormStepContainer } from '../FormStepContainer';
-export { StepValidationSummary } from '../StepValidationSummary';
+// StepNavigator, FormStepContainer, StepValidationSummary removed (unused)

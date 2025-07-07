@@ -1,5 +1,5 @@
 import { PhoneIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
-import { Divider, Stack, Tooltip, Typography } from '@/components/ui-kit';
+import { Divider, Stack, Tooltip, Typography } from '../components/ui-kit';
 import { Link } from 'react-router-dom';
 import {
     DateField,

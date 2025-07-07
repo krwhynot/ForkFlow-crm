@@ -10,7 +10,7 @@ import {
     Tab,
     Tabs,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     RectangleGroupIcon as AccountTreeIcon,
     PlusIcon as AddIcon,

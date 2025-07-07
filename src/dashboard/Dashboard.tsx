@@ -1,10 +1,10 @@
 import React from 'react';
-import { DashboardLayout } from '../components/layout/DashboardLayout'
-import { TodaysFollowups } from '../components/dashboard/TodaysFollowups'
-import { PriorityOrganizations } from '../components/dashboard/PriorityOrganizations'
-import { WeeklyActivity } from '../components/dashboard/WeeklyActivity'
-import { PipelineSummary } from '../components/dashboard/PipelineSummary'
-import { QuickInteractionEntry } from '../components/dashboard/QuickInteractionEntry'
+import { DashboardLayout } from '../components/core/layout/DashboardLayout';
+import { TodaysFollowups } from '../components/features/dashboard/TodaysFollowups';
+import { PriorityOrganizations } from '../components/features/dashboard/PriorityOrganizations';
+import { WeeklyActivity } from '../components/features/dashboard/WeeklyActivity';
+import { PipelineSummary } from '../components/features/dashboard/PipelineSummary';
+import { QuickInteractionEntry } from '../components/features/dashboard/QuickInteractionEntry';
 
 export const Dashboard: React.FC = () => {
   return (

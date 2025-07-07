@@ -3,7 +3,7 @@
  * Allows users to update their profile information and change password
  */
 
-import { Box, Container, Paper, Stack, Tab, Tabs, Typography } from '@/components/ui-kit';
+import { Box, Container, Paper, Stack, Tab, Tabs, Typography } from '../components/ui-kit';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';

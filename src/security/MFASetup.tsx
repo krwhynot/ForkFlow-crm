@@ -22,7 +22,7 @@ import {
     Stepper,
     TextField,
     Typography
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     CheckCircleIcon as CheckIcon,
     ArrowDownTrayIcon as DownloadIcon,

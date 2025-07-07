@@ -1,15 +1,15 @@
-import ActivityLog from '../components/dashboard/ActivityLog';
-import APriorityOrganizations from '../components/dashboard/APriorityOrganizations';
-import HighPriorityTasks from '../components/dashboard/HighPriorityTasks';
-import InteractionsChart from '../components/dashboard/InteractionsChart';
-import KanbanBoard from '../components/dashboard/KanbanBoard';
-import OpportunitiesChart from '../components/dashboard/OpportunitiesChart';
-import RecentContacts from '../components/dashboard/RecentContacts';
-import RecentInteractions from '../components/dashboard/RecentInteractions';
-import RecentProducts from '../components/dashboard/RecentProducts';
-import UpcomingMeetings from '../components/dashboard/UpcomingMeetings';
-import WeeklyGoals from '../components/dashboard/WeeklyGoals';
-import { Typography } from '../components/ui-kit/Typography';
+import ActivityLog from '../components/features/dashboard/ActivityLog';
+import APriorityOrganizations from '../components/features/dashboard/APriorityOrganizations';
+import HighPriorityTasks from '../components/features/dashboard/HighPriorityTasks';
+import InteractionsChart from '../components/features/dashboard/InteractionsChart';
+import KanbanBoard from '../components/features/dashboard/KanbanBoard';
+import OpportunitiesChart from '../components/features/dashboard/OpportunitiesChart';
+import RecentContacts from '../components/features/dashboard/RecentContacts';
+import RecentInteractions from '../components/features/dashboard/RecentInteractions';
+import RecentProducts from '../components/features/dashboard/RecentProducts';
+import UpcomingMeetings from '../components/features/dashboard/UpcomingMeetings';
+import WeeklyGoals from '../components/features/dashboard/WeeklyGoals';
+import { Typography } from '../components/core/Typography';
 
 export default function Dashboard() {
     return (

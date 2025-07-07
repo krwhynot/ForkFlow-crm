@@ -15,7 +15,7 @@ import {
     ListItemText,
     Stack,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { ClockIcon as AccessTimeIcon, DevicePhoneMobileIcon as DeviceHubIcon, ShieldCheckIcon as SecurityIcon, CheckBadgeIcon as VerifiedIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { RoleChip } from '../../components/auth/RoleChip';

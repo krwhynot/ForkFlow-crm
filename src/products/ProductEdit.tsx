@@ -17,9 +17,9 @@ import {
     useGetList,
     useRecordContext,
 } from 'react-admin';
-import { CardContent } from '../components/Card/CardContent';
-import { Box } from '../components/Layout/Box';
-import { Typography } from '../components/Typography/Typography';
+import { CardContent } from '../components/core/cards';
+import { Box } from '../components/core/layout';
+import { Typography } from '../components/core/typography';
 
 import { Product, Setting } from '../types';
 import { formatPrice } from './PriceField';

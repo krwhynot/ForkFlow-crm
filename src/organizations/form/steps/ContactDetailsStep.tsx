@@ -8,7 +8,7 @@ import {
     Stack,
     Tooltip,
     Typography
-} from '@/components/ui-kit';
+} from '../../../components/ui-kit';
 import { EnvelopeIcon, PhoneIcon, UserIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useState } from 'react';
 import { FormDataConsumer, TextInput } from 'react-admin';

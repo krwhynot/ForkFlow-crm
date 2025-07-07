@@ -4,7 +4,7 @@ import {
     Tooltip,
     IconButton,
     Backdrop,
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import {
     PlusIcon as AddIcon,
     BuildingOfficeIcon as BusinessIcon,

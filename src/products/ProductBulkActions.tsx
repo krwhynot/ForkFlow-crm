@@ -11,7 +11,7 @@ import {
     CheckCircleIcon as ActivateIcon,
     XCircleIcon as DeactivateIcon,
 } from '@heroicons/react/24/outline';
-import { Button } from '../components/Button/Button';
+import { Button } from '../components/core/buttons';
 
 export const ProductBulkActions = () => {
     return (

@@ -14,7 +14,7 @@ import {
     TableHead,
     TableRow,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     XMarkIcon as CloseIcon
 } from '@heroicons/react/24/outline';

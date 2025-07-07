@@ -29,4 +29,4 @@ export { Step, StepContent, StepLabel, Stepper } from '../Stepper';
 export { Accordion, AccordionDetails, AccordionSummary } from '../Accordion';
 
 // Enhanced Layout Components
-export { DashboardCard } from '../DashboardCard';
+// DashboardCard moved to core/patterns

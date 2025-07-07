@@ -12,7 +12,7 @@ import {
     Stepper,
     Tooltip,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ArrowLeftIcon,
     ArrowRightIcon,

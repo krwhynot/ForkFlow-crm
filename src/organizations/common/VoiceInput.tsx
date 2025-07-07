@@ -17,7 +17,7 @@ import {
     LinearProgress,
     Paper,
     Typography,
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotify } from 'react-admin';

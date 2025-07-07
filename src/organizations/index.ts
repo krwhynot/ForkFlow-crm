@@ -4,7 +4,7 @@ import { OrganizationCreate, OrganizationEdit } from './form';
 import { OrganizationShow } from './show';
 
 // Import the new comprehensive OrganizationPage
-import { OrganizationPage } from '../components/organizations';
+import { OrganizationPage } from '../components/business/organizations';
 
 // Default export for resource registration
 export default {

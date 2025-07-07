@@ -21,7 +21,7 @@ import { CustomerEmpty } from './CustomerEmpty';
 import { CustomerImportButton } from './CustomerImportButton';
 import { CustomerListContent } from './CustomerListContent';
 import { CustomerListFilter } from './CustomerListFilter';
-import { Card } from '../components/ui-kit/Card';
+import { Card } from '../components/core/Card';
 
 export const CustomerList = () => {
     const { identity } = useGetIdentity();

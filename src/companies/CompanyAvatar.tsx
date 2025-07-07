@@ -1,5 +1,5 @@
 import { useRecordContext } from 'react-admin';
-import { Avatar } from '../components/ui-kit/Avatar';
+import { Avatar } from '../components/core/Avatar';
 import { Company } from '../types';
 
 export const CompanyAvatar = (props: {

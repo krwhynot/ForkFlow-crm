@@ -3,15 +3,12 @@
  * Handles all authentication modes: Demo, JWT, and Supabase
  */
 
-import React, { useState, useEffect } from 'react';
-import { useLogin, useNotify, useAuthState } from 'react-admin';
+import React, { useState } from 'react';
+import { useAuthState, useLogin, useNotify } from 'react-admin';
 import { Navigate } from 'react-router-dom';
+import { ErrorBoundary } from '../components/core/ErrorBoundary';
+import { Button, Checkbox, Input, Spinner } from '../components/core';
 import { LoginCredentials } from '../types';
-import { ErrorBoundary } from '../components/ErrorBoundary';
-import { Button } from '../components/ui-kit/Button';
-import { Input } from '../components/ui-kit/Input';
-import { Checkbox } from '../components/ui-kit/Checkbox';
-import { Spinner } from '../components/ui-kit/Spinner';
 
 interface QuickLoginUser {
     email: string;
@@ -63,7 +60,7 @@ export const UniversalLoginPage = () => {
         } catch (loginError: any) {
             setError(
                 loginError?.message ||
-                    'Login failed. Please check your credentials.'
+                'Login failed. Please check your credentials.'
             );
         } finally {
             setLoading(false);

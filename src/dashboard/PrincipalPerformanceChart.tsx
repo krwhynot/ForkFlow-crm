@@ -6,7 +6,7 @@ import {
     Chip,
     Stack,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { BarChart } from '@/components/ui-kit/Chart';
 import {
     ArrowTrendingUpIcon,

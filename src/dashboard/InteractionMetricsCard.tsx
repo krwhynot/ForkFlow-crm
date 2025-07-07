@@ -5,7 +5,7 @@ import {
     Chip,
     Stack,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { BarChart } from '@/components/ui-kit/Chart';
 import {
     ArrowTrendingUpIcon,
@@ -33,12 +33,12 @@ import { Interaction, Setting } from '../types';
 import { safeAmount, safeTrend, validateChartData } from '../utils/chartSafety';
 
 const interactionTypeIcons: Record<string, React.ReactElement> = {
-    call: <PhoneIcon className="h-4 w-4" />,
-    email: <EmailIcon className="h-4 w-4" />,
-    'in-person': <PersonIcon className="h-4 w-4" />,
-    demo: <DemoIcon className="h-4 w-4" />,
-    quote: <QuoteIcon className="h-4 w-4" />,
-    'follow-up': <FollowUpIcon className="h-4 w-4" />,
+    call: <PhoneIcon className="icon-sm" />,
+    email: <EmailIcon className="icon-sm" />,
+    'in-person': <PersonIcon className="icon-sm" />,
+    demo: <DemoIcon className="icon-sm" />,
+    quote: <QuoteIcon className="icon-sm" />,
+    'follow-up': <FollowUpIcon className="icon-sm" />,
 };
 
 interface InteractionMetric {
@@ -308,7 +308,7 @@ export const InteractionMetricsCard = () => {
                                 size="small"
                                 icon={
                                     interactionTypeIcons[type] || (
-                                        <InteractionIcon className="h-4 w-4" />
+                                        <InteractionIcon className="icon-sm" />
                                     )
                                 }
                                 label={`${type}: ${count}`}

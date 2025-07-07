@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Chip } from '@/components/ui-kit';
+import { Box, Card, CardContent, Chip } from '../../components/ui-kit';
 import {
     FilterContext,
     FilterForm,

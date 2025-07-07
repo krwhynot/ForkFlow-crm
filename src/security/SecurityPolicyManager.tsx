@@ -25,7 +25,7 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ShieldCheckIcon as SecurityIcon,
     UserIcon as AdminIcon,

@@ -5,7 +5,7 @@ import { OpportunityEdit } from './OpportunityEdit';
 import { OpportunityCreate } from './OpportunityCreate';
 
 // Import the new placeholder OpportunityPage
-import { OpportunityPage } from '../components/opportunities';
+import { OpportunityPage } from '../components/business/opportunities';
 
 // Export individual components
 export { OpportunityList, OpportunityShow, OpportunityEdit, OpportunityCreate };

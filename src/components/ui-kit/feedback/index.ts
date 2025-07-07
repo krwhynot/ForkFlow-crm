@@ -13,10 +13,7 @@ export {
     Dialog, DialogActions,
     DialogCloseButton, DialogContent, DialogTitle
 } from '../Dialog';
-export { Modal } from '../Modal';
-export { ModalHeader } from '../ModalHeader';
-export { SwipeHandle } from '../SwipeHandle';
-export { UnsavedChangesDialog } from '../UnsavedChangesDialog';
+// Modal, ModalHeader, SwipeHandle, UnsavedChangesDialog removed (unused)
 
 // Progress Indicators
 export { CircularProgress, Spinner } from '../CircularProgress';

@@ -3,9 +3,9 @@ import { Form, useLogin, useNotify, useSafeSetState } from 'ra-core';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-import { Button } from '../components/ui-kit/Button';
-import { Input } from '../components/ui-kit/Input';
-import { Spinner } from '../components/ui-kit/Spinner';
+import { Button } from '../components/core/Button';
+import { Input } from '../components/core/Input';
+import { Spinner } from '../components/core/Spinner';
 
 export const LoginForm = () => {
     const [loading, setLoading] = useSafeSetState(false);

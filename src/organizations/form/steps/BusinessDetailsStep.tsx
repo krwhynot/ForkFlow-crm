@@ -6,7 +6,7 @@ import {
     Paper,
     Stack,
     Typography
-} from '@/components/ui-kit';
+} from '../../../components/ui-kit';
 import {
     BuildingOffice2Icon as BusinessIcon,
     UserIcon as PersonIcon
@@ -19,7 +19,7 @@ import {
     MenuItem,
     Select,
     Slider,
-} from '@/components/ui-kit';
+} from '../../../components/ui-kit';
 import React, { useCallback, useState } from 'react';
 import {
     FormDataConsumer,

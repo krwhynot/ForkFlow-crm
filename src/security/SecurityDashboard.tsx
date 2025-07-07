@@ -19,7 +19,7 @@ import {
     Tabs,
     Tooltip,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     BellAlertIcon as AlertIcon,
     KeyIcon as AuthIcon,

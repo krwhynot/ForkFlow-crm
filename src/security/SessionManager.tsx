@@ -27,7 +27,7 @@ import {
     ListItemText,
     ListItemIcon,
     ListItemSecondaryAction,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ComputerDesktopIcon as DesktopIcon,
     DevicePhoneMobileIcon as MobileIcon,

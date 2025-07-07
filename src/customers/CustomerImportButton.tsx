@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui-kit';
+import { Button } from '../components/ui-kit';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { useNotify } from 'react-admin';
 

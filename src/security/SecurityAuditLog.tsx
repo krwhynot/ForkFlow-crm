@@ -35,7 +35,7 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ShieldCheckIcon as SecurityIcon,
     EyeIcon as ViewIcon,

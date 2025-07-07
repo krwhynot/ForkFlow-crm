@@ -1,8 +1,8 @@
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
-import { AvatarGroup } from '../components/ui-kit/AvatarGroup';
-import { Box } from '../components/ui-kit/Box';
-import { Paper } from '../components/ui-kit/Paper';
-import { Typography } from '../components/ui-kit/Typography';
+import { AvatarGroup } from '../components/core/AvatarGroup';
+import { Box } from '../components/core/Box';
+import { Paper } from '../components/core/Paper';
+import { Typography } from '../components/core/Typography';
 import { useState } from 'react';
 import {
     Link,

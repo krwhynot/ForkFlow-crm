@@ -3,7 +3,7 @@
  * Allows users to change their current password
  */
 
-import { Alert, Box, Button, IconButton, InputAdornment, Stack, TextField, Typography } from '@/components/ui-kit';
+import { Alert, Box, Button, IconButton, InputAdornment, Stack, TextField, Typography } from '../components/ui-kit';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';

@@ -8,7 +8,7 @@ import {
     ListItem,
     ListItemText,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     MapPinIcon as LocationIcon,
     ChartBarIcon as StatsIcon,

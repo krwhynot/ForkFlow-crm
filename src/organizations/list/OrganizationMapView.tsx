@@ -12,7 +12,7 @@ import {
     IconButton,
     Stack,
     Typography
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import { EyeIcon, MapPinIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import {
     GoogleMap,

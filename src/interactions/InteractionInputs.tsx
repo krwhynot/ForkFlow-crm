@@ -23,7 +23,7 @@ import {
     CircularProgress,
     Stack,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     MapPinIcon as LocationIcon,
     ChevronDownIcon as ExpandMoreIcon,

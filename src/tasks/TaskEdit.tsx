@@ -12,8 +12,8 @@ import {
     useNotify,
 } from 'react-admin';
 import { useConfigurationContext } from '../root/ConfigurationContext';
-import { Modal } from '../components/ui-kit/Modal';
-import { Button } from '../components/ui-kit/Button';
+import { Modal } from '../components/core/Modal';
+import { Button } from '../components/core/Button';
 
 export const TaskEdit = ({
     open,

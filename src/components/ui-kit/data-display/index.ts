@@ -28,8 +28,7 @@ export { TableSortLabel } from '../TableSortLabel';
 export { ImageList, ImageListItem } from '../ImageList';
 
 // Enhanced Data Components
-export { DataTable } from '../DataTable';
-export type { Column, SortConfig, FilterConfig, PaginationConfig, SelectionConfig, RowAction } from '../DataTable';
+// DataTable moved to core/patterns
 
 // Type exports for data display components
 export type { default as AvatarProps } from '../Avatar';

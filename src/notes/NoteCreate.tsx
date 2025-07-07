@@ -13,7 +13,7 @@ import {
 } from 'react-admin';
 import { useFormContext } from 'react-hook-form';
 
-import { Stack } from '@/components/ui-kit';
+import { Stack } from '../components/ui-kit';
 import { NoteInputs } from './NoteInputs';
 import { getCurrentDate } from './utils';
 

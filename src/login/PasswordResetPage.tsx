@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Button, CircularProgress, Container, Stack, TextField, Typography, Alert, Box } from '@/components/ui-kit';
+import { Button, CircularProgress, Container, Stack, TextField, Typography, Alert, Box } from '../components/ui-kit';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useMutation } from '@tanstack/react-query';
 import { useDataProvider, useNotify } from 'react-admin';

@@ -4,7 +4,7 @@ import { ProductEdit } from './ProductEdit';
 import { ProductShow } from './ProductShow';
 
 // Import the new placeholder ProductPage
-import { ProductPage } from '../components/products';
+import { ProductPage } from '../components/business/products';
 
 // Default export for resource registration
 export default {

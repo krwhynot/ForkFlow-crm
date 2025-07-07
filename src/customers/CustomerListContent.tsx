@@ -22,8 +22,8 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '../components/ui-kit/Table';
-import { Spinner } from '../components/ui-kit/Spinner';
+} from '../components/core/Table';
+import { Spinner } from '../components/core/Spinner';
 import { Checkbox } from '../components/ui-kit';
 
 export const CustomerListContent = () => {

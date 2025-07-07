@@ -5,7 +5,7 @@ import {
     CardContent,
     Chip,
     Typography
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ArrowPathIcon,
     CheckCircleIcon,

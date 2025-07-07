@@ -9,7 +9,7 @@ import {
     AutocompleteInput,
     useGetList,
 } from 'react-admin';
-import { Stack, Typography, Divider } from '@/components/ui-kit';
+import { Stack, Typography, Divider } from '../components/ui-kit';
 
 export const InteractionFilters = () => {
     // Get interaction types from settings

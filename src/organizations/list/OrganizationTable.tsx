@@ -13,7 +13,7 @@ import {
     IconButton,
     Box,
     Typography,
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import {
     PencilSquareIcon as EditIcon,
     EyeIcon as ViewIcon,

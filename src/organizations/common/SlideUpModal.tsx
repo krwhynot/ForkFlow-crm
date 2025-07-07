@@ -8,8 +8,8 @@ import React, {
 import { Dialog, Transition } from '@headlessui/react';
 import { cn } from '../../utils/cn';
 import { useSwipeGestures } from '../../hooks/useSwipeGestures';
-import { ModalHeader } from '../../components/ui-kit/ModalHeader';
-import { SwipeHandle } from '../../components/ui-kit/SwipeHandle';
+import { DialogTitle } from '../../components/core/dialogs';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { modalPositionClasses, modalWidthClasses } from '../../utils/modalAnimations';
 
 interface SlideUpModalProps {
@@ -158,28 +158,35 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                                 {...swipeHandlers}
                             >
                                 {/* Swipe handle - mobile only */}
-                                <div className="sm:hidden">
-                                    <SwipeHandle visible={swipeToClose && !preventClose} />
-                                </div>
+                                {swipeToClose && !preventClose && (
+                                    <div className="sm:hidden flex justify-center py-2">
+                                        <div className="w-10 h-1 bg-gray-300 rounded-full" />
+                                    </div>
+                                )}
 
                                 {/* Header */}
-                                <ModalHeader
-                                    title={title}
-                                    subtitle={subtitle}
-                                    showProgress={showProgress}
-                                    progress={progress}
-                                    onClose={!showBackButton ? handleClose : undefined}
-                                    onSave={onSave}
-                                    onMinimize={minimizable ? handleMinimize : undefined}
-                                    onBack={showBackButton ? onBack : undefined}
-                                    saveLabel={saveLabel}
-                                    saveDisabled={saveDisabled}
-                                    showBackButton={showBackButton}
-                                    actions={actions}
-                                    minimizable={minimizable}
-                                    preventClose={preventClose}
-                                    className="sm:rounded-t-2xl"
-                                />
+                                <div className="flex items-center justify-between p-4 border-b">
+                                    <div>
+                                        <DialogTitle>{title}</DialogTitle>
+                                        {subtitle && (
+                                            <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+                                        )}
+                                        {showProgress && (
+                                            <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                                <div 
+                                                    className="bg-blue-600 h-1 rounded-full transition-all duration-300" 
+                                                    style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button
+                                        onClick={handleClose}
+                                        className="p-1 hover:bg-gray-100 rounded-full"
+                                    >
+                                        <XMarkIcon className="h-5 w-5" />
+                                    </button>
+                                </div>
 
                                 {/* Content */}
                                 <div 

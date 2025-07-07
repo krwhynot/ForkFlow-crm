@@ -8,7 +8,7 @@ import {
     ListItemText,
     Paper,
     Typography,
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import {
     ClipboardDocumentIcon,
     DevicePhoneMobileIcon,

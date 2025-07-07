@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit dependency validation..."
+
+# Run dependency validation
+npm run deps:validate
+
+# Check exit code
+if [ $? -ne 0 ]; then
+    echo "❌ Dependency validation failed!"
+    echo "Fix architectural violations before committing."
+    exit 1
+fi
+
+# Run dependency drift detection (non-blocking, just informational)
+echo "📊 Checking for dependency drift..."
+npm run deps:drift || echo "⚠️  Note: Dependency drift detected. Review the report if needed."
+
+echo "✅ Pre-commit dependency checks passed!"
+
+# Run tests
+npm test

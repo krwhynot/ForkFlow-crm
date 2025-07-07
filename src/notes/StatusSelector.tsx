@@ -1,4 +1,4 @@
-import { Select, SelectItem } from '@/components/ui-kit';
+import { Select, SelectItem } from '../components/ui-kit';
 import * as React from 'react';
 
 import { Status } from '../misc/Status';

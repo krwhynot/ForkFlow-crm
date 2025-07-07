@@ -24,7 +24,7 @@ import {
     IconButton,
     Tooltip,
     Stack,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { Bars3Icon as DragIndicator, EyeIcon as Visibility, EyeSlashIcon as VisibilityOff } from '@heroicons/react/24/outline';
 import { Setting } from '../types';
 

@@ -4,7 +4,7 @@ import {
     CircularProgress,
     Stack,
     Typography
-} from '@/components/ui-kit';
+} from '../../../components/ui-kit';
 import {
     BuildingOffice2Icon as BusinessIcon
 } from '@heroicons/react/24/outline';

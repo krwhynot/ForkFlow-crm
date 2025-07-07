@@ -20,6 +20,15 @@
 .DS_Store
 *.pem
 
+# dependency analysis reports
+dependency-analysis.json
+dependency-graph.dot
+dependency-graph.svg
+dependency-report.html
+dependency-metrics.txt
+dependency-drift-report.json
+.dependency-baselines/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

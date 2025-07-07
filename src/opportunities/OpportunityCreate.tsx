@@ -3,7 +3,7 @@ import {
     Card,
     CardContent,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     AutocompleteInput,
     Create,

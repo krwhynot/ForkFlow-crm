@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Button as UiKitButton } from '@/components/ui-kit';
+import { Dialog, DialogContent, Button as UiKitButton } from '../../components/ui-kit';
 import {
     PlusIcon as AddIcon,
     BuildingOffice2Icon as BusinessIcon,

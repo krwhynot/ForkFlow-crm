@@ -30,7 +30,7 @@ import {
 } from '../providers/supabase';
 import sales from '../sales';
 import { SettingsPage } from '../settings/SettingsPage';
-import { ReportsPage } from '../components/reports';
+import { ReportsPage } from '../components/business/reports';
 import {
     ConfigurationContextValue,
     ConfigurationProvider,

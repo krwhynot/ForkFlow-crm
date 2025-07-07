@@ -6,8 +6,8 @@ import {
     MapPinIcon,
 } from '@heroicons/react/24/outline';
 import { SearchInput } from 'react-admin';
-import { Card, CardContent } from '../components/ui-kit/Card';
-import { Filter, FilterItem } from '../components/ui-kit/Filter';
+import { Card, CardContent } from '../components/core/Card';
+import { Filter, FilterItem } from '../components/core/Filter';
 
 export const CustomerListFilter = () => {
     return (

@@ -12,7 +12,7 @@ import { ActivityLogContactCreated } from './ActivityLogContactCreated';
 import { ActivityLogContactNoteCreated } from './ActivityLogContactNoteCreated';
 import { ActivityLogDealCreated } from './ActivityLogDealCreated';
 import { ActivityLogDealNoteCreated } from './ActivityLogDealNoteCreated';
-import { Button } from '../components/ui-kit/Button';
+import { Button } from '../components/core/buttons';
 
 type ActivityLogIteratorProps = {
     activities: Activity[];

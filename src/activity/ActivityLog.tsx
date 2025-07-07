@@ -4,7 +4,7 @@ import { Identifier, useDataProvider } from 'react-admin';
 import { CrmDataProvider } from '../providers/types';
 import { ActivityLogContext } from './ActivityLogContext';
 import { ActivityLogIterator } from './ActivityLogIterator';
-import { Spinner } from '../components/ui-kit/Spinner';
+import { Spinner } from '../components/core/forms';
 
 type ActivityLogProps = {
     companyId?: Identifier;

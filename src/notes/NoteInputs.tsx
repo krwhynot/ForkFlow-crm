@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@/components/ui-kit';
+import { Stack, Typography } from '../components/ui-kit';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import {
     DateTimeInput,

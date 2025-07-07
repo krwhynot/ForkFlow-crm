@@ -62,46 +62,49 @@ module.exports = {
             },
             // Kitchen Pantry Design System - Food & CRM Inspired Palette
             colors: {
-                // Primary Brand Colors - Kitchen/Food Inspired
+                // Primary Brand Colors - From wireframes
                 primary: {
+                    DEFAULT: '#2c3e50', // From wireframes
                     50: '#f7f9f5',
                     100: '#edf2e6',
                     200: '#d8e4c8',
                     300: '#b8d099',
                     400: '#9abd67',
-                    500: '#7ea142', // Sage green (herbs/fresh produce)
-                    600: '#638532',
-                    700: '#4d672a',
-                    800: '#405426',
-                    900: '#374724',
+                    500: '#2c3e50', // Updated from wireframes
+                    600: '#243242',
+                    700: '#1d2834',
+                    800: '#161e26',
+                    900: '#0f1419',
                 },
                 
-                // Secondary - Professional Gray-Blue (kitchen steel)
+                // Secondary - From wireframes
                 secondary: {
+                    DEFAULT: '#34495e', // From wireframes
                     50: '#f8fafc',
                     100: '#f1f5f9',
                     200: '#e2e8f0',
                     300: '#cbd5e1',
                     400: '#94a3b8',
-                    500: '#64748b', // Steel blue-gray
-                    600: '#475569',
-                    700: '#334155',
-                    800: '#1e293b',
-                    900: '#0f172a',
+                    500: '#34495e', // Updated from wireframes
+                    600: '#2c3e50',
+                    700: '#243242',
+                    800: '#1d2834',
+                    900: '#161e26',
                 },
                 
-                // Accent - Fresh Blue (water/cleanliness)
+                // Accent - From wireframes
                 accent: {
+                    DEFAULT: '#3498db', // From wireframes
                     50: '#eff6ff',
                     100: '#dbeafe',
                     200: '#bfdbfe',
                     300: '#93c5fd',
                     400: '#60a5fa',
-                    500: '#3b82f6', // Fresh blue
-                    600: '#2563eb',
-                    700: '#1d4ed8',
-                    800: '#1e40af',
-                    900: '#1e3a8a',
+                    500: '#3498db', // Updated from wireframes
+                    600: '#2980b9',
+                    700: '#2471a3',
+                    800: '#1f618d',
+                    900: '#1a5276',
                 },
                 
                 // Warm Accent - Spice/Earth Tones
@@ -167,11 +170,22 @@ module.exports = {
                     900: '#111827',
                 },
                 
-                // Priority colors (CRM specific)
-                'priority-high': '#ef4444',      // Red - urgent
-                'priority-medium': '#f59e0b',    // Amber - important
-                'priority-low': '#22c55e',       // Green - normal
-                'priority-critical': '#dc2626',  // Dark red - critical
+                // Wireframe specific colors
+                muted: '#ecf0f1',
+                background: '#f5f5f5',
+                foreground: '#333333',
+                
+                // Priority colors from wireframes (A, B, C, D)
+                'priority-a': '#27ae60',         // Green - A priority
+                'priority-b': '#f39c12',         // Orange - B priority  
+                'priority-c': '#e67e22',         // Orange-red - C priority
+                'priority-d': '#e74c3c',         // Red - D priority
+                
+                // Legacy priority colors (CRM specific - kept for compatibility)
+                'priority-high': '#e74c3c',      // Red - urgent (mapped to priority-d)
+                'priority-medium': '#f39c12',    // Orange - important (mapped to priority-b)
+                'priority-low': '#27ae60',       // Green - normal (mapped to priority-a)
+                'priority-critical': '#e74c3c',  // Red - critical (mapped to priority-d)
                 
                 // Status colors (CRM workflow)
                 'status-prospect': '#8b5cf6',    // Purple - new lead
@@ -212,6 +226,7 @@ module.exports = {
             },
             // Essential minimum sizes (WCAG compliance)
             minHeight: {
+                16: '4rem',  // 64px - Used by entity list items
                 44: '44px', // Critical for accessibility
             },
             minWidth: {

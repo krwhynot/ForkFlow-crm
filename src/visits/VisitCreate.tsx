@@ -1,13 +1,10 @@
-import {
-    Alert,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Chip,
-    CircularProgress,
-    Typography,
-} from '@/components/ui-kit';
+import { Box } from '../components/core/layout';
+import { Button } from '../components/core/buttons';
+import { Card, CardContent } from '../components/core/cards';
+import { Chip } from '../components/core/data-display';
+import { CircularProgress } from '../components/core/progress';
+import { Typography } from '../components/core/typography';
+import { Alert } from '../components/ui-kit'; // Keep for now
 import {
     MapIcon as GPSIcon,
     MapPinIcon as LocationIcon,

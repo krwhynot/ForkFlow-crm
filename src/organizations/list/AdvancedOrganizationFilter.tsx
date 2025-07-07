@@ -16,7 +16,7 @@ import {
     Stack,
     TextField,
     Typography,
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import {
     XMarkIcon as ClearIcon,
     ChevronUpIcon as ExpandLessIcon,

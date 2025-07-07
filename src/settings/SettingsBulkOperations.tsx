@@ -14,7 +14,7 @@ import {
     ListItemText,
     ListItemIcon,
     Divider,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     CloudArrowUpIcon as UploadIcon,
     CloudArrowDownIcon as DownloadIcon,

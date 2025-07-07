@@ -5,8 +5,8 @@
 // --- UI kit and Heroicons migration ---
 import { BuildingOffice2Icon } from '@heroicons/react/24/outline';
 import { CreateButton } from 'react-admin';
-import { Box } from '../../components/Layout/Box';
-import { Typography } from '../../components/Typography/Typography';
+import { Box } from '../../components/core/layout';
+import { Typography } from '../../components/core/typography';
 
 export const OrganizationEmpty = () => (
     <Box className="text-center m-1">

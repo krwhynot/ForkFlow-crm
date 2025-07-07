@@ -1,4 +1,4 @@
-import { Stack, ImageList, ImageListItem } from '@/components/ui-kit';
+import { Stack, ImageList, ImageListItem } from '../components/ui-kit';
 import { ContactNote, DealNote, RAFile } from '../types';
 import { FileField } from 'react-admin';
 import { PaperClipIcon } from '@heroicons/react/24/outline';

@@ -1,4 +1,4 @@
-import { Divider } from '@/components/ui-kit';
+import { Divider } from '../components/ui-kit';
 import {
     ArrowTrendingUpIcon,
     BuildingStorefrontIcon as BusinessIcon,
@@ -16,14 +16,12 @@ import {
     TopToolbar,
     useRecordContext
 } from 'react-admin';
-import { Card } from '../components/Card/Card';
-import { CardContent } from '../components/Card/CardContent';
-import { Chip } from '../components/DataDisplay/Chip';
-import { Box } from '../components/Layout/Box';
-import { Stack } from '../components/Layout/Stack';
-import { RelatedEntitiesSection } from '../components/navigation/RelatedEntitiesSection';
-import { RelationshipBreadcrumbs } from '../components/navigation/RelationshipBreadcrumbs';
-import { Typography } from '../components/Typography/Typography';
+import { Card, CardContent } from '../components/core/cards';
+import { Chip } from '../components/ui-kit';
+import { Box, Stack } from '../components/core/layout';
+import { RelatedEntitiesSection } from '../components/core/navigation/RelatedEntitiesSection';
+import { RelationshipBreadcrumbs } from '../components/core/navigation/RelationshipBreadcrumbs';
+import { Typography } from '../components/core/typography';
 import { Product } from '../types';
 import { PriceField } from './PriceField';
 

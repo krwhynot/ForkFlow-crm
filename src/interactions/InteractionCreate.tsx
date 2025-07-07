@@ -10,7 +10,7 @@ import {
     useNotify,
     useRedirect,
 } from 'react-admin';
-import { Box, Button, Chip } from '@/components/ui-kit';
+import { Box, Button, Chip } from '../components/ui-kit';
 import {
     MapPinIcon as GpsIcon,
     CloudIcon as OfflineIcon,

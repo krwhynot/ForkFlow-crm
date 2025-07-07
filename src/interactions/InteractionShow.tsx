@@ -8,7 +8,7 @@ import {
     Chip,
     Stack,
     Typography
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     BuildingOfficeIcon as BusinessIcon,
     CheckCircleIcon as CompletedIcon,

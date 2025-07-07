@@ -11,4 +11,4 @@ export { IconButton } from '../IconButton';
 export { Backdrop, Fab, SpeedDial, SpeedDialAction } from '../Fab';
 
 // Enhanced Action Components
-export { QuickActionButton } from '../QuickActionButton';
+// QuickActionButton moved to core/patterns

@@ -3,7 +3,7 @@
  * Allows users to update their basic profile information
  */
 
-import { Alert, Avatar, Box, Button, Chip, IconButton, Stack, TextField, Typography } from '@/components/ui-kit';
+import { Alert, Avatar, Box, Button, Chip, IconButton, Stack, TextField, Typography } from '../components/ui-kit';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { PlusIcon as AddIcon, TrashIcon as DeleteIcon, CameraIcon as PhotoCameraIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';

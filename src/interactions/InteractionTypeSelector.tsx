@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectInput, useGetList } from 'react-admin';
-import { Box, Typography, Avatar, Stack } from '@/components/ui-kit';
+import { Box, Typography, Avatar, Stack } from '../components/ui-kit';
 import {
     EnvelopeIcon,
     PhoneIcon,

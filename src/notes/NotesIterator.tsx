@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Divider, Stack } from '@/components/ui-kit';
+import { Box, Divider, Stack } from '../components/ui-kit';
 import { useListContext } from 'react-admin';
 
 import { Note } from './Note';

@@ -20,7 +20,7 @@ import {
     AccordionDetails,
     Tooltip,
     IconButton,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ShieldCheckIcon as SecurityIcon,
     CheckCircleIcon as PassIcon,

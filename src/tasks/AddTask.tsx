@@ -9,7 +9,7 @@ import {
     IconButton,
     Stack,
     Tooltip,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { useState } from 'react';
 import {
     AutocompleteInput,

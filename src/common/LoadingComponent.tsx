@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, CircularProgress, Stack, Typography } from '@/components/ui-kit';
+import { Box, Stack } from '../components/core/layout';
+import { CircularProgress } from '../components/core/progress';
+import { Typography } from '../components/core/typography';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface LoadingComponentProps {

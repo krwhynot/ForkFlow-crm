@@ -11,14 +11,14 @@ import {
     useListContext,
 } from 'react-admin';
 
-import { Dialog, DialogContent } from '@/components/ui-kit';
+import { Dialog, DialogContent } from '../../components/ui-kit';
 import {
     MapIcon
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import { Button } from '../../components/Button/Button';
-import { Box } from '../../components/Layout/Box';
-import { Stack } from '../../components/Layout/Stack';
+import { Button } from '../../components/core/buttons';
+import { Box } from '../../components/core/layout';
+import { Stack } from '../../components/core/layout';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import { ImageList } from './GridList';

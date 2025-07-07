@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from '@/components/ui-kit';
+import { Box, Card, CardContent, Typography } from '../components/ui-kit';
 import { DocumentTextIcon as NoteIcon } from '@heroicons/react/24/outline';
 import { formatDistance } from 'date-fns';
 import {

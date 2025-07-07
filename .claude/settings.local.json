@@ -96,7 +96,9 @@
       "mcp__playwright__browser_snapshot",
       "Bash(madge:*)",
       "Bash(ts_dependency_graph:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(chmod:*)",
+      "Bash(jobs)"
     ]
   },
   "enableAllProjectMcpServers": true,

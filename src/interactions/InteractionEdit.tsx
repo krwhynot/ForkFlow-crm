@@ -7,7 +7,7 @@ import {
     ShowButton,
     DeleteButton,
 } from 'react-admin';
-import { Box } from '@/components/ui-kit';
+import { Box } from '../components/ui-kit';
 
 import { InteractionInputs } from './InteractionInputs';
 

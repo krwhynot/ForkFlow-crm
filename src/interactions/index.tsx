@@ -4,7 +4,7 @@ import { InteractionList } from './InteractionList';
 import { InteractionShow } from './InteractionShow';
 
 // Import the new placeholder InteractionPage
-import { InteractionPage } from '../components/interactions';
+import { InteractionPage } from '../components/business/interactions';
 
 export * from './InteractionCard';
 export * from './InteractionCreate';

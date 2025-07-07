@@ -12,7 +12,7 @@ import {
     TableRow,
     TableSortLabel,
     Typography,
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import {
     BuildingOffice2Icon as BusinessIcon,
     PencilSquareIcon as EditIcon,

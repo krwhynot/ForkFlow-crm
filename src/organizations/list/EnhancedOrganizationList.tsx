@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Dialog, DialogContent, Stack } from '@/components/ui-kit';
+import { Box, Button, Chip, Dialog, DialogContent, Stack } from '../../components/ui-kit';
 import {
     MapPinIcon as LocationIcon,
     MapIcon

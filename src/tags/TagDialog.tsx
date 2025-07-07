@@ -4,7 +4,7 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { FormEvent, useEffect, useState } from 'react';
 import { Toolbar } from 'react-admin';
 import { DialogCloseButton } from '../misc/DialogCloseButton';

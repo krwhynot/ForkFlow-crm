@@ -28,7 +28,7 @@ import {
     Paper,
     IconButton,
     Tooltip,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 
 import { User } from '../types';
 import { useBreakpoint } from '../hooks/useBreakpoint';
@@ -42,7 +42,7 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 
 interface UserActivity {
     id: string;

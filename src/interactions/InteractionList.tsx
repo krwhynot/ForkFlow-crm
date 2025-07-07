@@ -25,7 +25,7 @@ import {
     Chip,
     Stack,
     Avatar,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 // Timeline components alternative - using simple layout instead
 import {

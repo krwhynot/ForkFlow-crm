@@ -14,7 +14,7 @@ import {
     TableHead,
     TableRow,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     ArrowPathIcon as RefreshIcon,
     ArrowDownTrayIcon as DownloadIcon,

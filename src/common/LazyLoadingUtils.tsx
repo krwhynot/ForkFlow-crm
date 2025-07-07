@@ -1,6 +1,9 @@
 import React, { Suspense, ComponentType, ReactElement } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Box, Button, Typography, Alert, Stack } from '@/components/ui-kit';
+import { Box, Stack } from '../components/core/layout';
+import { Button } from '../components/core/buttons';
+import { Typography } from '../components/core/typography';
+import { Alert } from '../components/ui-kit'; // Alert doesn't exist in core yet, keep ui-kit
 import {
     ArrowPathIcon,
     ExclamationTriangleIcon,

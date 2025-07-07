@@ -11,14 +11,11 @@ import {
     CreateButton,
     FilterButton,
 } from 'react-admin';
-import {
-    Card,
-    CardContent,
-    Typography,
-    Box,
-    Chip,
-    Button,
-} from '@/components/ui-kit';
+import { Card, CardContent } from '../components/core/cards';
+import { Typography } from '../components/core/typography';
+import { Box } from '../components/core/layout';
+import { Chip } from '../components/core/data-display';
+import { Button } from '../components/core/buttons';
 import {
     MapPinIcon as LocationIcon,
     ClockIcon as TimeIcon,

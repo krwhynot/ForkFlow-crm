@@ -5,9 +5,8 @@ import { Navigate } from 'react-router';
 import { CrmDataProvider } from '../providers/types';
 import { useConfigurationContext } from '../root/ConfigurationContext';
 import { SignUpData } from '../types';
-import { Button } from '../components/ui-kit/Button';
-import { Input } from '../components/ui-kit/Input';
-import { Spinner } from '../components/ui-kit/Spinner';
+import { Button } from '../components/core';
+import { Input, Spinner } from '../components/core';
 
 export const SignupPage = () => {
     const queryClient = useQueryClient();

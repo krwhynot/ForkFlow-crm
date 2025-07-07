@@ -30,7 +30,7 @@ import {
     Tabs,
     Tooltip,
     Typography,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import {
     CheckCircleIcon as CheckIcon,
     DocumentTextIcon as DocIcon,

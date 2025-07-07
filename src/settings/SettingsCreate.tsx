@@ -13,7 +13,7 @@ import {
     useNotify,
     useRedirect,
 } from 'react-admin';
-import { CardContent, Grid, Box, Typography, Alert } from '@/components/ui-kit';
+import { CardContent, Grid, Box, Typography, Alert } from '../components/ui-kit';
 import { useState, useEffect } from 'react';
 import { useRealtimeSettings } from './hooks/useRealtimeSettings';
 import { useBreakpoint } from '../hooks/useBreakpoint';

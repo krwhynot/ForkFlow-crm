@@ -12,7 +12,7 @@ import {
     MenuItem,
     Tooltip,
     Typography
-} from '@/components/ui-kit';
+} from '../../components/ui-kit';
 import {
     BuildingOfficeIcon,
     EllipsisVerticalIcon,
@@ -207,7 +207,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                 className="h-50 sm:h-55 md:h-60 flex flex-col"
             >
                 <CardContent className="flex-1 p-4 sm:p-6">
-                    <Box className="flex items-center gap-4 mb-4">
+                    <Box className="flex-gap-4 mb-4">
                         <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
                         <Box className="flex-1">
                             <div className="w-3/4 h-6 bg-gray-200 rounded animate-pulse mb-2" />
@@ -394,10 +394,10 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handlePhoneClick}
-                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
+                                className="btn-touch-action"
                                 aria-label="Call organization"
                             >
-                                <PhoneIcon className="w-4 h-4" />
+                                <PhoneIcon className="icon-sm" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -407,10 +407,10 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handleEmailClick}
-                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
+                                className="btn-touch-action"
                                 aria-label="Email account manager"
                             >
-                                <EnvelopeIcon className="w-4 h-4" />
+                                <EnvelopeIcon className="icon-sm" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -420,10 +420,10 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handleWebsiteClick}
-                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
+                                className="btn-touch-action"
                                 aria-label="Visit website"
                             >
-                                <GlobeAltIcon className="w-4 h-4" />
+                                <GlobeAltIcon className="icon-sm" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -433,10 +433,10 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                             <IconButton
                                 size="small"
                                 onClick={handleDirectionsClick}
-                                className="min-w-11 min-h-11 text-blue-600 hover:bg-gray-100"
+                                className="btn-touch-action"
                                 aria-label="Get directions"
                             >
-                                <MapPinIcon className="w-4 h-4" />
+                                <MapPinIcon className="icon-sm" />
                             </IconButton>
                         </Tooltip>
                     )}
@@ -449,9 +449,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 e.stopPropagation();
                                 onView?.(record.id);
                             }}
-                            className="min-w-11 min-h-11 hover:bg-gray-100"
+                            className="btn-touch-neutral"
                         >
-                            <EyeIcon className="w-4 h-4" />
+                            <EyeIcon className="icon-sm" />
                         </IconButton>
                     </Tooltip>
                 </Box>
@@ -467,10 +467,10 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                                 e.stopPropagation();
                                 onEdit?.(record.id);
                             }}
-                            className="min-w-11 min-h-11 text-gray-600 hover:bg-gray-100"
+                            className="btn-touch-muted"
                             aria-label="Edit organization"
                         >
-                            <PencilIcon className="w-4 h-4" />
+                            <PencilIcon className="icon-sm" />
                         </IconButton>
                     </Tooltip>
 
@@ -479,9 +479,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                         <IconButton
                             size="small"
                             onClick={handleMenuOpen}
-                            className="min-w-11 min-h-11 hover:bg-gray-100"
+                            className="btn-touch-neutral"
                         >
-                            <EllipsisVerticalIcon className="w-4 h-4" />
+                            <EllipsisVerticalIcon className="icon-sm" />
                         </IconButton>
                     </Tooltip>
 
@@ -494,7 +494,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
                     >
                         <MenuItem onClick={() => handleAction(() => onShare?.(record))}>
                             <ListItemIcon>
-                                <ShareIcon className="w-4 h-4" />
+                                <ShareIcon className="icon-sm" />
                             </ListItemIcon>
                             <ListItemText primary="Share" />
                         </MenuItem>

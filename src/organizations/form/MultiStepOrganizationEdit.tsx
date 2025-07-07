@@ -13,7 +13,7 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-} from '@/components/ui-kit';
+} from '../components/ui-kit';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useTwTheme } from '../../hooks/useTwTheme';
 import {

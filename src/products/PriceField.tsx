@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecordContext } from 'react-admin';
 import { Product } from '../types';
-import { Typography, TypographyProps } from '@/components/ui-kit';
+import { Typography, TypographyProps } from '../components/ui-kit';
 
 interface PriceFieldProps extends Omit<TypographyProps, 'children'> {
     source?: keyof Product;

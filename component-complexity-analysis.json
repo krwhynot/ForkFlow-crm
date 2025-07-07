@@ -1,0 +1,4534 @@
+{
+  "timestamp": "2025-07-07T02:17:21.784Z",
+  "summary": {
+    "totalComponents": 350,
+    "highComplexity": 22,
+    "mediumComplexity": 40,
+    "averageClassCount": 28
+  },
+  "refactoringTargets": [
+    {
+      "file": "src/components/core/navigation/RelatedEntitiesSection.tsx",
+      "priority": "high",
+      "classCount": 200,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/business/reports/ReportsPage.tsx",
+      "priority": "high",
+      "classCount": 183,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/organizations/show/OrganizationShow.tsx",
+      "priority": "high",
+      "classCount": 180,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "layout_heavy",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/organizations/common/OrganizationCard.tsx",
+      "priority": "high",
+      "classCount": 178,
+      "issues": 5,
+      "patterns": [
+        "duplicate_styles",
+        "responsive_heavy",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/organizations/common/SlideUpModal.original.tsx",
+      "priority": "high",
+      "classCount": 155,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/dashboard/TasksList.tsx",
+      "priority": "high",
+      "classCount": 154,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "layout_heavy",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/products/ProductShow.tsx",
+      "priority": "high",
+      "classCount": 147,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/security/ComplianceDocumentation.tsx",
+      "priority": "high",
+      "classCount": 141,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/business/products/ProductPage.tsx",
+      "priority": "high",
+      "classCount": 141,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/business/contacts/ContactPage.tsx",
+      "priority": "high",
+      "classCount": 141,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/organizations/form/MultiStepOrganizationEdit.tsx",
+      "priority": "high",
+      "classCount": 139,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/security/SecurityDashboard.tsx",
+      "priority": "high",
+      "classCount": 135,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/ui-kit/StepNavigator.tsx",
+      "priority": "high",
+      "classCount": 134,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "layout_heavy"
+      ]
+    },
+    {
+      "file": "src/users/UserActivityTracker.tsx",
+      "priority": "high",
+      "classCount": 131,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/business/interactions/InteractionPage.tsx",
+      "priority": "high",
+      "classCount": 120,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/settings/SettingsAdminDashboard.tsx",
+      "priority": "high",
+      "classCount": 116,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/components/business/organizations/OrganizationPage.tsx",
+      "priority": "high",
+      "classCount": 109,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/features/dashboard/APriorityOrganizations.tsx",
+      "priority": "high",
+      "classCount": 108,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/interactions/InteractionCard.tsx",
+      "priority": "high",
+      "classCount": 107,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/components/features/dashboard/RecentProducts.tsx",
+      "priority": "high",
+      "classCount": 104,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/tasks/Task.tsx",
+      "priority": "high",
+      "classCount": 103,
+      "issues": 4,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/interactions/components/PerformanceDashboard.tsx",
+      "priority": "high",
+      "classCount": 102,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/organizations/list/OrganizationMapView.tsx",
+      "priority": "medium",
+      "classCount": 97,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/organizations/list/OrganizationCards.tsx",
+      "priority": "medium",
+      "classCount": 96,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/components/business/opportunities/OpportunityPage.tsx",
+      "priority": "medium",
+      "classCount": 93,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/layout/Header.tsx",
+      "priority": "medium",
+      "classCount": 92,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/components/ui-kit/DataTable.tsx",
+      "priority": "medium",
+      "classCount": 89,
+      "issues": 2,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/organizations/form/steps/BusinessDetailsStep.tsx",
+      "priority": "medium",
+      "classCount": 89,
+      "issues": 2,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/dashboard/VisitTrends.tsx",
+      "priority": "medium",
+      "classCount": 88,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/components/features/dashboard/RecentContacts.tsx",
+      "priority": "medium",
+      "classCount": 86,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/dashboard/PrincipalPerformanceChart.tsx",
+      "priority": "medium",
+      "classCount": 85,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/contacts/ContactShow.tsx",
+      "priority": "medium",
+      "classCount": 81,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/contacts/ContactCard.tsx",
+      "priority": "medium",
+      "classCount": 81,
+      "issues": 2,
+      "patterns": [
+        "duplicate_styles"
+      ]
+    },
+    {
+      "file": "src/components/ui-kit/DashboardCard.tsx",
+      "priority": "medium",
+      "classCount": 81,
+      "issues": 1,
+      "patterns": [
+        "duplicate_styles"
+      ]
+    },
+    {
+      "file": "src/components/ui-kit/ModalHeader.tsx",
+      "priority": "medium",
+      "classCount": 79,
+      "issues": 2,
+      "patterns": [
+        "duplicate_styles",
+        "responsive_heavy",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/organizations/form/steps/ContactDetailsStep.tsx",
+      "priority": "medium",
+      "classCount": 79,
+      "issues": 2,
+      "patterns": [
+        "duplicate_styles",
+        "spacing_heavy"
+      ]
+    },
+    {
+      "file": "src/organizations/common/MobileFAB.tsx",
+      "priority": "medium",
+      "classCount": 77,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    },
+    {
+      "file": "src/components/features/dashboard/UpcomingMeetings.tsx",
+      "priority": "medium",
+      "classCount": 76,
+      "issues": 3,
+      "patterns": [
+        "duplicate_styles",
+        "long_class_strings"
+      ]
+    }
+  ],
+  "detailedResults": [
+    {
+      "file": "src/components/core/navigation/RelatedEntitiesSection.tsx",
+      "classCount": 200,
+      "uniqueClassCount": 56,
+      "classes": [
+        "h-5",
+        "w-5",
+        "min-h-16",
+        "px-4",
+        "py-2",
+        "hover:bg-gray-50",
+        "cursor-pointer",
+        "flex",
+        "items-center",
+        "w-full",
+        "w-10",
+        "h-10",
+        "bg-gray-600",
+        "flex-row",
+        "space-x-1",
+        "mt-1",
+        "bg-blue-100",
+        "text-blue-800",
+        "text-xs",
+        "h-3",
+        "w-3",
+        "border-gray-300",
+        "bg-transparent",
+        "text-gray-400",
+        "ml-14",
+        "relative",
+        "h-8",
+        "w-8",
+        "text-yellow-600",
+        "bg-green-100",
+        "text-green-800",
+        "text-green-600",
+        "text-blue-600",
+        "justify-between",
+        "mb-4",
+        "font-semibold",
+        "gap-2",
+        "h-4",
+        "w-4",
+        "min-h-11",
+        "justify-center",
+        "py-6",
+        "h-6",
+        "w-6",
+        "text-red-600",
+        "py-4",
+        "py-0",
+        "mt-4",
+        "text-center",
+        "text-gray-600",
+        "mt-2",
+        "absolute",
+        "min-w-6",
+        "text-white'",
+        "text-green-800'",
+        "text-gray-800'"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-5",
+            "count": 22
+          },
+          {
+            "class": "w-5",
+            "count": 11
+          },
+          {
+            "class": "min-h-16",
+            "count": 5
+          },
+          {
+            "class": "px-4",
+            "count": 6
+          },
+          {
+            "class": "py-2",
+            "count": 5
+          },
+          {
+            "class": "hover:bg-gray-50",
+            "count": 5
+          },
+          {
+            "class": "cursor-pointer",
+            "count": 5
+          },
+          {
+            "class": "flex",
+            "count": 8
+          },
+          {
+            "class": "items-center",
+            "count": 12
+          },
+          {
+            "class": "w-full",
+            "count": 5
+          },
+          {
+            "class": "flex-row",
+            "count": 5
+          },
+          {
+            "class": "space-x-1",
+            "count": 5
+          },
+          {
+            "class": "mt-1",
+            "count": 5
+          },
+          {
+            "class": "text-xs",
+            "count": 12
+          },
+          {
+            "class": "h-3",
+            "count": 5
+          },
+          {
+            "class": "w-3",
+            "count": 5
+          },
+          {
+            "class": "border-gray-300",
+            "count": 7
+          },
+          {
+            "class": "bg-transparent",
+            "count": 7
+          },
+          {
+            "class": "text-gray-400",
+            "count": 5
+          },
+          {
+            "class": "ml-14",
+            "count": 5
+          },
+          {
+            "class": "h-8",
+            "count": 4
+          },
+          {
+            "class": "w-8",
+            "count": 4
+          },
+          {
+            "class": "bg-green-100",
+            "count": 2
+          },
+          {
+            "class": "text-green-800",
+            "count": 2
+          },
+          {
+            "class": "mb-4",
+            "count": 2
+          },
+          {
+            "class": "h-4",
+            "count": 4
+          },
+          {
+            "class": "w-4",
+            "count": 3
+          },
+          {
+            "class": "min-h-11",
+            "count": 2
+          },
+          {
+            "class": "py-6",
+            "count": 2
+          },
+          {
+            "class": "text-center",
+            "count": 2
+          },
+          {
+            "class": "text-white'",
+            "count": 3
+          }
+        ],
+        "responsiveClasses": 5,
+        "stateClasses": 5,
+        "layoutClasses": 15,
+        "spacingClasses": 29,
+        "colorClasses": 50,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 200 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 31 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/business/reports/ReportsPage.tsx",
+      "classCount": 183,
+      "uniqueClassCount": 76,
+      "classes": [
+        "h-8",
+        "w-8",
+        "text-primary-500",
+        "text-accent-500",
+        "text-warm-500",
+        "text-secondary-500",
+        "text-error-500",
+        "text-success-500",
+        "flex",
+        "items-center",
+        "justify-between",
+        "space-x-3",
+        "text-secondary-800",
+        "text-secondary-600",
+        "h-4",
+        "w-4",
+        "text-center",
+        "py-16",
+        "h-24",
+        "w-24",
+        "text-gray-300",
+        "mx-auto",
+        "mb-6",
+        "text-gray-600",
+        "mb-4",
+        "text-gray-500",
+        "mb-8",
+        "max-w-2xl",
+        "justify-center",
+        "space-x-4",
+        "space-x-2",
+        "opacity-50",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "lg:grid-cols-3",
+        "gap-6",
+        "border-2",
+        "border-dashed",
+        "border-gray-200",
+        "hover:border-primary-200",
+        "transition-colors",
+        "p-6",
+        "items-start",
+        "flex-shrink-0",
+        "flex-1",
+        "mb-2",
+        "inline-flex",
+        "px-2",
+        "py-1",
+        "rounded",
+        "text-xs",
+        "font-medium",
+        "bg-primary-100",
+        "text-primary-700",
+        "mb-3",
+        "lg:grid-cols-4",
+        "gap-4",
+        "py-6",
+        "text-gray-400",
+        "font-bold",
+        "mb-1",
+        "space-y-4",
+        "p-4",
+        "bg-primary-50",
+        "rounded-lg",
+        "w-3",
+        "h-3",
+        "bg-primary-500",
+        "rounded-full",
+        "text-primary-800",
+        "text-primary-600",
+        "bg-gray-50",
+        "bg-gray-400",
+        "text-gray-800",
+        "space-y-6"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-8",
+            "count": 11
+          },
+          {
+            "class": "w-8",
+            "count": 11
+          },
+          {
+            "class": "text-primary-500",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 10
+          },
+          {
+            "class": "items-center",
+            "count": 8
+          },
+          {
+            "class": "justify-between",
+            "count": 2
+          },
+          {
+            "class": "text-secondary-800",
+            "count": 5
+          },
+          {
+            "class": "text-center",
+            "count": 5
+          },
+          {
+            "class": "mx-auto",
+            "count": 6
+          },
+          {
+            "class": "text-gray-600",
+            "count": 4
+          },
+          {
+            "class": "mb-4",
+            "count": 3
+          },
+          {
+            "class": "text-gray-500",
+            "count": 2
+          },
+          {
+            "class": "space-x-4",
+            "count": 5
+          },
+          {
+            "class": "space-x-2",
+            "count": 2
+          },
+          {
+            "class": "opacity-50",
+            "count": 5
+          },
+          {
+            "class": "grid",
+            "count": 2
+          },
+          {
+            "class": "grid-cols-1",
+            "count": 2
+          },
+          {
+            "class": "md:grid-cols-2",
+            "count": 2
+          },
+          {
+            "class": "mb-3",
+            "count": 5
+          },
+          {
+            "class": "py-6",
+            "count": 4
+          },
+          {
+            "class": "text-gray-400",
+            "count": 12
+          },
+          {
+            "class": "font-bold",
+            "count": 4
+          },
+          {
+            "class": "mb-1",
+            "count": 4
+          },
+          {
+            "class": "p-4",
+            "count": 3
+          },
+          {
+            "class": "rounded-lg",
+            "count": 3
+          },
+          {
+            "class": "w-3",
+            "count": 3
+          },
+          {
+            "class": "h-3",
+            "count": 3
+          },
+          {
+            "class": "rounded-full",
+            "count": 3
+          },
+          {
+            "class": "bg-gray-50",
+            "count": 2
+          },
+          {
+            "class": "bg-gray-400",
+            "count": 2
+          },
+          {
+            "class": "text-gray-800",
+            "count": 2
+          },
+          {
+            "class": "space-y-6",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 5,
+        "stateClasses": 1,
+        "layoutClasses": 16,
+        "spacingClasses": 32,
+        "colorClasses": 53,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 148,
+            "length": 136,
+            "content": "<Card key={index} className=\"border-2 border-dashed border-gray-200 hover:border-primary-200 transit..."
+          },
+          {
+            "line": 159,
+            "length": 156,
+            "content": "<div className=\"inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary-100 text-p..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 183 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 32 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 2 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/organizations/show/OrganizationShow.tsx",
+      "classCount": 180,
+      "uniqueClassCount": 62,
+      "classes": [
+        "p-2",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-3",
+        "gap-6",
+        "md:col-span-2",
+        "bg-white",
+        "shadow",
+        "rounded-lg",
+        "p-4",
+        "flex",
+        "items-center",
+        "mb-6",
+        "text-4xl",
+        "text-blue-500",
+        "mr-4",
+        "flex-grow",
+        "font-semibold",
+        "mb-1",
+        "gap-2",
+        "flex-wrap",
+        "text-black",
+        "w-11",
+        "h-11",
+        "bg-blue-500",
+        "text-white",
+        "rounded-full",
+        "justify-center",
+        "hover:bg-blue-600",
+        "my-6",
+        "text-gray-500",
+        "whitespace-pre-wrap",
+        "md:col-span-1",
+        "mb-4",
+        "mt-1",
+        "justify-between",
+        "text-center",
+        "py-6",
+        "text-5xl",
+        "text-gray-400",
+        "mb-2",
+        "border-gray-200",
+        "hover:border-blue-500",
+        "hover:shadow-md",
+        "transition-all",
+        "duration-200",
+        "ease-in-out",
+        "block",
+        "w-12",
+        "h-12",
+        "text-lg",
+        "min-w-0",
+        "mr-2",
+        "w-4",
+        "h-4",
+        "mr-1",
+        "h-5",
+        "bg-yellow-500",
+        "gap-1",
+        "text-xs",
+        "w-10",
+        "h-10"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "bg-white",
+            "count": 3
+          },
+          {
+            "class": "shadow",
+            "count": 3
+          },
+          {
+            "class": "rounded-lg",
+            "count": 4
+          },
+          {
+            "class": "p-4",
+            "count": 4
+          },
+          {
+            "class": "flex",
+            "count": 17
+          },
+          {
+            "class": "items-center",
+            "count": 13
+          },
+          {
+            "class": "mb-6",
+            "count": 2
+          },
+          {
+            "class": "text-blue-500",
+            "count": 3
+          },
+          {
+            "class": "mr-4",
+            "count": 2
+          },
+          {
+            "class": "flex-grow",
+            "count": 2
+          },
+          {
+            "class": "font-semibold",
+            "count": 10
+          },
+          {
+            "class": "mb-1",
+            "count": 3
+          },
+          {
+            "class": "gap-2",
+            "count": 2
+          },
+          {
+            "class": "flex-wrap",
+            "count": 3
+          },
+          {
+            "class": "text-black",
+            "count": 4
+          },
+          {
+            "class": "w-11",
+            "count": 4
+          },
+          {
+            "class": "h-11",
+            "count": 4
+          },
+          {
+            "class": "bg-blue-500",
+            "count": 7
+          },
+          {
+            "class": "text-white",
+            "count": 9
+          },
+          {
+            "class": "rounded-full",
+            "count": 8
+          },
+          {
+            "class": "justify-center",
+            "count": 8
+          },
+          {
+            "class": "hover:bg-blue-600",
+            "count": 7
+          },
+          {
+            "class": "my-6",
+            "count": 3
+          },
+          {
+            "class": "text-gray-500",
+            "count": 7
+          },
+          {
+            "class": "mb-4",
+            "count": 4
+          },
+          {
+            "class": "mt-1",
+            "count": 2
+          },
+          {
+            "class": "h-5",
+            "count": 2
+          },
+          {
+            "class": "gap-1",
+            "count": 2
+          },
+          {
+            "class": "w-10",
+            "count": 3
+          },
+          {
+            "class": "h-10",
+            "count": 3
+          }
+        ],
+        "responsiveClasses": 12,
+        "stateClasses": 9,
+        "layoutClasses": 25,
+        "spacingClasses": 25,
+        "colorClasses": 41,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": [
+          {
+            "line": 207,
+            "length": 148,
+            "content": "className=\"w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          },
+          {
+            "line": 216,
+            "length": 148,
+            "content": "className=\"w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          },
+          {
+            "line": 225,
+            "length": 148,
+            "content": "className=\"w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          },
+          {
+            "line": 234,
+            "length": 148,
+            "content": "className=\"w-11 h-11 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          },
+          {
+            "line": 525,
+            "length": 137,
+            "content": "<div className=\"border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-a..."
+          },
+          {
+            "line": 532,
+            "length": 129,
+            "content": "className=\"w-12 h-12 rounded-full mr-4 flex items-center justify-center text-white font-semibold tex..."
+          },
+          {
+            "line": 588,
+            "length": 140,
+            "content": "className=\"w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          },
+          {
+            "line": 597,
+            "length": 140,
+            "content": "className=\"w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          },
+          {
+            "line": 606,
+            "length": 140,
+            "content": "className=\"w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-b..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 180 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 30 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 9 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/organizations/common/OrganizationCard.tsx",
+      "classCount": 178,
+      "uniqueClassCount": 70,
+      "classes": [
+        "h-50",
+        "sm:h-55",
+        "md:h-60",
+        "flex",
+        "flex-col",
+        "flex-1",
+        "p-4",
+        "sm:p-6",
+        "items-center",
+        "gap-4",
+        "mb-4",
+        "w-12",
+        "h-12",
+        "bg-gray-200",
+        "rounded-full",
+        "w-3/4",
+        "h-6",
+        "rounded",
+        "mb-2",
+        "w-1/2",
+        "h-5",
+        "w-2/5",
+        "w-3/5",
+        "gap-2",
+        "flex-wrap",
+        "w-20",
+        "w-15",
+        "p-2",
+        "sm:p-4",
+        "pt-0",
+        "w-11",
+        "h-11",
+        "ml-auto",
+        "cursor-pointer",
+        "transition-all",
+        "duration-200",
+        "ease-in-out",
+        "hover:-translate-y-1",
+        "hover:shadow-lg",
+        "focus:outline-2",
+        "focus:outline-blue-500",
+        "focus:outline-offset-2",
+        "items-start",
+        "w-10",
+        "h-10",
+        "sm:w-12",
+        "sm:h-12",
+        "bg-blue-600",
+        "w-4",
+        "h-4",
+        "text-gray-500",
+        "text-gray-600",
+        "overflow-hidden",
+        "text-ellipsis",
+        "whitespace-nowrap",
+        "font-semibold",
+        "text-xs",
+        "mb-1",
+        "font-medium",
+        "gap-1",
+        "block",
+        "mt-auto",
+        "justify-between",
+        "min-w-11",
+        "min-h-11",
+        "text-blue-600",
+        "hover:bg-gray-100",
+        "min-w-40",
+        "text-red-600",
+        "flex:"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-50",
+            "count": 2
+          },
+          {
+            "class": "sm:h-55",
+            "count": 2
+          },
+          {
+            "class": "md:h-60",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 9
+          },
+          {
+            "class": "flex-col",
+            "count": 2
+          },
+          {
+            "class": "flex-1",
+            "count": 3
+          },
+          {
+            "class": "p-4",
+            "count": 2
+          },
+          {
+            "class": "sm:p-6",
+            "count": 2
+          },
+          {
+            "class": "items-center",
+            "count": 3
+          },
+          {
+            "class": "gap-4",
+            "count": 2
+          },
+          {
+            "class": "mb-4",
+            "count": 5
+          },
+          {
+            "class": "bg-gray-200",
+            "count": 10
+          },
+          {
+            "class": "rounded-full",
+            "count": 4
+          },
+          {
+            "class": "h-6",
+            "count": 3
+          },
+          {
+            "class": "rounded",
+            "count": 6
+          },
+          {
+            "class": "mb-2",
+            "count": 4
+          },
+          {
+            "class": "h-5",
+            "count": 3
+          },
+          {
+            "class": "gap-2",
+            "count": 3
+          },
+          {
+            "class": "flex-wrap",
+            "count": 3
+          },
+          {
+            "class": "p-2",
+            "count": 2
+          },
+          {
+            "class": "sm:p-4",
+            "count": 2
+          },
+          {
+            "class": "pt-0",
+            "count": 2
+          },
+          {
+            "class": "w-11",
+            "count": 3
+          },
+          {
+            "class": "h-11",
+            "count": 3
+          },
+          {
+            "class": "w-4",
+            "count": 11
+          },
+          {
+            "class": "h-4",
+            "count": 11
+          },
+          {
+            "class": "text-gray-500",
+            "count": 2
+          },
+          {
+            "class": "text-gray-600",
+            "count": 3
+          },
+          {
+            "class": "overflow-hidden",
+            "count": 2
+          },
+          {
+            "class": "text-ellipsis",
+            "count": 2
+          },
+          {
+            "class": "whitespace-nowrap",
+            "count": 2
+          },
+          {
+            "class": "font-medium",
+            "count": 2
+          },
+          {
+            "class": "gap-1",
+            "count": 2
+          },
+          {
+            "class": "min-w-11",
+            "count": 7
+          },
+          {
+            "class": "min-h-11",
+            "count": 7
+          },
+          {
+            "class": "text-blue-600",
+            "count": 4
+          },
+          {
+            "class": "hover:bg-gray-100",
+            "count": 7
+          },
+          {
+            "class": "text-red-600",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 23,
+        "stateClasses": 12,
+        "layoutClasses": 19,
+        "spacingClasses": 18,
+        "colorClasses": 25,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 247,
+            "length": 212,
+            "content": "className=\"h-50 sm:h-55 md:h-60 flex flex-col cursor-pointer transition-all duration-200 ease-in-out..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 178 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 38 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 1 long className strings. Consider utility functions."
+        },
+        {
+          "type": "responsive_heavy",
+          "message": "High responsive class usage (23). Consider component variants."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/organizations/common/SlideUpModal.original.tsx",
+      "classCount": 155,
+      "uniqueClassCount": 74,
+      "classes": [
+        "relative",
+        "fixed",
+        "bg-black/25",
+        "overflow-y-auto",
+        "flex",
+        "min-h-full",
+        "items-end",
+        "justify-center",
+        "text-center",
+        "sm:items-center",
+        "sm:p-0",
+        "sticky",
+        "bg-white",
+        "border-b",
+        "border-gray-200",
+        "sm:hidden",
+        "pt-2",
+        "pb-1",
+        "w-9",
+        "h-1",
+        "bg-gray-300",
+        "rounded-full",
+        "items-center",
+        "justify-between",
+        "px-4",
+        "py-3",
+        "w-12",
+        "min-h-[44px]",
+        "min-w-[44px]",
+        "p-2",
+        "text-gray-600",
+        "hover:text-gray-900",
+        "transition-colors",
+        "h-6",
+        "w-6",
+        "flex-1",
+        "text-lg",
+        "font-semibold",
+        "text-gray-900",
+        "text-sm",
+        "text-gray-500",
+        "gap-2",
+        "justify-end",
+        "bg-gray-200",
+        "h-full",
+        "bg-blue-500",
+        "transition-all",
+        "duration-300",
+        "hidden",
+        "sm:block",
+        "px-6",
+        "py-4",
+        "mt-1",
+        "text-gray-400",
+        "hover:text-gray-600",
+        "mt-4",
+        "h-2",
+        "mx-auto",
+        "sm:flex",
+        "border-t",
+        "bg-gray-50",
+        "duration-200",
+        "w-full",
+        "overflow-hidden",
+        "text-left",
+        "shadow-xl",
+        "min-h-[52px]",
+        "min-w-[52px]",
+        "w-14",
+        "h-14",
+        "shadow-lg",
+        "py-2",
+        "font-medium",
+        "rounded-lg"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "relative",
+            "count": 2
+          },
+          {
+            "class": "fixed",
+            "count": 3
+          },
+          {
+            "class": "overflow-y-auto",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 12
+          },
+          {
+            "class": "justify-center",
+            "count": 7
+          },
+          {
+            "class": "text-center",
+            "count": 2
+          },
+          {
+            "class": "bg-white",
+            "count": 2
+          },
+          {
+            "class": "border-b",
+            "count": 2
+          },
+          {
+            "class": "border-gray-200",
+            "count": 3
+          },
+          {
+            "class": "sm:hidden",
+            "count": 2
+          },
+          {
+            "class": "h-1",
+            "count": 2
+          },
+          {
+            "class": "rounded-full",
+            "count": 4
+          },
+          {
+            "class": "items-center",
+            "count": 10
+          },
+          {
+            "class": "justify-between",
+            "count": 2
+          },
+          {
+            "class": "px-4",
+            "count": 3
+          },
+          {
+            "class": "w-12",
+            "count": 2
+          },
+          {
+            "class": "min-h-[44px]",
+            "count": 4
+          },
+          {
+            "class": "min-w-[44px]",
+            "count": 4
+          },
+          {
+            "class": "p-2",
+            "count": 3
+          },
+          {
+            "class": "text-gray-600",
+            "count": 2
+          },
+          {
+            "class": "hover:text-gray-900",
+            "count": 2
+          },
+          {
+            "class": "transition-colors",
+            "count": 4
+          },
+          {
+            "class": "h-6",
+            "count": 4
+          },
+          {
+            "class": "w-6",
+            "count": 4
+          },
+          {
+            "class": "flex-1",
+            "count": 2
+          },
+          {
+            "class": "text-lg",
+            "count": 2
+          },
+          {
+            "class": "font-semibold",
+            "count": 2
+          },
+          {
+            "class": "text-gray-900",
+            "count": 2
+          },
+          {
+            "class": "text-sm",
+            "count": 3
+          },
+          {
+            "class": "text-gray-500",
+            "count": 2
+          },
+          {
+            "class": "gap-2",
+            "count": 2
+          },
+          {
+            "class": "justify-end",
+            "count": 2
+          },
+          {
+            "class": "bg-gray-200",
+            "count": 2
+          },
+          {
+            "class": "h-full",
+            "count": 2
+          },
+          {
+            "class": "bg-blue-500",
+            "count": 2
+          },
+          {
+            "class": "transition-all",
+            "count": 3
+          },
+          {
+            "class": "duration-300",
+            "count": 2
+          },
+          {
+            "class": "hidden",
+            "count": 2
+          },
+          {
+            "class": "px-6",
+            "count": 2
+          },
+          {
+            "class": "py-4",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 9,
+        "stateClasses": 3,
+        "layoutClasses": 18,
+        "spacingClasses": 17,
+        "colorClasses": 30,
+        "hasComplexLogic": true,
+        "hasConditionalClasses": false,
+        "longClassStrings": [
+          {
+            "line": 233,
+            "length": 184,
+            "content": "className=\"min-h-[44px] min-w-[44px] flex items-center justify-center p-2 -ml-2 text-gray-600 hover:..."
+          },
+          {
+            "line": 242,
+            "length": 204,
+            "content": "className=\"min-h-[44px] min-w-[44px] flex items-center justify-center p-2 -ml-2 text-gray-600 hover:..."
+          },
+          {
+            "line": 305,
+            "length": 194,
+            "content": "className=\"min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-gray-400 hover:text-g..."
+          },
+          {
+            "line": 362,
+            "length": 126,
+            "content": "<div className=\"hidden sm:flex justify-end px-6 py-4 border-t border-gray-200 bg-gray-50\">..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 155 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 40 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 4 long className strings. Consider utility functions."
+        }
+      ]
+    },
+    {
+      "file": "src/dashboard/TasksList.tsx",
+      "classCount": 154,
+      "uniqueClassCount": 38,
+      "classes": [
+        "shadow-sm",
+        "pb-3",
+        "flex",
+        "items-center",
+        "justify-between",
+        "space-x-2",
+        "h-5",
+        "w-5",
+        "text-gray-400",
+        "text-lg",
+        "font-semibold",
+        "text-gray-800",
+        "mt-2",
+        "text-sm",
+        "text-gray-500",
+        "tracking-wide",
+        "font-medium",
+        "pt-0",
+        "space-y-4",
+        "space-y-3",
+        "items-start",
+        "space-x-3",
+        "flex-shrink-0",
+        "mt-1",
+        "w-4",
+        "h-4",
+        "border-2",
+        "border-gray-300",
+        "rounded",
+        "flex-1",
+        "text-gray-900",
+        "text-xs",
+        "mt-6",
+        "mt-3",
+        "mt-4",
+        "text-center",
+        "text-blue-600",
+        "hover:text-blue-800"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "flex",
+            "count": 9
+          },
+          {
+            "class": "items-center",
+            "count": 2
+          },
+          {
+            "class": "text-sm",
+            "count": 10
+          },
+          {
+            "class": "text-gray-500",
+            "count": 9
+          },
+          {
+            "class": "tracking-wide",
+            "count": 2
+          },
+          {
+            "class": "font-medium",
+            "count": 10
+          },
+          {
+            "class": "space-y-3",
+            "count": 2
+          },
+          {
+            "class": "items-start",
+            "count": 7
+          },
+          {
+            "class": "space-x-3",
+            "count": 7
+          },
+          {
+            "class": "flex-shrink-0",
+            "count": 7
+          },
+          {
+            "class": "mt-1",
+            "count": 14
+          },
+          {
+            "class": "w-4",
+            "count": 7
+          },
+          {
+            "class": "h-4",
+            "count": 7
+          },
+          {
+            "class": "border-2",
+            "count": 7
+          },
+          {
+            "class": "border-gray-300",
+            "count": 7
+          },
+          {
+            "class": "rounded",
+            "count": 7
+          },
+          {
+            "class": "flex-1",
+            "count": 7
+          },
+          {
+            "class": "text-gray-900",
+            "count": 7
+          },
+          {
+            "class": "text-xs",
+            "count": 7
+          }
+        ],
+        "responsiveClasses": 1,
+        "stateClasses": 1,
+        "layoutClasses": 23,
+        "spacingClasses": 20,
+        "colorClasses": 52,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 154 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 19 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/products/ProductShow.tsx",
+      "classCount": 147,
+      "uniqueClassCount": 59,
+      "classes": [
+        "mb-2",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-3",
+        "gap-4",
+        "items-center",
+        "md:col-span-2",
+        "border-blue-500",
+        "text-blue-500",
+        "bg-green-500",
+        "text-white",
+        "bg-gray-200",
+        "text-gray-700",
+        "text-gray-500",
+        "text-left",
+        "md:text-right",
+        "mb-1",
+        "md:grid-cols-2",
+        "gap-6",
+        "text-green-600",
+        "flex",
+        "mr-1",
+        "font-semibold",
+        "mt-2",
+        "h-52",
+        "border-2",
+        "border-dashed",
+        "border-gray-300",
+        "rounded-lg",
+        "justify-center",
+        "block",
+        "p-2",
+        "text-center",
+        "cursor-pointer",
+        "bg-gray-50",
+        "hover:bg-gray-100",
+        "text-5xl",
+        "grid-cols-2",
+        "sm:grid-cols-3",
+        "relative",
+        "overflow-hidden",
+        "bg-gray-100",
+        "w-full",
+        "h-full",
+        "absolute",
+        "bg-black",
+        "bg-opacity-70",
+        "rounded-full",
+        "w-6",
+        "h-6",
+        "text-xs",
+        "p-3",
+        "w-15",
+        "h-15",
+        "mr-2",
+        "text-gray-400",
+        "lg:grid-cols-3",
+        "lg:col-span-2",
+        "lg:col-span-1"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "mb-2",
+            "count": 22
+          },
+          {
+            "class": "grid",
+            "count": 4
+          },
+          {
+            "class": "grid-cols-1",
+            "count": 3
+          },
+          {
+            "class": "gap-4",
+            "count": 2
+          },
+          {
+            "class": "items-center",
+            "count": 8
+          },
+          {
+            "class": "border-blue-500",
+            "count": 2
+          },
+          {
+            "class": "text-blue-500",
+            "count": 6
+          },
+          {
+            "class": "text-white",
+            "count": 2
+          },
+          {
+            "class": "text-gray-500",
+            "count": 15
+          },
+          {
+            "class": "mb-1",
+            "count": 8
+          },
+          {
+            "class": "gap-6",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 7
+          },
+          {
+            "class": "mr-1",
+            "count": 3
+          },
+          {
+            "class": "font-semibold",
+            "count": 4
+          },
+          {
+            "class": "border-2",
+            "count": 3
+          },
+          {
+            "class": "border-dashed",
+            "count": 3
+          },
+          {
+            "class": "border-gray-300",
+            "count": 2
+          },
+          {
+            "class": "rounded-lg",
+            "count": 4
+          },
+          {
+            "class": "justify-center",
+            "count": 3
+          },
+          {
+            "class": "text-center",
+            "count": 2
+          },
+          {
+            "class": "cursor-pointer",
+            "count": 3
+          },
+          {
+            "class": "bg-gray-50",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 9,
+        "stateClasses": 1,
+        "layoutClasses": 18,
+        "spacingClasses": 37,
+        "colorClasses": 48,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": [
+          {
+            "line": 238,
+            "length": 122,
+            "content": "<Box className=\"mt-2 h-52 border-2 border-dashed border-gray-300 rounded-lg flex items-center justif..."
+          },
+          {
+            "line": 293,
+            "length": 156,
+            "content": "<label className=\"block p-2 border-2 border-dashed border-blue-500 rounded-lg text-center cursor-poi..."
+          },
+          {
+            "line": 331,
+            "length": 162,
+            "content": "className=\"absolute top-1 right-1 bg-black bg-opacity-70 rounded-full w-6 h-6 flex items-center just..."
+          },
+          {
+            "line": 371,
+            "length": 146,
+            "content": "<Box className=\"w-15 h-15 border-2 border-dashed border-gray-300 rounded-lg flex items-center justif..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 147 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 22 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 4 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/security/ComplianceDocumentation.tsx",
+      "classCount": 141,
+      "uniqueClassCount": 32,
+      "classes": [
+        "w-4",
+        "h-4",
+        "text-green-600",
+        "text-yellow-600",
+        "text-red-600",
+        "text-gray-500",
+        "w-5",
+        "h-5",
+        "m-3",
+        "flex",
+        "justify-between",
+        "items-center",
+        "mb-3",
+        "gap-2",
+        "w-8",
+        "h-8",
+        "text-blue-600",
+        "min-h-11",
+        "text-center",
+        "w-10",
+        "h-10",
+        "mb-1",
+        "mt-2",
+        "gap-1",
+        "font-medium",
+        "p-2",
+        "mr-1",
+        "inline",
+        "mb-2",
+        "items-start",
+        "mt-1",
+        "block"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "w-4",
+            "count": 15
+          },
+          {
+            "class": "h-4",
+            "count": 15
+          },
+          {
+            "class": "text-green-600",
+            "count": 5
+          },
+          {
+            "class": "text-yellow-600",
+            "count": 5
+          },
+          {
+            "class": "text-red-600",
+            "count": 3
+          },
+          {
+            "class": "text-gray-500",
+            "count": 9
+          },
+          {
+            "class": "w-5",
+            "count": 11
+          },
+          {
+            "class": "h-5",
+            "count": 11
+          },
+          {
+            "class": "flex",
+            "count": 5
+          },
+          {
+            "class": "justify-between",
+            "count": 2
+          },
+          {
+            "class": "items-center",
+            "count": 3
+          },
+          {
+            "class": "mb-3",
+            "count": 4
+          },
+          {
+            "class": "text-blue-600",
+            "count": 6
+          },
+          {
+            "class": "text-center",
+            "count": 7
+          },
+          {
+            "class": "w-10",
+            "count": 4
+          },
+          {
+            "class": "h-10",
+            "count": 4
+          },
+          {
+            "class": "mb-1",
+            "count": 5
+          },
+          {
+            "class": "gap-1",
+            "count": 2
+          },
+          {
+            "class": "font-medium",
+            "count": 3
+          },
+          {
+            "class": "p-2",
+            "count": 8
+          },
+          {
+            "class": "mr-1",
+            "count": 2
+          },
+          {
+            "class": "inline",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 0,
+        "stateClasses": 0,
+        "layoutClasses": 6,
+        "spacingClasses": 23,
+        "colorClasses": 35,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 141 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 22 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/business/products/ProductPage.tsx",
+      "classCount": 141,
+      "uniqueClassCount": 65,
+      "classes": [
+        "h-8",
+        "w-8",
+        "text-primary-500",
+        "text-warm-500",
+        "text-success-500",
+        "text-accent-500",
+        "text-secondary-500",
+        "flex",
+        "items-center",
+        "justify-between",
+        "space-x-3",
+        "text-secondary-800",
+        "text-secondary-600",
+        "h-4",
+        "w-4",
+        "text-center",
+        "py-16",
+        "h-24",
+        "w-24",
+        "text-gray-300",
+        "mx-auto",
+        "mb-6",
+        "text-gray-600",
+        "mb-4",
+        "text-gray-500",
+        "mb-8",
+        "max-w-2xl",
+        "justify-center",
+        "space-x-4",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "lg:grid-cols-3",
+        "gap-4",
+        "border-2",
+        "border-dashed",
+        "border-gray-200",
+        "opacity-60",
+        "p-4",
+        "mb-1",
+        "gap-6",
+        "py-8",
+        "mb-2",
+        "inline-flex",
+        "px-3",
+        "py-1",
+        "rounded-full",
+        "text-xs",
+        "font-medium",
+        "bg-primary-100",
+        "text-primary-700",
+        "bg-gray-50",
+        "rounded-lg",
+        "font-mono",
+        "text-gray-700",
+        "mt-2",
+        "block",
+        "md:grid-cols-4",
+        "opacity-50",
+        "py-4",
+        "text-gray-400",
+        "font-bold",
+        "space-y-6",
+        "px-2",
+        "rounded"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-8",
+            "count": 6
+          },
+          {
+            "class": "w-8",
+            "count": 6
+          },
+          {
+            "class": "text-primary-500",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 4
+          },
+          {
+            "class": "items-center",
+            "count": 6
+          },
+          {
+            "class": "justify-between",
+            "count": 2
+          },
+          {
+            "class": "text-secondary-800",
+            "count": 6
+          },
+          {
+            "class": "text-center",
+            "count": 6
+          },
+          {
+            "class": "mx-auto",
+            "count": 2
+          },
+          {
+            "class": "text-gray-600",
+            "count": 2
+          },
+          {
+            "class": "mb-4",
+            "count": 5
+          },
+          {
+            "class": "text-gray-500",
+            "count": 3
+          },
+          {
+            "class": "grid",
+            "count": 3
+          },
+          {
+            "class": "grid-cols-1",
+            "count": 3
+          },
+          {
+            "class": "md:grid-cols-2",
+            "count": 2
+          },
+          {
+            "class": "lg:grid-cols-3",
+            "count": 2
+          },
+          {
+            "class": "gap-4",
+            "count": 2
+          },
+          {
+            "class": "border-2",
+            "count": 2
+          },
+          {
+            "class": "border-dashed",
+            "count": 2
+          },
+          {
+            "class": "border-gray-200",
+            "count": 2
+          },
+          {
+            "class": "p-4",
+            "count": 2
+          },
+          {
+            "class": "inline-flex",
+            "count": 3
+          },
+          {
+            "class": "py-1",
+            "count": 3
+          },
+          {
+            "class": "text-xs",
+            "count": 3
+          },
+          {
+            "class": "font-medium",
+            "count": 3
+          },
+          {
+            "class": "opacity-50",
+            "count": 4
+          },
+          {
+            "class": "py-4",
+            "count": 4
+          },
+          {
+            "class": "text-gray-400",
+            "count": 8
+          },
+          {
+            "class": "font-bold",
+            "count": 4
+          },
+          {
+            "class": "space-y-6",
+            "count": 2
+          },
+          {
+            "class": "px-2",
+            "count": 2
+          },
+          {
+            "class": "rounded",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 5,
+        "stateClasses": 0,
+        "layoutClasses": 11,
+        "spacingClasses": 26,
+        "colorClasses": 46,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 144,
+            "length": 136,
+            "content": "<div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${category.color}`}>..."
+          },
+          {
+            "line": 172,
+            "length": 149,
+            "content": "<div className=\"inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 t..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 141 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 32 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 2 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/business/contacts/ContactPage.tsx",
+      "classCount": 141,
+      "uniqueClassCount": 54,
+      "classes": [
+        "h-6",
+        "w-6",
+        "h-4",
+        "w-4",
+        "space-y-6",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "gap-6",
+        "flex",
+        "items-center",
+        "space-x-2",
+        "h-5",
+        "w-5",
+        "space-y-4",
+        "flex-wrap",
+        "gap-1",
+        "bg-primary-100",
+        "text-primary-700",
+        "text-gray-500",
+        "h-12",
+        "w-12",
+        "space-x-3",
+        "font-medium",
+        "bg-gray-100",
+        "text-gray-600",
+        "justify-between",
+        "h-8",
+        "w-8",
+        "text-primary-500",
+        "text-secondary-800",
+        "text-secondary-600",
+        "flex-col",
+        "sm:flex-row",
+        "gap-4",
+        "flex-1",
+        "text-center",
+        "py-12",
+        "text-gray-400",
+        "mx-auto",
+        "mb-4",
+        "mb-2",
+        "bg-white",
+        "shadow-sm",
+        "md:grid-cols-4",
+        "py-4",
+        "text-primary-600",
+        "font-bold",
+        "text-error-600",
+        "text-warning-600",
+        "text-accent-600",
+        "text-error-700'",
+        "text-warning-700'",
+        "text-success-700'"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-4",
+            "count": 14
+          },
+          {
+            "class": "w-4",
+            "count": 14
+          },
+          {
+            "class": "space-y-6",
+            "count": 3
+          },
+          {
+            "class": "grid",
+            "count": 2
+          },
+          {
+            "class": "grid-cols-1",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 11
+          },
+          {
+            "class": "items-center",
+            "count": 7
+          },
+          {
+            "class": "space-x-2",
+            "count": 5
+          },
+          {
+            "class": "h-5",
+            "count": 4
+          },
+          {
+            "class": "w-5",
+            "count": 4
+          },
+          {
+            "class": "space-y-4",
+            "count": 2
+          },
+          {
+            "class": "flex-wrap",
+            "count": 2
+          },
+          {
+            "class": "gap-1",
+            "count": 2
+          },
+          {
+            "class": "bg-primary-100",
+            "count": 2
+          },
+          {
+            "class": "text-primary-700",
+            "count": 2
+          },
+          {
+            "class": "text-gray-500",
+            "count": 5
+          },
+          {
+            "class": "h-12",
+            "count": 3
+          },
+          {
+            "class": "w-12",
+            "count": 3
+          },
+          {
+            "class": "space-x-3",
+            "count": 2
+          },
+          {
+            "class": "text-gray-600",
+            "count": 5
+          },
+          {
+            "class": "gap-4",
+            "count": 2
+          },
+          {
+            "class": "text-center",
+            "count": 5
+          },
+          {
+            "class": "text-gray-400",
+            "count": 2
+          },
+          {
+            "class": "mb-4",
+            "count": 2
+          },
+          {
+            "class": "py-4",
+            "count": 4
+          },
+          {
+            "class": "font-bold",
+            "count": 4
+          }
+        ],
+        "responsiveClasses": 3,
+        "stateClasses": 0,
+        "layoutClasses": 19,
+        "spacingClasses": 9,
+        "colorClasses": 33,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 154,
+            "length": 134,
+            "content": "<Chip key={index} label={tag} size=\"sm\" className=\"bg-primary-100 text-primary-700\" />..."
+          },
+          {
+            "line": 321,
+            "length": 126,
+            "content": "<Chip label={`+${(contact.tags?.length || 0) - 2}`} size=\"sm\" className=\"bg-gray-100 text-gray-600\" ..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 141 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 26 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 2 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/organizations/form/MultiStepOrganizationEdit.tsx",
+      "classCount": 139,
+      "uniqueClassCount": 76,
+      "classes": [
+        "h-5",
+        "w-5",
+        "text-green-600",
+        "text-red-600",
+        "text-yellow-600",
+        "rounded-full",
+        "bg-gray-300",
+        "text-gray-700",
+        "text-xs",
+        "flex",
+        "items-center",
+        "justify-center",
+        "font-medium",
+        "p-6",
+        "text-center",
+        "justify-between",
+        "mb-6",
+        "text-gray-600",
+        "gap-2",
+        "min-w-11",
+        "min-h-11",
+        "mb-4",
+        "mb-2",
+        "h-2",
+        "space-y-4",
+        "border-gray-200",
+        "rounded-lg",
+        "gap-3",
+        "flex-grow",
+        "border-t",
+        "p-4",
+        "bg-white",
+        "flex-1",
+        "max-w-xs",
+        "block",
+        "flex-wrap",
+        "gap-1",
+        "bg-blue-100",
+        "text-blue-800",
+        "border-blue-200",
+        "bg-red-100",
+        "text-red-800",
+        "border-red-200",
+        "bg-yellow-100",
+        "text-yellow-800",
+        "border-yellow-200",
+        "flex-shrink-0",
+        "mx-4",
+        "mt-6",
+        "min-h-96",
+        "mt-4",
+        "h-4",
+        "w-4",
+        "mt-2",
+        "mb-0",
+        "pl-4",
+        "mt-8",
+        "pt-4",
+        "gap-4",
+        "px-6",
+        "sm:p-6",
+        "max-w-full",
+        "md:max-w-3xl",
+        "relative",
+        "w-full",
+        "text-left",
+        "transition-colors",
+        "border-blue-200'",
+        "p-3",
+        "transition-all",
+        "hover:bg-gray-50'",
+        "opacity-60'",
+        "border-2",
+        "border-green-200'",
+        "border-gray-200'",
+        "activeStep"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-5",
+            "count": 7
+          },
+          {
+            "class": "w-5",
+            "count": 7
+          },
+          {
+            "class": "text-red-600",
+            "count": 2
+          },
+          {
+            "class": "rounded-full",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 10
+          },
+          {
+            "class": "items-center",
+            "count": 6
+          },
+          {
+            "class": "font-medium",
+            "count": 2
+          },
+          {
+            "class": "justify-between",
+            "count": 4
+          },
+          {
+            "class": "mb-6",
+            "count": 3
+          },
+          {
+            "class": "text-gray-600",
+            "count": 5
+          },
+          {
+            "class": "min-w-11",
+            "count": 2
+          },
+          {
+            "class": "min-h-11",
+            "count": 5
+          },
+          {
+            "class": "mb-2",
+            "count": 3
+          },
+          {
+            "class": "border-gray-200",
+            "count": 3
+          },
+          {
+            "class": "rounded-lg",
+            "count": 2
+          },
+          {
+            "class": "gap-3",
+            "count": 2
+          },
+          {
+            "class": "border-t",
+            "count": 2
+          },
+          {
+            "class": "p-4",
+            "count": 3
+          },
+          {
+            "class": "flex-shrink-0",
+            "count": 3
+          },
+          {
+            "class": "h-4",
+            "count": 4
+          },
+          {
+            "class": "w-4",
+            "count": 4
+          },
+          {
+            "class": "w-full",
+            "count": 2
+          },
+          {
+            "class": "text-left",
+            "count": 2
+          },
+          {
+            "class": "border-blue-200'",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 3,
+        "stateClasses": 2,
+        "layoutClasses": 18,
+        "spacingClasses": 21,
+        "colorClasses": 35,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 423,
+            "length": 134,
+            "content": "<span className=\"w-5 h-5 rounded-full bg-gray-300 text-gray-700 text-xs flex items-center justify-ce..."
+          },
+          {
+            "line": 553,
+            "length": 132,
+            "content": "<Typography variant=\"subtitle2\" className={isActive ? 'text-blue-900' : ''}>..."
+          },
+          {
+            "line": 619,
+            "length": 124,
+            "content": "className=\"bg-blue-100 text-blue-800 border border-blue-200\"..."
+          },
+          {
+            "line": 626,
+            "length": 121,
+            "content": "className=\"bg-red-100 text-red-800 border border-red-200\"..."
+          },
+          {
+            "line": 633,
+            "length": 130,
+            "content": "className=\"bg-yellow-100 text-yellow-800 border border-yellow-200\"..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 139 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 24 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 5 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/security/SecurityDashboard.tsx",
+      "classCount": 135,
+      "uniqueClassCount": 36,
+      "classes": [
+        "w-5",
+        "h-5",
+        "text-red-600",
+        "text-yellow-600",
+        "text-blue-600",
+        "text-gray-500",
+        "m-8",
+        "flex",
+        "justify-between",
+        "items-center",
+        "mb-8",
+        "gap-2",
+        "w-8",
+        "h-8",
+        "gap-1",
+        "min-h-[44px]",
+        "mr-2",
+        "mb-2",
+        "text-center",
+        "justify-center",
+        "mb-1",
+        "text-[40px]",
+        "mt-1",
+        "border-b",
+        "border-gray-300",
+        "mb-4",
+        "border-green-500",
+        "text-green-500",
+        "text-green-600",
+        "border-green-600",
+        "p-0",
+        "p-2",
+        "mt-6",
+        "bg-transparent'",
+        "bg-white'",
+        "text-white'"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "w-5",
+            "count": 12
+          },
+          {
+            "class": "h-5",
+            "count": 12
+          },
+          {
+            "class": "text-red-600",
+            "count": 3
+          },
+          {
+            "class": "text-yellow-600",
+            "count": 4
+          },
+          {
+            "class": "text-blue-600",
+            "count": 6
+          },
+          {
+            "class": "text-gray-500",
+            "count": 11
+          },
+          {
+            "class": "flex",
+            "count": 13
+          },
+          {
+            "class": "items-center",
+            "count": 7
+          },
+          {
+            "class": "mb-8",
+            "count": 3
+          },
+          {
+            "class": "gap-1",
+            "count": 7
+          },
+          {
+            "class": "min-h-[44px]",
+            "count": 2
+          },
+          {
+            "class": "mr-2",
+            "count": 2
+          },
+          {
+            "class": "mb-2",
+            "count": 6
+          },
+          {
+            "class": "text-center",
+            "count": 4
+          },
+          {
+            "class": "justify-center",
+            "count": 4
+          },
+          {
+            "class": "mb-1",
+            "count": 4
+          },
+          {
+            "class": "text-[40px]",
+            "count": 4
+          },
+          {
+            "class": "mb-4",
+            "count": 3
+          },
+          {
+            "class": "text-green-600",
+            "count": 4
+          },
+          {
+            "class": "p-0",
+            "count": 2
+          },
+          {
+            "class": "p-2",
+            "count": 4
+          },
+          {
+            "class": "text-white'",
+            "count": 4
+          }
+        ],
+        "responsiveClasses": 0,
+        "stateClasses": 0,
+        "layoutClasses": 13,
+        "spacingClasses": 27,
+        "colorClasses": 47,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 135 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 22 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/ui-kit/StepNavigator.tsx",
+      "classCount": 134,
+      "uniqueClassCount": 69,
+      "classes": [
+        "h-5",
+        "w-5",
+        "text-green-600",
+        "text-red-600",
+        "text-yellow-600",
+        "mb-6",
+        "flex",
+        "items-center",
+        "justify-between",
+        "mb-2",
+        "text-gray-600",
+        "h-2",
+        "bg-gray-200",
+        "rounded-full",
+        "overflow-hidden",
+        "h-full",
+        "bg-blue-600",
+        "transition-all",
+        "duration-300",
+        "relative",
+        "items-start",
+        "space-x-3",
+        "flex-shrink-0",
+        "mt-1",
+        "flex-1",
+        "min-w-0",
+        "space-x-2",
+        "block",
+        "flex-wrap",
+        "gap-1",
+        "mt-2",
+        "bg-blue-100",
+        "text-blue-800",
+        "border-blue-200",
+        "bg-red-100",
+        "text-red-800",
+        "border-red-200",
+        "bg-yellow-100",
+        "text-yellow-800",
+        "border-yellow-200",
+        "absolute",
+        "w-px",
+        "bg-gray-300",
+        "flex-col",
+        "space-y-2",
+        "text-center",
+        "text-gray-500",
+        "justify-center",
+        "w-2",
+        "bg-blue-500",
+        "bg-red-500",
+        "bg-yellow-500",
+        "mx-2",
+        "activeStep;",
+        "text-gray-400",
+        "text-xs",
+        "font-medium",
+        "duration-200",
+        "space-y-4",
+        "w-full",
+        "text-left",
+        "p-4",
+        "rounded-lg",
+        "bg-white",
+        "hover:bg-gray-50",
+        "focus:outline-none",
+        "focus:ring-2",
+        "focus:ring-blue-500",
+        "p-3"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-5",
+            "count": 5
+          },
+          {
+            "class": "w-5",
+            "count": 5
+          },
+          {
+            "class": "flex",
+            "count": 10
+          },
+          {
+            "class": "items-center",
+            "count": 7
+          },
+          {
+            "class": "justify-between",
+            "count": 3
+          },
+          {
+            "class": "mb-2",
+            "count": 2
+          },
+          {
+            "class": "text-gray-600",
+            "count": 5
+          },
+          {
+            "class": "h-2",
+            "count": 5
+          },
+          {
+            "class": "bg-gray-200",
+            "count": 2
+          },
+          {
+            "class": "rounded-full",
+            "count": 8
+          },
+          {
+            "class": "overflow-hidden",
+            "count": 2
+          },
+          {
+            "class": "h-full",
+            "count": 2
+          },
+          {
+            "class": "bg-blue-600",
+            "count": 2
+          },
+          {
+            "class": "transition-all",
+            "count": 3
+          },
+          {
+            "class": "duration-300",
+            "count": 2
+          },
+          {
+            "class": "flex-shrink-0",
+            "count": 2
+          },
+          {
+            "class": "mt-1",
+            "count": 2
+          },
+          {
+            "class": "block",
+            "count": 2
+          },
+          {
+            "class": "flex-wrap",
+            "count": 2
+          },
+          {
+            "class": "gap-1",
+            "count": 2
+          },
+          {
+            "class": "flex-col",
+            "count": 2
+          },
+          {
+            "class": "justify-center",
+            "count": 2
+          },
+          {
+            "class": "w-2",
+            "count": 3
+          },
+          {
+            "class": "font-medium",
+            "count": 2
+          },
+          {
+            "class": "space-y-4",
+            "count": 2
+          },
+          {
+            "class": "rounded-lg",
+            "count": 2
+          },
+          {
+            "class": "bg-white",
+            "count": 2
+          },
+          {
+            "class": "hover:bg-gray-50",
+            "count": 2
+          },
+          {
+            "class": "focus:outline-none",
+            "count": 2
+          },
+          {
+            "class": "focus:ring-2",
+            "count": 2
+          },
+          {
+            "class": "focus:ring-blue-500",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 8,
+        "stateClasses": 9,
+        "layoutClasses": 21,
+        "spacingClasses": 9,
+        "colorClasses": 32,
+        "hasComplexLogic": true,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 167,
+            "length": 122,
+            "content": "className=\"bg-yellow-100 text-yellow-800 border border-yellow-200\"..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 134 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 31 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 1 long className strings. Consider utility functions."
+        }
+      ]
+    },
+    {
+      "file": "src/users/UserActivityTracker.tsx",
+      "classCount": 131,
+      "uniqueClassCount": 55,
+      "classes": [
+        "w-5",
+        "h-5",
+        "text-green-600",
+        "text-gray-500",
+        "text-blue-600",
+        "text-blue-500",
+        "text-red-600",
+        "text-yellow-600",
+        "flex",
+        "justify-between",
+        "items-center",
+        "mb-4",
+        "mb-0",
+        "mr-2",
+        "w-4",
+        "h-4",
+        "mr-1",
+        "text-center",
+        "py-8",
+        "w-20",
+        "h-20",
+        "mx-auto",
+        "max-h-96",
+        "overflow-auto",
+        "cursor-pointer",
+        "hover:bg-gray-50",
+        "transition-colors",
+        "gap-2",
+        "space-y-1",
+        "ml-2",
+        "my-1",
+        "text-gray-600",
+        "gap-4",
+        "mb-6",
+        "space-y-2",
+        "border-gray-200",
+        "rounded-lg",
+        "overflow-hidden",
+        "w-full",
+        "border-b",
+        "border-gray-100",
+        "font-semibold",
+        "p-3",
+        "font-mono",
+        "text-xs",
+        "mt-6",
+        "p-4",
+        "justify-end",
+        "border-t",
+        "text-green-500'",
+        "text-red-500'",
+        "text-yellow-500'",
+        "text-blue-500'",
+        "text-gray-500'",
+        "text-white'"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "w-5",
+            "count": 11
+          },
+          {
+            "class": "h-5",
+            "count": 11
+          },
+          {
+            "class": "text-gray-500",
+            "count": 4
+          },
+          {
+            "class": "text-blue-600",
+            "count": 2
+          },
+          {
+            "class": "text-red-600",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 6
+          },
+          {
+            "class": "justify-between",
+            "count": 2
+          },
+          {
+            "class": "items-center",
+            "count": 5
+          },
+          {
+            "class": "mb-4",
+            "count": 2
+          },
+          {
+            "class": "w-4",
+            "count": 2
+          },
+          {
+            "class": "h-4",
+            "count": 2
+          },
+          {
+            "class": "gap-2",
+            "count": 2
+          },
+          {
+            "class": "ml-2",
+            "count": 2
+          },
+          {
+            "class": "border-gray-200",
+            "count": 3
+          },
+          {
+            "class": "rounded-lg",
+            "count": 2
+          },
+          {
+            "class": "border-b",
+            "count": 6
+          },
+          {
+            "class": "border-gray-100",
+            "count": 6
+          },
+          {
+            "class": "font-semibold",
+            "count": 6
+          },
+          {
+            "class": "p-3",
+            "count": 12
+          },
+          {
+            "class": "font-mono",
+            "count": 3
+          },
+          {
+            "class": "p-4",
+            "count": 2
+          },
+          {
+            "class": "text-white'",
+            "count": 5
+          }
+        ],
+        "responsiveClasses": 1,
+        "stateClasses": 1,
+        "layoutClasses": 6,
+        "spacingClasses": 26,
+        "colorClasses": 40,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 131 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 22 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/business/interactions/InteractionPage.tsx",
+      "classCount": 120,
+      "uniqueClassCount": 55,
+      "classes": [
+        "h-8",
+        "w-8",
+        "text-primary-500",
+        "text-accent-500",
+        "text-warm-500",
+        "text-success-500",
+        "h-4",
+        "w-4",
+        "text-center",
+        "py-16",
+        "h-24",
+        "w-24",
+        "text-gray-300",
+        "mx-auto",
+        "mb-6",
+        "text-gray-600",
+        "mb-4",
+        "text-gray-500",
+        "mb-8",
+        "max-w-2xl",
+        "text-secondary-800",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "gap-6",
+        "border-2",
+        "border-dashed",
+        "border-gray-200",
+        "p-6",
+        "flex",
+        "items-start",
+        "space-x-4",
+        "flex-shrink-0",
+        "flex-1",
+        "items-center",
+        "space-x-2",
+        "mb-2",
+        "mb-3",
+        "space-y-4",
+        "h-5",
+        "w-5",
+        "space-x-1",
+        "h-3",
+        "w-3",
+        "mt-6",
+        "pt-4",
+        "border-t",
+        "gap-4",
+        "space-y-1",
+        "md:grid-cols-4",
+        "opacity-50",
+        "py-4",
+        "text-gray-400",
+        "font-bold",
+        "space-y-6"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "h-8",
+            "count": 5
+          },
+          {
+            "class": "w-8",
+            "count": 5
+          },
+          {
+            "class": "text-primary-500",
+            "count": 3
+          },
+          {
+            "class": "text-accent-500",
+            "count": 2
+          },
+          {
+            "class": "text-warm-500",
+            "count": 2
+          },
+          {
+            "class": "text-center",
+            "count": 6
+          },
+          {
+            "class": "mx-auto",
+            "count": 2
+          },
+          {
+            "class": "text-gray-600",
+            "count": 2
+          },
+          {
+            "class": "mb-4",
+            "count": 2
+          },
+          {
+            "class": "text-gray-500",
+            "count": 2
+          },
+          {
+            "class": "text-secondary-800",
+            "count": 4
+          },
+          {
+            "class": "grid",
+            "count": 3
+          },
+          {
+            "class": "grid-cols-1",
+            "count": 3
+          },
+          {
+            "class": "md:grid-cols-2",
+            "count": 2
+          },
+          {
+            "class": "border-gray-200",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 6
+          },
+          {
+            "class": "space-x-4",
+            "count": 4
+          },
+          {
+            "class": "items-center",
+            "count": 5
+          },
+          {
+            "class": "h-5",
+            "count": 3
+          },
+          {
+            "class": "w-5",
+            "count": 3
+          },
+          {
+            "class": "gap-4",
+            "count": 2
+          },
+          {
+            "class": "space-y-1",
+            "count": 2
+          },
+          {
+            "class": "opacity-50",
+            "count": 4
+          },
+          {
+            "class": "py-4",
+            "count": 4
+          },
+          {
+            "class": "text-gray-400",
+            "count": 8
+          },
+          {
+            "class": "font-bold",
+            "count": 4
+          },
+          {
+            "class": "space-y-6",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 3,
+        "stateClasses": 0,
+        "layoutClasses": 14,
+        "spacingClasses": 16,
+        "colorClasses": 36,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 120 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 27 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/settings/SettingsAdminDashboard.tsx",
+      "classCount": 116,
+      "uniqueClassCount": 47,
+      "classes": [
+        "w-5",
+        "h-5",
+        "h-full",
+        "cursor-pointer",
+        "transition-all",
+        "duration-200",
+        "ease-in-out",
+        "hover:-translate-y-0.5",
+        "hover:shadow-lg",
+        "p-2",
+        "flex",
+        "items-center",
+        "justify-between",
+        "mb-1",
+        "gap-1",
+        "font-bold",
+        "text-blue-600",
+        "w-4",
+        "h-4",
+        "mb-2",
+        "min-h-8",
+        "flex-wrap",
+        "border-green-500",
+        "text-green-500",
+        "border-gray-500",
+        "text-gray-500",
+        "gap-0.5",
+        "min-w-11",
+        "min-h-11",
+        "pt-3",
+        "p-3",
+        "md:p-3",
+        "mb-3",
+        "gap-2",
+        "bg-blue-500",
+        "text-white",
+        "border-blue-500",
+        "text-blue-500",
+        "border-b",
+        "border-gray-200",
+        "fixed",
+        "md:bottom-8",
+        "md:right-8",
+        "min-w-14",
+        "min-h-14",
+        "w-6",
+        "h-6"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "w-5",
+            "count": 11
+          },
+          {
+            "class": "h-5",
+            "count": 11
+          },
+          {
+            "class": "p-2",
+            "count": 2
+          },
+          {
+            "class": "flex",
+            "count": 14
+          },
+          {
+            "class": "items-center",
+            "count": 7
+          },
+          {
+            "class": "justify-between",
+            "count": 3
+          },
+          {
+            "class": "gap-1",
+            "count": 6
+          },
+          {
+            "class": "font-bold",
+            "count": 2
+          },
+          {
+            "class": "w-4",
+            "count": 3
+          },
+          {
+            "class": "h-4",
+            "count": 3
+          },
+          {
+            "class": "mb-2",
+            "count": 2
+          },
+          {
+            "class": "flex-wrap",
+            "count": 2
+          },
+          {
+            "class": "border-green-500",
+            "count": 3
+          },
+          {
+            "class": "text-green-500",
+            "count": 3
+          },
+          {
+            "class": "min-w-11",
+            "count": 3
+          },
+          {
+            "class": "min-h-11",
+            "count": 3
+          },
+          {
+            "class": "mb-3",
+            "count": 2
+          },
+          {
+            "class": "gap-2",
+            "count": 3
+          },
+          {
+            "class": "bg-blue-500",
+            "count": 3
+          },
+          {
+            "class": "text-white",
+            "count": 3
+          }
+        ],
+        "responsiveClasses": 5,
+        "stateClasses": 2,
+        "layoutClasses": 16,
+        "spacingClasses": 9,
+        "colorClasses": 19,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": [
+          {
+            "line": 130,
+            "length": 124,
+            "content": "className=\"h-full cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-0.5 hove..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 116 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 20 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 1 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/business/organizations/OrganizationPage.tsx",
+      "classCount": 109,
+      "uniqueClassCount": 52,
+      "classes": [
+        "flex",
+        "items-center",
+        "space-x-3",
+        "h-5",
+        "w-5",
+        "font-medium",
+        "text-gray-500",
+        "h-4",
+        "w-4",
+        "justify-between",
+        "h-8",
+        "w-8",
+        "text-primary-500",
+        "text-secondary-800",
+        "text-secondary-600",
+        "border-gray-200",
+        "rounded-lg",
+        "overflow-hidden",
+        "text-center",
+        "py-12",
+        "h-12",
+        "w-12",
+        "text-gray-400",
+        "mx-auto",
+        "mb-4",
+        "mb-2",
+        "bg-white",
+        "shadow-sm",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-4",
+        "gap-4",
+        "py-4",
+        "text-primary-600",
+        "font-bold",
+        "text-gray-600",
+        "text-warm-600",
+        "text-success-600",
+        "text-accent-600",
+        "space-y-6",
+        "text-warm-700'",
+        "text-primary-700'",
+        "text-secondary-700'",
+        "text-error-700'",
+        "text-warning-700'",
+        "text-success-700'",
+        "border-0",
+        "rounded-none",
+        "px-3",
+        "py-2",
+        "text-white'",
+        "hover:bg-gray-50'}"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "flex",
+            "count": 5
+          },
+          {
+            "class": "items-center",
+            "count": 4
+          },
+          {
+            "class": "space-x-3",
+            "count": 3
+          },
+          {
+            "class": "font-medium",
+            "count": 2
+          },
+          {
+            "class": "text-gray-500",
+            "count": 5
+          },
+          {
+            "class": "h-4",
+            "count": 5
+          },
+          {
+            "class": "w-4",
+            "count": 5
+          },
+          {
+            "class": "text-center",
+            "count": 7
+          },
+          {
+            "class": "py-12",
+            "count": 3
+          },
+          {
+            "class": "h-12",
+            "count": 3
+          },
+          {
+            "class": "w-12",
+            "count": 3
+          },
+          {
+            "class": "text-gray-400",
+            "count": 6
+          },
+          {
+            "class": "mx-auto",
+            "count": 3
+          },
+          {
+            "class": "mb-4",
+            "count": 4
+          },
+          {
+            "class": "mb-2",
+            "count": 3
+          },
+          {
+            "class": "py-4",
+            "count": 4
+          },
+          {
+            "class": "font-bold",
+            "count": 4
+          },
+          {
+            "class": "text-gray-600",
+            "count": 5
+          },
+          {
+            "class": "space-y-6",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 2,
+        "stateClasses": 1,
+        "layoutClasses": 7,
+        "spacingClasses": 19,
+        "colorClasses": 40,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": []
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 109 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 19 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/features/dashboard/APriorityOrganizations.tsx",
+      "classCount": 108,
+      "uniqueClassCount": 56,
+      "classes": [
+        "h-full",
+        "p-6",
+        "flex",
+        "items-center",
+        "justify-between",
+        "mb-4",
+        "space-x-2",
+        "w-5",
+        "h-5",
+        "text-yellow-500",
+        "text-lg",
+        "font-semibold",
+        "text-gray-900",
+        "bg-yellow-100",
+        "text-yellow-800",
+        "text-xs",
+        "space-y-4",
+        "p-4",
+        "rounded-lg",
+        "border-gray-200",
+        "hover:bg-gray-50",
+        "transition-colors",
+        "cursor-pointer",
+        "items-start",
+        "mb-3",
+        "space-x-3",
+        "w-10",
+        "h-10",
+        "text-gray-500",
+        "space-x-1",
+        "w-4",
+        "h-4",
+        "text-sm",
+        "font-medium",
+        "text-yellow-600",
+        "flex-wrap",
+        "gap-2",
+        "grid",
+        "grid-cols-2",
+        "gap-4",
+        "text-green-500",
+        "text-gray-600",
+        "text-blue-500",
+        "mt-3",
+        "pt-3",
+        "border-t",
+        "border-gray-100",
+        "text-gray-400",
+        "mt-2",
+        "mt-4",
+        "pt-4",
+        "w-full",
+        "text-center",
+        "text-blue-600",
+        "hover:text-blue-800",
+        "py-2"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "flex",
+            "count": 11
+          },
+          {
+            "class": "items-center",
+            "count": 10
+          },
+          {
+            "class": "justify-between",
+            "count": 3
+          },
+          {
+            "class": "space-x-2",
+            "count": 5
+          },
+          {
+            "class": "text-yellow-500",
+            "count": 2
+          },
+          {
+            "class": "font-semibold",
+            "count": 2
+          },
+          {
+            "class": "text-gray-900",
+            "count": 2
+          },
+          {
+            "class": "text-xs",
+            "count": 2
+          },
+          {
+            "class": "border-gray-200",
+            "count": 2
+          },
+          {
+            "class": "transition-colors",
+            "count": 2
+          },
+          {
+            "class": "mb-3",
+            "count": 2
+          },
+          {
+            "class": "text-gray-500",
+            "count": 2
+          },
+          {
+            "class": "w-4",
+            "count": 5
+          },
+          {
+            "class": "h-4",
+            "count": 5
+          },
+          {
+            "class": "text-sm",
+            "count": 4
+          },
+          {
+            "class": "font-medium",
+            "count": 4
+          },
+          {
+            "class": "text-gray-600",
+            "count": 4
+          },
+          {
+            "class": "border-t",
+            "count": 2
+          },
+          {
+            "class": "text-gray-400",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 2,
+        "stateClasses": 2,
+        "layoutClasses": 14,
+        "spacingClasses": 11,
+        "colorClasses": 31,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": [
+          {
+            "line": 133,
+            "length": 127,
+            "content": "className=\"p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer\"..."
+          },
+          {
+            "line": 208,
+            "length": 136,
+            "content": "<button className=\"w-full text-center text-blue-600 hover:text-blue-800 font-medium text-sm py-2 tra..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 108 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 19 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 2 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/interactions/InteractionCard.tsx",
+      "classCount": 107,
+      "uniqueClassCount": 45,
+      "classes": [
+        "p-2",
+        "flex",
+        "justify-between",
+        "items-start",
+        "mb-2",
+        "items-center",
+        "flex-grow",
+        "w-8",
+        "h-8",
+        "mr-1.5",
+        "w-4",
+        "h-4",
+        "font-semibold",
+        "leading-tight",
+        "text-sm",
+        "text-gray-500",
+        "text-xs",
+        "flex-row",
+        "space-x-1",
+        "min-w-11",
+        "min-h-11",
+        "p-1",
+        "space-y-1",
+        "mr-1",
+        "mb-1.5",
+        "w-5",
+        "h-5",
+        "mr-0.5",
+        "text-green-600",
+        "text-yellow-600",
+        "min-w-20",
+        "space-y-0.5",
+        "mt-1",
+        "overflow-hidden",
+        "text-ellipsis",
+        "cursor-pointer",
+        "transition-all",
+        "duration-200",
+        "ease-in-out",
+        "hover:shadow-lg",
+        "hover:-translate-y-px",
+        "focus:outline-2",
+        "focus:outline-blue-600",
+        "focus:outline-offset-2",
+        "min-h-36"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "flex",
+            "count": 8
+          },
+          {
+            "class": "justify-between",
+            "count": 2
+          },
+          {
+            "class": "mb-2",
+            "count": 2
+          },
+          {
+            "class": "items-center",
+            "count": 7
+          },
+          {
+            "class": "flex-grow",
+            "count": 2
+          },
+          {
+            "class": "w-4",
+            "count": 7
+          },
+          {
+            "class": "h-4",
+            "count": 7
+          },
+          {
+            "class": "text-sm",
+            "count": 4
+          },
+          {
+            "class": "text-gray-500",
+            "count": 9
+          },
+          {
+            "class": "text-xs",
+            "count": 5
+          },
+          {
+            "class": "min-w-11",
+            "count": 2
+          },
+          {
+            "class": "min-h-11",
+            "count": 2
+          },
+          {
+            "class": "p-1",
+            "count": 2
+          },
+          {
+            "class": "mr-1",
+            "count": 4
+          },
+          {
+            "class": "w-5",
+            "count": 2
+          },
+          {
+            "class": "h-5",
+            "count": 2
+          },
+          {
+            "class": "mr-0.5",
+            "count": 2
+          },
+          {
+            "class": "cursor-pointer",
+            "count": 2
+          },
+          {
+            "class": "transition-all",
+            "count": 2
+          },
+          {
+            "class": "duration-200",
+            "count": 2
+          },
+          {
+            "class": "ease-in-out",
+            "count": 2
+          },
+          {
+            "class": "hover:shadow-lg",
+            "count": 2
+          },
+          {
+            "class": "hover:-translate-y-px",
+            "count": 2
+          },
+          {
+            "class": "focus:outline-2",
+            "count": 2
+          },
+          {
+            "class": "focus:outline-blue-600",
+            "count": 2
+          },
+          {
+            "class": "focus:outline-offset-2",
+            "count": 2
+          },
+          {
+            "class": "min-h-36",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 10,
+        "stateClasses": 10,
+        "layoutClasses": 11,
+        "spacingClasses": 14,
+        "colorClasses": 21,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": true,
+        "longClassStrings": [
+          {
+            "line": 111,
+            "length": 223,
+            "content": "className={`${showTimeline ? 'mb-2' : 'mb-1'} cursor-pointer transition-all duration-200 ease-in-out..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 107 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 27 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 1 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    },
+    {
+      "file": "src/components/features/dashboard/RecentProducts.tsx",
+      "classCount": 104,
+      "uniqueClassCount": 56,
+      "classes": [
+        "h-full",
+        "p-6",
+        "flex",
+        "items-center",
+        "justify-between",
+        "mb-4",
+        "space-x-2",
+        "w-5",
+        "h-5",
+        "text-indigo-500",
+        "text-lg",
+        "font-semibold",
+        "text-gray-900",
+        "bg-indigo-100",
+        "text-indigo-800",
+        "text-xs",
+        "space-y-3",
+        "items-start",
+        "space-x-3",
+        "p-3",
+        "rounded-lg",
+        "border-gray-200",
+        "hover:bg-gray-50",
+        "transition-colors",
+        "cursor-pointer",
+        "flex-shrink-0",
+        "mt-1",
+        "w-10",
+        "h-10",
+        "justify-center",
+        "w-6",
+        "h-6",
+        "text-indigo-600",
+        "flex-1",
+        "min-w-0",
+        "mb-1",
+        "font-medium",
+        "text-gray-500",
+        "text-gray-600",
+        "mb-2",
+        "w-4",
+        "h-4",
+        "text-gray-400",
+        "flex-wrap",
+        "gap-2",
+        "text-sm",
+        "text-green-500",
+        "mt-2",
+        "mt-4",
+        "pt-4",
+        "border-t",
+        "w-full",
+        "text-center",
+        "text-blue-600",
+        "hover:text-blue-800",
+        "py-2"
+      ],
+      "complexity": {
+        "duplicateClasses": [
+          {
+            "class": "flex",
+            "count": 11
+          },
+          {
+            "class": "items-center",
+            "count": 10
+          },
+          {
+            "class": "justify-between",
+            "count": 3
+          },
+          {
+            "class": "space-x-2",
+            "count": 5
+          },
+          {
+            "class": "w-5",
+            "count": 2
+          },
+          {
+            "class": "h-5",
+            "count": 2
+          },
+          {
+            "class": "text-gray-900",
+            "count": 3
+          },
+          {
+            "class": "bg-indigo-100",
+            "count": 2
+          },
+          {
+            "class": "text-xs",
+            "count": 3
+          },
+          {
+            "class": "rounded-lg",
+            "count": 2
+          },
+          {
+            "class": "border-gray-200",
+            "count": 2
+          },
+          {
+            "class": "transition-colors",
+            "count": 2
+          },
+          {
+            "class": "font-medium",
+            "count": 3
+          },
+          {
+            "class": "text-gray-500",
+            "count": 3
+          },
+          {
+            "class": "text-gray-600",
+            "count": 2
+          },
+          {
+            "class": "mb-2",
+            "count": 3
+          },
+          {
+            "class": "w-4",
+            "count": 3
+          },
+          {
+            "class": "h-4",
+            "count": 3
+          },
+          {
+            "class": "text-gray-400",
+            "count": 2
+          },
+          {
+            "class": "text-sm",
+            "count": 2
+          }
+        ],
+        "responsiveClasses": 2,
+        "stateClasses": 2,
+        "layoutClasses": 14,
+        "spacingClasses": 12,
+        "colorClasses": 27,
+        "hasComplexLogic": false,
+        "hasConditionalClasses": false,
+        "longClassStrings": [
+          {
+            "line": 148,
+            "length": 154,
+            "content": "className=\"flex items-start space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transit..."
+          },
+          {
+            "line": 223,
+            "length": 136,
+            "content": "<button className=\"w-full text-center text-blue-600 hover:text-blue-800 font-medium text-sm py-2 tra..."
+          }
+        ]
+      },
+      "recommendations": [
+        {
+          "type": "high_complexity",
+          "message": "Component has 104 classes. Consider breaking into smaller components."
+        },
+        {
+          "type": "duplicate_classes",
+          "message": "Found 20 duplicate class patterns. Extract common styles."
+        },
+        {
+          "type": "long_strings",
+          "message": "Found 2 long className strings. Consider utility functions."
+        },
+        {
+          "type": "missing_utilities",
+          "message": "Consider using clsx or similar utilities for conditional styling."
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Fade } from '@/components/ui-kit';
+import { Box, CircularProgress, Fade } from '../../components/ui-kit';
 import React, { Suspense } from 'react';
 import { Organization } from '../../types';
 import { useViewMode } from '../hooks/useViewMode';
