@@ -27,7 +27,10 @@ import { createReportingProvider } from '../reporting/reportingProvider';
 import {
     OrganizationStats
 } from '../types';
-import { authProvider, USER_STORAGE_KEY } from './authProvider';
+import { initializeUserService } from './authProvider';
+
+// Define USER_STORAGE_KEY locally to avoid importing from authProvider
+const USER_STORAGE_KEY = 'user';
 import generateData from './dataGenerator';
 import { interactionValidator } from './interactionValidator';
 import { organizationFilterEngine } from './internal/organizationFilters';
@@ -194,7 +197,8 @@ const dataProviderWithCustomMethod = {
         return true;
     },
     updatePassword: async (id: Identifier): Promise<true> => {
-        const currentUser = await authProvider.getIdentity?.();
+        const userItem = localStorage.getItem(USER_STORAGE_KEY);
+        const currentUser = userItem ? JSON.parse(userItem) : null;
         if (!currentUser) {
             throw new Error('User not found');
         }
@@ -1651,7 +1655,8 @@ export const dataProvider = withLifecycleCallbacks(
             afterSave: async data => {
                 // Since the current user is stored in localStorage in fakerest authProvider
                 // we need to update it to keep information up to date in the UI
-                const currentUser = await authProvider.getIdentity?.();
+                const userItem = localStorage.getItem(USER_STORAGE_KEY);
+                const currentUser = userItem ? JSON.parse(userItem) : null;
                 if (currentUser?.id === data.id) {
                     localStorage.setItem(
                         USER_STORAGE_KEY,
@@ -2176,3 +2181,6 @@ const convertFileToBase64 = (file: { rawFile: Blob }) =>
         reader.onerror = reject;
         reader.readAsDataURL(file.rawFile);
     });
+
+// Initialize the UserService to break circular dependency
+initializeUserService(dataProvider);

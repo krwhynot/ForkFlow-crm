@@ -492,7 +492,7 @@ export const PerformanceDashboard = () => {
                                     ))}
                             </TableBody>
                         </Table>
-                    </div>
+                    </TableContainer>
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={1}>
@@ -568,7 +568,7 @@ export const PerformanceDashboard = () => {
                                     ))}
                             </TableBody>
                         </Table>
-                    </div>
+                    </TableContainer>
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={2}>
@@ -648,7 +648,7 @@ export const PerformanceDashboard = () => {
                                     ))}
                             </TableBody>
                         </Table>
-                    </div>
+                    </TableContainer>
                 </TabPanel>
             </Card>
         </Box>

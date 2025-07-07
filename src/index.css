@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom utilities for ForkFlow CRM */
+/* Custom utilities for ForkFlow CRM - Optimized */
 .touch-target-interactive {
     min-height: 44px;
     min-width: 44px;
@@ -15,66 +15,25 @@
 
 .touch-target-interactive:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 2px rgba(126, 161, 66, 0.5); /* Updated to use new primary color */
 }
 
 .touch-target-interactive:active {
     transform: scale(0.98);
 }
 
-.priority-high {
-    color: #ef4444;
-    border-color: #ef4444;
-}
-
-.priority-medium {
-    color: #f59e0b;
-    border-color: #f59e0b;
-}
-
-.priority-low {
-    color: #22c55e;
-    border-color: #22c55e;
-}
-
-.status-prospect {
-    color: #8b5cf6;
-    background-color: rgba(139, 92, 246, 0.1);
-}
-
-.status-active {
-    color: #22c55e;
-    background-color: rgba(34, 197, 94, 0.1);
-}
-
-.status-inactive {
-    color: #6b7280;
-    background-color: rgba(107, 114, 128, 0.1);
-}
-
-.status-closed {
-    color: #ef4444;
-    background-color: rgba(239, 68, 68, 0.1);
-}
-
-/* Mobile-first responsive design utilities */
+/* Component-specific utilities - Optimized for new design system */
 .organization-card {
     background-color: white;
     border-radius: 0.5rem;
-    box-shadow:
-        0 1px 3px 0 rgba(0, 0, 0, 0.1),
-        0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border-width: 1px;
-    border-color: #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
     padding: 1rem;
-    transition-property: box-shadow;
-    transition-duration: 200ms;
+    transition: box-shadow 200ms ease-in-out;
 }
 
 .organization-card:hover {
-    box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .organization-card-mobile {
@@ -87,14 +46,13 @@
     margin: 0.5rem;
 }
 
-
 .filter-container {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     padding: 1rem;
-    background-color: #f9fafb;
-    border-bottom-width: 1px;
+    background-color: #f7f9f5; /* Updated to match new primary-50 */
+    border-bottom: 1px solid #d8e4c8; /* Updated to match new primary-200 */
 }
 
 .search-input {
@@ -106,29 +64,46 @@
 
 .search-input:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 2px rgba(126, 161, 66, 0.5); /* Updated to use new primary color */
 }
 
-/* Accessibility enhancements */
+/* Design System Base Styles */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: #334155; /* secondary-700 */
+    background-color: #f8fafc; /* secondary-50 */
+}
+
+/* Enhanced Accessibility */
 *:focus {
     outline-offset: 2px;
 }
 
-body {
-    color: #111827;
+/* Focus ring with new brand colors */
+*:focus-visible {
+    outline: 2px solid #7ea142; /* primary-500 */
+    outline-offset: 2px;
 }
 
 @media (prefers-contrast: high) {
     .organization-card {
         border-width: 2px;
-        border-color: #1f2937;
+        border-color: #1e293b; /* secondary-800 */
+    }
+    
+    body {
+        color: #0f172a; /* secondary-900 */
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-
-    .touch-feedback,
-    .organization-card {
-        transition-property: none;
+    .touch-target-interactive,
+    .organization-card,
+    * {
+        transition-property: none !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
     }
 }

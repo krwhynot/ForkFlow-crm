@@ -95,7 +95,8 @@
       "mcp__playwright__browser_close",
       "mcp__playwright__browser_snapshot",
       "Bash(madge:*)",
-      "Bash(ts_dependency_graph:*)"
+      "Bash(ts_dependency_graph:*)",
+      "Bash(cp:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -3,9 +3,12 @@ import { OrganizationList } from './list';
 import { OrganizationCreate, OrganizationEdit } from './form';
 import { OrganizationShow } from './show';
 
+// Import the new comprehensive OrganizationPage
+import { OrganizationPage } from '../components/organizations';
+
 // Default export for resource registration
 export default {
-    list: OrganizationList,
+    list: OrganizationPage, // Use the new comprehensive page
     create: OrganizationCreate,
     edit: OrganizationEdit,
     show: OrganizationShow,

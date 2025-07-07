@@ -30,6 +30,7 @@ import {
 } from '../providers/supabase';
 import sales from '../sales';
 import { SettingsPage } from '../settings/SettingsPage';
+import { ReportsPage } from '../components/reports';
 import {
     ConfigurationContextValue,
     ConfigurationProvider,
@@ -187,6 +188,10 @@ export const CRM = ({
                     <Route
                         path={SettingsPage.path}
                         element={<SettingsPage />}
+                    />
+                    <Route
+                        path="/reports"
+                        element={<ReportsPage />}
                     />
                 </CustomRoutes>
                 <Resource name="contacts" {...contacts} />

@@ -3,9 +3,12 @@ import { ProductCreate } from './ProductCreate';
 import { ProductEdit } from './ProductEdit';
 import { ProductShow } from './ProductShow';
 
+// Import the new placeholder ProductPage
+import { ProductPage } from '../components/products';
+
 // Default export for resource registration
 export default {
-    list: ProductList,
+    list: ProductPage, // Use the new placeholder page
     create: ProductCreate,
     edit: ProductEdit,
     show: ProductShow,
